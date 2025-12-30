@@ -33,8 +33,23 @@ module EasyRh
     # These settings can be overridden in specific environments using the files
     # in config/environments, which are processed later.
     #
-    # config.time_zone = "Central Time (US & Canada)"
-    # config.eager_load_paths << Rails.root.join("extras")
+    config.time_zone = "Paris"
+    config.i18n.default_locale = :fr
+    config.i18n.available_locales = [:fr, :en]
+
+    # Domain-driven design structure
+    config.autoload_paths += Dir[Rails.root.join('app', 'domains')]
+    config.eager_load_paths += Dir[Rails.root.join('app', 'domains')]
+
+    # Also add individual domain paths for better organization
+    config.autoload_paths += Dir[Rails.root.join('app', 'domains', '*', '{models,services,queries,jobs}')]
+    config.eager_load_paths += Dir[Rails.root.join('app', 'domains', '*', '{models,services,queries,jobs}')]
+
+    # API structure
+    config.autoload_paths += Dir[Rails.root.join('app', 'api')]
+
+    # API-only mode for v1 (keeping views for future admin panel)
+    config.api_only = false
 
     # Don't generate system test files.
     config.generators.system_tests = nil

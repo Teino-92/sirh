@@ -1,0 +1,181 @@
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+  <!-- Header -->
+  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6">
+    <div>
+      <h1 class="text-2xl sm:text-3xl font-bold text-gray-900">Mes congés</h1>
+      <p class="text-sm text-gray-600 mt-1">Gérez vos demandes de congés et RTT</p>
+    </div>
+    <%= link_to new_leave_request_path, class: "mt-4 sm:mt-0 inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700" do %>
+      <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+      </svg>
+      Nouvelle demande
+    <% end %>
+  </div>
+
+  <!-- Leave Balances Summary -->
+  <div class="bg-white rounded-lg shadow p-6 mb-6">
+    <h2 class="text-lg font-semibold text-gray-900 mb-4">Soldes disponibles</h2>
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+      <% @leave_balances.each do |balance| %>
+        <div class="bg-gradient-to-br from-indigo-50 to-purple-50 rounded-lg p-4 border border-indigo-200">
+          <p class="text-xs text-indigo-700 font-medium uppercase tracking-wider">
+            <%= LeaveBalance.leave_type_name(balance.leave_type) %>
+          </p>
+          <p class="text-3xl font-bold text-indigo-900 mt-2">
+            <%= balance.balance.to_f.round(1) %>
+          </p>
+          <p class="text-xs text-indigo-600">jours</p>
+          <% if balance.expiring_soon? %>
+            <div class="mt-2 flex items-center text-xs text-orange-600">
+              <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+              </svg>
+              Expire le <%= l(balance.expires_at, format: :short) %>
+            </div>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+  <!-- Filter Tabs -->
+  <div class="mb-6">
+    <div class="border-b border-gray-200">
+      <nav class="-mb-px flex space-x-8 overflow-x-auto" aria-label="Tabs">
+        <%= link_to leave_requests_path(filter: 'all'),
+          class: "whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm #{params[:filter] != 'upcoming' && params[:filter] != 'history' ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'}" do %>
+          Toutes
+        <% end %>
+        <%= link_to leave_requests_path(filter: 'upcoming'),
+          class: "whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm #{params[:filter] == 'upcoming' ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'}" do %>
+          À venir
+        <% end %>
+        <%= link_to leave_requests_path(filter: 'history'),
+          class: "whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm #{params[:filter] == 'history' ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'}" do %>
+          Historique
+        <% end %>
+      </nav>
+    </div>
+  </div>
+
+  <!-- Leave Requests List -->
+  <div class="space-y-4">
+    <% if @leave_requests.any? %>
+      <% @leave_requests.each do |request| %>
+        <div class="bg-white rounded-lg shadow overflow-hidden">
+          <div class="p-4 sm:p-6">
+            <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between">
+              <!-- Request Info -->
+              <div class="flex-1">
+                <div class="flex items-center mb-2">
+                  <h3 class="text-lg font-semibold text-gray-900">
+                    <%= LeaveBalance.leave_type_name(request.leave_type) %>
+                  </h3>
+                  <span class="ml-3 px-2 py-1 text-xs font-semibold rounded-full <%= status_badge_class(request.status) %>">
+                    <%= status_label(request.status) %>
+                  </span>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-sm">
+                  <div class="flex items-center text-gray-600">
+                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                    </svg>
+                    <span>
+                      <%= l(request.start_date, format: :short) %>
+                      <% if request.start_date != request.end_date %>
+                        → <%= l(request.end_date, format: :short) %>
+                      <% end %>
+                    </span>
+                  </div>
+
+                  <div class="flex items-center text-gray-600">
+                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    <span><%= request.days_count.to_f.round(1) %> jour<%= 's' if request.days_count > 1 %></span>
+                  </div>
+
+                  <div class="flex items-center text-gray-600">
+                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                    </svg>
+                    <span>Demandé <%= time_ago_in_words(request.created_at) %></span>
+                  </div>
+                </div>
+
+                <% if request.reason.present? %>
+                  <div class="mt-3 p-3 bg-gray-50 rounded-md">
+                    <p class="text-sm text-gray-700 italic">"<%= request.reason %>"</p>
+                  </div>
+                <% end %>
+
+                <% if request.rejection_reason.present? %>
+                  <div class="mt-3 p-3 bg-red-50 border border-red-200 rounded-md">
+                    <p class="text-xs font-medium text-red-800 mb-1">Raison du refus:</p>
+                    <p class="text-sm text-red-700"><%= request.rejection_reason %></p>
+                  </div>
+                <% end %>
+
+                <% if request.approved? && request.approver %>
+                  <div class="mt-2 text-xs text-gray-500">
+                    Approuvé par <%= request.approver.full_name %>
+                    <% if request.status == 'auto_approved' %>
+                      <span class="text-indigo-600">(auto-approuvé)</span>
+                    <% end %>
+                  </div>
+                <% end %>
+              </div>
+
+              <!-- Actions -->
+              <div class="mt-4 sm:mt-0 sm:ml-6 flex sm:flex-col gap-2">
+                <% if request.pending? %>
+                  <%= button_to cancel_leave_request_path(request), method: :post,
+                    class: "inline-flex items-center px-3 py-2 border border-red-300 shadow-sm text-sm font-medium rounded-md text-red-700 bg-white hover:bg-red-50",
+                    data: { confirm: 'Êtes-vous sûr de vouloir annuler cette demande ?' } do %>
+                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                    Annuler
+                  <% end %>
+                <% end %>
+              </div>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    <% else %>
+      <!-- Empty State -->
+      <div class="bg-white rounded-lg shadow text-center py-12 px-4">
+        <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+        </svg>
+        <h3 class="mt-2 text-sm font-medium text-gray-900">Aucune demande de congé</h3>
+        <p class="mt-1 text-sm text-gray-500">
+          Commencez par créer une nouvelle demande de congé.
+        </p>
+        <div class="mt-6">
+          <%= link_to new_leave_request_path, class: "inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700" do %>
+            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+            </svg>
+            Nouvelle demande
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+
+  <!-- Calendar Link -->
+  <% if @employee.manager? %>
+    <div class="mt-6">
+      <%= link_to team_calendar_leave_requests_path, class: "inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50" do %>
+        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+        </svg>
+        Voir le calendrier d'équipe
+      <% end %>
+    </div>
+  <% end %>
+</div>

@@ -1,0 +1,56 @@
+# frozen_string_literal: true
+
+class Employee < ApplicationRecord
+  # Devise modules
+  devise :database_authenticatable, :registerable,
+         :recoverable, :rememberable, :validatable
+
+  belongs_to :organization
+  belongs_to :manager, class_name: 'Employee', optional: true
+  has_many :direct_reports, class_name: 'Employee', foreign_key: :manager_id, dependent: :nullify
+
+  has_many :leave_balances, dependent: :destroy
+  has_many :leave_requests, dependent: :destroy
+  has_many :time_entries, dependent: :destroy
+  has_one :work_schedule, dependent: :destroy
+
+  # Leave requests approved by this employee (when they are a manager)
+  has_many :approved_leave_requests, class_name: 'LeaveRequest', foreign_key: :approved_by_id
+
+  validates :first_name, :last_name, :contract_type, :start_date, presence: true
+  validates :role, presence: true, inclusion: { in: %w[employee manager hr admin] }
+
+  # French contract types
+  validates :contract_type, inclusion: { in: %w[CDI CDD Stage Alternance Interim] }
+
+  scope :active, -> { where(settings: { active: true }) }
+  scope :managers, -> { where(role: %w[manager hr admin]) }
+  scope :by_department, ->(dept) { where(department: dept) }
+
+  def full_name
+    "#{first_name} #{last_name}"
+  end
+
+  def manager?
+    %w[manager hr admin].include?(role)
+  end
+
+  def hr_or_admin?
+    %w[hr admin].include?(role)
+  end
+
+  def active?
+    settings.fetch('active', true)
+  end
+
+  def tenure_in_months
+    ((Time.current.to_date - start_date) / 30).to_i
+  end
+
+  # Team members this employee manages
+  def team_members
+    return Employee.none unless manager?
+
+    Employee.where(manager_id: id)
+  end
+end

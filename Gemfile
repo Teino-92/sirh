@@ -57,3 +57,7 @@ group :development do
   # gem "spring"
 end
 
+
+gem "devise", "~> 4.9"
+gem "pundit", "~> 2.5"
+gem "sidekiq", "~> 8.1"
