@@ -5,6 +5,9 @@ class Organization < ApplicationRecord
 
   validates :name, presence: true
 
+  # Initialize settings if nil
+  after_initialize :ensure_settings
+
   # Default settings for French labor law
   def default_settings
     {
@@ -25,5 +28,11 @@ class Organization < ApplicationRecord
 
   def rtt_enabled?
     settings.fetch('rtt_enabled', default_settings[:rtt_enabled])
+  end
+
+  private
+
+  def ensure_settings
+    self.settings ||= {}
   end
 end

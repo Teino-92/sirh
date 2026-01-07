@@ -4,16 +4,25 @@ module LeaveManagement
   module Services
     # French Legal Compliance Engine for Leave Policies
     # Implements French labor law (Code du travail) for leave management
+    # Supports cascading rules: Employee Contract → Organization → Collective Agreement → Legal Defaults
     class LeavePolicyEngine
-      # French legal constants
-      CP_ACQUISITION_RATE = 2.5 # days per month (30 days / 12 months)
-      CP_ACQUISITION_PERIOD_MONTHS = 12
-      CP_MAX_ANNUAL = 30 # 5 weeks * 6 days (French week counting)
-      CP_EXPIRY_MONTH = 5 # May
-      CP_EXPIRY_DAY = 31
-      MINIMUM_CONSECUTIVE_LEAVE_DAYS = 10 # 2 weeks mandatory
-      LEGAL_WORK_WEEK_HOURS = 35
-      RTT_CALCULATION_THRESHOLD = 35 # hours per week
+      # French legal defaults (Code du travail)
+      # These are BASE minimums that can be overridden by:
+      # 1. Convention collective (collective agreement)
+      # 2. Accord d'entreprise (company agreement via organization.settings)
+      # 3. Contrat individuel (individual contract via employee.contract_overrides)
+      LEGAL_DEFAULTS = {
+        cp_acquisition_rate: 2.5,           # days per month (30 days / 12 months)
+        cp_acquisition_period_months: 12,
+        cp_max_annual: 30,                  # 5 weeks * 6 days (French week counting)
+        cp_expiry_month: 5,                 # May
+        cp_expiry_day: 31,
+        minimum_consecutive_leave_days: 10, # 2 weeks mandatory in summer
+        legal_work_week_hours: 35,
+        rtt_calculation_threshold: 35,      # hours per week
+        auto_approve_threshold_days: 15,    # CP balance needed for auto-approval
+        auto_approve_max_request_days: 2    # Max days for auto-approval
+      }.freeze
 
       attr_reader :employee, :organization
 
@@ -22,10 +31,36 @@ module LeaveManagement
         @organization = employee.organization
       end
 
+      # Cascading rule resolution: Employee → Organization → Collective Agreement → Legal
+      # This allows customization per:
+      # - Convention collective (e.g., Syntec, Bâtiment, Métallurgie)
+      # - Accord d'entreprise (company-specific rules)
+      # - Contrat individuel (individual contract terms)
+      def get_setting(key)
+        # Priority 1: Employee contract overrides
+        if employee.respond_to?(:contract_overrides) && employee.contract_overrides.present?
+          return employee.contract_overrides[key.to_s] if employee.contract_overrides.key?(key.to_s)
+        end
+
+        # Priority 2: Organization settings (accord d'entreprise)
+        if organization.settings.key?(key.to_s)
+          return organization.settings[key.to_s]
+        end
+
+        # Priority 3: Collective agreement (convention collective)
+        # TODO: Implement when collective_agreement association is added
+        # if organization.collective_agreement&.settings&.key?(key.to_s)
+        #   return organization.collective_agreement.settings[key.to_s]
+        # end
+
+        # Priority 4: Legal defaults (Code du travail)
+        LEGAL_DEFAULTS[key]
+      end
+
       # Calculate CP balance based on tenure and worked time
       def calculate_cp_balance(as_of_date: Date.current)
         months_worked = calculate_months_worked(employee.start_date, as_of_date)
-        base_accrual = [months_worked * CP_ACQUISITION_RATE, CP_MAX_ANNUAL].min
+        base_accrual = [months_worked * get_setting(:cp_acquisition_rate), get_setting(:cp_max_annual)].min
 
         # Adjust for part-time if applicable
         if part_time_employee?
@@ -40,7 +75,7 @@ module LeaveManagement
         return 0 unless organization.rtt_enabled?
 
         weekly_hours = worked_hours / period_weeks
-        overtime_hours = [weekly_hours - RTT_CALCULATION_THRESHOLD, 0].max
+        overtime_hours = [weekly_hours - get_setting(:rtt_calculation_threshold), 0].max
 
         # RTT = (hours over 35h) / 7 * number of weeks
         # French law: 1 RTT day ≈ 7 hours of overtime
@@ -59,14 +94,17 @@ module LeaveManagement
         # Check consecutive leave requirement for CP
         if leave_request.leave_type == 'CP' && in_summer_period?(leave_request)
           unless meets_consecutive_requirement?(leave_request)
-            errors << "Vous devez prendre au moins #{MINIMUM_CONSECUTIVE_LEAVE_DAYS} jours consécutifs entre le 1er mai et le 31 octobre"
+            min_days = get_setting(:minimum_consecutive_leave_days)
+            errors << "Vous devez prendre au moins #{min_days} jours consécutifs entre le 1er mai et le 31 octobre"
           end
         end
 
         # Check CP expiration
         if leave_request.leave_type == 'CP'
           if requesting_expired_cp?(leave_request)
-            errors << "Ces congés payés ont expiré. Les CP doivent être pris avant le 31 mai."
+            expiry_day = get_setting(:cp_expiry_day)
+            expiry_month_name = Date::MONTHNAMES[get_setting(:cp_expiry_month)]
+            errors << "Ces congés payés ont expiré. Les CP doivent être pris avant le #{expiry_day} #{expiry_month_name}."
           end
         end
 
@@ -96,13 +134,16 @@ module LeaveManagement
         return false unless leave_request.leave_type == 'CP'
 
         # Auto-approve if:
-        # 1. Employee has sufficient balance (15+ days remaining)
-        # 2. Request is for 1-2 days only
+        # 1. Employee has sufficient balance (threshold configurable per organization)
+        # 2. Request is for short duration (configurable per organization)
         # 3. No team conflicts
         # 4. Not during blackout period (company-specific)
 
-        sufficient_balance = employee.leave_balances.find_by(leave_type: 'CP')&.balance.to_f >= 15
-        short_request = leave_request.days_count <= 2
+        threshold_days = get_setting(:auto_approve_threshold_days)
+        max_request_days = get_setting(:auto_approve_max_request_days)
+
+        sufficient_balance = employee.leave_balances.find_by(leave_type: 'CP')&.balance.to_f >= threshold_days
+        short_request = leave_request.days_count <= max_request_days
         no_conflicts = !leave_request.conflicts_with_team?
 
         sufficient_balance && short_request && no_conflicts
@@ -110,7 +151,7 @@ module LeaveManagement
 
       # Calculate CP expiration date for current year
       def cp_expiration_date(year = Date.current.year)
-        Date.new(year, CP_EXPIRY_MONTH, CP_EXPIRY_DAY)
+        Date.new(year, get_setting(:cp_expiry_month), get_setting(:cp_expiry_day))
       end
 
       # Accrue CP for a given month (called by background job)
@@ -168,8 +209,8 @@ module LeaveManagement
       end
 
       def meets_consecutive_requirement?(leave_request)
-        # If requesting leave in summer period, must request at least 10 consecutive days
-        leave_request.days_count >= MINIMUM_CONSECUTIVE_LEAVE_DAYS
+        # If requesting leave in summer period, must request at least minimum consecutive days
+        leave_request.days_count >= get_setting(:minimum_consecutive_leave_days)
       end
 
       def in_summer_period?(leave_request)
@@ -245,20 +286,20 @@ module LeaveManagement
       end
 
       def part_time_employee?
-        employee.work_schedule&.weekly_hours.to_f < LEGAL_WORK_WEEK_HOURS
+        employee.work_schedule&.weekly_hours.to_f < get_setting(:legal_work_week_hours)
       end
 
       def part_time_ratio
         return 1.0 unless employee.work_schedule
 
-        employee.work_schedule.weekly_hours.to_f / LEGAL_WORK_WEEK_HOURS
+        employee.work_schedule.weekly_hours.to_f / get_setting(:legal_work_week_hours)
       end
 
       def monthly_cp_accrual
         if part_time_employee?
-          CP_ACQUISITION_RATE * part_time_ratio
+          get_setting(:cp_acquisition_rate) * part_time_ratio
         else
-          CP_ACQUISITION_RATE
+          get_setting(:cp_acquisition_rate)
         end
       end
     end

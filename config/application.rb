@@ -5,7 +5,7 @@ require "rails"
 require "active_model/railtie"
 require "active_job/railtie"
 require "active_record/railtie"
-# require "active_storage/engine"
+require "active_storage/engine"
 require "action_controller/railtie"
 require "action_mailer/railtie"
 # require "action_mailbox/engine"
@@ -38,18 +38,19 @@ module EasyRh
     config.i18n.available_locales = [:fr, :en]
 
     # Domain-driven design structure
+    # Add domain paths so models are in root namespace (Employee not Employees::Models::Employee)
+    # But services are namespaced (TimeTracking::Services::RttAccrualService)
+    config.autoload_paths += Dir[Rails.root.join('app', 'domains', '*', 'models')]
     config.autoload_paths += Dir[Rails.root.join('app', 'domains')]
+
+    config.eager_load_paths += Dir[Rails.root.join('app', 'domains', '*', 'models')]
     config.eager_load_paths += Dir[Rails.root.join('app', 'domains')]
-
-    # Also add individual domain paths for better organization
-    config.autoload_paths += Dir[Rails.root.join('app', 'domains', '*', '{models,services,queries,jobs}')]
-    config.eager_load_paths += Dir[Rails.root.join('app', 'domains', '*', '{models,services,queries,jobs}')]
-
-    # API structure
-    config.autoload_paths += Dir[Rails.root.join('app', 'api')]
 
     # API-only mode for v1 (keeping views for future admin panel)
     config.api_only = false
+
+    # Rack::Attack middleware for rate limiting
+    config.middleware.use Rack::Attack
 
     # Don't generate system test files.
     config.generators.system_tests = nil

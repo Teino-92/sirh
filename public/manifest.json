@@ -1,7 +1,7 @@
 {
-  "name": "Easy-RH - Gestion RH mobile",
+  "name": "Easy-RH - Manager's best friend",
   "short_name": "Easy-RH",
-  "description": "Système de gestion RH moderne et mobile-first pour les entreprises françaises",
+  "description": "Système de gestion RH moderne et mobile-friendly pour les entreprises françaises",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",

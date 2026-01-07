@@ -118,9 +118,9 @@
                   </div>
                 <% end %>
 
-                <% if request.approved? && request.approver %>
+                <% if request.approved? && request.approved_by %>
                   <div class="mt-2 text-xs text-gray-500">
-                    Approuvé par <%= request.approver.full_name %>
+                    Approuvé par <%= request.approved_by.full_name %>
                     <% if request.status == 'auto_approved' %>
                       <span class="text-indigo-600">(auto-approuvé)</span>
                     <% end %>

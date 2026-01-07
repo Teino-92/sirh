@@ -1,4 +1,12 @@
 fr:
+  activerecord:
+    errors:
+      messages:
+        record_invalid: "La validation a échoué : %{errors}"
+        blank: "doit être rempli(e)"
+        taken: "n'est pas disponible"
+        invalid: "n'est pas valide"
+
   date:
     formats:
       default: "%d/%m/%Y"

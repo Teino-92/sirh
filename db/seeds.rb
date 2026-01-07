@@ -1,11 +1,16 @@
 # frozen_string_literal: true
 
+# Disable tenant requirement during seeding
+ActsAsTenant.without_tenant do
+
 # Clear existing data
 puts "🧹 Clearing existing data..."
 TimeEntry.destroy_all
 LeaveRequest.destroy_all
 LeaveBalance.destroy_all
 WorkSchedule.destroy_all
+WeeklySchedulePlan.destroy_all
+Notification.destroy_all
 Employee.destroy_all
 Organization.destroy_all
 
@@ -109,6 +114,7 @@ all_employees.each do |employee|
   # Create CP balance
   LeaveBalance.create!(
     employee: employee,
+    organization: employee.organization,
     leave_type: 'CP',
     balance: cp_balance,
     accrued_this_year: cp_balance,
@@ -120,6 +126,7 @@ all_employees.each do |employee|
   if employee.work_schedule.rtt_eligible?
     LeaveBalance.create!(
       employee: employee,
+      organization: employee.organization,
       leave_type: 'RTT',
       balance: 5.0, # Initial RTT balance
       accrued_this_year: 5.0,
@@ -130,6 +137,7 @@ all_employees.each do |employee|
   # Other leave types
   LeaveBalance.create!(
     employee: employee,
+    organization: employee.organization,
     leave_type: 'Maladie',
     balance: 0,
     accrued_this_year: 0,
@@ -143,6 +151,7 @@ puts "📝 Creating leave requests..."
 # Approved leave request
 LeaveRequest.create!(
   employee: employees[0],
+  organization: employees[0].organization,
   leave_type: 'CP',
   start_date: 1.week.from_now,
   end_date: 1.week.from_now + 4.days,
@@ -156,6 +165,7 @@ LeaveRequest.create!(
 # Pending leave request
 LeaveRequest.create!(
   employee: employees[1],
+  organization: employees[1].organization,
   leave_type: 'CP',
   start_date: 2.weeks.from_now,
   end_date: 2.weeks.from_now + 2.days,
@@ -167,6 +177,7 @@ LeaveRequest.create!(
 # Auto-approved short leave
 LeaveRequest.create!(
   employee: employees[2],
+  organization: employees[2].organization,
   leave_type: 'CP',
   start_date: Date.tomorrow,
   end_date: Date.tomorrow,
@@ -188,6 +199,7 @@ employees.each do |employee|
 
     TimeEntry.create!(
       employee: employee,
+      organization: employee.organization,
       clock_in: clock_in,
       clock_out: clock_out,
       duration_minutes: 480, # 8 hours
@@ -199,6 +211,7 @@ employees.each do |employee|
   if [employees[0], employees[1]].include?(employee)
     TimeEntry.create!(
       employee: employee,
+      organization: employee.organization,
       clock_in: Date.current.to_time + 9.hours,
       clock_out: nil, # Still clocked in
       manual_override: false
@@ -219,12 +232,162 @@ puts "  - Leave Requests: #{LeaveRequest.count}"
 puts "  - Time Entries: #{TimeEntry.count}"
 
 puts "\n👤 Test Accounts:"
-puts "  HR Admin:"
-puts "    Email: admin@techcorp.fr"
-puts "    Password: password123"
-puts "\n  Manager (Engineering):"
-puts "    Email: thomas.martin@techcorp.fr"
-puts "    Password: password123"
-puts "\n  Employee:"
-puts "    Email: julien.petit@techcorp.fr"
-puts "    Password: password123"
+puts "  TechCorp France:"
+puts "    HR Admin: admin@techcorp.fr / password123"
+puts "    Manager: thomas.martin@techcorp.fr / password123"
+puts "    Employee: julien.petit@techcorp.fr / password123"
+
+# ===================================
+# 2ème Organisation - StartupCo Paris
+# ===================================
+
+puts "\n🏢 Creating second organization: StartupCo Paris..."
+org2 = Organization.create!(
+  name: "StartupCo Paris",
+  settings: {
+    work_week_hours: 39,
+    cp_acquisition_rate: 2.5,
+    rtt_enabled: true,
+    overtime_threshold: 35
+  }
+)
+
+# Admin StartupCo
+puts "👤 Creating StartupCo admin..."
+admin2 = org2.employees.create!(
+  email: "admin@startupco.fr",
+  password: "password123",
+  first_name: "Pierre",
+  last_name: "Lefebvre",
+  role: "admin",
+  department: "Direction",
+  contract_type: "CDI",
+  start_date: 3.years.ago
+)
+
+# Manager StartupCo
+puts "👔 Creating StartupCo manager..."
+manager_startup = org2.employees.create!(
+  email: "claire.rousseau@startupco.fr",
+  password: "password123",
+  first_name: "Claire",
+  last_name: "Rousseau",
+  role: "manager",
+  department: "Product",
+  contract_type: "CDI",
+  start_date: 1.year.ago
+)
+
+# Employees StartupCo
+puts "👥 Creating StartupCo employees..."
+emp1_startup = org2.employees.create!(
+  email: "antoine.mercier@startupco.fr",
+  password: "password123",
+  first_name: "Antoine",
+  last_name: "Mercier",
+  role: "employee",
+  department: "Product",
+  manager: manager_startup,
+  contract_type: "CDI",
+  start_date: 8.months.ago
+)
+
+emp2_startup = org2.employees.create!(
+  email: "lea.blanc@startupco.fr",
+  password: "password123",
+  first_name: "Léa",
+  last_name: "Blanc",
+  role: "employee",
+  department: "Product",
+  manager: manager_startup,
+  contract_type: "CDI",
+  start_date: 4.months.ago
+)
+
+startup_employees = [admin2, manager_startup, emp1_startup, emp2_startup]
+
+# Work schedules pour StartupCo
+puts "📅 Creating work schedules for StartupCo..."
+startup_employees.each do |employee|
+  WorkSchedule.create_from_template(employee, 'full_time_39h')
+end
+
+# Leave balances pour StartupCo
+puts "🏖️ Initializing leave balances for StartupCo..."
+startup_employees.each do |employee|
+  months_worked = ((Date.current - employee.start_date) / 30).to_i
+  cp_balance = [months_worked * 2.5, 30].min
+
+  LeaveBalance.create!(
+    employee: employee,
+    organization: employee.organization,
+    leave_type: 'CP',
+    balance: cp_balance,
+    accrued_this_year: cp_balance,
+    used_this_year: 0,
+    expires_at: Date.new(Date.current.year + 1, 5, 31)
+  )
+
+  # RTT balance
+  if employee.work_schedule.rtt_eligible?
+    LeaveBalance.create!(
+      employee: employee,
+      organization: employee.organization,
+      leave_type: 'RTT',
+      balance: 8.0,
+      accrued_this_year: 8.0,
+      used_this_year: 0
+    )
+  end
+
+  LeaveBalance.create!(
+    employee: employee,
+    organization: employee.organization,
+    leave_type: 'Maladie',
+    balance: 0,
+    accrued_this_year: 0,
+    used_this_year: 0
+  )
+end
+
+# Time entries pour StartupCo
+puts "⏰ Creating time entries for StartupCo..."
+[emp1_startup, emp2_startup].each do |employee|
+  (Date.current.beginning_of_week..Date.current - 1.day).each do |date|
+    next if date.saturday? || date.sunday?
+
+    clock_in = date.to_time + 10.hours
+    clock_out = clock_in + 8.hours
+
+    TimeEntry.create!(
+      employee: employee,
+      organization: employee.organization,
+      clock_in: clock_in,
+      clock_out: clock_out,
+      duration_minutes: 480,
+      manual_override: false
+    )
+  end
+end
+
+puts "\n✅ Seed data created successfully!"
+puts "\n📊 Summary:"
+puts "  - Organizations: #{Organization.count}"
+puts "  - Total Employees: #{Employee.count}"
+puts "  - Work Schedules: #{WorkSchedule.count}"
+puts "  - Leave Balances: #{LeaveBalance.count}"
+puts "  - Leave Requests: #{LeaveRequest.count}"
+puts "  - Time Entries: #{TimeEntry.count}"
+
+puts "\n👤 Test Accounts:"
+puts "\n  🏢 TechCorp France:"
+puts "    HR Admin: admin@techcorp.fr / password123"
+puts "    Manager: thomas.martin@techcorp.fr / password123"
+puts "    Employee: julien.petit@techcorp.fr / password123"
+puts "\n  🏢 StartupCo Paris:"
+puts "    Admin: admin@startupco.fr / password123"
+puts "    Manager: claire.rousseau@startupco.fr / password123"
+puts "    Employee: antoine.mercier@startupco.fr / password123"
+puts "    Employee: lea.blanc@startupco.fr / password123"
+
+end # ActsAsTenant.without_tenant

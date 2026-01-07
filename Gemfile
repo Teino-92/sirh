@@ -14,8 +14,8 @@ gem "pg", "~> 1.1"
 # Use the Puma web server [https://github.com/puma/puma]
 gem "puma", ">= 5.0"
 
-# Bundle and transpile JavaScript [https://github.com/rails/jsbundling-rails]
-gem "jsbundling-rails"
+# Use JavaScript with ESM import maps [https://github.com/rails/importmap-rails]
+gem "importmap-rails"
 
 # Hotwire's SPA-like page accelerator [https://turbo.hotwired.dev]
 gem "turbo-rails"
@@ -50,6 +50,12 @@ group :development do
   # Use console on exceptions pages [https://github.com/rails/web-console]
   gem "web-console"
 
+  # Security scanner for Rails [https://github.com/presidentbeef/brakeman]
+  gem "brakeman", require: false
+
+  # N+1 query detection [https://github.com/flyerhzm/bullet]
+  gem "bullet"
+
   # Add speed badges [https://github.com/MiniProfiler/rack-mini-profiler]
   # gem "rack-mini-profiler"
 
@@ -59,5 +65,16 @@ end
 
 
 gem "devise", "~> 4.9"
+gem "devise-jwt", "~> 0.12.1" # JWT authentication for API
 gem "pundit", "~> 2.5"
-gem "sidekiq", "~> 8.1"
+gem "solid_queue"
+gem "rack-attack" # Rate limiting and request throttling
+
+# Multi-tenancy [https://github.com/ErwinM/acts_as_tenant]
+gem "acts_as_tenant"
+
+# Audit trail [https://github.com/paper-trail-gem/paper_trail]
+gem "paper_trail"
+
+# Pagination [https://github.com/kaminari/kaminari]
+gem "kaminari"

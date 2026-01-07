@@ -1,10 +1,13 @@
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
   <!-- Welcome Header -->
   <div class="mb-6">
-    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900">
-      Bonjour, <%= @employee.first_name %> 👋
-    </h1>
-    <p class="text-sm text-gray-600 mt-1">
+    <div class="flex items-baseline gap-2 mb-1">
+      <h1 class="text-2xl sm:text-3xl font-bold text-gray-900">
+        Bonjour, <%= @employee.first_name %> 👋
+      </h1>
+      <span class="text-sm text-gray-500">· <%= @employee.organization.name %></span>
+    </div>
+    <p class="text-sm text-gray-600">
       <%= l(Date.current, format: :long) %>
     </p>
   </div>
@@ -85,32 +88,78 @@
         </div>
       </div>
 
-      <!-- This Week's Hours -->
+      <!-- This Week's Schedule -->
       <div class="bg-white rounded-lg shadow p-6">
         <div class="flex items-center justify-between mb-4">
-          <h2 class="text-lg font-semibold text-gray-900">Cette semaine</h2>
-          <%= link_to "Voir tout", time_entries_path, class: "text-sm text-indigo-600 hover:text-indigo-800 font-medium" %>
+          <h2 class="text-lg font-semibold text-gray-900">Planning de la semaine</h2>
+          <%= link_to "Voir tout", work_schedule_path(current_employee.id), class: "text-sm text-indigo-600 hover:text-indigo-800 font-medium" %>
         </div>
 
-        <div class="flex items-end justify-between">
-          <div>
-            <p class="text-4xl font-bold text-gray-900">
-              <%= @weekly_hours.round(1) %>h
-            </p>
-            <p class="text-sm text-gray-600 mt-1">
-              sur <%= @expected_hours %>h attendues
-            </p>
+        <% if @weekly_plan %>
+          <!-- Weekly Schedule Grid -->
+          <div class="grid grid-cols-2 sm:grid-cols-7 gap-2 mb-4">
+            <% week_start = @today.beginning_of_week(:monday) %>
+            <% %w[monday tuesday wednesday thursday friday saturday sunday].each_with_index do |day_name, index| %>
+              <%
+                day_date = week_start + index.days
+                is_today = day_date == @today
+                hours = @weekly_plan.schedule_pattern[day_name]
+                has_worked = @week_time_entries.key?(day_date)
+                is_work_day = hours.present? && hours != 'off'
+              %>
+              <div class="<%= is_today ? 'ring-2 ring-indigo-600' : 'border border-gray-200' %>
+                          <%= has_worked ? 'bg-green-50 border-green-300' : (is_work_day ? 'bg-indigo-50' : 'bg-gray-50') %>
+                          rounded-lg p-3 text-center">
+                <p class="text-xs font-medium <%= is_today ? 'text-indigo-600' : 'text-gray-600' %> mb-1">
+                  <%= l(day_date, format: '%a') %>
+                </p>
+                <p class="text-xs text-gray-500 mb-1">
+                  <%= day_date.day %>/<%= day_date.month %>
+                </p>
+                <% if is_work_day %>
+                  <p class="text-sm font-semibold <%= has_worked ? 'text-green-700' : 'text-gray-900' %>">
+                    <%= hours %>
+                  </p>
+                  <% if has_worked %>
+                    <p class="text-xs text-green-600 mt-1">✓ Pointé</p>
+                  <% end %>
+                <% else %>
+                  <p class="text-xs text-gray-400">Repos</p>
+                <% end %>
+              </div>
+            <% end %>
           </div>
 
-          <!-- Progress Bar -->
-          <div class="flex-1 ml-6">
-            <div class="h-8 bg-gray-200 rounded-full overflow-hidden">
-              <% percentage = [(@weekly_hours / @expected_hours * 100).to_i, 100].min %>
-              <div class="h-full bg-indigo-600 rounded-full transition-all" style="width: <%= percentage %>%"></div>
+          <!-- Hours Summary -->
+          <div class="flex items-end justify-between pt-4 border-t border-gray-200">
+            <div>
+              <p class="text-3xl font-bold text-gray-900">
+                <%= @weekly_hours.round(1) %>h
+              </p>
+              <p class="text-sm text-gray-600">
+                sur <%= @expected_hours.round(1) %>h prévues
+              </p>
             </div>
-            <p class="text-xs text-gray-600 text-right mt-1"><%= percentage %>%</p>
+
+            <!-- Progress Bar -->
+            <div class="flex-1 ml-6">
+              <div class="h-6 bg-gray-200 rounded-full overflow-hidden">
+                <% percentage = [(@weekly_hours / @expected_hours * 100).to_i, 100].min %>
+                <div class="h-full bg-indigo-600 rounded-full transition-all" style="width: <%= percentage %>%"></div>
+              </div>
+              <p class="text-xs text-gray-600 text-right mt-1"><%= percentage %>%</p>
+            </div>
           </div>
-        </div>
+        <% else %>
+          <!-- No Weekly Plan -->
+          <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-6 text-center">
+            <svg class="mx-auto h-10 w-10 text-yellow-600 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+            </svg>
+            <p class="text-yellow-800 font-medium">Aucun planning pour cette semaine</p>
+            <p class="text-sm text-yellow-700 mt-1">Contactez votre manager pour établir votre planning</p>
+          </div>
+        <% end %>
       </div>
 
       <!-- Upcoming Leaves (if any) -->

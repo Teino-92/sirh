@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
-module V1
+module Api
+  module V1
   # Mobile-first dashboard endpoint - single call for all dashboard data
   class DashboardController < BaseController
     # GET /api/v1/me/dashboard
@@ -109,5 +110,6 @@ module V1
 
       actions
     end
+  end
   end
 end

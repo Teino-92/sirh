@@ -33,8 +33,22 @@ Rails.application.configure do
     config.cache_store = :null_store
   end
 
-  # Don't care if the mailer can't send.
-  config.action_mailer.raise_delivery_errors = false
+  # Configure Action Mailer for development
+  config.action_mailer.raise_delivery_errors = true
+  config.action_mailer.perform_deliveries = true
+  config.action_mailer.delivery_method = :smtp
+  config.action_mailer.default_url_options = { host: 'localhost', port: 3000 }
+
+  # SMTP settings (using Mailhog for local testing or configure with real SMTP)
+  config.action_mailer.smtp_settings = {
+    address: ENV.fetch('SMTP_ADDRESS', 'localhost'),
+    port: ENV.fetch('SMTP_PORT', 1025),
+    domain: ENV.fetch('SMTP_DOMAIN', 'localhost'),
+    authentication: ENV.fetch('SMTP_AUTHENTICATION', nil),
+    user_name: ENV.fetch('SMTP_USERNAME', nil),
+    password: ENV.fetch('SMTP_PASSWORD', nil),
+    enable_starttls_auto: ENV.fetch('SMTP_ENABLE_STARTTLS_AUTO', false)
+  }
 
   config.action_mailer.perform_caching = false
 
@@ -56,8 +70,14 @@ Rails.application.configure do
   # Highlight code that enqueued background job in logs.
   config.active_job.verbose_enqueue_logs = true
 
+  # Use Solid Queue as the background job queue adapter
+  config.active_job.queue_adapter = :solid_queue
+
   # Suppress logger output for asset requests.
   config.assets.quiet = true
+
+  # Store uploaded files on the local file system (see config/storage.yml for options).
+  config.active_storage.service = :local
 
   # Raises error for missing translations.
   # config.i18n.raise_on_missing_translations = true

@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class LeaveRequest < ApplicationRecord
+  acts_as_tenant :organization
+
   belongs_to :employee
   belongs_to :approved_by, class_name: 'Employee', optional: true
 
@@ -9,12 +11,14 @@ class LeaveRequest < ApplicationRecord
   validates :status, inclusion: { in: %w[pending approved rejected cancelled auto_approved] }
   validate :end_date_after_start_date
   validate :sufficient_balance, on: :create
+  validate :employee_belongs_to_same_organization
+  validate :approver_belongs_to_same_organization
 
   scope :pending, -> { where(status: 'pending') }
   scope :approved, -> { where(status: %w[approved auto_approved]) }
   scope :rejected, -> { where(status: 'rejected') }
   scope :for_date_range, ->(start_date, end_date) do
-    where('start_date <= ? AND end_date >= ?', end_date, start_date)
+    where('leave_requests.start_date <= ? AND leave_requests.end_date >= ?', end_date, start_date)
   end
   scope :for_employee, ->(employee_id) { where(employee_id: employee_id) }
   scope :for_team, ->(manager) { where(employee: manager.team_members) }
@@ -30,11 +34,12 @@ class LeaveRequest < ApplicationRecord
     )
   end
 
-  def reject!(approver)
+  def reject!(approver, reason: nil)
     update!(
       status: 'rejected',
       approved_by: approver,
-      approved_at: Time.current
+      approved_at: Time.current,
+      rejection_reason: reason
     )
   end
 
@@ -96,5 +101,21 @@ class LeaveRequest < ApplicationRecord
       balance: balance.balance - days_count,
       used_this_year: balance.used_this_year + days_count
     )
+  end
+
+  def employee_belongs_to_same_organization
+    return unless employee && organization_id
+
+    if employee.organization_id != organization_id
+      errors.add(:employee, 'must belong to the same organization')
+    end
+  end
+
+  def approver_belongs_to_same_organization
+    return unless approved_by && organization_id
+
+    if approved_by.organization_id != organization_id
+      errors.add(:approved_by, 'must belong to the same organization')
+    end
   end
 end

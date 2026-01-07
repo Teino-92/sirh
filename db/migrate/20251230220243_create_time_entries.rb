@@ -4,7 +4,7 @@ class CreateTimeEntries < ActiveRecord::Migration[7.1]
       t.references :employee, null: false, foreign_key: true
       t.datetime :clock_in, null: false
       t.datetime :clock_out
-      t.integer :duration_minutes
+      t.integer :duration_minutes, default: 0, null: false
       t.jsonb :location, default: {}
       t.boolean :manual_override, default: false, null: false
       t.text :notes

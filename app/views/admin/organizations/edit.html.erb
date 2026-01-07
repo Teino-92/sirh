@@ -1,0 +1,166 @@
+<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+  <div class="mb-6">
+    <%= link_to admin_organization_path, class: "text-indigo-600 hover:text-indigo-900 text-sm font-medium" do %>
+      ← Retour
+    <% end %>
+  </div>
+
+  <div class="bg-white shadow-sm rounded-lg overflow-hidden">
+    <div class="px-6 py-4 border-b border-gray-200">
+      <h1 class="text-2xl font-bold text-gray-900">Modifier les paramètres de l'organisation</h1>
+    </div>
+
+    <div class="px-6 py-6">
+      <%= form_with(model: [:admin, @organization], class: "space-y-8") do |form| %>
+        <% if @organization.errors.any? %>
+          <div class="bg-red-50 border-l-4 border-red-400 p-4">
+            <div class="flex">
+              <div class="flex-shrink-0">
+                <svg class="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+                </svg>
+              </div>
+              <div class="ml-3">
+                <h3 class="text-sm font-medium text-red-800">
+                  <%= pluralize(@organization.errors.count, "erreur") %> :
+                </h3>
+                <ul class="mt-2 text-sm text-red-700 list-disc list-inside">
+                  <% @organization.errors.full_messages.each do |message| %>
+                    <li><%= message %></li>
+                  <% end %>
+                </ul>
+              </div>
+            </div>
+          </div>
+        <% end %>
+
+        <!-- Informations générales -->
+        <div>
+          <h2 class="text-lg font-semibold text-gray-900 mb-4">Informations générales</h2>
+          <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+            <div class="sm:col-span-2">
+              <%= form.label :name, "Nom de l'organisation", class: "block text-sm font-medium text-gray-700" %>
+              <%= form.text_field :name,
+                  class: "mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm",
+                  required: true %>
+            </div>
+
+            <div>
+              <%= form.label :siret, "SIRET", class: "block text-sm font-medium text-gray-700" %>
+              <%= form.text_field :siret,
+                  class: "mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" %>
+            </div>
+
+            <div class="sm:col-span-2">
+              <%= form.label :address, "Adresse", class: "block text-sm font-medium text-gray-700" %>
+              <%= form.text_area :address,
+                  rows: 3,
+                  class: "mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" %>
+            </div>
+          </div>
+        </div>
+
+        <!-- Paramètres de temps de travail -->
+        <%= form.fields_for :settings do |settings_form| %>
+          <div class="border-t border-gray-200 pt-6">
+            <h2 class="text-lg font-semibold text-gray-900 mb-4">Temps de travail</h2>
+            <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+              <div>
+                <%= settings_form.label :work_week_hours, "Heures hebdomadaires", class: "block text-sm font-medium text-gray-700" %>
+                <%= settings_form.number_field :work_week_hours,
+                    value: @organization.work_week_hours,
+                    step: 0.5,
+                    min: 1,
+                    max: 48,
+                    class: "mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" %>
+                <p class="mt-1 text-xs text-gray-500">Généralement 35h en France</p>
+              </div>
+
+              <div>
+                <%= settings_form.label :overtime_threshold, "Seuil heures sup.", class: "block text-sm font-medium text-gray-700" %>
+                <%= settings_form.number_field :overtime_threshold,
+                    value: @organization.settings.dig('overtime_threshold') || 35,
+                    step: 0.5,
+                    min: 1,
+                    class: "mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" %>
+                <p class="mt-1 text-xs text-gray-500">Heures/semaine</p>
+              </div>
+
+              <div>
+                <%= settings_form.label :max_daily_hours, "Durée max. quotidienne", class: "block text-sm font-medium text-gray-700" %>
+                <%= settings_form.number_field :max_daily_hours,
+                    value: @organization.settings.dig('max_daily_hours') || 10,
+                    step: 0.5,
+                    min: 1,
+                    max: 12,
+                    class: "mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" %>
+                <p class="mt-1 text-xs text-gray-500">Limite légale: 10h en France</p>
+              </div>
+
+              <div>
+                <%= settings_form.label :rtt_enabled, "RTT activé", class: "block text-sm font-medium text-gray-700" %>
+                <div class="mt-2">
+                  <%= settings_form.check_box :rtt_enabled,
+                      { checked: @organization.rtt_enabled?, class: "h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded" },
+                      true, false %>
+                  <span class="ml-2 text-sm text-gray-600">Activer le système de RTT</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Paramètres de congés payés -->
+          <div class="border-t border-gray-200 pt-6">
+            <h2 class="text-lg font-semibold text-gray-900 mb-4">Congés payés</h2>
+            <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+              <div>
+                <%= settings_form.label :cp_acquisition_rate, "Taux d'acquisition", class: "block text-sm font-medium text-gray-700" %>
+                <%= settings_form.number_field :cp_acquisition_rate,
+                    value: @organization.settings.dig('cp_acquisition_rate') || 2.5,
+                    step: 0.1,
+                    min: 0,
+                    class: "mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" %>
+                <p class="mt-1 text-xs text-gray-500">Jours/mois (légal: 2.5)</p>
+              </div>
+
+              <div>
+                <%= settings_form.label :min_consecutive_leave_days, "Min. jours consécutifs", class: "block text-sm font-medium text-gray-700" %>
+                <%= settings_form.number_field :min_consecutive_leave_days,
+                    value: @organization.settings.dig('min_consecutive_leave_days') || 10,
+                    step: 1,
+                    min: 1,
+                    class: "mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" %>
+                <p class="mt-1 text-xs text-gray-500">Durée minimale d'un congé principal</p>
+              </div>
+
+              <div>
+                <%= settings_form.label :cp_expiry_month, "Mois d'expiration", class: "block text-sm font-medium text-gray-700" %>
+                <%= settings_form.select :cp_expiry_month,
+                    (1..12).map { |m| [I18n.l(Date.new(2000, m, 1), format: '%B'), m] },
+                    { selected: @organization.settings.dig('cp_expiry_month') || 5 },
+                    class: "mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" %>
+              </div>
+
+              <div>
+                <%= settings_form.label :cp_expiry_day, "Jour d'expiration", class: "block text-sm font-medium text-gray-700" %>
+                <%= settings_form.number_field :cp_expiry_day,
+                    value: @organization.settings.dig('cp_expiry_day') || 31,
+                    step: 1,
+                    min: 1,
+                    max: 31,
+                    class: "mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" %>
+              </div>
+            </div>
+          </div>
+        <% end %>
+
+        <div class="flex justify-end gap-3 pt-4 border-t border-gray-200">
+          <%= link_to "Annuler", admin_organization_path,
+              class: "px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50" %>
+          <%= form.submit "Enregistrer les modifications",
+              class: "px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700" %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

@@ -12,6 +12,7 @@ Rails.application.routes.draw do
 
   # Web UI - Responsive (works great on mobile AND desktop)
   resource :dashboard, only: [:show], controller: 'dashboard'
+  resource :profile, only: [:show, :edit, :update], controller: 'profile'
 
   resources :time_entries, only: [:index] do
     collection do
@@ -23,6 +24,7 @@ Rails.application.routes.draw do
   resources :leave_requests do
     member do
       post :approve
+      get :reject_form
       post :reject
       post :cancel
     end
@@ -36,15 +38,42 @@ Rails.application.routes.draw do
   resources :leave_balances, only: [:index]
   resources :work_schedules, only: [:show, :edit, :update]
 
+  resources :notifications, only: [:index] do
+    member do
+      post :mark_as_read
+    end
+    collection do
+      post :mark_all_as_read
+    end
+  end
+
   # Manager-specific routes
   namespace :manager do
     get :dashboard
-    resources :team_members, only: [:index, :show]
+    resources :team_members, only: [:index, :show] do
+      resource :work_schedule, only: [:new, :create, :edit, :update]
+      resources :weekly_schedule_plans
+      resources :time_entries, only: [:index] do
+        collection do
+          post :validate_week
+        end
+        member do
+          post :validate_entry
+          post :reject_entry
+        end
+      end
+    end
+    get 'team_schedules', to: 'team_schedules#index'
   end
 
   # API v1 - For future native mobile apps
   namespace :api do
     namespace :v1 do
+      # Authentication
+      post 'login', to: 'sessions#create'
+      post 'refresh', to: 'sessions#refresh'
+      delete 'logout', to: 'sessions#destroy'
+
       # Dashboard - single endpoint for mobile app homepage
       get 'me/dashboard', to: 'dashboard#show'
 
@@ -83,11 +112,12 @@ Rails.application.routes.draw do
     end
   end
 
-  # Admin panel (future - Hotwire-based)
-  # namespace :admin do
-  #   resources :organizations
-  #   resources :employees
-  # end
+  # Admin panel - Hotwire-based
+  namespace :admin do
+    root to: 'employees#index'
+    resources :employees
+    resource :organization, only: [:show, :edit, :update]
+  end
 
   # Default root for non-authenticated users
   root to: redirect('/employees/sign_in')

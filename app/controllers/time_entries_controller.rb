@@ -4,12 +4,13 @@ class TimeEntriesController < ApplicationController
   before_action :authenticate_employee!
 
   def index
+    # Employee can only see their own time entries
     @employee = current_employee
     @current_shift = @employee.time_entries.active.first
 
     # Filter by period (default to week)
     period = params[:period] == 'month' ? :this_month : :this_week
-    @time_entries = @employee.time_entries.send(period).order(clock_in: :desc)
+    @time_entries = policy_scope(TimeEntry).where(employee: @employee).send(period).order(clock_in: :asc)
 
     # Calculate hours
     @weekly_hours = weekly_hours
@@ -22,12 +23,15 @@ class TimeEntriesController < ApplicationController
   end
 
   def clock_in
+    @entry = current_employee.time_entries.build(clock_in: Time.current)
+    authorize @entry, :clock_in?
+
     if current_employee.time_entries.active.any?
       redirect_to time_entries_path, alert: 'Vous êtes déjà pointé(e)'
       return
     end
 
-    @entry = current_employee.time_entries.create!(clock_in: Time.current)
+    @entry.save!
 
     respond_to do |format|
       format.html { redirect_to dashboard_path, notice: 'Pointage effectué avec succès' }
@@ -43,6 +47,7 @@ class TimeEntriesController < ApplicationController
       return
     end
 
+    authorize @entry, :clock_out?
     @entry.clock_out!
 
     respond_to do |format|

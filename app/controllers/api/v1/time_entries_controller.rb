@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
-module V1
+module Api
+  module V1
   class TimeEntriesController < BaseController
     # POST /api/v1/time_entries/clock_in
     def clock_in
@@ -114,5 +115,6 @@ module V1
         overtime_hours: [total_hours - expected_hours, 0].max.round(2)
       }
     end
+  end
   end
 end

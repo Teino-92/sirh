@@ -30,4 +30,34 @@ module ApplicationHelper
       status.titleize
     end
   end
+
+  def leave_type_bg_class(leave_type)
+    case leave_type
+    when 'CP'
+      'bg-blue-50 border border-blue-200'
+    when 'RTT'
+      'bg-purple-50 border border-purple-200'
+    when 'Maladie'
+      'bg-red-50 border border-red-200'
+    when 'Maternite', 'Paternite'
+      'bg-pink-50 border border-pink-200'
+    else
+      'bg-gray-50 border border-gray-200'
+    end
+  end
+
+  def leave_type_text_class(leave_type)
+    case leave_type
+    when 'CP'
+      'text-blue-700'
+    when 'RTT'
+      'text-purple-700'
+    when 'Maladie'
+      'text-red-700'
+    when 'Maternite', 'Paternite'
+      'text-pink-700'
+    else
+      'text-gray-700'
+    end
+  end
 end

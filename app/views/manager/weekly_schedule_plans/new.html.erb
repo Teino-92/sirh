@@ -1,0 +1,197 @@
+<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+  <!-- Header -->
+  <div class="mb-6">
+    <div class="flex items-center text-gray-600 mb-4">
+      <%= link_to manager_team_member_weekly_schedule_plans_path(@team_member), class: "text-indigo-600 hover:text-indigo-900" do %>
+        ← Retour aux plannings
+      <% end %>
+    </div>
+
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">Planifier une semaine</h1>
+    <div class="flex items-center text-gray-600">
+      <div class="h-10 w-10 rounded-full bg-indigo-100 flex items-center justify-center mr-3">
+        <span class="text-indigo-700 font-semibold">
+          <%= @team_member.first_name[0] %><%= @team_member.last_name[0] %>
+        </span>
+      </div>
+      <div>
+        <p class="font-semibold text-gray-900"><%= @team_member.full_name %></p>
+        <p class="text-sm text-gray-600"><%= @team_member.department || 'Équipe' %> • <%= @team_member.contract_type %></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Error Messages -->
+  <% if @weekly_plan.errors.any? %>
+    <div class="bg-red-50 border-l-4 border-red-400 p-4 mb-6">
+      <div class="flex">
+        <div class="flex-shrink-0">
+          <svg class="h-5 w-5 text-red-400" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
+          </svg>
+        </div>
+        <div class="ml-3">
+          <h3 class="text-sm font-medium text-red-800">
+            <%= pluralize(@weekly_plan.errors.count, "erreur") %> à corriger :
+          </h3>
+          <ul class="mt-2 text-sm text-red-700 list-disc list-inside">
+            <% @weekly_plan.errors.full_messages.each do |message| %>
+              <li><%= message %></li>
+            <% end %>
+          </ul>
+        </div>
+      </div>
+    </div>
+  <% end %>
+
+  <%= form_with model: @weekly_plan, url: manager_team_member_weekly_schedule_plans_path(@team_member), local: true, class: "space-y-6" do |f| %>
+
+    <!-- Week Selection -->
+    <div class="bg-white rounded-lg shadow p-6">
+      <h2 class="text-lg font-semibold text-gray-900 mb-4">Semaine à planifier</h2>
+
+      <div>
+        <%= f.label :week_start_date, "Début de semaine (lundi)", class: "block text-sm font-medium text-gray-700 mb-2" %>
+        <%= f.date_field :week_start_date,
+          class: "block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm",
+          required: true %>
+        <p class="mt-1 text-xs text-gray-500">Sélectionnez un lundi</p>
+      </div>
+    </div>
+
+    <!-- Schedule Templates -->
+    <div class="bg-white rounded-lg shadow p-6">
+      <h2 class="text-lg font-semibold text-gray-900 mb-4">Modèles d'horaires</h2>
+      <p class="text-sm text-gray-600 mb-4">Choisissez un modèle pour pré-remplir l'horaire</p>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3" id="schedule-templates">
+        <% @schedule_templates.each do |key, template| %>
+          <button type="button"
+                  class="template-btn text-left p-4 border-2 border-gray-200 rounded-lg hover:border-indigo-500 hover:bg-indigo-50 transition-colors"
+                  data-template="<%= key %>"
+                  data-pattern="<%= template[:pattern].to_json %>">
+            <div class="font-semibold text-gray-900"><%= template[:name] %></div>
+            <div class="text-sm text-gray-600 mt-1"><%= template[:weekly_hours] %>h par semaine</div>
+          </button>
+        <% end %>
+      </div>
+    </div>
+
+    <!-- Daily Schedule Pattern -->
+    <div class="bg-white rounded-lg shadow p-6">
+      <h2 class="text-lg font-semibold text-gray-900 mb-4">Horaire quotidien</h2>
+      <p class="text-sm text-gray-600 mb-4">Définissez les horaires pour chaque jour de la semaine</p>
+
+      <div class="space-y-3" id="schedule-pattern">
+        <% %w[monday tuesday wednesday thursday friday saturday sunday].each do |day| %>
+          <div class="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
+            <label class="text-sm font-medium text-gray-700 w-32">
+              <%= l(Date.current.beginning_of_week + %w[monday tuesday wednesday thursday friday saturday sunday].index(day).days, format: '%A') %>
+            </label>
+
+            <div class="flex items-center gap-2 flex-1">
+              <input type="text"
+                     name="weekly_schedule_plan[schedule_pattern][<%= day %>]"
+                     id="schedule_pattern_<%= day %>"
+                     value="<%= @weekly_plan.schedule_pattern&.dig(day) %>"
+                     class="flex-1 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm day-schedule"
+                     placeholder="09:00-17:00 ou 'off'"
+                     pattern="^(\d{2}:\d{2}-\d{2}:\d{2}|off)$"
+                     title="Format: HH:MM-HH:MM ou 'off'">
+
+              <button type="button"
+                      class="set-off-btn px-3 py-2 text-sm border border-gray-300 rounded-md hover:bg-gray-50"
+                      data-day="<%= day %>">
+                Repos
+              </button>
+            </div>
+          </div>
+        <% end %>
+      </div>
+
+      <div class="mt-4 bg-blue-50 border border-blue-200 rounded-lg p-4">
+        <div class="flex">
+          <svg class="h-5 w-5 text-blue-400 mr-2" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/>
+          </svg>
+          <div class="text-sm text-blue-700">
+            <p class="font-medium">Format des horaires :</p>
+            <ul class="mt-1 list-disc list-inside">
+              <li>Heures de travail : <code class="bg-blue-100 px-1 rounded">09:00-17:00</code></li>
+              <li>Jour de repos : <code class="bg-blue-100 px-1 rounded">off</code></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Notes -->
+    <div class="bg-white rounded-lg shadow p-6">
+      <h2 class="text-lg font-semibold text-gray-900 mb-4">Notes (optionnel)</h2>
+
+      <div>
+        <%= f.text_area :notes,
+          rows: 3,
+          class: "block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm",
+          placeholder: "Informations complémentaires sur cette semaine..." %>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="flex flex-col sm:flex-row gap-3 pt-4">
+      <%= f.submit "Créer le planning",
+        class: "inline-flex justify-center items-center px-6 py-3 border border-transparent shadow-sm text-base font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" %>
+
+      <%= link_to "Annuler", manager_team_member_weekly_schedule_plans_path(@team_member),
+        class: "inline-flex justify-center items-center px-6 py-3 border border-gray-300 shadow-sm text-base font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" %>
+    </div>
+  <% end %>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Template selection
+  document.querySelectorAll('.template-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+      const pattern = JSON.parse(this.dataset.pattern);
+
+      // Highlight selected template
+      document.querySelectorAll('.template-btn').forEach(b => {
+        b.classList.remove('border-indigo-500', 'bg-indigo-50');
+        b.classList.add('border-gray-200');
+      });
+      this.classList.add('border-indigo-500', 'bg-indigo-50');
+      this.classList.remove('border-gray-200');
+
+      // Set daily schedule pattern
+      Object.keys(pattern).forEach(day => {
+        const input = document.getElementById(`schedule_pattern_${day}`);
+        if (input) {
+          input.value = pattern[day] || 'off';
+        }
+      });
+
+      // Set remaining days to 'off' if not in pattern
+      ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'].forEach(day => {
+        if (!pattern[day]) {
+          const input = document.getElementById(`schedule_pattern_${day}`);
+          if (input && !input.value) {
+            input.value = 'off';
+          }
+        }
+      });
+    });
+  });
+
+  // "Repos" button functionality
+  document.querySelectorAll('.set-off-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+      const day = this.dataset.day;
+      const input = document.getElementById(`schedule_pattern_${day}`);
+      if (input) {
+        input.value = 'off';
+      }
+    });
+  });
+});
+</script>

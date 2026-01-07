@@ -1,0 +1,402 @@
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+  <!-- Header -->
+  <div class="mb-6">
+    <div class="flex items-center text-gray-600 mb-4">
+      <%= link_to manager_team_schedules_path, class: "text-indigo-600 hover:text-indigo-900" do %>
+        ← Retour à l'équipe
+      <% end %>
+    </div>
+
+    <div class="flex items-center justify-between">
+      <div class="flex items-center">
+        <div class="h-12 w-12 rounded-full bg-indigo-100 flex items-center justify-center mr-4">
+          <span class="text-indigo-700 font-semibold text-lg">
+            <%= @team_member.first_name[0] %><%= @team_member.last_name[0] %>
+          </span>
+        </div>
+        <div>
+          <h1 class="text-2xl sm:text-3xl font-bold text-gray-900"><%= @team_member.full_name %></h1>
+          <p class="text-sm text-gray-600">
+            <%= @team_member.contract_type %>
+            <% if @team_member.work_schedule %>
+              • <%= @team_member.work_schedule.weekly_hours %>h/semaine
+            <% end %>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Month Navigation -->
+  <div class="bg-white rounded-lg shadow mb-6 p-4">
+    <div class="flex items-center justify-between">
+      <%= link_to manager_team_member_weekly_schedule_plans_path(@team_member, date: @current_date - 1.month),
+        class: "inline-flex items-center px-3 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50" do %>
+        <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+        </svg>
+        Mois précédent
+      <% end %>
+
+      <h2 class="text-xl font-bold text-gray-900">
+        <%= l(@current_date, format: '%B %Y').capitalize %>
+      </h2>
+
+      <%= link_to manager_team_member_weekly_schedule_plans_path(@team_member, date: @current_date + 1.month),
+        class: "inline-flex items-center px-3 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50" do %>
+        Mois suivant
+        <svg class="w-5 h-5 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+        </svg>
+      <% end %>
+    </div>
+  </div>
+
+  <!-- Info Banner -->
+  <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+    <div class="flex items-start">
+      <svg class="h-5 w-5 text-blue-400 mr-2 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/>
+      </svg>
+      <div class="text-sm text-blue-700">
+        <p class="font-medium mb-1">Planification semaine par semaine</p>
+        <ul class="list-disc list-inside space-y-1">
+          <li>Cliquez sur une semaine pour la planifier</li>
+          <li>Utilisez le bouton "Copier" pour dupliquer une semaine vers d'autres semaines du mois</li>
+          <li>Les semaines non planifiées apparaîtront vides sur le calendrier de l'employé</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Weekly Planning Calendar -->
+  <div class="bg-white rounded-lg shadow overflow-hidden">
+    <div class="divide-y divide-gray-200">
+      <% @calendar_weeks.each do |week_start| %>
+        <%
+          week_end = week_start + 6.days
+          plan = @weekly_plans[week_start]
+          is_current_week = week_start == Date.current.beginning_of_week
+          is_past = week_start < Date.current.beginning_of_week
+          in_current_month = week_start.month == @current_date.month || week_end.month == @current_date.month
+        %>
+
+        <div class="p-4 sm:p-6 <%= 'bg-gray-50' unless in_current_month %> <%= 'bg-green-50' if is_current_week %>">
+          <!-- Week Header -->
+          <div class="flex items-center justify-between mb-4">
+            <div class="flex items-center space-x-3">
+              <h3 class="text-base sm:text-lg font-semibold text-gray-900">
+                Semaine du <%= l(week_start, format: :short) %>
+              </h3>
+              <% if is_current_week %>
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-600 text-white">
+                  Cette semaine
+                </span>
+              <% elsif is_past %>
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-400 text-white">
+                  Passée
+                </span>
+              <% end %>
+            </div>
+
+            <div class="flex items-center space-x-2">
+              <% if plan %>
+                <!-- Edit Button -->
+                <%= link_to edit_manager_team_member_weekly_schedule_plan_path(@team_member, plan),
+                  class: "inline-flex items-center px-3 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50" do %>
+                  <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                  </svg>
+                  Modifier
+                <% end %>
+
+                <!-- Copy Button -->
+                <button type="button"
+                        class="copy-week-btn inline-flex items-center px-3 py-2 border border-indigo-300 rounded-md text-sm font-medium text-indigo-700 bg-indigo-50 hover:bg-indigo-100"
+                        data-week-id="<%= plan.id %>"
+                        data-week-start="<%= week_start %>"
+                        data-pattern="<%= plan.schedule_pattern.to_json %>"
+                        data-notes="<%= plan.notes %>">
+                  <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                  </svg>
+                  Copier
+                </button>
+
+                <!-- Delete Button -->
+                <%= button_to manager_team_member_weekly_schedule_plan_path(@team_member, plan),
+                  method: :delete,
+                  data: { confirm: 'Supprimer ce planning ?' },
+                  class: "inline-flex items-center px-3 py-2 border border-red-300 rounded-md text-sm font-medium text-red-700 bg-white hover:bg-red-50" do %>
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                  </svg>
+                <% end %>
+              <% else %>
+                <!-- Create/Paste Button -->
+                <%= link_to new_manager_team_member_weekly_schedule_plan_path(@team_member, week_start: week_start),
+                  class: "inline-flex items-center px-4 py-2 border border-transparent rounded-md text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700",
+                  id: "create-week-#{week_start}" do %>
+                  <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                  </svg>
+                  Planifier
+                <% end %>
+              <% end %>
+            </div>
+          </div>
+
+          <!-- Week Content -->
+          <% if plan %>
+            <div class="grid grid-cols-2 sm:grid-cols-7 gap-2">
+              <% %w[monday tuesday wednesday thursday friday saturday sunday].each do |day| %>
+                <% hours = plan.schedule_pattern[day] %>
+                <div class="bg-white border border-gray-200 rounded-lg p-3 text-center">
+                  <p class="text-xs font-medium text-gray-600 mb-1">
+                    <%= l(week_start + %w[monday tuesday wednesday thursday friday saturday sunday].index(day).days, format: '%a') %>
+                  </p>
+                  <% if hours.present? && hours != 'off' %>
+                    <p class="text-sm font-semibold text-gray-900"><%= hours %></p>
+                  <% else %>
+                    <p class="text-sm text-gray-400">Repos</p>
+                  <% end %>
+                </div>
+              <% end %>
+            </div>
+
+            <div class="mt-3 flex items-center justify-between">
+              <div class="text-sm text-gray-600">
+                <span class="font-semibold"><%= plan.total_weekly_hours.round(1) %>h</span> de travail
+              </div>
+              <% if plan.notes.present? %>
+                <div class="text-sm text-gray-600 italic">
+                  Note: <%= plan.notes %>
+                </div>
+              <% end %>
+            </div>
+          <% else %>
+            <div class="bg-gray-100 border-2 border-dashed border-gray-300 rounded-lg p-8 text-center">
+              <svg class="mx-auto h-12 w-12 text-gray-400 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+              </svg>
+              <p class="text-gray-500 text-sm">Semaine non planifiée</p>
+              <p class="text-gray-400 text-xs mt-1">Cette semaine apparaîtra vide sur le calendrier de l'employé</p>
+            </div>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>
+
+<!-- Copy/Paste Modal -->
+<div id="paste-modal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 1000; backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); background-color: rgba(0, 0, 0, 0.1); align-items: center; justify-content: center; padding: 1rem;">
+  <div class="bg-white rounded-lg shadow-2xl" style="max-width: 42rem; width: 100%; max-height: 90vh; overflow-y: auto;">
+    <div class="bg-white border-b border-gray-200 px-6 py-4" style="position: sticky; top: 0;">
+      <div style="display: flex; align-items: center; justify-content: space-between;">
+        <h3 class="text-lg font-semibold text-gray-900">Coller le planning sur d'autres semaines</h3>
+        <button type="button" class="close-modal text-gray-400 hover:text-gray-600">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="px-6 py-4">
+      <div id="paste-target-weeks" class="space-y-2">
+        <!-- Will be populated by JavaScript -->
+      </div>
+    </div>
+
+    <div class="bg-white border-t border-gray-200 px-6 py-4" style="position: sticky; bottom: 0;">
+      <div style="display: flex; justify-content: flex-end; gap: 0.75rem;">
+        <button type="button" class="close-modal px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
+          Annuler
+        </button>
+        <button type="button" id="confirm-paste" class="px-4 py-2 border border-transparent rounded-md text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700">
+          Coller sur les semaines sélectionnées
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function() {
+  let copiedPlan = null;
+  let initialized = false;
+
+  function initWeeklyPlanCopy() {
+    console.log('Initializing weekly plan copy...');
+
+    // Copy button click
+    const copyButtons = document.querySelectorAll('.copy-week-btn');
+    console.log('Found copy buttons:', copyButtons.length);
+
+    copyButtons.forEach(btn => {
+      btn.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        console.log('Copy button clicked');
+        console.log('Pattern data:', this.dataset.pattern);
+
+        copiedPlan = {
+          pattern: JSON.parse(this.dataset.pattern),
+          notes: this.dataset.notes,
+          weekStart: this.dataset.weekStart
+        };
+
+        console.log('Copied plan:', copiedPlan);
+
+        // Show modal with available weeks
+        showPasteModal();
+      });
+    });
+
+    // Close modal buttons - only initialize once
+    if (!initialized) {
+      document.addEventListener('click', function(e) {
+        if (e.target.classList.contains('close-modal') || e.target.closest('.close-modal')) {
+          console.log('Close button clicked');
+          e.preventDefault();
+          closeModal();
+        }
+      });
+
+      // Close modal on background click
+      const modal = document.getElementById('paste-modal');
+      if (modal) {
+        modal.addEventListener('click', function(e) {
+          if (e.target === this) {
+            console.log('Background clicked');
+            closeModal();
+          }
+        });
+      }
+
+      // Confirm paste button
+      const confirmBtn = document.getElementById('confirm-paste');
+      if (confirmBtn) {
+        confirmBtn.addEventListener('click', handlePaste);
+      }
+
+      initialized = true;
+      console.log('Modal event listeners initialized');
+    }
+  }
+
+  function showPasteModal() {
+    console.log('showPasteModal called');
+    console.log('copiedPlan:', copiedPlan);
+
+    const modal = document.getElementById('paste-modal');
+    const targetWeeks = document.getElementById('paste-target-weeks');
+
+    console.log('Modal element:', modal);
+    console.log('Target weeks element:', targetWeeks);
+
+    if (!modal || !targetWeeks) {
+      console.error('Modal or target weeks element not found!');
+      return;
+    }
+
+    // Get all unplanned weeks
+    const createButtons = document.querySelectorAll('[id^="create-week-"]');
+    console.log('Found create buttons:', createButtons.length);
+    console.log('Create buttons IDs:', Array.from(createButtons).map(b => b.id));
+
+    let html = '<p class="text-sm text-gray-600 mb-3">Sélectionnez les semaines où coller ce planning :</p>';
+
+    if (createButtons.length === 0) {
+      html += '<p class="text-sm text-gray-500 p-4 text-center">Aucune semaine disponible pour coller ce planning</p>';
+    } else {
+      let addedWeeks = 0;
+      createButtons.forEach(btn => {
+        const weekStart = btn.id.replace('create-week-', '');
+        console.log('Processing week:', weekStart, 'vs copied:', copiedPlan.weekStart);
+
+        if (weekStart !== copiedPlan.weekStart) {
+          const weekDate = new Date(weekStart);
+          const weekLabel = weekDate.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
+
+          html += `
+            <label class="flex items-center p-3 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer">
+              <input type="checkbox" class="paste-week-checkbox h-4 w-4 text-indigo-600 rounded" value="${weekStart}">
+              <span class="ml-3 text-sm font-medium text-gray-900">Semaine du ${weekLabel}</span>
+            </label>
+          `;
+          addedWeeks++;
+        }
+      });
+      console.log('Added weeks to modal:', addedWeeks);
+    }
+
+    targetWeeks.innerHTML = html;
+    modal.style.display = 'flex';
+    console.log('Modal should now be visible');
+    console.log('Final HTML length:', html.length);
+  }
+
+  function closeModal() {
+    console.log('closeModal called');
+    const modal = document.getElementById('paste-modal');
+    if (modal) {
+      modal.style.display = 'none';
+      console.log('Modal hidden');
+    }
+  }
+
+  function handlePaste(e) {
+    e.preventDefault();
+
+    const selectedWeeks = Array.from(document.querySelectorAll('.paste-week-checkbox:checked'))
+      .map(cb => cb.value);
+
+    console.log('Selected weeks:', selectedWeeks);
+
+    if (selectedWeeks.length === 0) {
+      alert('Veuillez sélectionner au moins une semaine');
+      return;
+    }
+
+    // Create plans for selected weeks
+    const promises = selectedWeeks.map(weekStart => {
+      const formData = new FormData();
+      formData.append('weekly_schedule_plan[week_start_date]', weekStart);
+      formData.append('weekly_schedule_plan[notes]', copiedPlan.notes || '');
+
+      Object.keys(copiedPlan.pattern).forEach(day => {
+        formData.append(`weekly_schedule_plan[schedule_pattern][${day}]`, copiedPlan.pattern[day] || '');
+      });
+
+      return fetch('<%= manager_team_member_weekly_schedule_plans_path(@team_member) %>', {
+        method: 'POST',
+        headers: {
+          'X-CSRF-Token': document.querySelector('[name="csrf-token"]').content
+        },
+        body: formData
+      });
+    });
+
+    Promise.all(promises).then(() => {
+      window.location.reload();
+    }).catch(error => {
+      console.error('Error creating plans:', error);
+      alert('Une erreur est survenue lors de la création des plannings');
+    });
+  }
+
+  // Initialize on load
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initWeeklyPlanCopy);
+  } else {
+    initWeeklyPlanCopy();
+  }
+
+  // Re-initialize on Turbo navigation
+  document.addEventListener('turbo:load', initWeeklyPlanCopy);
+  document.addEventListener('turbo:render', initWeeklyPlanCopy);
+})();
+</script>

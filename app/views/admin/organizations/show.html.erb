@@ -1,0 +1,107 @@
+<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+  <div class="bg-white shadow-sm rounded-lg overflow-hidden">
+    <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
+      <h1 class="text-2xl font-bold text-gray-900">Paramètres de l'organisation</h1>
+      <%= link_to "Modifier", edit_admin_organization_path,
+          class: "px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700" %>
+    </div>
+
+    <div class="px-6 py-6 space-y-6">
+      <div>
+        <h2 class="text-lg font-semibold text-gray-900 mb-4">Informations générales</h2>
+        <dl class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <div>
+            <dt class="text-sm font-medium text-gray-500">Nom de l'organisation</dt>
+            <dd class="mt-1 text-sm text-gray-900"><%= @organization.name %></dd>
+          </div>
+          <div>
+            <dt class="text-sm font-medium text-gray-500">SIRET</dt>
+            <dd class="mt-1 text-sm text-gray-900"><%= @organization.siret || '-' %></dd>
+          </div>
+          <div class="sm:col-span-2">
+            <dt class="text-sm font-medium text-gray-500">Adresse</dt>
+            <dd class="mt-1 text-sm text-gray-900"><%= @organization.address || '-' %></dd>
+          </div>
+        </dl>
+      </div>
+
+      <div class="border-t border-gray-200 pt-6">
+        <h2 class="text-lg font-semibold text-gray-900 mb-4">Paramètres de temps de travail</h2>
+        <dl class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <div>
+            <dt class="text-sm font-medium text-gray-500">Heures de travail hebdomadaires</dt>
+            <dd class="mt-1 text-sm text-gray-900"><%= @organization.work_week_hours %> heures</dd>
+          </div>
+          <div>
+            <dt class="text-sm font-medium text-gray-500">Seuil d'heures supplémentaires</dt>
+            <dd class="mt-1 text-sm text-gray-900">
+              <%= @organization.settings.dig('overtime_threshold') || 35 %> heures/semaine
+            </dd>
+          </div>
+          <div>
+            <dt class="text-sm font-medium text-gray-500">Durée maximale quotidienne</dt>
+            <dd class="mt-1 text-sm text-gray-900">
+              <%= @organization.settings.dig('max_daily_hours') || 10 %> heures
+            </dd>
+          </div>
+          <div>
+            <dt class="text-sm font-medium text-gray-500">RTT activé</dt>
+            <dd class="mt-1 text-sm text-gray-900">
+              <% if @organization.rtt_enabled? %>
+                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                  Oui
+                </span>
+              <% else %>
+                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">
+                  Non
+                </span>
+              <% end %>
+            </dd>
+          </div>
+        </dl>
+      </div>
+
+      <div class="border-t border-gray-200 pt-6">
+        <h2 class="text-lg font-semibold text-gray-900 mb-4">Paramètres de congés payés</h2>
+        <dl class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <div>
+            <dt class="text-sm font-medium text-gray-500">Taux d'acquisition mensuel</dt>
+            <dd class="mt-1 text-sm text-gray-900">
+              <%= @organization.settings.dig('cp_acquisition_rate') || 2.5 %> jours/mois
+            </dd>
+          </div>
+          <div>
+            <dt class="text-sm font-medium text-gray-500">Date d'expiration des CP</dt>
+            <dd class="mt-1 text-sm text-gray-900">
+              <%= @organization.settings.dig('cp_expiry_day') || 31 %>/<%= @organization.settings.dig('cp_expiry_month') || 5 %>
+            </dd>
+          </div>
+          <div>
+            <dt class="text-sm font-medium text-gray-500">Durée minimale de congés consécutifs</dt>
+            <dd class="mt-1 text-sm text-gray-900">
+              <%= @organization.settings.dig('min_consecutive_leave_days') || 10 %> jours
+            </dd>
+          </div>
+        </dl>
+      </div>
+
+      <div class="border-t border-gray-200 pt-6">
+        <h2 class="text-lg font-semibold text-gray-900 mb-4">Statistiques</h2>
+        <dl class="grid grid-cols-1 gap-4 sm:grid-cols-3">
+          <div class="bg-gray-50 px-4 py-5 rounded-lg">
+            <dt class="text-sm font-medium text-gray-500">Total employés</dt>
+            <dd class="mt-1 text-3xl font-semibold text-gray-900"><%= @organization.employees.count %></dd>
+          </div>
+          <div class="bg-gray-50 px-4 py-5 rounded-lg">
+            <dt class="text-sm font-medium text-gray-500">Managers</dt>
+            <dd class="mt-1 text-3xl font-semibold text-gray-900"><%= @organization.employees.managers.count %></dd>
+          </div>
+          <div class="bg-gray-50 px-4 py-5 rounded-lg">
+            <dt class="text-sm font-medium text-gray-500">Employés actifs</dt>
+            <dd class="mt-1 text-3xl font-semibold text-gray-900"><%= @organization.employees.active.count %></dd>
+          </div>
+        </dl>
+      </div>
+    </div>
+  </div>
+</div>

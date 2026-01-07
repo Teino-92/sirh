@@ -1,10 +1,14 @@
 # frozen_string_literal: true
 
-module V1
-  class BaseController < ApplicationController
+module Api
+  module V1
+    class BaseController < ApplicationController
     skip_before_action :verify_authenticity_token
     before_action :authenticate_employee!
     before_action :set_default_format
+
+    # API responds with JSON, not HTML
+    respond_to :json
 
     rescue_from ActiveRecord::RecordNotFound, with: :not_found
     rescue_from ActiveRecord::RecordInvalid, with: :unprocessable_entity
@@ -14,18 +18,6 @@ module V1
 
     def set_default_format
       request.format = :json
-    end
-
-    def current_employee
-      @current_employee ||= current_user if defined?(current_user)
-    end
-
-    def authenticate_employee!
-      # Will be implemented with Devise
-      # For now, raise error if no current_user
-      unless current_employee
-        render json: { error: 'Unauthorized' }, status: :unauthorized
-      end
     end
 
     def authorize_manager!
@@ -63,6 +55,7 @@ module V1
         total_pages: collection.total_pages,
         total_count: collection.total_count
       }
+    end
     end
   end
 end

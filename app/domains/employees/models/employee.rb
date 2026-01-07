@@ -1,18 +1,27 @@
 # frozen_string_literal: true
 
 class Employee < ApplicationRecord
+  # Multi-tenancy: scope all queries to current organization
+  acts_as_tenant :organization
+
   # Devise modules
   devise :database_authenticatable, :registerable,
-         :recoverable, :rememberable, :validatable
+         :recoverable, :rememberable, :validatable,
+         :jwt_authenticatable, jwt_revocation_strategy: JwtDenylist
 
   belongs_to :organization
   belongs_to :manager, class_name: 'Employee', optional: true
   has_many :direct_reports, class_name: 'Employee', foreign_key: :manager_id, dependent: :nullify
 
+  # Avatar
+  has_one_attached :avatar
+
   has_many :leave_balances, dependent: :destroy
   has_many :leave_requests, dependent: :destroy
   has_many :time_entries, dependent: :destroy
   has_one :work_schedule, dependent: :destroy
+  has_many :weekly_schedule_plans, dependent: :destroy
+  has_many :notifications, dependent: :destroy
 
   # Leave requests approved by this employee (when they are a manager)
   has_many :approved_leave_requests, class_name: 'LeaveRequest', foreign_key: :approved_by_id

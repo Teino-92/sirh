@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
-module V1
+module Api
+  module V1
   class LeaveRequestsController < BaseController
     # GET /api/v1/leave_requests
     def index
@@ -196,5 +197,6 @@ module V1
 
       coverage
     end
+  end
   end
 end

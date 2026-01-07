@@ -1,0 +1,175 @@
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+  <!-- Header -->
+  <div class="mb-6">
+    <div class="flex items-center mb-2">
+      <%= link_to pending_approvals_leave_requests_path, class: "text-gray-500 hover:text-gray-700 mr-3" do %>
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+        </svg>
+      <% end %>
+      <h1 class="text-2xl sm:text-3xl font-bold text-gray-900">Calendrier d'équipe</h1>
+    </div>
+    <p class="text-sm text-gray-600">Visualisez les congés de votre équipe</p>
+  </div>
+
+  <!-- Month Navigation -->
+  <div class="bg-white rounded-lg shadow mb-6 p-4">
+    <div class="flex items-center justify-between">
+      <%= link_to team_calendar_leave_requests_path(start_date: @start_date - 1.month),
+        class: "inline-flex items-center px-3 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50" do %>
+        <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+        </svg>
+        Mois précédent
+      <% end %>
+
+      <h2 class="text-xl font-bold text-gray-900">
+        <%= l(@start_date, format: '%B %Y').capitalize %>
+      </h2>
+
+      <%= link_to team_calendar_leave_requests_path(start_date: @start_date + 1.month),
+        class: "inline-flex items-center px-3 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50" do %>
+        Mois suivant
+        <svg class="w-5 h-5 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+        </svg>
+      <% end %>
+    </div>
+
+    <div class="mt-4">
+      <%= link_to team_calendar_leave_requests_path(start_date: Date.current.beginning_of_month),
+        class: "text-sm text-indigo-600 hover:text-indigo-800 font-medium" do %>
+        Aujourd'hui
+      <% end %>
+    </div>
+  </div>
+
+  <!-- Legend -->
+  <div class="bg-white rounded-lg shadow mb-6 p-4">
+    <h3 class="text-sm font-semibold text-gray-900 mb-3">Légende</h3>
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+      <div class="flex items-center">
+        <div class="w-4 h-4 bg-blue-500 rounded mr-2"></div>
+        <span class="text-sm text-gray-700">CP (Congés Payés)</span>
+      </div>
+      <div class="flex items-center">
+        <div class="w-4 h-4 bg-purple-500 rounded mr-2"></div>
+        <span class="text-sm text-gray-700">RTT</span>
+      </div>
+      <div class="flex items-center">
+        <div class="w-4 h-4 bg-red-500 rounded mr-2"></div>
+        <span class="text-sm text-gray-700">Maladie</span>
+      </div>
+      <div class="flex items-center">
+        <div class="w-4 h-4 bg-pink-500 rounded mr-2"></div>
+        <span class="text-sm text-gray-700">Maternité/Paternité</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Team Members List with Leaves -->
+  <div class="space-y-4">
+    <% if @team_members.any? %>
+      <% @team_members.each do |member| %>
+        <% member_leaves = @team_leave_requests.select { |lr| lr.employee_id == member.id } %>
+
+        <div class="bg-white rounded-lg shadow overflow-hidden">
+          <div class="p-4 bg-gray-50 border-b border-gray-200">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center">
+                <div class="h-10 w-10 rounded-full bg-indigo-100 flex items-center justify-center mr-3">
+                  <span class="text-indigo-700 font-semibold">
+                    <%= member.first_name[0] %><%= member.last_name[0] %>
+                  </span>
+                </div>
+                <div>
+                  <h3 class="text-lg font-semibold text-gray-900"><%= member.full_name %></h3>
+                  <p class="text-sm text-gray-600"><%= member.department || 'Équipe' %></p>
+                </div>
+              </div>
+              <% if member_leaves.any? %>
+                <span class="px-3 py-1 text-xs font-semibold rounded-full bg-indigo-100 text-indigo-800">
+                  <%= member_leaves.count %> congé<%= 's' if member_leaves.count > 1 %>
+                </span>
+              <% end %>
+            </div>
+          </div>
+
+          <!-- Calendar Grid for this member -->
+          <div class="p-4">
+            <% if member_leaves.any? %>
+              <div class="space-y-2">
+                <% member_leaves.each do |leave| %>
+                  <div class="flex items-center p-3 rounded-lg <%= leave_type_bg_class(leave.leave_type) %>">
+                    <svg class="w-5 h-5 mr-3 <%= leave_type_text_class(leave.leave_type) %>" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                    </svg>
+                    <div class="flex-1">
+                      <p class="font-medium <%= leave_type_text_class(leave.leave_type) %>">
+                        <%= LeaveBalance.leave_type_name(leave.leave_type) %>
+                      </p>
+                      <p class="text-sm <%= leave_type_text_class(leave.leave_type) %>">
+                        <%= l(leave.start_date, format: :short) %>
+                        <% if leave.start_date != leave.end_date %>
+                          → <%= l(leave.end_date, format: :short) %>
+                        <% end %>
+                        (<%= leave.days_count.to_f.round(1) %> jour<%= 's' if leave.days_count > 1 %>)
+                      </p>
+                    </div>
+                    <span class="px-2 py-1 text-xs font-semibold rounded-full <%= status_badge_class(leave.status) %>">
+                      <%= status_label(leave.status) %>
+                    </span>
+                  </div>
+                <% end %>
+              </div>
+            <% else %>
+              <p class="text-sm text-gray-500 text-center py-4">Aucun congé ce mois-ci</p>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+    <% else %>
+      <div class="bg-white rounded-lg shadow text-center py-12 px-4">
+        <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+        </svg>
+        <h3 class="mt-2 text-sm font-medium text-gray-900">Aucun membre d'équipe</h3>
+        <p class="mt-1 text-sm text-gray-500">
+          Vous n'avez pas encore de membres dans votre équipe.
+        </p>
+      </div>
+    <% end %>
+  </div>
+
+  <!-- Summary Stats -->
+  <% if @team_members.any? %>
+    <div class="mt-6 grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <div class="bg-white rounded-lg shadow p-6">
+        <p class="text-sm font-medium text-gray-600">Membres d'équipe</p>
+        <p class="text-3xl font-bold text-gray-900 mt-2"><%= @team_members.count %></p>
+      </div>
+
+      <div class="bg-white rounded-lg shadow p-6">
+        <p class="text-sm font-medium text-gray-600">Congés ce mois</p>
+        <p class="text-3xl font-bold text-gray-900 mt-2"><%= @team_leave_requests.count %></p>
+      </div>
+
+      <div class="bg-white rounded-lg shadow p-6">
+        <p class="text-sm font-medium text-gray-600">Jours total</p>
+        <p class="text-3xl font-bold text-gray-900 mt-2">
+          <%= @team_leave_requests.sum(&:days_count).to_f.round(1) %>
+        </p>
+      </div>
+    </div>
+  <% end %>
+
+  <!-- Back Link -->
+  <div class="mt-6">
+    <%= link_to pending_approvals_leave_requests_path, class: "inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50" do %>
+      <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+      </svg>
+      Retour aux approbations
+    <% end %>
+  </div>
+</div>

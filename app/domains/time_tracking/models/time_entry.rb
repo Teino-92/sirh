@@ -1,15 +1,21 @@
 # frozen_string_literal: true
 
 class TimeEntry < ApplicationRecord
+  acts_as_tenant :organization
+
   belongs_to :employee
+  belongs_to :validated_by, class_name: 'Employee', optional: true
+  belongs_to :rejected_by, class_name: 'Employee', optional: true
 
   validates :clock_in, presence: true
   validate :clock_out_after_clock_in
   validate :no_overlapping_entries
   validate :max_daily_hours
+  validate :employee_belongs_to_same_organization
+  validate :validators_belong_to_same_organization
 
   before_save :calculate_duration
-  # after_save :check_rtt_accrual # Disabled temporarily for seeding - will be re-enabled with proper autoloading
+  after_save :check_rtt_accrual
 
   scope :for_employee, ->(employee_id) { where(employee_id: employee_id) }
   scope :for_date, ->(date) { where('DATE(clock_in) = ?', date) }
@@ -20,6 +26,10 @@ class TimeEntry < ApplicationRecord
   scope :completed, -> { where.not(clock_out: nil) }
   scope :this_week, -> { where('clock_in >= ?', Date.current.beginning_of_week) }
   scope :this_month, -> { where('clock_in >= ?', Date.current.beginning_of_month) }
+  scope :validated, -> { where.not(validated_at: nil) }
+  scope :rejected, -> { where.not(rejected_at: nil) }
+  scope :pending_validation, -> { completed.where(validated_at: nil, rejected_at: nil) }
+  scope :validated_this_week, -> { validated.where('validated_at >= ?', Date.current.beginning_of_week) }
 
   def clock_out!(time: Time.current, location: nil)
     update!(
@@ -38,6 +48,7 @@ class TimeEntry < ApplicationRecord
 
   def hours_worked
     return 0 unless completed?
+    return 0 if duration_minutes.nil?
 
     duration_minutes / 60.0
   end
@@ -50,6 +61,35 @@ class TimeEntry < ApplicationRecord
 
   def worked_date
     clock_in.to_date
+  end
+
+  def validated?
+    validated_at.present?
+  end
+
+  def rejected?
+    rejected_at.present?
+  end
+
+  def validate!(validator:)
+    return false unless completed?
+    return false if validated? || rejected?
+
+    update!(
+      validated_at: Time.current,
+      validated_by: validator
+    )
+  end
+
+  def reject!(rejector:, reason:)
+    return false unless completed?
+    return false if validated? || rejected?
+
+    update!(
+      rejected_at: Time.current,
+      rejected_by: rejector,
+      rejection_reason: reason
+    )
   end
 
   private
@@ -93,5 +133,23 @@ class TimeEntry < ApplicationRecord
     return unless saved_change_to_clock_out? && completed?
 
     TimeTracking::Services::RttAccrualService.new(employee).calculate_and_accrue_weekly
+  end
+
+  def employee_belongs_to_same_organization
+    return unless employee && organization_id
+
+    if employee.organization_id != organization_id
+      errors.add(:employee, 'must belong to the same organization')
+    end
+  end
+
+  def validators_belong_to_same_organization
+    if validated_by.present? && validated_by.organization_id != organization_id
+      errors.add(:validated_by, 'must belong to the same organization')
+    end
+
+    if rejected_by.present? && rejected_by.organization_id != organization_id
+      errors.add(:rejected_by, 'must belong to the same organization')
+    end
   end
 end

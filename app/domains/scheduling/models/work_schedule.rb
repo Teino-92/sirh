@@ -1,11 +1,14 @@
 # frozen_string_literal: true
 
 class WorkSchedule < ApplicationRecord
+  acts_as_tenant :organization
+
   belongs_to :employee
 
   validates :name, :weekly_hours, :schedule_pattern, presence: true
   validates :weekly_hours, numericality: { greater_than: 0, less_than_or_equal_to: 48 } # French legal max
   validates :employee_id, uniqueness: true
+  validate :employee_belongs_to_same_organization
 
   # Standard schedule templates
   TEMPLATES = {
@@ -50,6 +53,7 @@ class WorkSchedule < ApplicationRecord
 
     create!(
       employee: employee,
+      organization: employee.organization,
       name: template[:name],
       weekly_hours: template[:weekly_hours],
       schedule_pattern: template[:schedule_pattern]
@@ -113,5 +117,13 @@ class WorkSchedule < ApplicationRecord
     rate = (overtime_hours / 7.0) * 4.33 # 4.33 weeks per month average
 
     update_column(:rtt_accrual_rate, rate)
+  end
+
+  def employee_belongs_to_same_organization
+    return unless employee && organization_id
+
+    if employee.organization_id != organization_id
+      errors.add(:employee, 'must belong to the same organization')
+    end
   end
 end

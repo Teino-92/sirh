@@ -4,6 +4,8 @@ class DashboardController < ApplicationController
   before_action :authenticate_employee!
 
   def show
+    # Dashboard accessible to all authenticated employees
+    authorize :dashboard, :show?
     @employee = current_employee
     @today = Date.current
 
@@ -15,7 +17,7 @@ class DashboardController < ApplicationController
     @today_schedule = @schedule&.schedule_pattern&.dig(@today.strftime('%A').downcase)
 
     # Leave balances
-    @leave_balances = @employee.leave_balances.includes(:employee)
+    @leave_balances = @employee.leave_balances
 
     # Pending actions (if manager)
     @pending_approvals_count = if @employee.manager?
