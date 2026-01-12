@@ -2,8 +2,8 @@
 
 class LeaveRequestsController < ApplicationController
   before_action :authenticate_employee!
-  before_action :set_leave_request, only: [:approve, :reject, :cancel]
-  before_action :authorize_manager!, only: [:approve, :reject, :pending_approvals, :team_calendar]
+  before_action :set_leave_request, only: [:approve, :reject, :reject_form, :cancel]
+  before_action :authorize_manager!, only: [:approve, :reject, :reject_form, :pending_approvals, :team_calendar]
 
   def index
     @employee = current_employee
@@ -30,36 +30,32 @@ class LeaveRequestsController < ApplicationController
     start_date = leave_request_params[:start_date].to_date
     end_date = leave_request_params[:end_date].to_date
 
-    # Use LeavePolicyEngine to calculate working days with French legal compliance
-    policy_engine = LeaveManagement::Services::LeavePolicyEngine.new(
-      employee: current_employee,
-      leave_type: leave_request_params[:leave_type],
-      start_date: start_date,
-      end_date: end_date,
-      start_half_day: leave_request_params[:start_half_day],
-      end_half_day: leave_request_params[:end_half_day]
-    )
+    # Initialize LeavePolicyEngine for the employee
+    policy_engine = LeaveManagement::Services::LeavePolicyEngine.new(current_employee)
 
-    # Validate the request using LeavePolicyEngine
-    validation_result = policy_engine.validate_request
+    # Calculate working days with French legal compliance
+    working_days = policy_engine.calculate_working_days(start_date, end_date)
 
-    unless validation_result[:valid]
-      @leave_request = current_employee.leave_requests.build(leave_request_params)
-      @leave_balances = current_employee.leave_balances
-      flash.now[:alert] = validation_result[:errors].join(', ')
-      render :new, status: :unprocessable_entity
-      return
-    end
-
+    # Build the leave request (don't save yet, we need to validate first)
     @leave_request = current_employee.leave_requests.build(
       leave_type: leave_request_params[:leave_type],
       start_date: start_date,
       end_date: end_date,
       start_half_day: leave_request_params[:start_half_day],
       end_half_day: leave_request_params[:end_half_day],
-      days_count: validation_result[:working_days],
+      days_count: working_days,
       reason: leave_request_params[:reason]
     )
+
+    # Validate the request using LeavePolicyEngine
+    validation_errors = policy_engine.validate_leave_request(@leave_request)
+
+    unless validation_errors.empty?
+      @leave_balances = current_employee.leave_balances
+      flash.now[:alert] = validation_errors.join(', ')
+      render :new, status: :unprocessable_entity
+      return
+    end
 
     authorize @leave_request
 
@@ -68,7 +64,7 @@ class LeaveRequestsController < ApplicationController
       LeaveRequestNotificationJob.perform_later(:submitted, @leave_request.id)
 
       # Check auto-approval via LeavePolicyEngine
-      if policy_engine.can_auto_approve?
+      if policy_engine.can_auto_approve?(@leave_request)
         @leave_request.auto_approve!
         redirect_to leave_requests_path, notice: 'Demande de congé approuvée automatiquement ✓'
       else
@@ -86,7 +82,7 @@ class LeaveRequestsController < ApplicationController
                         .where(employees: { manager_id: current_employee.id })
                         .pending
                         .order('leave_requests.created_at ASC')
-                        .includes(:employee)
+                        .includes(:employee, :approved_by)
 
     # Stats for dashboard
     @approved_this_month = LeaveRequest
@@ -110,9 +106,14 @@ class LeaveRequestsController < ApplicationController
     redirect_to pending_approvals_leave_requests_path, notice: 'Demande approuvée'
   end
 
+  def reject_form
+    authorize @leave_request
+    # Render the rejection form modal/page
+  end
+
   def reject
     authorize @leave_request
-    @leave_request.reject!(current_employee, params[:rejection_reason])
+    @leave_request.reject!(current_employee, reason: params[:rejection_reason])
 
     # Envoyer notification email de manière asynchrone
     LeaveRequestNotificationJob.perform_later(:rejected, @leave_request.id)
@@ -140,6 +141,7 @@ class LeaveRequestsController < ApplicationController
     @start_date = params[:start_date]&.to_date || Date.current.beginning_of_month
     @end_date = params[:end_date]&.to_date || Date.current.end_of_month
 
+    @team_members = current_employee.team_members
     @team_leave_requests = policy_scope(LeaveRequest)
                            .joins(:employee)
                            .where(employees: { manager_id: current_employee.id })

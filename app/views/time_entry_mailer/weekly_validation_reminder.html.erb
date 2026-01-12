@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
+    <style>
+      body { font-family: Arial, sans-serif; color: #333; }
+      .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+      .header { background: #4F46E5; color: white; padding: 20px; border-radius: 8px 8px 0 0; }
+      .content { background: #f9fafb; padding: 30px; border-radius: 0 0 8px 8px; }
+      .button { background: #4F46E5; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; display: inline-block; margin: 20px 0; }
+      .count { font-size: 36px; font-weight: bold; color: #4F46E5; margin: 10px 0; }
+      .footer { text-align: center; color: #6b7280; font-size: 12px; margin-top: 30px; }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1 style="margin: 0;">Easy-RH</h1>
+        <p style="margin: 10px 0 0 0;">Rappel hebdomadaire</p>
+      </div>
+
+      <div class="content">
+        <h2>Bonjour <%= @manager.first_name %>,</h2>
+
+        <p>Vous avez des pointages en attente de validation pour votre équipe :</p>
+
+        <div style="text-align: center; padding: 20px;">
+          <div class="count"><%= @pending_count %></div>
+          <p style="font-size: 18px; margin: 0;">pointage<%= 's' if @pending_count > 1 %> en attente</p>
+        </div>
+
+        <p>Période concernée : <strong><%= l(@last_week_start, format: :short) %> - <%= l(@last_week_end, format: :short) %></strong></p>
+
+        <p>Merci de valider ou refuser ces pointages dans les meilleurs délais pour assurer un suivi précis des heures de votre équipe.</p>
+
+        <div style="text-align: center;">
+          <a href="<%= manager_team_schedules_url %>" class="button">
+            Valider les pointages
+          </a>
+        </div>
+
+        <p style="margin-top: 30px; font-size: 14px; color: #6b7280;">
+          💡 <strong>Conseil :</strong> La validation régulière des pointages permet un calcul précis des RTT et facilite le suivi des heures supplémentaires.
+        </p>
+      </div>
+
+      <div class="footer">
+        <p>Cet email a été envoyé automatiquement par Easy-RH.</p>
+        <p>Pour toute question, contactez votre service RH.</p>
+      </div>
+    </div>
+  </body>
+</html>

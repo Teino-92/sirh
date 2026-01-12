@@ -28,7 +28,7 @@ class WorkSchedulePolicy < ApplicationPolicy
   end
 
   def manager_of_owner?
-    user.manager? && user.team_member_ids.include?(record.employee_id)
+    user.manager? && user.team_members.pluck(:id).include?(record.employee_id)
   end
 
   def hr_admin?

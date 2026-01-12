@@ -1,6 +1,6 @@
 <%= form_with(model: [:admin, employee], class: "space-y-6") do |form| %>
   <% if employee.errors.any? %>
-    <div class="bg-red-50 border-l-4 border-red-400 p-4">
+    <div class="bg-red-50 dark:bg-red-900 border-l-4 border-red-400 p-4">
       <div class="flex">
         <div class="flex-shrink-0">
           <svg class="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
@@ -8,10 +8,10 @@
           </svg>
         </div>
         <div class="ml-3">
-          <h3 class="text-sm font-medium text-red-800">
+          <h3 class="text-sm font-medium text-red-800 dark:text-red-200">
             <%= pluralize(employee.errors.count, "erreur") %> :
           </h3>
-          <ul class="mt-2 text-sm text-red-700 list-disc list-inside">
+          <ul class="mt-2 text-sm text-red-700 dark:text-red-300 list-disc list-inside">
             <% employee.errors.full_messages.each do |message| %>
               <li><%= message %></li>
             <% end %>
@@ -24,106 +24,106 @@
   <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
     <!-- Informations personnelles -->
     <div>
-      <%= form.label :first_name, "Prénom", class: "block text-sm font-medium text-gray-700" %>
+      <%= form.label :first_name, "Prénom", class: "block text-sm font-medium text-gray-700 dark:text-gray-300" %>
       <%= form.text_field :first_name,
-          class: "mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm",
+          class: "mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm",
           required: true %>
     </div>
 
     <div>
-      <%= form.label :last_name, "Nom", class: "block text-sm font-medium text-gray-700" %>
+      <%= form.label :last_name, "Nom", class: "block text-sm font-medium text-gray-700 dark:text-gray-300" %>
       <%= form.text_field :last_name,
-          class: "mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm",
+          class: "mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm",
           required: true %>
     </div>
 
     <div class="sm:col-span-2">
-      <%= form.label :email, "Email", class: "block text-sm font-medium text-gray-700" %>
+      <%= form.label :email, "Email", class: "block text-sm font-medium text-gray-700 dark:text-gray-300" %>
       <%= form.email_field :email,
-          class: "mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm",
+          class: "mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm",
           required: true %>
     </div>
 
     <!-- Mot de passe (seulement pour nouvel employé) -->
     <% if employee.new_record? %>
       <div>
-        <%= form.label :password, "Mot de passe", class: "block text-sm font-medium text-gray-700" %>
+        <%= form.label :password, "Mot de passe", class: "block text-sm font-medium text-gray-700 dark:text-gray-300" %>
         <%= form.password_field :password,
-            class: "mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm",
+            class: "mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm",
             required: true %>
       </div>
 
       <div>
-        <%= form.label :password_confirmation, "Confirmation", class: "block text-sm font-medium text-gray-700" %>
+        <%= form.label :password_confirmation, "Confirmation", class: "block text-sm font-medium text-gray-700 dark:text-gray-300" %>
         <%= form.password_field :password_confirmation,
-            class: "mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm",
+            class: "mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm",
             required: true %>
       </div>
     <% end %>
 
     <!-- Informations professionnelles -->
     <div>
-      <%= form.label :role, "Rôle", class: "block text-sm font-medium text-gray-700" %>
+      <%= form.label :role, "Rôle", class: "block text-sm font-medium text-gray-700 dark:text-gray-300" %>
       <%= form.select :role,
           [['Employé', 'employee'], ['Manager', 'manager'], ['RH', 'hr'], ['Admin', 'admin']],
           {},
-          class: "mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" %>
+          class: "mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" %>
     </div>
 
     <div>
-      <%= form.label :contract_type, "Type de contrat", class: "block text-sm font-medium text-gray-700" %>
+      <%= form.label :contract_type, "Type de contrat", class: "block text-sm font-medium text-gray-700 dark:text-gray-300" %>
       <%= form.select :contract_type,
           [['CDI', 'CDI'], ['CDD', 'CDD'], ['Stage', 'Stage'], ['Alternance', 'Alternance'], ['Intérim', 'Interim']],
           {},
-          class: "mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" %>
+          class: "mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" %>
     </div>
 
     <div>
-      <%= form.label :start_date, "Date d'entrée", class: "block text-sm font-medium text-gray-700" %>
+      <%= form.label :start_date, "Date d'entrée", class: "block text-sm font-medium text-gray-700 dark:text-gray-300" %>
       <%= form.date_field :start_date,
-          class: "mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm",
+          class: "mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm",
           required: true %>
     </div>
 
     <div>
-      <%= form.label :end_date, "Date de sortie (optionnel)", class: "block text-sm font-medium text-gray-700" %>
+      <%= form.label :end_date, "Date de sortie (optionnel)", class: "block text-sm font-medium text-gray-700 dark:text-gray-300" %>
       <%= form.date_field :end_date,
-          class: "mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" %>
+          class: "mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" %>
     </div>
 
     <div>
-      <%= form.label :department, "Département", class: "block text-sm font-medium text-gray-700" %>
+      <%= form.label :department, "Département", class: "block text-sm font-medium text-gray-700 dark:text-gray-300" %>
       <%= form.text_field :department,
-          class: "mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" %>
+          class: "mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" %>
     </div>
 
     <div>
-      <%= form.label :job_title, "Poste", class: "block text-sm font-medium text-gray-700" %>
+      <%= form.label :job_title, "Poste", class: "block text-sm font-medium text-gray-700 dark:text-gray-300" %>
       <%= form.text_field :job_title,
-          class: "mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" %>
+          class: "mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" %>
     </div>
 
     <div>
-      <%= form.label :manager_id, "Manager", class: "block text-sm font-medium text-gray-700" %>
+      <%= form.label :manager_id, "Manager", class: "block text-sm font-medium text-gray-700 dark:text-gray-300" %>
       <%= form.collection_select :manager_id,
           Employee.where.not(id: employee.id).managers.order(:first_name),
           :id,
           :full_name,
           { include_blank: "Aucun manager" },
-          class: "mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" %>
+          class: "mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" %>
     </div>
 
     <div>
-      <%= form.label :avatar, "Photo de profil", class: "block text-sm font-medium text-gray-700" %>
+      <%= form.label :avatar, "Photo de profil", class: "block text-sm font-medium text-gray-700 dark:text-gray-300" %>
       <%= form.file_field :avatar,
           accept: "image/*",
-          class: "mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100" %>
+          class: "mt-1 block w-full text-sm text-gray-500 dark:text-gray-400 dark:text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 dark:bg-indigo-900 file:text-indigo-700 dark:text-indigo-300 hover:file:bg-indigo-100 dark:bg-indigo-800" %>
     </div>
   </div>
 
   <div class="flex justify-end gap-3 pt-4">
     <%= link_to "Annuler", admin_employees_path,
-        class: "px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" %>
+        class: "px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" %>
     <%= form.submit employee.new_record? ? "Créer l'employé" : "Mettre à jour",
         class: "px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" %>
   </div>

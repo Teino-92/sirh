@@ -71,6 +71,36 @@ class TimeEntry < ApplicationRecord
     rejected_at.present?
   end
 
+  # Check if the employee clocked in late based on their schedule
+  def late?
+    return false unless clock_in.present?
+
+    # Get the employee's weekly schedule for this date
+    week_start = worked_date.beginning_of_week
+    weekly_plan = employee.weekly_schedule_plans.find_by(week_start_date: week_start)
+
+    return false unless weekly_plan
+
+    # Get the expected start time for this day
+    day_name = worked_date.strftime('%A').downcase
+    expected_hours = weekly_plan.schedule_pattern&.dig(day_name)
+
+    return false if expected_hours.blank? || expected_hours == 'off'
+
+    # Parse the expected start time (format: "09:00-17:00")
+    expected_start_time = expected_hours.split('-').first&.strip
+    return false unless expected_start_time
+
+    # Parse hours and minutes
+    expected_hour, expected_minute = expected_start_time.split(':').map(&:to_i)
+
+    # Create a Time object for the expected start time on the same date
+    expected_start = clock_in.change(hour: expected_hour, min: expected_minute, sec: 0)
+
+    # Consider late if more than 5 minutes after expected start time
+    clock_in > (expected_start + 5.minutes)
+  end
+
   def validate!(validator:)
     return false unless completed?
     return false if validated? || rejected?

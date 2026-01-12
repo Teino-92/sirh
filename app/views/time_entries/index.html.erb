@@ -1,50 +1,50 @@
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
   <!-- Header with Summary -->
   <div class="mb-6">
-    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">Mes pointages</h1>
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100 mb-4">Mes pointages</h1>
 
     <!-- Summary Cards -->
     <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
       <!-- This Week -->
-      <div class="bg-white rounded-lg shadow p-6">
-        <p class="text-sm text-gray-600 font-medium">Cette semaine</p>
-        <p class="text-3xl font-bold text-gray-900 mt-2">
+      <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-lg shadow p-6">
+        <p class="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500 font-medium">Cette semaine</p>
+        <p class="text-3xl font-bold text-gray-900 dark:text-gray-100 mt-2">
           <%= @weekly_hours.round(1) %>h
         </p>
-        <p class="text-xs text-gray-500 mt-1">
+        <p class="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500 mt-1">
           sur <%= @expected_weekly_hours %>h attendues
         </p>
       </div>
 
       <!-- This Month -->
-      <div class="bg-white rounded-lg shadow p-6">
-        <p class="text-sm text-gray-600 font-medium">Ce mois-ci</p>
-        <p class="text-3xl font-bold text-gray-900 mt-2">
+      <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-lg shadow p-6">
+        <p class="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500 font-medium">Ce mois-ci</p>
+        <p class="text-3xl font-bold text-gray-900 dark:text-gray-100 mt-2">
           <%= @monthly_hours.round(1) %>h
         </p>
-        <p class="text-xs text-gray-500 mt-1">
+        <p class="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500 mt-1">
           <%= (@monthly_hours / @expected_monthly_hours * 100).round %>% de l'objectif
         </p>
       </div>
 
       <!-- Status -->
-      <div class="bg-white rounded-lg shadow p-6">
-        <p class="text-sm text-gray-600 font-medium">Statut actuel</p>
+      <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-lg shadow p-6">
+        <p class="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500 font-medium">Statut actuel</p>
         <% if @current_shift %>
           <div class="flex items-center mt-2">
             <span class="flex h-3 w-3 relative mr-2">
               <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
               <span class="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
             </span>
-            <p class="text-lg font-semibold text-green-700">Pointé(e)</p>
+            <p class="text-lg font-semibold text-green-700 dark:text-green-300">Pointé(e)</p>
           </div>
-          <p class="text-xs text-gray-500 mt-1">
+          <p class="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500 mt-1">
             Depuis <%= l(@current_shift.clock_in, format: :short) %>
           </p>
         <% else %>
           <div class="flex items-center mt-2">
             <span class="flex h-3 w-3 bg-gray-400 rounded-full mr-2"></span>
-            <p class="text-lg font-semibold text-gray-700">Non pointé(e)</p>
+            <p class="text-lg font-semibold text-gray-700 dark:text-gray-300">Non pointé(e)</p>
           </div>
         <% end %>
       </div>
@@ -74,14 +74,14 @@
 
   <!-- Filter Tabs -->
   <div class="mb-6">
-    <div class="border-b border-gray-200">
+    <div class="border-b border-gray-200 dark:border-gray-700">
       <nav class="-mb-px flex space-x-8 overflow-x-auto" aria-label="Tabs">
         <%= link_to time_entries_path(period: 'week'),
-          class: "whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm #{params[:period] != 'month' ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'}" do %>
+          class: "whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm #{params[:period] != 'month' ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 dark:text-gray-400 dark:text-gray-500 hover:text-gray-700 dark:text-gray-300 hover:border-gray-300 dark:border-gray-600'}" do %>
           Cette semaine
         <% end %>
         <%= link_to time_entries_path(period: 'month'),
-          class: "whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm #{params[:period] == 'month' ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'}" do %>
+          class: "whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm #{params[:period] == 'month' ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 dark:text-gray-400 dark:text-gray-500 hover:text-gray-700 dark:text-gray-300 hover:border-gray-300 dark:border-gray-600'}" do %>
           Ce mois-ci
         <% end %>
       </nav>
@@ -89,48 +89,51 @@
   </div>
 
   <!-- Time Entries List -->
-  <div class="bg-white rounded-lg shadow overflow-hidden">
+  <div class="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden">
     <% if @time_entries.any? %>
       <!-- Desktop Table View -->
       <div class="hidden sm:block overflow-x-auto">
-        <table class="min-w-full divide-y divide-gray-200">
-          <thead class="bg-gray-50">
+        <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+          <thead class="bg-gray-50 dark:bg-gray-900">
             <tr>
-              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Entrée</th>
-              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Sortie</th>
-              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Durée</th>
-              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Statut</th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 dark:text-gray-500 uppercase tracking-wider">Date</th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 dark:text-gray-500 uppercase tracking-wider">Entrée</th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 dark:text-gray-500 uppercase tracking-wider">Sortie</th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 dark:text-gray-500 uppercase tracking-wider">Durée</th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 dark:text-gray-500 uppercase tracking-wider">Statut</th>
             </tr>
           </thead>
-          <tbody class="bg-white divide-y divide-gray-200">
+          <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
             <% @time_entries.each do |entry| %>
-              <tr class="hover:bg-gray-50">
+              <tr class="hover:bg-gray-50 dark:bg-gray-900">
                 <td class="px-6 py-4 whitespace-nowrap">
-                  <div class="text-sm font-medium text-gray-900">
+                  <div class="text-sm font-medium text-gray-900 dark:text-gray-100">
                     <%= l(entry.clock_in.to_date, format: :long) %>
                   </div>
-                  <div class="text-xs text-gray-500">
+                  <div class="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500">
                     <%= l(entry.clock_in.to_date, format: '%A') %>
                   </div>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
-                  <div class="text-sm text-gray-900">
+                  <div class="text-sm <%= entry.late? ? 'text-orange-600 font-semibold' : 'text-gray-900 dark:text-gray-100' %>">
                     <%= l(entry.clock_in, format: '%H:%M') %>
+                    <% if entry.late? %>
+                      <span class="ml-1 text-xs">⚠️ Retard</span>
+                    <% end %>
                   </div>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
                   <% if entry.clock_out %>
-                    <div class="text-sm text-gray-900">
+                    <div class="text-sm text-gray-900 dark:text-gray-100">
                       <%= l(entry.clock_out, format: '%H:%M') %>
                     </div>
                   <% else %>
-                    <span class="text-sm text-gray-400">En cours...</span>
+                    <span class="text-sm text-gray-400 dark:text-gray-500">En cours...</span>
                   <% end %>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
                   <% if entry.clock_out %>
-                    <div class="text-sm font-semibold text-gray-900">
+                    <div class="text-sm font-semibold text-gray-900 dark:text-gray-100">
                       <%= entry.hours_worked.round(2) %>h
                     </div>
                   <% else %>
@@ -141,12 +144,12 @@
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
                   <% if entry.validated? %>
-                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 dark:bg-green-800 text-green-800 dark:text-green-200">
                       ✓ Validé
                     </span>
                   <% elsif entry.rejected? %>
                     <div>
-                      <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
+                      <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 dark:bg-red-800 text-red-800 dark:text-red-200">
                         ✗ Refusé
                       </span>
                       <div class="text-xs text-red-600 mt-1">
@@ -154,11 +157,11 @@
                       </div>
                     </div>
                   <% elsif entry.clock_out %>
-                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
+                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 dark:bg-yellow-800 text-yellow-800 dark:text-yellow-200">
                       En attente
                     </span>
                   <% else %>
-                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
+                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 dark:bg-blue-800 text-blue-800 dark:text-blue-200">
                       En cours
                     </span>
                   <% end %>
@@ -170,32 +173,32 @@
       </div>
 
       <!-- Mobile Card View -->
-      <div class="sm:hidden divide-y divide-gray-200">
+      <div class="sm:hidden divide-y divide-gray-200 dark:divide-gray-700">
         <% @time_entries.each do |entry| %>
           <div class="p-4">
             <div class="flex items-center justify-between mb-3">
               <div>
-                <p class="text-sm font-medium text-gray-900">
+                <p class="text-sm font-medium text-gray-900 dark:text-gray-100">
                   <%= l(entry.clock_in.to_date, format: :short) %>
                 </p>
-                <p class="text-xs text-gray-500">
+                <p class="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500">
                   <%= l(entry.clock_in.to_date, format: '%A') %>
                 </p>
               </div>
               <% if entry.validated? %>
-                <span class="px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">
+                <span class="px-2 py-1 text-xs font-semibold rounded-full bg-green-100 dark:bg-green-800 text-green-800 dark:text-green-200">
                   ✓ Validé
                 </span>
               <% elsif entry.rejected? %>
-                <span class="px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800">
+                <span class="px-2 py-1 text-xs font-semibold rounded-full bg-red-100 dark:bg-red-800 text-red-800 dark:text-red-200">
                   ✗ Refusé
                 </span>
               <% elsif entry.clock_out %>
-                <span class="px-2 py-1 text-xs font-semibold rounded-full bg-yellow-100 text-yellow-800">
+                <span class="px-2 py-1 text-xs font-semibold rounded-full bg-yellow-100 dark:bg-yellow-800 text-yellow-800 dark:text-yellow-200">
                   En attente
                 </span>
               <% else %>
-                <span class="px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">
+                <span class="px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 dark:bg-blue-800 text-blue-800 dark:text-blue-200">
                   En cours
                 </span>
               <% end %>
@@ -203,25 +206,28 @@
 
             <div class="grid grid-cols-3 gap-4">
               <div>
-                <p class="text-xs text-gray-500">Entrée</p>
-                <p class="text-sm font-medium text-gray-900">
+                <p class="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500">Entrée</p>
+                <p class="text-sm font-medium <%= entry.late? ? 'text-orange-600' : 'text-gray-900 dark:text-gray-100' %>">
                   <%= l(entry.clock_in, format: '%H:%M') %>
+                  <% if entry.late? %>
+                    <span class="text-xs block">⚠️ Retard</span>
+                  <% end %>
                 </p>
               </div>
               <div>
-                <p class="text-xs text-gray-500">Sortie</p>
+                <p class="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500">Sortie</p>
                 <% if entry.clock_out %>
-                  <p class="text-sm font-medium text-gray-900">
+                  <p class="text-sm font-medium text-gray-900 dark:text-gray-100">
                     <%= l(entry.clock_out, format: '%H:%M') %>
                   </p>
                 <% else %>
-                  <p class="text-sm text-gray-400">--:--</p>
+                  <p class="text-sm text-gray-400 dark:text-gray-500">--:--</p>
                 <% end %>
               </div>
               <div>
-                <p class="text-xs text-gray-500">Durée</p>
+                <p class="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500">Durée</p>
                 <% if entry.clock_out %>
-                  <p class="text-sm font-semibold text-gray-900">
+                  <p class="text-sm font-semibold text-gray-900 dark:text-gray-100">
                     <%= entry.hours_worked.round(2) %>h
                   </p>
                 <% else %>
@@ -233,7 +239,7 @@
             </div>
 
             <% if entry.rejected? %>
-              <div class="mt-3 p-2 bg-red-50 border border-red-200 rounded">
+              <div class="mt-3 p-2 bg-red-50 dark:bg-red-900 border border-red-200 dark:border-red-700 rounded">
                 <p class="text-xs text-red-600">
                   <strong>Raison du refus:</strong> <%= entry.rejection_reason %>
                 </p>
@@ -245,11 +251,11 @@
     <% else %>
       <!-- Empty State -->
       <div class="text-center py-12 px-4">
-        <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg class="mx-auto h-12 w-12 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
         </svg>
-        <h3 class="mt-2 text-sm font-medium text-gray-900">Aucun pointage</h3>
-        <p class="mt-1 text-sm text-gray-500">
+        <h3 class="mt-2 text-sm font-medium text-gray-900 dark:text-gray-100">Aucun pointage</h3>
+        <p class="mt-1 text-sm text-gray-500 dark:text-gray-400 dark:text-gray-500">
           Commencez par pointer votre arrivée pour suivre vos heures.
         </p>
         <div class="mt-6">
@@ -266,21 +272,21 @@
 
   <!-- Weekly Summary by Day -->
   <% if @time_entries_by_day.any? %>
-    <div class="mt-6 bg-white rounded-lg shadow p-6">
-      <h2 class="text-lg font-semibold text-gray-900 mb-4">Résumé par jour</h2>
+    <div class="mt-6 bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+      <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Résumé par jour</h2>
       <div class="space-y-3">
         <% @time_entries_by_day.each do |date, entries| %>
-          <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+          <div class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-900 rounded-lg">
             <div>
-              <p class="font-medium text-gray-900">
+              <p class="font-medium text-gray-900 dark:text-gray-100">
                 <%= l(date, format: '%A %d %B') %>
               </p>
-              <p class="text-xs text-gray-500">
+              <p class="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500">
                 <%= entries.count %> pointage<%= 's' if entries.count > 1 %>
               </p>
             </div>
             <div class="text-right">
-              <p class="text-lg font-bold text-gray-900">
+              <p class="text-lg font-bold text-gray-900 dark:text-gray-100">
                 <%= entries.sum(&:hours_worked).round(2) %>h
               </p>
             </div>

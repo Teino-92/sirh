@@ -2,12 +2,12 @@
   <!-- Welcome Header -->
   <div class="mb-6">
     <div class="flex items-baseline gap-2 mb-1">
-      <h1 class="text-2xl sm:text-3xl font-bold text-gray-900">
+      <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100">
         Bonjour, <%= @employee.first_name %> 👋
       </h1>
-      <span class="text-sm text-gray-500">· <%= @employee.organization.name %></span>
+      <span class="text-sm text-gray-500 dark:text-gray-400 dark:text-gray-500">· <%= @employee.organization.name %></span>
     </div>
-    <p class="text-sm text-gray-600">
+    <p class="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500">
       <%= l(Date.current, format: :long) %>
     </p>
   </div>
@@ -15,14 +15,14 @@
   <!-- Quick Action: Clock In/Out -->
   <% if @current_shift %>
     <!-- Currently Clocked In -->
-    <div class="bg-green-50 border-2 border-green-500 rounded-lg p-6 mb-6">
+    <div class="bg-green-50 dark:bg-green-900 border-2 border-green-500 rounded-lg p-6 mb-6">
       <div class="flex items-center justify-between">
         <div>
-          <p class="text-sm font-medium text-green-800">Vous êtes pointé(e) depuis</p>
+          <p class="text-sm font-medium text-green-800 dark:text-green-200">Vous êtes pointé(e) depuis</p>
           <p class="text-3xl font-bold text-green-900">
             <%= l(@current_shift.clock_in, format: :short) %>
           </p>
-          <p class="text-sm text-green-700 mt-1">
+          <p class="text-sm text-green-700 dark:text-green-300 mt-1">
             <%= distance_of_time_in_words(Time.current, @current_shift.clock_in) %>
           </p>
         </div>
@@ -44,7 +44,7 @@
           <p class="text-sm font-medium opacity-90">Prêt(e) à commencer ?</p>
           <p class="text-2xl font-bold mt-1">Pointez votre arrivée</p>
         </div>
-        <%= button_to clock_in_time_entries_path, method: :post, class: "bg-white hover:bg-gray-100 text-indigo-600 font-semibold py-3 px-6 rounded-lg transition-colors shadow-lg" do %>
+        <%= button_to clock_in_time_entries_path, method: :post, class: "bg-white dark:bg-gray-800 hover:bg-gray-100 dark:bg-gray-800 text-indigo-600 font-semibold py-3 px-6 rounded-lg transition-colors shadow-lg" do %>
           <div class="flex items-center">
             <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
@@ -61,22 +61,43 @@
     <!-- Left Column: Main Info -->
     <div class="lg:col-span-2 space-y-6">
       <!-- Leave Balances -->
-      <div class="bg-white rounded-lg shadow p-6">
+      <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
         <div class="flex items-center justify-between mb-4">
-          <h2 class="text-lg font-semibold text-gray-900">Soldes de congés</h2>
-          <%= link_to "Demander", new_leave_request_path, class: "text-sm text-indigo-600 hover:text-indigo-800 font-medium" %>
+          <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100">Soldes de congés</h2>
+          <%= link_to "Demander", new_leave_request_path, class: "text-sm text-indigo-600 hover:text-indigo-800 dark:text-indigo-200 font-medium" %>
         </div>
 
         <div class="grid grid-cols-2 sm:grid-cols-3 gap-4">
           <% @leave_balances.each do |balance| %>
-            <div class="bg-gray-50 rounded-lg p-4">
-              <p class="text-xs text-gray-600 font-medium"><%= LeaveBalance.leave_type_name(balance.leave_type) %></p>
-              <p class="text-2xl font-bold text-gray-900 mt-1">
+            <%
+              # Map leave types to Tailwind gradient classes
+              gradient_class = case balance.leave_type
+              when 'cp' then 'bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900 dark:to-blue-700 border-2 border-blue-300 dark:border-blue-500'
+              when 'rtt' then 'bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900 dark:to-green-700 border-2 border-green-300 dark:border-green-500'
+              when 'maladie' then 'bg-gradient-to-br from-red-50 to-red-100 dark:from-red-900 dark:to-red-700 border-2 border-red-300 dark:border-red-500'
+              else 'bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900 dark:to-purple-700 border-2 border-purple-300 dark:border-purple-500'
+              end
+              text_color = case balance.leave_type
+              when 'cp' then 'text-blue-800 dark:text-white'
+              when 'rtt' then 'text-green-800 dark:text-white'
+              when 'maladie' then 'text-red-800 dark:text-white'
+              else 'text-purple-800 dark:text-white'
+              end
+              value_color = case balance.leave_type
+              when 'cp' then 'text-blue-900 dark:text-white'
+              when 'rtt' then 'text-green-900 dark:text-white'
+              when 'maladie' then 'text-red-900 dark:text-white'
+              else 'text-purple-900 dark:text-white'
+              end
+            %>
+            <div class="<%= gradient_class %> rounded-lg p-4 shadow-md">
+              <p class="text-xs <%= text_color %> font-medium opacity-90"><%= LeaveBalance.leave_type_name(balance.leave_type) %></p>
+              <p class="text-2xl font-bold <%= value_color %> mt-1">
                 <%= balance.balance.to_f.round(1) %>
-                <span class="text-sm font-normal text-gray-600">jours</span>
+                <span class="text-sm font-normal <%= text_color %> opacity-90">jours</span>
               </p>
               <% if balance.expiring_soon? %>
-                <p class="text-xs text-orange-600 mt-1 flex items-center">
+                <p class="text-xs text-orange-600 dark:text-orange-200 mt-1 flex items-center">
                   <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
                     <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
                   </svg>
@@ -89,10 +110,10 @@
       </div>
 
       <!-- This Week's Schedule -->
-      <div class="bg-white rounded-lg shadow p-6">
+      <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
         <div class="flex items-center justify-between mb-4">
-          <h2 class="text-lg font-semibold text-gray-900">Planning de la semaine</h2>
-          <%= link_to "Voir tout", work_schedule_path(current_employee.id), class: "text-sm text-indigo-600 hover:text-indigo-800 font-medium" %>
+          <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100">Planning de la semaine</h2>
+          <%= link_to "Voir tout", work_schedule_path(current_employee.id), class: "text-sm text-indigo-600 hover:text-indigo-800 dark:text-indigo-200 font-medium" %>
         </div>
 
         <% if @weekly_plan %>
@@ -107,82 +128,82 @@
                 has_worked = @week_time_entries.key?(day_date)
                 is_work_day = hours.present? && hours != 'off'
               %>
-              <div class="<%= is_today ? 'ring-2 ring-indigo-600' : 'border border-gray-200' %>
-                          <%= has_worked ? 'bg-green-50 border-green-300' : (is_work_day ? 'bg-indigo-50' : 'bg-gray-50') %>
+              <div class="<%= is_today ? 'ring-2 ring-indigo-600' : 'border border-gray-200 dark:border-gray-700' %>
+                          <%= has_worked ? 'bg-green-50 dark:bg-green-900 border-green-300 dark:border-green-600' : (is_work_day ? 'bg-indigo-50 dark:bg-indigo-900' : 'bg-gray-50 dark:bg-gray-900') %>
                           rounded-lg p-3 text-center">
-                <p class="text-xs font-medium <%= is_today ? 'text-indigo-600' : 'text-gray-600' %> mb-1">
+                <p class="text-xs font-medium <%= is_today ? 'text-indigo-600' : 'text-gray-600 dark:text-gray-400 dark:text-gray-500' %> mb-1">
                   <%= l(day_date, format: '%a') %>
                 </p>
-                <p class="text-xs text-gray-500 mb-1">
+                <p class="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500 mb-1">
                   <%= day_date.day %>/<%= day_date.month %>
                 </p>
                 <% if is_work_day %>
-                  <p class="text-sm font-semibold <%= has_worked ? 'text-green-700' : 'text-gray-900' %>">
+                  <p class="text-sm font-semibold <%= has_worked ? 'text-green-700 dark:text-green-300' : 'text-gray-900 dark:text-gray-100' %>">
                     <%= hours %>
                   </p>
                   <% if has_worked %>
                     <p class="text-xs text-green-600 mt-1">✓ Pointé</p>
                   <% end %>
                 <% else %>
-                  <p class="text-xs text-gray-400">Repos</p>
+                  <p class="text-xs text-gray-400 dark:text-gray-500">Repos</p>
                 <% end %>
               </div>
             <% end %>
           </div>
 
           <!-- Hours Summary -->
-          <div class="flex items-end justify-between pt-4 border-t border-gray-200">
+          <div class="flex items-end justify-between pt-4 border-t border-gray-200 dark:border-gray-700">
             <div>
-              <p class="text-3xl font-bold text-gray-900">
+              <p class="text-3xl font-bold text-gray-900 dark:text-gray-100">
                 <%= @weekly_hours.round(1) %>h
               </p>
-              <p class="text-sm text-gray-600">
+              <p class="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500">
                 sur <%= @expected_hours.round(1) %>h prévues
               </p>
             </div>
 
             <!-- Progress Bar -->
             <div class="flex-1 ml-6">
-              <div class="h-6 bg-gray-200 rounded-full overflow-hidden">
+              <div class="h-6 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
                 <% percentage = [(@weekly_hours / @expected_hours * 100).to_i, 100].min %>
                 <div class="h-full bg-indigo-600 rounded-full transition-all" style="width: <%= percentage %>%"></div>
               </div>
-              <p class="text-xs text-gray-600 text-right mt-1"><%= percentage %>%</p>
+              <p class="text-xs text-gray-600 dark:text-gray-400 dark:text-gray-500 text-right mt-1"><%= percentage %>%</p>
             </div>
           </div>
         <% else %>
           <!-- No Weekly Plan -->
-          <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-6 text-center">
+          <div class="bg-yellow-50 dark:bg-yellow-900 border border-yellow-200 dark:border-yellow-700 rounded-lg p-6 text-center">
             <svg class="mx-auto h-10 w-10 text-yellow-600 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
             </svg>
-            <p class="text-yellow-800 font-medium">Aucun planning pour cette semaine</p>
-            <p class="text-sm text-yellow-700 mt-1">Contactez votre manager pour établir votre planning</p>
+            <p class="text-yellow-800 dark:text-yellow-200 font-medium">Aucun planning pour cette semaine</p>
+            <p class="text-sm text-yellow-700 dark:text-yellow-300 mt-1">Contactez votre manager pour établir votre planning</p>
           </div>
         <% end %>
       </div>
 
       <!-- Upcoming Leaves (if any) -->
       <% if @upcoming_leaves.any? %>
-        <div class="bg-white rounded-lg shadow p-6">
-          <h2 class="text-lg font-semibold text-gray-900 mb-4">Prochains congés</h2>
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+          <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Prochains congés</h2>
           <div class="space-y-3">
             <% @upcoming_leaves.each do |leave| %>
-              <div class="flex items-center justify-between p-3 bg-blue-50 rounded-lg">
+              <div class="flex items-center justify-between p-3 bg-blue-50 dark:bg-blue-900 rounded-lg">
                 <div class="flex items-center">
                   <svg class="w-5 h-5 text-blue-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
                   </svg>
                   <div>
-                    <p class="font-medium text-gray-900">
+                    <p class="font-medium text-gray-900 dark:text-gray-100">
                       <%= l(leave.start_date, format: :short) %> - <%= l(leave.end_date, format: :short) %>
                     </p>
-                    <p class="text-sm text-gray-600">
+                    <p class="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500">
                       <%= leave.days_count.to_f.round(1) %> jours • <%= LeaveBalance.leave_type_name(leave.leave_type) %>
                     </p>
                   </div>
                 </div>
-                <span class="px-2 py-1 text-xs font-medium text-green-800 bg-green-100 rounded">
+                <span class="px-2 py-1 text-xs font-medium text-green-800 dark:text-green-200 bg-green-100 dark:bg-green-800 rounded">
                   <%= leave.status == 'auto_approved' ? 'Auto-approuvé' : 'Approuvé' %>
                 </span>
               </div>
@@ -196,14 +217,14 @@
     <div class="space-y-6">
       <!-- Manager Pending Approvals (if manager) -->
       <% if @employee.manager? && @pending_approvals_count > 0 %>
-        <div class="bg-orange-50 border-2 border-orange-500 rounded-lg p-6">
+        <div class="bg-orange-50 dark:bg-orange-900 border-2 border-orange-500 dark:border-orange-600 rounded-lg p-6">
           <div class="flex items-center mb-3">
-            <svg class="w-6 h-6 text-orange-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg class="w-6 h-6 text-orange-600 dark:text-orange-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
             </svg>
-            <h3 class="font-semibold text-orange-900">Action requise</h3>
+            <h3 class="font-semibold text-orange-900 dark:text-orange-100">Action requise</h3>
           </div>
-          <p class="text-orange-800 mb-4">
+          <p class="text-orange-800 dark:text-orange-200 mb-4">
             <%= @pending_approvals_count %> demande<%= 's' if @pending_approvals_count > 1 %> de congé en attente
           </p>
           <%= link_to pending_approvals_leave_requests_path, class: "block w-full bg-orange-600 hover:bg-orange-700 text-white text-center font-medium py-2 px-4 rounded-lg transition-colors" do %>
@@ -214,23 +235,23 @@
 
       <!-- My Pending Requests -->
       <% if @my_pending_requests.any? %>
-        <div class="bg-white rounded-lg shadow p-6">
-          <h2 class="text-lg font-semibold text-gray-900 mb-4">Mes demandes en cours</h2>
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+          <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Mes demandes en cours</h2>
           <div class="space-y-3">
             <% @my_pending_requests.each do |request| %>
-              <div class="p-3 bg-yellow-50 rounded-lg border border-yellow-200">
+              <div class="p-3 bg-yellow-50 dark:bg-yellow-900 rounded-lg border border-yellow-200 dark:border-yellow-700">
                 <div class="flex items-center justify-between mb-2">
-                  <span class="text-xs font-medium text-yellow-800 bg-yellow-200 px-2 py-1 rounded">
+                  <span class="text-xs font-medium text-yellow-800 dark:text-yellow-200 bg-yellow-200 px-2 py-1 rounded">
                     En attente
                   </span>
-                  <span class="text-xs text-gray-600">
+                  <span class="text-xs text-gray-600 dark:text-gray-400 dark:text-gray-500">
                     <%= time_ago_in_words(request.created_at) %>
                   </span>
                 </div>
-                <p class="text-sm font-medium text-gray-900">
+                <p class="text-sm font-medium text-gray-900 dark:text-gray-100">
                   <%= l(request.start_date, format: :short) %> - <%= l(request.end_date, format: :short) %>
                 </p>
-                <p class="text-xs text-gray-600">
+                <p class="text-xs text-gray-600 dark:text-gray-400 dark:text-gray-500">
                   <%= request.days_count.to_f.round(1) %> jours • <%= LeaveBalance.leave_type_name(request.leave_type) %>
                 </p>
               </div>
@@ -241,41 +262,41 @@
 
       <!-- Today's Schedule -->
       <% if @today_schedule %>
-        <div class="bg-white rounded-lg shadow p-6">
-          <h2 class="text-lg font-semibold text-gray-900 mb-4">Horaire du jour</h2>
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+          <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Horaire du jour</h2>
           <div class="flex items-center">
             <svg class="w-8 h-8 text-indigo-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
             </svg>
             <div>
-              <p class="text-2xl font-bold text-gray-900"><%= @today_schedule %></p>
-              <p class="text-sm text-gray-600">Horaire prévu</p>
+              <p class="text-2xl font-bold text-gray-900 dark:text-gray-100"><%= @today_schedule %></p>
+              <p class="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500">Horaire prévu</p>
             </div>
           </div>
         </div>
       <% end %>
 
       <!-- Quick Links -->
-      <div class="bg-white rounded-lg shadow p-6">
-        <h2 class="text-lg font-semibold text-gray-900 mb-4">Accès rapides</h2>
+      <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+        <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Accès rapides</h2>
         <div class="space-y-2">
-          <%= link_to time_entries_path, class: "flex items-center p-3 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors" do %>
-            <svg class="w-5 h-5 mr-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <%= link_to time_entries_path, class: "flex items-center p-3 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:bg-gray-900 rounded-lg transition-colors" do %>
+            <svg class="w-5 h-5 mr-3 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
             </svg>
             <span class="font-medium">Mes pointages</span>
           <% end %>
 
-          <%= link_to leave_requests_path, class: "flex items-center p-3 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors" do %>
-            <svg class="w-5 h-5 mr-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <%= link_to leave_requests_path, class: "flex items-center p-3 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:bg-gray-900 rounded-lg transition-colors" do %>
+            <svg class="w-5 h-5 mr-3 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
             </svg>
             <span class="font-medium">Mes congés</span>
           <% end %>
 
           <% if @employee.manager? %>
-            <%= link_to pending_approvals_leave_requests_path, class: "flex items-center p-3 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors" do %>
-              <svg class="w-5 h-5 mr-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <%= link_to pending_approvals_leave_requests_path, class: "flex items-center p-3 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:bg-gray-900 rounded-lg transition-colors" do %>
+              <svg class="w-5 h-5 mr-3 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
               </svg>
               <span class="font-medium">Mon équipe</span>

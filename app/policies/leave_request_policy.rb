@@ -37,6 +37,10 @@ class LeaveRequestPolicy < ApplicationPolicy
     manager_of_owner? || hr_admin?
   end
 
+  def reject_form?
+    reject? # Same permissions as reject
+  end
+
   def cancel?
     owner? && !record.rejected? # Can cancel unless rejected
   end
@@ -54,7 +58,7 @@ class LeaveRequestPolicy < ApplicationPolicy
         scope.all
       elsif user.manager?
         # Managers see their team's requests + their own
-        scope.where(employee_id: [user.id] + user.team_member_ids)
+        scope.where(employee_id: [user.id] + user.team_members.pluck(:id))
       else
         # Employees see only their own
         scope.where(employee_id: user.id)
@@ -69,7 +73,7 @@ class LeaveRequestPolicy < ApplicationPolicy
   end
 
   def manager_of_owner?
-    user.manager? && user.team_member_ids.include?(record.employee_id)
+    user.manager? && user.team_members.pluck(:id).include?(record.employee_id)
   end
 
   def hr_admin?

@@ -1,44 +1,44 @@
-<div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+<div class="w-full max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
   <!-- Header -->
   <div class="mb-6">
     <div class="flex items-center mb-2">
-      <%= link_to pending_approvals_leave_requests_path, class: "text-gray-500 hover:text-gray-700 mr-3" do %>
+      <%= link_to pending_approvals_leave_requests_path, class: "text-gray-500 dark:text-gray-400 dark:text-gray-500 hover:text-gray-700 dark:text-gray-300 mr-3" do %>
         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
         </svg>
       <% end %>
-      <h1 class="text-2xl sm:text-3xl font-bold text-gray-900">Refuser la demande</h1>
+      <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100">Refuser la demande</h1>
     </div>
-    <p class="text-sm text-gray-600">Veuillez expliquer la raison du refus</p>
+    <p class="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500">Veuillez expliquer la raison du refus</p>
   </div>
 
   <!-- Request Details -->
-  <div class="bg-white rounded-lg shadow p-6 mb-6">
-    <h2 class="text-lg font-semibold text-gray-900 mb-4">Détails de la demande</h2>
+  <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 mb-6">
+    <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Détails de la demande</h2>
 
     <div class="flex items-center mb-4">
-      <div class="h-12 w-12 rounded-full bg-indigo-100 flex items-center justify-center mr-4">
-        <span class="text-indigo-700 font-semibold text-lg">
+      <div class="h-12 w-12 rounded-full bg-indigo-100 dark:bg-indigo-800 flex items-center justify-center mr-4">
+        <span class="text-indigo-700 dark:text-indigo-300 font-semibold text-lg">
           <%= @leave_request.employee.first_name[0] %><%= @leave_request.employee.last_name[0] %>
         </span>
       </div>
       <div>
-        <p class="font-semibold text-gray-900"><%= @leave_request.employee.full_name %></p>
-        <p class="text-sm text-gray-600"><%= @leave_request.employee.department || 'Employé' %></p>
+        <p class="font-semibold text-gray-900 dark:text-gray-100"><%= @leave_request.employee.full_name %></p>
+        <p class="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500"><%= @leave_request.employee.department || 'Employé' %></p>
       </div>
     </div>
 
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4 border-t border-gray-200">
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4 border-t border-gray-200 dark:border-gray-700">
       <div>
-        <p class="text-xs text-gray-600 font-medium mb-1">Type de congé</p>
-        <p class="text-sm font-semibold text-gray-900">
+        <p class="text-xs text-gray-600 dark:text-gray-400 dark:text-gray-500 font-medium mb-1">Type de congé</p>
+        <p class="text-sm font-semibold text-gray-900 dark:text-gray-100">
           <%= LeaveBalance.leave_type_name(@leave_request.leave_type) %>
         </p>
       </div>
 
       <div>
-        <p class="text-xs text-gray-600 font-medium mb-1">Période</p>
-        <p class="text-sm font-semibold text-gray-900">
+        <p class="text-xs text-gray-600 dark:text-gray-400 dark:text-gray-500 font-medium mb-1">Période</p>
+        <p class="text-sm font-semibold text-gray-900 dark:text-gray-100">
           <%= l(@leave_request.start_date, format: :short) %>
           <% if @leave_request.start_date != @leave_request.end_date %>
             → <%= l(@leave_request.end_date, format: :short) %>
@@ -47,54 +47,54 @@
       </div>
 
       <div>
-        <p class="text-xs text-gray-600 font-medium mb-1">Durée</p>
-        <p class="text-sm font-semibold text-gray-900">
+        <p class="text-xs text-gray-600 dark:text-gray-400 dark:text-gray-500 font-medium mb-1">Durée</p>
+        <p class="text-sm font-semibold text-gray-900 dark:text-gray-100">
           <%= @leave_request.days_count.to_f.round(1) %> jour<%= 's' if @leave_request.days_count > 1 %>
         </p>
       </div>
 
       <div>
-        <p class="text-xs text-gray-600 font-medium mb-1">Demandé</p>
-        <p class="text-sm font-semibold text-gray-900">
+        <p class="text-xs text-gray-600 dark:text-gray-400 dark:text-gray-500 font-medium mb-1">Demandé</p>
+        <p class="text-sm font-semibold text-gray-900 dark:text-gray-100">
           <%= time_ago_in_words(@leave_request.created_at) %>
         </p>
       </div>
     </div>
 
     <% if @leave_request.reason.present? %>
-      <div class="mt-4 pt-4 border-t border-gray-200">
-        <p class="text-xs text-gray-600 font-medium mb-1">Motif de la demande</p>
-        <p class="text-sm text-gray-700 italic">"<%= @leave_request.reason %>"</p>
+      <div class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+        <p class="text-xs text-gray-600 dark:text-gray-400 dark:text-gray-500 font-medium mb-1">Motif de la demande</p>
+        <p class="text-sm text-gray-700 dark:text-gray-300 italic">"<%= @leave_request.reason %>"</p>
       </div>
     <% end %>
   </div>
 
   <!-- Rejection Form -->
-  <div class="bg-white rounded-lg shadow p-6">
+  <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
     <%= form_with url: reject_leave_request_path(@leave_request), method: :post, local: true, class: "space-y-6" do |f| %>
       <div>
-        <%= label_tag :rejection_reason, "Raison du refus", class: "block text-sm font-medium text-gray-700 mb-2" %>
+        <%= label_tag :rejection_reason, "Raison du refus", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" %>
         <%= text_area_tag :rejection_reason, nil,
           rows: 4,
           placeholder: "Expliquez clairement pourquoi cette demande est refusée (ex: insuffisance d'effectifs, période critique, etc.)...",
-          class: "block w-full rounded-md border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500 sm:text-sm",
+          class: "block w-full rounded-md border-gray-300 dark:border-gray-600 shadow-sm focus:border-red-500 focus:ring-red-500 sm:text-sm",
           required: true
         %>
-        <p class="mt-2 text-xs text-gray-500">
+        <p class="mt-2 text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500">
           Cette raison sera envoyée à l'employé. Soyez professionnel et constructif.
         </p>
       </div>
 
       <!-- Warning Box -->
-      <div class="bg-red-50 border border-red-200 rounded-md p-4">
+      <div class="bg-red-50 dark:bg-red-900 border border-red-200 dark:border-red-700 rounded-md p-4">
         <div class="flex">
           <div class="flex-shrink-0">
-            <svg class="h-5 w-5 text-red-400" fill="currentColor" viewBox="0 0 20 20">
+            <svg class="h-5 w-5 text-red-400 dark:text-red-300" fill="currentColor" viewBox="0 0 20 20">
               <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
             </svg>
           </div>
           <div class="ml-3">
-            <p class="text-sm text-red-700">
+            <p class="text-sm text-red-700 dark:text-red-300">
               <strong>Attention:</strong> Cette action est irréversible. L'employé sera notifié du refus avec la raison fournie.
             </p>
           </div>
@@ -104,7 +104,7 @@
       <!-- Actions -->
       <div class="flex flex-col-reverse sm:flex-row sm:justify-end gap-3">
         <%= link_to "Annuler", pending_approvals_leave_requests_path,
-          class: "inline-flex justify-center items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
+          class: "inline-flex justify-center items-center px-4 py-2 border border-gray-300 dark:border-gray-600 shadow-sm text-sm font-medium rounded-md text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:bg-gray-900"
         %>
         <%= f.submit "Confirmer le refus",
           class: "inline-flex justify-center items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500",

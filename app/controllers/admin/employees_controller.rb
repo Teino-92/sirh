@@ -5,7 +5,7 @@ module Admin
     before_action :set_employee, only: [:show, :edit, :update, :destroy]
 
     def index
-      @employees = Employee.includes(:organization, :manager)
+      @employees = Employee.includes(:organization, :manager, avatar_attachment: :blob)
 
       # Search functionality
       if params[:q].present?

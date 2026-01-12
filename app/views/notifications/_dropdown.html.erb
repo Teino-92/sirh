@@ -1,10 +1,10 @@
-<div class="bg-white rounded-lg shadow-xl border border-gray-200 overflow-hidden" style="width: 384px; max-height: 480px;">
+<div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl border border-gray-200 dark:border-gray-700 overflow-hidden w-full sm:w-[480px]" style="max-width: 90vw; max-height: 600px;">
   <!-- Header -->
-  <div class="p-4 border-b border-gray-200">
+  <div class="p-4 border-b border-gray-200 dark:border-gray-700">
     <div class="flex items-center justify-between">
       <div>
-        <h3 class="text-lg font-semibold text-gray-900">Notifications</h3>
-        <p class="text-xs text-gray-600 mt-0.5">
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100">Notifications</h3>
+        <p class="text-xs text-gray-600 dark:text-gray-400 dark:text-gray-500 mt-0.5">
           <%= unread_count %> non lue<%= 's' if unread_count > 1 %>
         </p>
       </div>
@@ -18,32 +18,32 @@
   </div>
 
   <!-- Notifications List -->
-  <div class="overflow-y-auto" style="max-height: 384px;">
+  <div class="overflow-y-auto" style="max-height: 520px;">
     <% if notifications.any? %>
       <ul class="divide-y divide-gray-100">
         <% notifications.limit(10).each do |notification| %>
-          <li class="<%= notification.unread? ? 'bg-blue-50' : 'bg-white' %>">
+          <li class="<%= notification.unread? ? 'bg-blue-50 dark:bg-blue-900' : 'bg-white dark:bg-gray-800' %>">
             <%= form_with url: mark_as_read_notification_path(notification), method: :post, local: true, class: "w-full" do |f| %>
-              <%= f.button type: :submit, class: "w-full text-left block hover:bg-gray-50 transition-colors border-0 bg-transparent p-0 cursor-pointer" do %>
+              <%= f.button type: :submit, class: "w-full text-left block hover:bg-gray-50 dark:bg-gray-900 transition-colors border-0 bg-transparent p-0 cursor-pointer" do %>
               <div class="px-4 py-3">
                 <div class="flex items-start gap-3">
                   <!-- Icon -->
                   <div class="flex-shrink-0">
                     <% case notification.notification_type %>
                     <% when 'schedule_created', 'schedule_updated' %>
-                      <div class="h-8 w-8 rounded-full bg-indigo-100 flex items-center justify-center">
+                      <div class="h-8 w-8 rounded-full bg-indigo-100 dark:bg-indigo-800 flex items-center justify-center">
                         <svg class="h-4 w-4 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
                         </svg>
                       </div>
                     <% when 'leave_approved' %>
-                      <div class="h-8 w-8 rounded-full bg-green-100 flex items-center justify-center">
+                      <div class="h-8 w-8 rounded-full bg-green-100 dark:bg-green-800 flex items-center justify-center">
                         <svg class="h-4 w-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                         </svg>
                       </div>
                     <% when 'leave_rejected' %>
-                      <div class="h-8 w-8 rounded-full bg-red-100 flex items-center justify-center">
+                      <div class="h-8 w-8 rounded-full bg-red-100 dark:bg-red-800 flex items-center justify-center">
                         <svg class="h-4 w-4 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                         </svg>
@@ -55,14 +55,14 @@
                         </svg>
                       </div>
                     <% when 'hours_rejected' %>
-                      <div class="h-8 w-8 rounded-full bg-red-100 flex items-center justify-center">
+                      <div class="h-8 w-8 rounded-full bg-red-100 dark:bg-red-800 flex items-center justify-center">
                         <svg class="h-4 w-4 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                         </svg>
                       </div>
                     <% else %>
-                      <div class="h-8 w-8 rounded-full bg-gray-100 flex items-center justify-center">
-                        <svg class="h-4 w-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <div class="h-8 w-8 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
+                        <svg class="h-4 w-4 text-gray-600 dark:text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path>
                         </svg>
                       </div>
@@ -72,7 +72,7 @@
                   <!-- Content -->
                   <div class="flex-1 min-w-0">
                     <div class="flex items-start justify-between gap-2">
-                      <p class="text-sm font-medium text-gray-900 flex-1">
+                      <p class="text-sm font-medium text-gray-900 dark:text-gray-100 flex-1">
                         <%= notification.title %>
                       </p>
                       <% if notification.unread? %>
@@ -81,8 +81,8 @@
                         </span>
                       <% end %>
                     </div>
-                    <p class="mt-0.5 text-xs text-gray-600 line-clamp-2"><%= notification.message %></p>
-                    <p class="mt-1 text-xs text-gray-500">
+                    <p class="mt-0.5 text-xs text-gray-600 dark:text-gray-400 dark:text-gray-500 line-clamp-2"><%= notification.message %></p>
+                    <p class="mt-1 text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500">
                       <%= time_ago_in_words(notification.created_at) %>
                     </p>
                   </div>
@@ -95,7 +95,7 @@
       </ul>
 
       <% if notifications.count > 10 %>
-        <div class="p-3 border-t border-gray-200 text-center">
+        <div class="p-3 border-t border-gray-200 dark:border-gray-700 text-center">
           <%= link_to notifications_path, class: "text-sm text-indigo-600 hover:text-indigo-900 font-medium" do %>
             Voir toutes les notifications
           <% end %>
@@ -103,10 +103,10 @@
       <% end %>
     <% else %>
       <div class="p-8 text-center">
-        <svg class="mx-auto h-8 w-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg class="mx-auto h-8 w-8 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path>
         </svg>
-        <p class="mt-2 text-sm text-gray-500">Aucune notification</p>
+        <p class="mt-2 text-sm text-gray-500 dark:text-gray-400 dark:text-gray-500">Aucune notification</p>
       </div>
     <% end %>
   </div>

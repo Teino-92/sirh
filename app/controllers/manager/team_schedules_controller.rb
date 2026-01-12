@@ -9,7 +9,7 @@ module Manager
     def index
       @team_members = policy_scope(Employee)
                                        .where(manager_id: current_employee.id)
-                                       .includes(:weekly_schedule_plans)
+                                       .includes(:weekly_schedule_plans, :work_schedule)
                                        .order(:first_name, :last_name)
 
       # Check which members have any weekly plans

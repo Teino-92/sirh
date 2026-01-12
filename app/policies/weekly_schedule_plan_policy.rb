@@ -42,7 +42,7 @@ class WeeklySchedulePlanPolicy < ApplicationPolicy
         scope.all
       elsif user.manager?
         # Managers see their team's schedules + their own
-        scope.where(employee_id: [user.id] + user.team_member_ids)
+        scope.where(employee_id: [user.id] + user.team_members.pluck(:id))
       else
         # Employees see only their own
         scope.where(employee_id: user.id)
@@ -57,7 +57,7 @@ class WeeklySchedulePlanPolicy < ApplicationPolicy
   end
 
   def manager_of_owner?
-    user.manager? && user.team_member_ids.include?(record.employee_id)
+    user.manager? && user.team_members.pluck(:id).include?(record.employee_id)
   end
 
   def hr_admin?

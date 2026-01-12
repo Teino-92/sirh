@@ -48,6 +48,14 @@ class Employee < ApplicationRecord
     %w[hr admin].include?(role)
   end
 
+  def admin?
+    role == 'admin'
+  end
+
+  def hr?
+    role == 'hr'
+  end
+
   def active?
     settings.fetch('active', true)
   end
