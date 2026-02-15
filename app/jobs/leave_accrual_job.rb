@@ -46,49 +46,50 @@ class LeaveAccrualJob < ApplicationJob
   end
 
   def process_employee(employee, organization)
-    # Calculer l'acquisition mensuelle via le moteur de conformité
-    engine = LeaveManagement::Services::LeavePolicyEngine.new(employee)
-    monthly_accrual = engine.get_setting(:cp_acquisition_rate)
+    ActiveRecord::Base.transaction do
+      # Calculer l'acquisition mensuelle via le moteur de conformité
+      engine = LeaveManagement::Services::LeavePolicyEngine.new(employee)
+      monthly_accrual = engine.get_setting(:cp_acquisition_rate)
 
-    # Ajuster pour temps partiel si applicable
-    if employee.respond_to?(:part_time_ratio) && employee.part_time_ratio.present? && employee.part_time_ratio < 1.0
-      monthly_accrual = monthly_accrual * employee.part_time_ratio
-    end
+      # Ajuster pour temps partiel si applicable
+      if employee.respond_to?(:part_time_ratio) && employee.part_time_ratio.present? && employee.part_time_ratio < 1.0
+        monthly_accrual = monthly_accrual * employee.part_time_ratio
+      end
 
-    # Récupérer ou créer le solde CP
-    cp_balance = LeaveBalance.find_or_create_by!(
-      employee: employee,
-      organization: organization,
-      leave_type: 'CP'
-    ) do |balance|
-      balance.balance = 0
-      balance.accrued_this_year = 0
-      balance.used_this_year = 0
-    end
+      # Récupérer ou créer le solde CP
+      cp_balance = LeaveBalance.find_or_create_by!(
+        employee: employee,
+        organization: organization,
+        leave_type: 'CP'
+      ) do |balance|
+        balance.balance = 0
+        balance.accrued_this_year = 0
+        balance.used_this_year = 0
+      end
 
-    # Vérifier qu'on ne dépasse pas le maximum annuel
-    max_annual = engine.get_setting(:cp_max_annual)
-    new_balance = cp_balance.balance + monthly_accrual
+      # Vérifier qu'on ne dépasse pas le maximum annuel
+      max_annual = engine.get_setting(:cp_max_annual)
+      new_balance = cp_balance.balance + monthly_accrual
 
-    if new_balance > max_annual
-      monthly_accrual = [max_annual - cp_balance.balance, 0].max
-      Rails.logger.info "[LeaveAccrualJob] Plafond atteint pour #{employee.email} - Acquisition limitée à #{monthly_accrual} jours"
-    end
+      if new_balance > max_annual
+        monthly_accrual = [max_annual - cp_balance.balance, 0].max
+        Rails.logger.info "[LeaveAccrualJob] Plafond atteint pour #{employee.email} - Acquisition limitée à #{monthly_accrual} jours"
+      end
 
-    # Mettre à jour le solde
-    cp_balance.balance += monthly_accrual
-    cp_balance.accrued_this_year += monthly_accrual
+      # Mettre à jour le solde
+      cp_balance.balance += monthly_accrual
+      cp_balance.accrued_this_year += monthly_accrual
 
-    # Définir la date d'expiration (31 mai de l'année prochaine selon Code du travail)
-    expiry_month = engine.get_setting(:cp_expiry_month)
-    expiry_day = engine.get_setting(:cp_expiry_day)
-    next_year = Date.current.year + 1
-    cp_balance.expires_at = Date.new(next_year, expiry_month, expiry_day)
+      # Définir la date d'expiration (31 mai de l'année prochaine selon Code du travail)
+      expiry_month = engine.get_setting(:cp_expiry_month)
+      expiry_day = engine.get_setting(:cp_expiry_day)
+      next_year = Date.current.year + 1
+      cp_balance.expires_at = Date.new(next_year, expiry_month, expiry_day)
 
-    if cp_balance.save
+      cp_balance.save!
       Rails.logger.info "[LeaveAccrualJob] ✓ #{employee.email}: +#{monthly_accrual.round(2)} jours CP (Total: #{cp_balance.balance.round(2)})"
-    else
-      Rails.logger.error "[LeaveAccrualJob] ✗ Erreur sauvegarde pour #{employee.email}: #{cp_balance.errors.full_messages.join(', ')}"
     end
+  rescue => e
+    Rails.logger.error "[LeaveAccrualJob] ✗ Erreur pour #{employee.email}: #{e.message}"
   end
 end
