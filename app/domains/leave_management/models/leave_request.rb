@@ -27,20 +27,24 @@ class LeaveRequest < ApplicationRecord
   after_update :update_leave_balance, if: :saved_change_to_status?
 
   def approve!(approver)
-    update!(
-      status: 'approved',
-      approved_by: approver,
-      approved_at: Time.current
-    )
+    ActiveRecord::Base.transaction do
+      update!(
+        status: 'approved',
+        approved_by: approver,
+        approved_at: Time.current
+      )
+    end
   end
 
   def reject!(approver, reason: nil)
-    update!(
-      status: 'rejected',
-      approved_by: approver,
-      approved_at: Time.current,
-      rejection_reason: reason
-    )
+    ActiveRecord::Base.transaction do
+      update!(
+        status: 'rejected',
+        approved_by: approver,
+        approved_at: Time.current,
+        rejection_reason: reason
+      )
+    end
   end
 
   def auto_approve!
@@ -96,13 +100,15 @@ class LeaveRequest < ApplicationRecord
   def update_leave_balance
     return unless approved?
 
-    balance = employee.leave_balances.find_by(leave_type: leave_type)
-    return unless balance
+    ActiveRecord::Base.transaction do
+      balance = employee.leave_balances.find_by(leave_type: leave_type)
+      raise "Balance not found for #{leave_type}" unless balance
 
-    balance.update!(
-      balance: balance.balance - days_count,
-      used_this_year: balance.used_this_year + days_count
-    )
+      balance.update!(
+        balance: balance.balance - days_count,
+        used_this_year: balance.used_this_year + days_count
+      )
+    end
   end
 
   def employee_belongs_to_same_organization
