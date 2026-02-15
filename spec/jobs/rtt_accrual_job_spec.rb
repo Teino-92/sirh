@@ -194,4 +194,27 @@ RSpec.describe RttAccrualJob, type: :job do
       end
     end
   end
+
+  describe 'transaction atomicity' do
+    it 'rolls back balance changes if error occurs during accrual' do
+      ActsAsTenant.with_tenant(org_with_rtt) do
+        5.times do |i|
+          create(:time_entry, employee: employee1, organization: org_with_rtt,
+                 clock_in: week_start + i.days + 9.hours,
+                 clock_out: week_start + i.days + 17.hours + 24.minutes,
+                 duration_minutes: 504)
+        end
+
+        described_class.perform_now(week_start)
+        balance = employee1.leave_balances.find_by(leave_type: 'RTT')
+        initial_balance = balance.balance
+
+        allow_any_instance_of(LeaveBalance).to receive(:save!).and_raise(StandardError, 'Simulated error')
+
+        described_class.perform_now(week_start + 1.week)
+
+        expect(balance.reload.balance).to eq(initial_balance)
+      end
+    end
+  end
 end

@@ -294,6 +294,34 @@ RSpec.describe LeaveRequest, type: :model do
           end
         end
       end
+
+      context 'transaction atomicity' do
+        it 'rolls back leave request status if balance update fails' do
+          ActsAsTenant.with_tenant(organization) do
+            balance = employee.leave_balances.find_by(leave_type: request.leave_type)
+            allow(balance).to receive(:update!).and_raise(ActiveRecord::RecordInvalid)
+            allow(employee.leave_balances).to receive(:find_by).and_return(balance)
+
+            expect {
+              request.approve!(manager)
+            }.to raise_error(ActiveRecord::RecordInvalid)
+
+            expect(request.reload.status).to eq('pending')
+          end
+        end
+
+        it 'commits both leave request and balance updates together' do
+          ActsAsTenant.with_tenant(organization) do
+            balance = employee.leave_balances.find_by(leave_type: request.leave_type)
+            initial_balance = balance.balance
+
+            request.approve!(manager)
+
+            expect(request.reload.status).to eq('approved')
+            expect(balance.reload.balance).to eq(initial_balance - request.days_count)
+          end
+        end
+      end
     end
 
     describe '#reject!' do

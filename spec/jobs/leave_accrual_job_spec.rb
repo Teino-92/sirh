@@ -89,6 +89,23 @@ RSpec.describe LeaveAccrualJob, type: :job do
         described_class.perform_now
       end.not_to raise_error
     end
+
+    context 'transaction atomicity' do
+      it 'rolls back balance changes if error occurs mid-accrual' do
+        ActsAsTenant.with_tenant(org1) do
+          balance = create(:leave_balance, employee: employee1, organization: org1,
+                         leave_type: 'CP', balance: 10.0, accrued_this_year: 10.0)
+
+          allow_any_instance_of(LeaveBalance).to receive(:save!).and_raise(StandardError, 'Simulated error')
+
+          expect do
+            described_class.new.send(:process_employee, employee1, org1)
+          end.not_to change { balance.reload.balance }
+
+          expect(balance.reload.balance).to eq(10.0)
+        end
+      end
+    end
   end
 
   describe 'multi-tenant execution' do
