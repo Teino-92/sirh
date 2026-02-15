@@ -18,27 +18,7 @@
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
 
-    <!-- Dark Mode Script -->
-    <script>
-      // Initialize dark mode immediately to avoid flash
-      (function() {
-        const savedTheme = localStorage.getItem('theme');
-        if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-          document.documentElement.classList.add('dark');
-        }
-      })();
-
-      // Dark mode toggle function
-      window.toggleDarkMode = function() {
-        if (document.documentElement.classList.contains('dark')) {
-          document.documentElement.classList.remove('dark');
-          localStorage.setItem('theme', 'light');
-        } else {
-          document.documentElement.classList.add('dark');
-          localStorage.setItem('theme', 'dark');
-        }
-      };
-    </script>
+    <%= render 'shared/dark_mode_init' %>
 
     <!-- Service Worker Registration -->
     <script>
@@ -69,7 +49,7 @@
 
               <!-- Desktop Navigation -->
               <div class="hidden sm:ml-6 sm:flex sm:space-x-4">
-                <%= link_to "Tableau de bord", dashboard_path,
+                <%= link_to "Dashboard", dashboard_path,
                     class: "inline-flex items-center px-3 py-2 text-sm font-medium #{current_page?(dashboard_path) ? 'text-indigo-600 dark:text-indigo-400 border-b-2 border-indigo-600 dark:border-indigo-400' : 'text-gray-700 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400'}" %>
                 <%= link_to "Pointage", time_entries_path,
                     class: "inline-flex items-center px-3 py-2 text-sm font-medium #{current_page?(time_entries_path) ? 'text-indigo-600 dark:text-indigo-400 border-b-2 border-indigo-600 dark:border-indigo-400' : 'text-gray-700 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400'}" %>
@@ -81,8 +61,10 @@
                 <% if current_employee.manager? %>
                   <%= link_to "Approbations", pending_approvals_leave_requests_path,
                       class: "inline-flex items-center px-3 py-2 text-sm font-medium #{current_page?(pending_approvals_leave_requests_path) ? 'text-indigo-600 dark:text-indigo-400 border-b-2 border-indigo-600 dark:border-indigo-400' : 'text-gray-700 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400'}" %>
-                  <%= link_to "Horaires équipe", manager_team_schedules_path,
+                  <%= link_to "Planning équipe", manager_team_schedules_path,
                       class: "inline-flex items-center px-3 py-2 text-sm font-medium #{current_page?(manager_team_schedules_path) ? 'text-indigo-600 dark:text-indigo-400 border-b-2 border-indigo-600 dark:border-indigo-400' : 'text-gray-700 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400'}" %>
+                  <%= link_to "Exports", manager_exports_path,
+                      class: "inline-flex items-center px-3 py-2 text-sm font-medium #{current_page?(manager_exports_path) ? 'text-indigo-600 dark:text-indigo-400 border-b-2 border-indigo-600 dark:border-indigo-400' : 'text-gray-700 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400'}" %>
                 <% end %>
 
                 <% if current_employee.admin? %>
@@ -121,19 +103,7 @@
               </div>
 
               <!-- Dark Mode Toggle -->
-              <button type="button"
-                      onclick="document.documentElement.classList.toggle('dark'); localStorage.setItem('theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light');"
-                      class="relative p-2 text-gray-600 dark:text-gray-400 dark:text-gray-500 hover:text-gray-900 dark:text-gray-100 dark:text-gray-300 dark:hover:text-white transition-colors"
-                      title="Basculer le mode sombre">
-                <!-- Sun icon (visible in dark mode) -->
-                <svg class="hidden dark:block h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
-                </svg>
-                <!-- Moon icon (visible in light mode) -->
-                <svg class="block dark:hidden h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
-                </svg>
-              </button>
+              <%= render 'shared/dark_mode_toggle' %>
 
               <%= link_to profile_path, class: "flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-indigo-600 dark:text-gray-300 dark:hover:text-indigo-400 transition" do %>
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -179,7 +149,7 @@
             <% end %>
 
             <% if current_employee.manager? %>
-              <%= link_to manager_team_schedules_path, class: "flex-1 flex flex-col items-center py-2 text-xs #{current_page?(manager_team_schedules_path) || current_page?(pending_approvals_leave_requests_path) ? 'text-indigo-600 dark:text-indigo-400' : 'text-gray-600 dark:text-gray-300'}" do %>
+              <%= link_to manager_team_schedules_path, class: "flex-1 flex flex-col items-center py-2 text-xs #{current_page?(manager_team_schedules_path) || current_page?(pending_approvals_leave_requests_path) || current_page?(manager_exports_path) ? 'text-indigo-600 dark:text-indigo-400' : 'text-gray-600 dark:text-gray-300'}" do %>
                 <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
                 </svg>
@@ -201,20 +171,7 @@
       </nav>
 
       <!-- Flash Messages -->
-      <% if notice || alert %>
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <% if notice %>
-            <div class="bg-green-50 dark:bg-green-900 border-l-4 border-green-400 p-4 mb-4">
-              <p class="text-sm text-green-700 dark:text-green-300"><%= notice %></p>
-            </div>
-          <% end %>
-          <% if alert %>
-            <div class="bg-red-50 dark:bg-red-900 border-l-4 border-red-400 p-4 mb-4">
-              <p class="text-sm text-red-700 dark:text-red-300"><%= alert %></p>
-            </div>
-          <% end %>
-        </div>
-      <% end %>
+      <%= render 'shared/flash_messages' %>
     <% end %>
 
     <!-- Main Content -->

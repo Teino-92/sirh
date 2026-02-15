@@ -64,6 +64,14 @@ Rails.application.routes.draw do
       end
     end
     get 'team_schedules', to: 'team_schedules#index'
+
+    # CSV Exports
+    resources :exports, only: [:index] do
+      collection do
+        get :time_entries, to: 'exports#time_entries'
+        get :absences, to: 'exports#absences'
+      end
+    end
   end
 
   # API v1 - For future native mobile apps

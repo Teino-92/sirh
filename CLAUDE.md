@@ -1,310 +1,371 @@
-# CLAUDE.md
+This file defines how Claude Code must operate inside the Easy-RH repository.
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+This project uses a strict multi-agent architecture and production-oriented discipline.
 
-## Project Overview
+Violation of these rules is not allowed.
 
-Easy-RH is a modern SIRH (HRIS) platform built for French companies, designed with a **manager-first** philosophy. Unlike legacy HR tools that serve HR departments, this platform empowers managers to handle time tracking, leave requests, and team scheduling autonomously.
+🚨 CRITICAL RULES — NON-NEGOTIABLE
+1. NO CONVERSATION COMPACTION
 
-**Core Differentiators:**
-- **Hybrid Architecture**: Responsive web UI (mobile-first) + RESTful API for future native apps
-- Mobile-first responsive design with Tailwind CSS and Hotwire/Turbo
-- French labor law compliance engine (CP, RTT calculations)
-- Auto-approval workflows for low-risk requests
-- Domain-driven architecture
-- Multi-tenant from day 1
-- PWA support for app-like experience on mobile browsers
+You must NEVER compact a conversation without explicit user validation.
 
-See `PROJECT_SUMMARY.md` for complete feature list and implementation details.
+One subject at a time.
 
-## Technology Stack
+Complete full workflow (Architect → Developer → QA → UX → Architect).
 
-- **Ruby**: 3.3.5
-- **Rails**: 7.1.6
-- **Database**: PostgreSQL
-- **CSS Framework**: Tailwind CSS (via cssbundling-rails)
-- **JavaScript**: jsbundling-rails, Turbo, Stimulus
-- **Authentication**: Devise
-- **Authorization**: Pundit
-- **Background Jobs**: Sidekiq
-- **Web Server**: Puma
+Code, test, validate before switching context.
 
-## Development Commands
+Wait for explicit instruction before summarizing or compacting.
 
-### Starting the Application
+No proactive summarization.
 
-Start the development server with hot-reloading for CSS:
-```bash
-bin/dev
-```
+2. MANDATORY MULTI-AGENT WORKFLOW
 
-This runs both the Rails server (port 3000) and watches Tailwind CSS for changes via foreman using `Procfile.dev`.
+For every feature, bugfix, or architectural change, follow this strict sequence:
 
-Alternatively, start Rails server only:
-```bash
-rails server
-# or
-bin/rails s
-```
+1️⃣ @architect — Technical Framing (CTO Level)
 
-### Database Management
+Responsibilities:
 
-Create and setup the database:
-```bash
-rails db:create
-rails db:migrate
-rails db:seed
-```
+Analyze architectural impact
 
-Reset the database:
-```bash
-rails db:reset
-```
+Evaluate domain boundaries
 
-Run migrations:
-```bash
-rails db:migrate
-```
+Consider multi-tenancy implications
 
-Rollback last migration:
-```bash
-rails db:rollback
-```
+Identify scalability risks
 
-### Asset Pipeline
+Define acceptance criteria
 
-Build Tailwind CSS:
-```bash
-yarn build:css
-```
+Update roadmap if needed
 
-Watch Tailwind CSS for changes:
-```bash
-yarn build:css --watch
-```
+Must evaluate:
 
-### Rails Console
+Tenant isolation
 
-Access Rails console:
-```bash
-rails console
-# or
-rails c
-```
+Idempotency
 
-### Code Generation
+Transaction safety
 
-Generate a new model:
-```bash
-rails generate model ModelName field:type
-```
+Authorization coverage
 
-Generate a new controller:
-```bash
-rails generate controller ControllerName action1 action2
-```
+Future scalability (10k employees / 200 companies)
 
-Generate a migration:
-```bash
-rails generate migration MigrationName
-```
+No code written at this stage.
 
-### Routes
+2️⃣ @developer — Implementation
 
-View all application routes:
-```bash
-rails routes
-# or for specific pattern
-rails routes | grep pattern
-```
+Responsibilities:
 
-## Application Structure
+Implement strictly according to Architect specs
 
-### Domain-Driven Design
-The application uses a hybrid architecture with domain-driven structure:
+Respect DDD structure (app/domains/)
 
-```
-app/
-├── domains/
-│   ├── employees/models/          # Employee, roles, hierarchy
-│   ├── time_tracking/             # TimeEntry, clock in/out
-│   │   ├── models/
-│   │   └── services/
-│   ├── leave_management/          # LeaveBalance, LeaveRequest, French legal engine
-│   │   ├── models/
-│   │   └── services/
-│   └── scheduling/                # WorkSchedule, templates
-│       └── models/
-├── controllers/                   # Web UI controllers (responsive)
-│   ├── dashboard_controller.rb
-│   ├── time_entries_controller.rb
-│   ├── leave_requests_controller.rb
-│   └── ...
-├── api/v1/                        # API controllers (future native apps)
-│   ├── dashboard_controller.rb
-│   ├── time_entries_controller.rb
-│   └── ...
-├── views/                         # Responsive web UI views
-│   ├── layouts/
-│   │   └── application.html.erb  # Mobile bottom nav + desktop top nav
-│   ├── dashboard/
-│   ├── time_entries/
-│   ├── leave_requests/
-│   └── devise/
-└── models/                        # Shared models (Organization)
-```
+Keep controllers thin
 
-**Key Domains:**
-1. **Employees**: Authentication, authorization, manager hierarchy
-2. **Time Tracking**: Clock in/out, time entries, RTT accrual
-3. **Leave Management**: CP/RTT balances, leave requests, French legal compliance
-4. **Scheduling**: Work schedules, shift planning, RTT eligibility
+Use service objects for business logic
 
-**User Interfaces:**
-1. **Responsive Web UI**: Primary interface, works beautifully on mobile AND desktop
-   - Mobile: Bottom navigation, touch-optimized, PWA support
-   - Desktop: Top navigation, full tables, multi-column layouts
-2. **RESTful API**: Future-ready for native mobile apps (iOS/Android)
+Ensure company_id scoping
 
-### Module Name
-The Rails application module is `EasyRh` (defined in config/application.rb:21).
+Add necessary unit tests
 
-### Business Logic Location
+Constraints:
 
-**French Legal Compliance Engine:**
-- **Location:** `app/domains/leave_management/services/leave_policy_engine.rb`
-- **Purpose:** Implements French labor law for leave management
-- **Key Features:**
-  - CP accrual: 2.5 days/month, max 30 days/year, expires May 31
-  - RTT calculation: Based on hours over 35h/week
-  - French holiday calendar (11 public holidays + Easter calculation)
-  - Validation rules: minimum consecutive leave, balance checks
-  - Auto-approval logic for low-risk requests
+No architectural redesign
 
-**Domain Models:**
-- `Employee` - Devise authentication, roles (employee/manager/hr/admin), manager hierarchy
-- `LeaveBalance` - Tracks CP, RTT, Maladie, Maternité, etc. per employee
-- `LeaveRequest` - Workflow: pending → approved/rejected, auto-approve logic
-- `TimeEntry` - Clock in/out, duration calc, 10h/day max (French law)
-- `WorkSchedule` - Weekly pattern, RTT eligibility, template-based
+No stack changes
 
-### Routes
+No speculative optimizations
 
-**Web UI Routes (Primary Interface):**
-- `GET /dashboard` - Employee dashboard with clock in/out, leave balances, weekly hours
-- `GET /time_entries` - Time tracking history (week/month view)
-- `POST /time_entries/clock_in` - Clock in
-- `POST /time_entries/clock_out` - Clock out
-- `GET /leave_requests` - Employee's leave requests (with filters: all/upcoming/history)
-- `GET /leave_requests/new` - Create new leave request
-- `POST /leave_requests/:id/cancel` - Cancel pending request
-- `GET /leave_requests/pending_approvals` - Manager: approve/reject requests
-- `POST /leave_requests/:id/approve` - Manager: approve request
-- `POST /leave_requests/:id/reject` - Manager: reject request
-- `GET /leave_requests/team_calendar` - Manager: team calendar view
+3️⃣ @qa — Reliability & Risk Audit
 
-**API Endpoints (Future Native Apps):**
-- `GET /api/v1/me/dashboard` - Single call returns: time entry, schedule, balances, team status
-- `POST /api/v1/time_entries/clock_in` - Mobile clock in with geolocation
-- `POST /api/v1/leave_requests` - Auto-approves if eligible
-- `GET /api/v1/leave_requests/team_calendar` - Manager view with coverage analysis
+Responsibilities:
 
-See `config/routes.rb` for complete route definition.
+Validate acceptance criteria
 
-### PWA Features
+Check edge cases
 
-**Progressive Web App Support:**
-- `manifest.json` - PWA manifest with app metadata, icons, theme colors
-- Service worker (`public/service-worker.js`) - Offline support, caching strategy
-- Installable on mobile home screen
-- App shortcuts for quick clock in and leave requests
-- Optimized for mobile browsers (Safari, Chrome)
+Detect N+1 queries
 
-**Mobile-First Responsive Design:**
-- Bottom navigation on mobile, top navigation on desktop
-- Touch-optimized buttons and forms
-- Responsive tables (cards on mobile, full tables on desktop)
-- Mobile date pickers and selectors
+Verify multi-tenant safety
 
-### Database Configuration
-- Development DB: `easy_rh_development`
-- Test DB: `easy_rh_test`
-- Production DB: `easy_rh_production` (requires `EASY_RH_DATABASE_PASSWORD` env var)
+Identify missing indexes
 
-### Asset Pipeline
-- Tailwind CSS source: `app/assets/stylesheets/application.tailwind.css`
-- Built CSS output: `app/assets/builds/application.css`
-- CSS is built using Tailwind CLI via the `build:css` npm script
+Identify missing transactions
 
-### Key Gems and Their Purposes
-- **devise**: User authentication system (config in config/initializers/devise.rb)
-- **pundit**: Authorization policies (likely in app/policies/)
-- **sidekiq**: Background job processing with Redis
-- **turbo-rails**: Hotwire's SPA-like navigation
-- **stimulus-rails**: Lightweight JavaScript framework
-- **jsbundling-rails**: JavaScript bundling
-- **cssbundling-rails**: CSS bundling (using Tailwind)
+Validate business invariants
 
-### Rails Configuration
-- System tests are disabled (config.generators.system_tests = nil)
-- Active Storage is commented out (not currently used)
-- Action Mailbox and Action Text are commented out (not currently used)
-- Test Unit is commented out (no test framework configured yet)
+Must classify findings:
 
-## Important Notes
+Critical
 
-### ⚠️ Known Issues
+High
 
-1. **Module autoloading issue** with `LeaveManagement::Services` namespace
-   - Temporary fix: RTT accrual callback disabled in `TimeEntry` model
-   - Proper fix needed: Restructure `app/domains/` or configure Zeitwerk
+Medium
 
-2. **API authentication incomplete**
-   - Devise configured for Employee model
-   - Token-based auth (JWT) needed for mobile API
-   - Current: `authenticate_employee!` placeholder in BaseController
+Low
 
-3. **Pundit policies not implemented**
-   - Gem added but no policy classes created
-   - Authorization checks exist but not enforced
+If failure → back to @developer.
 
-### Test Suite
-No tests configured yet. Recommended: RSpec with FactoryBot for French legal compliance engine testing.
+4️⃣ @ux — UX Validation (if UI involved)
 
-### Background Jobs
-Sidekiq configured but jobs not implemented yet:
-- Monthly CP accrual
-- Weekly/monthly RTT accrual
-- Leave expiration notifications
-- Email notifications for approvals
+Responsibilities:
 
-### Seed Data
-Run `rails db:seed` to create test accounts:
-- HR Admin: `admin@techcorp.fr` / `password123`
-- Manager: `thomas.martin@techcorp.fr` / `password123`
-- Employee: `julien.petit@techcorp.fr` / `password123`
+Validate mobile-first design
 
-### Docker Support
-Dockerfile present for containerization (deployment-ready).
+Check responsiveness (mobile + desktop)
 
-## Development Workflow
+Validate accessibility
 
-### Adding a New Leave Type
-1. Add to `LeaveBalance::LEAVE_TYPES` constant
-2. Update `LeavePolicyEngine` validation rules if needed
-3. Add localization in `config/locales/fr.yml`
+Validate interaction flows
 
-### Adding a New API Endpoint
-1. Create controller action in `app/api/v1/`
-2. Add route in `config/routes.rb` under `namespace :api > namespace :v1`
-3. Test with curl or Postman
-4. Document in PROJECT_SUMMARY.md
+Validate empty/error/loading states
 
-### Debugging French Legal Logic
-```ruby
-rails console
-employee = Employee.first
-engine = LeaveManagement::Services::LeavePolicyEngine.new(employee)
-engine.calculate_cp_balance # Test CP calculation
-engine.calculate_working_days(Date.parse('2025-08-01'), Date.parse('2025-08-15'))
-```
+Check consistency with Tailwind conventions
+
+If issue → back to @developer.
+
+5️⃣ @architect — Final Validation
+
+Responsibilities:
+
+Ensure architecture integrity preserved
+
+Confirm no domain leakage
+
+Confirm multi-tenancy discipline
+
+Validate long-term maintainability
+
+Update documentation / roadmap
+
+Only after this stage is the task considered complete.
+
+Skills Usage Policy (Strict)
+
+Each agent has strictly defined skill permissions. No cross-usage allowed.
+
+@architect
+
+Allowed: find-skills
+
+Forbidden: frontend-design, ui-ux-pro-max
+
+@developer
+
+Allowed: find-skills, frontend-design (implementation only)
+
+Forbidden: ui-ux-pro-max
+
+@ux
+
+Allowed: frontend-design, ui-ux-pro-max
+
+Forbidden: architectural decision-making
+
+@qa
+
+No external skills allowed.
+
+Focus: testing, validation, breaking edge cases.
+
+Any violation of skill boundaries must stop the workflow and return control to @architect.
+
+PROJECT OVERVIEW
+
+Easy-RH is a modern SaaS SIRH (HRIS) platform for French companies.
+
+Philosophy: Manager-first HR system.
+
+Target scale:
+
+200 companies
+
+10,000+ employees
+
+Millions of time entries
+
+Hundreds of thousands of leave requests
+
+This is not a prototype.
+This is a production-oriented SaaS system.
+
+ARCHITECTURAL PRINCIPLES
+1. Domain-Driven Structure (Mandatory)
+app/domains/
+  employees/
+  time_tracking/
+  leave_management/
+  scheduling/
+
+
+Rules:
+
+Business logic belongs inside domains.
+
+Controllers must remain thin.
+
+Cross-domain calls must be explicit.
+
+Aggregate roots must protect invariants.
+
+No domain leakage allowed.
+
+2. Multi-Tenancy — Security First
+
+Tenant isolation is mandatory.
+
+Every relevant model must:
+
+Be scoped by company_id
+
+Enforce authorization through Pundit
+
+Avoid cross-tenant queries
+
+Any feature that risks cross-company data leakage is considered Critical severity.
+
+3. Data Integrity
+
+Required safeguards:
+
+Use transactions when updating multiple related records
+
+State transitions must be centralized
+
+Background jobs must be idempotent
+
+Accrual logic must not double-apply
+
+Leave balances are financial-like data.
+Integrity is mandatory.
+
+4. Scalability Discipline
+
+All changes must consider:
+
+Query complexity growth
+
+Indexing strategy
+
+N+1 prevention
+
+Batch processing for large datasets
+
+Async processing for heavy logic
+
+Assume data volume will grow.
+
+TECHNOLOGY STACK
+
+Backend:
+
+Ruby 3.3.5
+
+Rails 7.1.6
+
+PostgreSQL
+
+Sidekiq
+
+Devise
+
+Pundit
+
+Frontend:
+
+Tailwind CSS
+
+Stimulus
+
+Turbo
+
+Importmap
+
+Architecture:
+
+Domain-Driven Design
+
+Service Objects
+
+Multi-tenant via company_id
+
+No new framework without Architect approval.
+
+KNOWN STRUCTURAL RISKS
+
+Zeitwerk namespace issue in LeaveManagement::Services
+
+Pundit policies not implemented yet
+
+JWT authentication incomplete for API
+
+No test suite configured
+
+Background jobs not fully implemented
+
+These must be handled carefully in future work.
+
+TESTING STRATEGY (MANDATORY MOVING FORWARD)
+
+Every critical business logic must have:
+
+Service-level tests
+
+Edge case coverage
+
+Tenant isolation validation
+
+Priority areas:
+
+Leave approval workflow
+
+Accrual logic
+
+Balance calculation
+
+Auto-approval rules
+
+PRODUCTION-READINESS CHECKLIST
+
+Before any feature is marked complete:
+
+ Authorization enforced
+
+ company_id correctly scoped
+
+ No N+1 queries
+
+ Transactions used where needed
+
+ Jobs idempotent
+
+ Tests added
+
+ Acceptance criteria validated
+
+ABSOLUTE PROHIBITIONS
+
+No cross-tenant shortcuts
+
+No bypassing Pundit
+
+No direct balance mutation without domain logic
+
+No controller-heavy business logic
+
+No speculative microservices
+
+No premature frontend SPA shift
+
+DECISION STANDARD
+
+Every decision must be defendable with:
+
+"Will this still make sense when we have 200 companies and 10,000 employees?"
+
+If the answer is uncertain, escalate to @architect.
+
+This repository is operated under CTO-level architectural discipline.
+
+Claude must act accordingly.

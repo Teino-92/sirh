@@ -11,7 +11,7 @@ FactoryBot.define do
 
     trait :active do
       clock_out { nil }
-      duration_minutes { nil }
+      duration_minutes { 0 }
     end
 
     trait :full_day do
@@ -38,14 +38,14 @@ FactoryBot.define do
     end
 
     trait :this_week do
-      clock_in { Date.current.beginning_of_week + 9.hours }
-      clock_out { Date.current.beginning_of_week + 18.hours }
+      clock_in { Date.current.beginning_of_week.to_time + 1.day + 9.hours }
+      clock_out { Date.current.beginning_of_week.to_time + 1.day + 18.hours }
       duration_minutes { 540 }
     end
 
     trait :last_week do
-      clock_in { 1.week.ago.beginning_of_week + 9.hours }
-      clock_out { 1.week.ago.beginning_of_week + 18.hours }
+      clock_in { 1.week.ago.beginning_of_week.to_time + 1.day + 9.hours }
+      clock_out { 1.week.ago.beginning_of_week.to_time + 1.day + 18.hours }
       duration_minutes { 540 }
     end
   end

@@ -57,6 +57,9 @@ group :development, :test do
 
   # Time travel for testing
   gem "timecop", "~> 0.9"
+
+  # Code coverage
+  gem "simplecov", "~> 0.22", require: false
 end
 
 group :development do

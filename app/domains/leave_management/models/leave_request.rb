@@ -60,11 +60,13 @@ class LeaveRequest < ApplicationRecord
 
   def conflicts_with_team?
     # Check if there are team coverage issues
-    employee.manager&.team_members
-      &.joins(:leave_requests)
-      &.merge(LeaveRequest.approved.for_date_range(start_date, end_date))
-      &.where.not(id: employee.id)
-      &.exists?
+    return false unless employee.manager
+
+    employee.manager.team_members
+      .joins(:leave_requests)
+      .merge(LeaveRequest.approved.for_date_range(start_date, end_date))
+      .where.not(id: employee.id)
+      .exists?
   end
 
   private

@@ -1,0 +1,17 @@
+<%
+  path = local_assigns[:path]
+  icon_paths = local_assigns[:icon_paths]
+  label = local_assigns[:label]
+  active = local_assigns[:active]
+  active_color = local_assigns[:active_color] || 'text-indigo-600 dark:text-indigo-400'
+  inactive_color = local_assigns[:inactive_color] || 'text-gray-600 dark:text-gray-300'
+%>
+
+<%= link_to path, class: "flex-1 flex flex-col items-center py-2 text-xs #{active ? active_color : inactive_color}" do %>
+  <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <% icon_paths.each do |path_attrs| %>
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="<%= path_attrs %>"></path>
+    <% end %>
+  </svg>
+  <span><%= label %></span>
+<% end %>

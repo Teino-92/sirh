@@ -1,0 +1,19 @@
+<%
+  title = local_assigns[:title]
+  action_text = local_assigns[:action_text]
+  action_path = local_assigns[:action_path]
+  css_class = local_assigns[:css_class] || ''
+%>
+
+<div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 <%= css_class %>">
+  <% if title %>
+    <div class="flex items-center justify-between mb-4">
+      <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100"><%= title %></h2>
+      <% if action_text && action_path %>
+        <%= link_to action_text, action_path, class: "text-sm text-indigo-600 hover:text-indigo-800 dark:text-indigo-400 dark:hover:text-indigo-300 font-medium" %>
+      <% end %>
+    </div>
+  <% end %>
+
+  <%= yield %>
+</div>

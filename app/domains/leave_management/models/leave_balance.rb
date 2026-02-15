@@ -24,7 +24,7 @@ class LeaveBalance < ApplicationRecord
 
   scope :cp, -> { where(leave_type: 'CP') }
   scope :rtt, -> { where(leave_type: 'RTT') }
-  scope :expiring_soon, -> { where('expires_at <= ?', 3.months.from_now).where.not(expires_at: nil) }
+  scope :expiring_soon, -> { where('expires_at <= ?', 3.months.from_now.to_date).where.not(expires_at: nil) }
 
   def self.leave_type_name(type)
     LEAVE_TYPES[type]
@@ -35,7 +35,7 @@ class LeaveBalance < ApplicationRecord
   end
 
   def expiring_soon?
-    expires_at.present? && expires_at <= 3.months.from_now
+    expires_at.present? && expires_at <= 3.months.from_now.to_date
   end
 
   def expired?

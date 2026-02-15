@@ -69,6 +69,9 @@ RSpec.configure do |config|
 
   # Devise test helpers
   config.include Devise::Test::IntegrationHelpers, type: :request
+
+  # ActiveSupport::Testing::TimeHelpers for time manipulation in tests
+  config.include ActiveSupport::Testing::TimeHelpers
 end
 
 # Shoulda Matchers configuration
