@@ -26,6 +26,10 @@ class Employee < ApplicationRecord
   # Leave requests approved by this employee (when they are a manager)
   has_many :approved_leave_requests, class_name: 'LeaveRequest', foreign_key: :approved_by_id
 
+  # Performance Layer relationships
+  has_many :owned_objectives, class_name: 'Objective', as: :owner, dependent: :destroy
+  has_many :managed_objectives, class_name: 'Objective', foreign_key: :manager_id, dependent: :nullify
+
   validates :first_name, :last_name, :contract_type, :start_date, presence: true
   validates :role, presence: true, inclusion: { in: %w[employee manager hr admin] }
 
