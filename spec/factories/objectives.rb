@@ -5,7 +5,7 @@ FactoryBot.define do
     association :created_by, factory: :employee
     association :owner, factory: :employee
 
-    title { "Q#{rand(1..4)} Objective - #{Faker::Lorem.words(3).join(' ')}" }
+    title { "Q#{rand(1..4)} Objective - #{Faker::Lorem.words(number: 3).join(' ')}" }
     description { Faker::Lorem.paragraph }
     status { :in_progress }
     priority { :medium }
