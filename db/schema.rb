@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2026_02_16_133517) do
+ActiveRecord::Schema[7.1].define(version: 2026_02_16_222219) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -142,6 +142,33 @@ ActiveRecord::Schema[7.1].define(version: 2026_02_16_133517) do
     t.index ["employee_id", "read_at"], name: "index_notifications_on_employee_id_and_read_at"
     t.index ["employee_id"], name: "index_notifications_on_employee_id"
     t.index ["organization_id", "created_at"], name: "index_notifications_on_organization_id_and_created_at"
+  end
+
+  create_table "objectives", force: :cascade do |t|
+    t.bigint "organization_id", null: false
+    t.bigint "manager_id", null: false
+    t.bigint "created_by_id", null: false
+    t.string "owner_type", null: false
+    t.bigint "owner_id", null: false
+    t.string "title", limit: 255, null: false
+    t.text "description"
+    t.string "status", default: "draft", null: false
+    t.string "priority", default: "medium"
+    t.date "deadline", null: false
+    t.date "completed_at"
+    t.jsonb "metadata", default: {}, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["created_by_id"], name: "index_objectives_on_created_by_id"
+    t.index ["deadline"], name: "index_objectives_on_deadline"
+    t.index ["manager_id", "deadline"], name: "idx_objectives_overdue", where: "((status)::text = ANY ((ARRAY['draft'::character varying, 'in_progress'::character varying, 'blocked'::character varying])::text[]))"
+    t.index ["manager_id", "status"], name: "idx_objectives_manager_status"
+    t.index ["manager_id"], name: "index_objectives_on_manager_id"
+    t.index ["organization_id", "status", "deadline"], name: "idx_objectives_org_status_deadline"
+    t.index ["organization_id"], name: "index_objectives_on_organization_id"
+    t.index ["owner_type", "owner_id", "status"], name: "idx_objectives_owner_status"
+    t.index ["owner_type", "owner_id"], name: "index_objectives_on_owner"
+    t.index ["status"], name: "index_objectives_on_status"
   end
 
   create_table "organizations", force: :cascade do |t|
@@ -342,6 +369,9 @@ ActiveRecord::Schema[7.1].define(version: 2026_02_16_133517) do
   add_foreign_key "leave_requests", "organizations"
   add_foreign_key "notifications", "employees"
   add_foreign_key "notifications", "organizations"
+  add_foreign_key "objectives", "employees", column: "created_by_id"
+  add_foreign_key "objectives", "employees", column: "manager_id"
+  add_foreign_key "objectives", "organizations"
   add_foreign_key "solid_queue_blocked_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_claimed_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_failed_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
