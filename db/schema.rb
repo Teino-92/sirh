@@ -10,9 +10,30 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2026_02_16_222219) do
+ActiveRecord::Schema[7.1].define(version: 2026_02_16_222417) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "action_items", force: :cascade do |t|
+    t.bigint "one_on_one_id", null: false
+    t.bigint "responsible_id", null: false
+    t.bigint "objective_id"
+    t.text "description", null: false
+    t.date "deadline", null: false
+    t.string "status", default: "pending", null: false
+    t.string "responsible_type", null: false
+    t.date "completed_at"
+    t.text "completion_notes"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["deadline"], name: "index_action_items_on_deadline"
+    t.index ["objective_id"], name: "index_action_items_on_objective_id"
+    t.index ["one_on_one_id"], name: "index_action_items_on_one_on_one_id"
+    t.index ["responsible_id", "deadline"], name: "idx_action_items_overdue", where: "((status)::text = ANY ((ARRAY['pending'::character varying, 'in_progress'::character varying])::text[]))"
+    t.index ["responsible_id", "status", "deadline"], name: "idx_action_items_responsible"
+    t.index ["responsible_id"], name: "index_action_items_on_responsible_id"
+    t.index ["status"], name: "index_action_items_on_status"
+  end
 
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
@@ -169,6 +190,38 @@ ActiveRecord::Schema[7.1].define(version: 2026_02_16_222219) do
     t.index ["owner_type", "owner_id", "status"], name: "idx_objectives_owner_status"
     t.index ["owner_type", "owner_id"], name: "index_objectives_on_owner"
     t.index ["status"], name: "index_objectives_on_status"
+  end
+
+  create_table "one_on_one_objectives", force: :cascade do |t|
+    t.bigint "one_on_one_id", null: false
+    t.bigint "objective_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["objective_id"], name: "index_one_on_one_objectives_on_objective_id"
+    t.index ["one_on_one_id", "objective_id"], name: "idx_unique_one_on_one_objectives", unique: true
+    t.index ["one_on_one_id"], name: "index_one_on_one_objectives_on_one_on_one_id"
+  end
+
+  create_table "one_on_ones", force: :cascade do |t|
+    t.bigint "organization_id", null: false
+    t.bigint "manager_id", null: false
+    t.bigint "employee_id", null: false
+    t.datetime "scheduled_at", null: false
+    t.datetime "completed_at"
+    t.string "status", default: "scheduled", null: false
+    t.text "notes"
+    t.text "agenda"
+    t.jsonb "metadata", default: {}, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["employee_id", "scheduled_at"], name: "idx_one_on_ones_employee"
+    t.index ["employee_id"], name: "index_one_on_ones_on_employee_id"
+    t.index ["manager_id", "scheduled_at"], name: "idx_one_on_ones_upcoming", where: "((status)::text = 'scheduled'::text)"
+    t.index ["manager_id", "status", "scheduled_at"], name: "idx_one_on_ones_manager"
+    t.index ["manager_id"], name: "index_one_on_ones_on_manager_id"
+    t.index ["organization_id"], name: "index_one_on_ones_on_organization_id"
+    t.index ["scheduled_at"], name: "index_one_on_ones_on_scheduled_at"
+    t.index ["status"], name: "index_one_on_ones_on_status"
   end
 
   create_table "organizations", force: :cascade do |t|
@@ -358,6 +411,9 @@ ActiveRecord::Schema[7.1].define(version: 2026_02_16_222219) do
     t.index ["organization_id", "created_at"], name: "index_work_schedules_on_organization_id_and_created_at"
   end
 
+  add_foreign_key "action_items", "employees", column: "responsible_id"
+  add_foreign_key "action_items", "objectives"
+  add_foreign_key "action_items", "one_on_ones"
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "employees", "employees", column: "manager_id"
@@ -372,6 +428,11 @@ ActiveRecord::Schema[7.1].define(version: 2026_02_16_222219) do
   add_foreign_key "objectives", "employees", column: "created_by_id"
   add_foreign_key "objectives", "employees", column: "manager_id"
   add_foreign_key "objectives", "organizations"
+  add_foreign_key "one_on_one_objectives", "objectives"
+  add_foreign_key "one_on_one_objectives", "one_on_ones"
+  add_foreign_key "one_on_ones", "employees"
+  add_foreign_key "one_on_ones", "employees", column: "manager_id"
+  add_foreign_key "one_on_ones", "organizations"
   add_foreign_key "solid_queue_blocked_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_claimed_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_failed_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
