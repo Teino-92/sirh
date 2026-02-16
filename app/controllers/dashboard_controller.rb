@@ -30,11 +30,12 @@ class DashboardController < ApplicationController
                                 end
 
     # My pending requests
-    @my_pending_requests = @employee.leave_requests.pending
+    @my_pending_requests = @employee.leave_requests.pending.includes(:approved_by)
     @upcoming_leaves = @employee.leave_requests.approved
                                .where('start_date >= ?', Date.current)
                                .order(start_date: :asc)
                                .limit(3)
+                               .includes(:approved_by)
 
     # Weekly summary
     @weekly_hours = calculate_weekly_hours

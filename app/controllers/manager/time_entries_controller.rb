@@ -13,6 +13,7 @@ module Manager
                         .where(employee: @team_member)
                         .order(clock_in: :desc)
                         .limit(100)
+                        .includes(:employee, :validated_by)
 
       @pending_entries = @time_entries.pending_validation
       @validated_entries = @time_entries.validated

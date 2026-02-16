@@ -12,11 +12,11 @@ class LeaveRequestsController < ApplicationController
     # Filter by period - only show current employee's requests
     case params[:filter]
     when 'upcoming'
-      @leave_requests = policy_scope(LeaveRequest).approved.where('start_date >= ?', Date.current).order(:start_date)
+      @leave_requests = policy_scope(LeaveRequest).approved.where('start_date >= ?', Date.current).order(:start_date).includes(:employee, :approved_by)
     when 'history'
-      @leave_requests = policy_scope(LeaveRequest).where('end_date < ?', Date.current).order(start_date: :desc)
+      @leave_requests = policy_scope(LeaveRequest).where('end_date < ?', Date.current).order(start_date: :desc).includes(:employee, :approved_by)
     else
-      @leave_requests = policy_scope(LeaveRequest).order(created_at: :desc)
+      @leave_requests = policy_scope(LeaveRequest).order(created_at: :desc).includes(:employee, :approved_by)
     end
   end
 
