@@ -29,6 +29,9 @@ class Employee < ApplicationRecord
   # Performance Layer relationships
   has_many :owned_objectives, class_name: 'Objective', as: :owner, dependent: :destroy
   has_many :managed_objectives, class_name: 'Objective', foreign_key: :manager_id, dependent: :nullify
+  has_many :managed_one_on_ones, class_name: 'OneOnOne', foreign_key: :manager_id, dependent: :nullify
+  has_many :employee_one_on_ones, class_name: 'OneOnOne', foreign_key: :employee_id, dependent: :destroy
+  has_many :action_items, foreign_key: :responsible_id, dependent: :nullify
 
   validates :first_name, :last_name, :contract_type, :start_date, presence: true
   validates :role, presence: true, inclusion: { in: %w[employee manager hr admin] }
