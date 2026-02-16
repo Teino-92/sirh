@@ -37,6 +37,13 @@ Rails.application.routes.draw do
 
   resources :leave_balances, only: [:index]
   resources :work_schedules, only: [:show, :edit, :update]
+  resources :objectives, only: [:index, :show]
+  resources :one_on_ones, only: [:index, :show]
+  resources :action_items, only: [:index] do
+    member do
+      patch :complete
+    end
+  end
 
   resources :notifications, only: [:index] do
     member do
@@ -50,6 +57,13 @@ Rails.application.routes.draw do
   # Manager-specific routes
   namespace :manager do
     get :dashboard
+    resources :objectives
+    resources :one_on_ones do
+      member do
+        patch :complete
+      end
+    end
+    resources :action_items, only: [:update]
     resources :team_members, only: [:index, :show] do
       resource :work_schedule, only: [:new, :create, :edit, :update]
       resources :weekly_schedule_plans
