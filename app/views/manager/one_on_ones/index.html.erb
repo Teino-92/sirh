@@ -1,0 +1,24 @@
+<div class="container mx-auto px-4 py-6">
+  <div class="flex justify-between items-center mb-6">
+    <h1 class="text-2xl font-bold">One-on-Ones</h1>
+    <%= link_to 'Schedule 1:1', new_manager_one_on_one_path, class: 'btn btn-primary' %>
+  </div>
+
+  <div class="space-y-4">
+    <% @one_on_ones.each do |one_on_one| %>
+      <div class="card bg-white shadow-sm p-4">
+        <div class="flex justify-between items-start">
+          <div class="flex-1">
+            <h3 class="font-semibold text-lg">
+              <%= link_to "1:1 with #{one_on_one.employee.full_name}", manager_one_on_one_path(one_on_one), class: 'hover:text-blue-600' %>
+            </h3>
+            <p class="text-sm text-gray-600 mt-1">
+              <%= one_on_one.scheduled_at.to_s(:long) %>
+            </p>
+          </div>
+          <span class="badge badge-<%= one_on_one.status %>"><%= one_on_one.status.humanize %></span>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>

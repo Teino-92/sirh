@@ -1,0 +1,29 @@
+<div class="container mx-auto px-4 py-6">
+  <div class="flex justify-between items-center mb-6">
+    <h1 class="text-2xl font-bold">Team Objectives</h1>
+    <%= link_to 'New Objective', new_manager_objective_path, class: 'btn btn-primary' %>
+  </div>
+
+  <div class="space-y-4">
+    <% @objectives.each do |objective| %>
+      <div class="card bg-white shadow-sm p-4">
+        <div class="flex justify-between items-start">
+          <div class="flex-1">
+            <h3 class="font-semibold text-lg">
+              <%= link_to objective.title, manager_objective_path(objective), class: 'hover:text-blue-600' %>
+            </h3>
+            <p class="text-sm text-gray-600 mt-1">
+              <%= objective.owner.full_name %> • <%= objective.deadline.to_s(:long) %>
+            </p>
+          </div>
+          <span class="badge badge-<%= objective.status %>"><%= objective.status.humanize %></span>
+        </div>
+        <% if objective.overdue? %>
+          <div class="mt-2 text-sm text-red-600 font-medium">
+            Overdue by <%= distance_of_time_in_words(objective.deadline, Date.current) %>
+          </div>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+</div>
