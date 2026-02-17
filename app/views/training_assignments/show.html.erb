@@ -33,6 +33,9 @@
       <% if @assignment.completed_at.present? %>
         <p><strong>Completed:</strong> <%= @assignment.completed_at.strftime('%B %d, %Y at %H:%M') %></p>
       <% end %>
+      <% if @assignment.completion_notes.present? %>
+        <p><strong>Completion notes:</strong> <%= @assignment.completion_notes %></p>
+      <% end %>
     </div>
 
     <% if @assignment.training.description.present? %>

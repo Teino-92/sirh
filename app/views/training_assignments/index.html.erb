@@ -31,9 +31,7 @@
           </div>
           <div class="flex gap-2 items-center ml-4">
             <span class="badge badge-<%= assignment.status %>"><%= assignment.status.humanize %></span>
-            <% if assignment.active? %>
-              <%= link_to 'View', training_assignment_path(assignment), class: 'btn btn-sm btn-outline' %>
-            <% end %>
+            <%= link_to 'View', training_assignment_path(assignment), class: 'btn btn-sm btn-outline' %>
           </div>
         </div>
       </div>

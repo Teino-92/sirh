@@ -10,6 +10,9 @@
   </div>
 
   <div class="flex gap-2 mb-6 overflow-x-auto">
+    <%= link_to 'All types',
+          manager_trainings_path(archived: params[:archived]),
+          class: "btn btn-xs #{params[:training_type].blank? ? 'btn-secondary' : 'btn-outline'}" %>
     <% Training.training_types.keys.each do |type| %>
       <%= link_to type.humanize,
             manager_trainings_path(training_type: type, archived: params[:archived]),
