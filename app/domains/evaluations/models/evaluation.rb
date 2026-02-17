@@ -11,6 +11,8 @@ class Evaluation < ApplicationRecord
   # Optional relationships (loose coupling)
   has_many :evaluation_objectives, dependent: :destroy
   has_many :objectives, through: :evaluation_objectives
+  has_many :evaluation_trainings, dependent: :destroy
+  has_many :training_assignments, through: :evaluation_trainings
 
   # Enums
   enum status: {
