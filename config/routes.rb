@@ -50,6 +50,12 @@ Rails.application.routes.draw do
     end
   end
 
+  resources :training_assignments, only: [:index, :show] do
+    member do
+      patch :complete
+    end
+  end
+
   resources :notifications, only: [:index] do
     member do
       post :mark_as_read
@@ -75,6 +81,13 @@ Rails.application.routes.draw do
         patch :submit_manager_review
       end
     end
+    resources :trainings do
+      member do
+        patch :archive
+        patch :unarchive
+      end
+    end
+
     resources :team_members, only: [:index, :show] do
       resource :work_schedule, only: [:new, :create, :edit, :update]
       resources :weekly_schedule_plans
