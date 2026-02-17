@@ -7,9 +7,8 @@ class Training < ApplicationRecord
   has_many :training_assignments, dependent: :destroy
   has_many :employees, through: :training_assignments
 
-  # Optional link to evaluations
-  has_many :evaluation_trainings, dependent: :nullify
-  has_many :evaluations, through: :evaluation_trainings
+  # Optional link to evaluations (through training_assignments)
+  has_many :evaluations, through: :training_assignments, source: :evaluations
 
   # Enums
   enum training_type: {
