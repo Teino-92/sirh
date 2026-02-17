@@ -57,6 +57,7 @@ class Objective < ApplicationRecord
   end
 
   def complete!
+    return if completed?
     update!(status: :completed, completed_at: Time.current)
   end
 

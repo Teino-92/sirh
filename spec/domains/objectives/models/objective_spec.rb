@@ -161,6 +161,18 @@ RSpec.describe Objective, type: :model do
         }.to change { objective.reload.status }.to('completed')
           .and change { objective.completed_at }.from(nil)
       end
+
+      it 'is idempotent — does not update completed_at when already completed' do
+        objective = create(:objective, organization: organization, manager: manager, created_by: manager, owner: employee)
+        objective.complete!
+        original_completed_at = objective.reload.completed_at
+
+        travel 1.hour do
+          objective.complete!
+        end
+
+        expect(objective.reload.completed_at).to eq(original_completed_at)
+      end
     end
   end
 

@@ -105,6 +105,18 @@ RSpec.describe ActionItem, type: :model do
         }.to change { action_item.reload.status }.to('completed')
           .and change { action_item.completed_at }.from(nil)
       end
+
+      it 'is idempotent — does not update completed_at when already completed' do
+        action_item = create(:action_item, one_on_one: one_on_one, responsible: employee)
+        action_item.complete!
+        original_completed_at = action_item.reload.completed_at
+
+        travel 1.hour do
+          action_item.complete!
+        end
+
+        expect(action_item.reload.completed_at).to eq(original_completed_at)
+      end
     end
   end
 
