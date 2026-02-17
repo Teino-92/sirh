@@ -55,7 +55,7 @@ module Manager
     end
 
     def objective_params
-      params.require(:objective).permit(:title, :description, :owner_id, :owner_type, :deadline, :priority, :status)
+      params.require(:objective).permit(:title, :description, :owner_id, :owner_type, :deadline, :priority)
     end
 
     def current_organization
