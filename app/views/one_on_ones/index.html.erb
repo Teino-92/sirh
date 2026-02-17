@@ -1,0 +1,36 @@
+<div class="max-w-4xl mx-auto px-4 py-6">
+  <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-6">Mes 1:1</h1>
+
+  <% if @one_on_ones.any? %>
+    <div class="space-y-4">
+      <% @one_on_ones.each do |meeting| %>
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4">
+          <div class="flex justify-between items-start">
+            <div class="flex-1">
+              <h3 class="font-semibold text-gray-900 dark:text-gray-100">
+                1:1 avec <%= meeting.manager.full_name %>
+              </h3>
+              <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                <%= l(meeting.scheduled_at, format: :long) %>
+              </p>
+              <% if meeting.agenda.present? %>
+                <p class="text-sm text-gray-700 dark:text-gray-300 mt-2"><%= meeting.agenda %></p>
+              <% end %>
+            </div>
+            <span class="ml-3 px-2 py-1 text-xs font-medium rounded bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300">
+              <%= meeting.status.humanize %>
+            </span>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  <% else %>
+    <div class="text-center py-12 text-gray-500 dark:text-gray-400">
+      <svg class="mx-auto h-12 w-12 text-gray-300 dark:text-gray-600 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z" />
+      </svg>
+      <p class="text-lg font-medium">Aucun 1:1 planifié</p>
+      <p class="text-sm mt-1">Votre manager planifiera bientôt un 1:1 avec vous.</p>
+    </div>
+  <% end %>
+</div>

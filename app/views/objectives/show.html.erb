@@ -1,0 +1,42 @@
+<div class="max-w-3xl mx-auto px-4 py-6">
+  <%= link_to "&larr; Mes objectifs".html_safe, objectives_path, class: "text-sm text-gray-600 dark:text-gray-400 hover:text-indigo-600 mb-4 inline-block" %>
+
+  <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+    <div class="flex justify-between items-start mb-4">
+      <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100 flex-1"><%= @objective.title %></h1>
+      <span class="ml-3 px-3 py-1 text-sm font-medium rounded-full bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300">
+        <%= @objective.status.humanize %>
+      </span>
+    </div>
+
+    <% if @objective.description.present? %>
+      <p class="text-gray-700 dark:text-gray-300 mb-6"><%= @objective.description %></p>
+    <% end %>
+
+    <dl class="grid grid-cols-2 gap-4 text-sm">
+      <div>
+        <dt class="font-medium text-gray-600 dark:text-gray-400">Priorité</dt>
+        <dd class="text-gray-900 dark:text-gray-100 mt-1"><%= @objective.priority.humanize %></dd>
+      </div>
+      <div>
+        <dt class="font-medium text-gray-600 dark:text-gray-400">Échéance</dt>
+        <dd class="mt-1 <%= @objective.overdue? ? 'text-red-600 font-medium' : 'text-gray-900 dark:text-gray-100' %>">
+          <%= l(@objective.deadline, format: :long) %>
+          <% if @objective.overdue? %>
+            <span class="ml-1 text-xs">(en retard)</span>
+          <% end %>
+        </dd>
+      </div>
+      <div>
+        <dt class="font-medium text-gray-600 dark:text-gray-400">Manager</dt>
+        <dd class="text-gray-900 dark:text-gray-100 mt-1"><%= @objective.manager.full_name %></dd>
+      </div>
+      <% if @objective.completed_at.present? %>
+        <div>
+          <dt class="font-medium text-gray-600 dark:text-gray-400">Complété le</dt>
+          <dd class="text-gray-900 dark:text-gray-100 mt-1"><%= l(@objective.completed_at.to_date, format: :long) %></dd>
+        </div>
+      <% end %>
+    </dl>
+  </div>
+</div>

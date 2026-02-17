@@ -1,0 +1,35 @@
+<div class="max-w-3xl mx-auto px-4 py-6">
+  <%= link_to "&larr; Mes 1:1".html_safe, one_on_ones_path, class: "text-sm text-gray-600 dark:text-gray-400 hover:text-indigo-600 mb-4 inline-block" %>
+
+  <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+    <div class="flex justify-between items-start mb-6">
+      <h1 class="text-xl font-bold text-gray-900 dark:text-gray-100 flex-1">
+        1:1 avec <%= @one_on_one.manager.full_name %>
+      </h1>
+      <span class="ml-3 px-3 py-1 text-sm font-medium rounded-full bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300">
+        <%= @one_on_one.status.humanize %>
+      </span>
+    </div>
+
+    <dl class="space-y-4 text-sm">
+      <div>
+        <dt class="font-medium text-gray-600 dark:text-gray-400">Date</dt>
+        <dd class="text-gray-900 dark:text-gray-100 mt-1"><%= l(@one_on_one.scheduled_at, format: :long) %></dd>
+      </div>
+
+      <% if @one_on_one.agenda.present? %>
+        <div>
+          <dt class="font-medium text-gray-600 dark:text-gray-400">Agenda</dt>
+          <dd class="text-gray-900 dark:text-gray-100 mt-1"><%= @one_on_one.agenda %></dd>
+        </div>
+      <% end %>
+
+      <% if @one_on_one.notes.present? %>
+        <div>
+          <dt class="font-medium text-gray-600 dark:text-gray-400">Notes</dt>
+          <dd class="text-gray-700 dark:text-gray-300 mt-1 whitespace-pre-wrap"><%= @one_on_one.notes %></dd>
+        </div>
+      <% end %>
+    </dl>
+  </div>
+</div>
