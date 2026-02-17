@@ -7,9 +7,6 @@ class Training < ApplicationRecord
   has_many :training_assignments, dependent: :destroy
   has_many :employees, through: :training_assignments
 
-  # Optional link to evaluations (through training_assignments)
-  has_many :evaluations, through: :training_assignments, source: :evaluations
-
   # Enums
   enum training_type: {
     internal: 'internal',
@@ -24,6 +21,7 @@ class Training < ApplicationRecord
   validates :description, length: { maximum: 5000 }
   validates :training_type, presence: true
   validates :duration_estimate, numericality: { greater_than: 0 }, allow_nil: true
+  validates :external_url, format: { with: URI::DEFAULT_PARSER.make_regexp(%w[http https]), message: 'must be a valid URL' }, allow_blank: true
 
   # Scopes
   scope :active, -> { where(archived_at: nil) }

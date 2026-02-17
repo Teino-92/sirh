@@ -6,7 +6,7 @@ class CreateTrainings < ActiveRecord::Migration[7.1]
       t.string :title, null: false, limit: 255
       t.text :description
       t.string :training_type, null: false, index: true
-      t.integer :duration_estimate  # Minutes
+      t.integer :duration_estimate  # Hours
       t.string :provider
       t.string :external_url
       t.datetime :archived_at, index: true

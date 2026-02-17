@@ -5,7 +5,9 @@ module Trainings
         @organization = organization
       end
 
-      # Identify employees without completed training in the last N months
+      # Identify employees without completed training in the last N months.
+      # Returns an ActiveRecord::Relation — callers must .includes() associations
+      # they intend to use to avoid N+1 queries.
       def employees_without_training(months: 6)
         ActsAsTenant.with_tenant(@organization) do
           cutoff = months.months.ago

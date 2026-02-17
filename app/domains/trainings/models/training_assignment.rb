@@ -39,9 +39,7 @@ class TrainingAssignment < ApplicationRecord
 
   def complete!(notes: nil)
     return if completed?
-    transaction do
-      update!(status: :completed, completed_at: Time.current, completion_notes: notes)
-    end
+    update!(status: :completed, completed_at: Time.current, completion_notes: notes)
   end
 
   private
