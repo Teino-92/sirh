@@ -1,6 +1,6 @@
 # PHASE 2 ROADMAP — PERFORMANCE LAYER
 
-**Date**: 2026-02-16
+**Date**: 2026-02-16 (Sprint 2.4 added 2026-02-17)
 **Target Agent**: @developer
 **Source**: PERFORMANCE_LAYER_ARCHITECTURE.md (approved by @architect)
 **Priority**: Execute sequentially, Sprint by Sprint
@@ -28,7 +28,7 @@ This is your **step-by-step implementation guide** for the Performance Layer (Ob
 | **2.1** | Objectives + 1:1 Meetings | 8-10h | None | ✅ COMPLETE (architect validated 2026-02-17) |
 | **2.2** | Evaluations System | 6-8h | Sprint 2.1 | ✅ COMPLETE (architect validated 2026-02-17) |
 | **2.3** | Training Tracker | 6-8h | Sprint 2.2 | ✅ COMPLETE (architect validated 2026-02-17) |
-| **2.4** | Dashboards + Polish | 4-6h | Sprint 2.3 | 🔄 READY |
+| **2.4** | Dashboards + Polish | 4-6h | Sprint 2.3 | ✅ COMPLETE (developer implemented 2026-02-17, 893 tests passing) |
 
 **Total Estimated Effort**: 24-32 hours (3-4 working days)
 
@@ -1049,3 +1049,1074 @@ Load AGENT.qa.md and execute accordingly.
 **End of Sprint 2.1 Instructions**
 
 Next Sprint: **2.2 - Evaluations System** (6-8 hours)
+
+---
+
+# SPRINT 2.4 — DASHBOARDS + POLISH
+
+**Objective**: Integrate Performance Layer into dashboard, add missing views, fix data integrity issue
+**Complexity**: LOW-MEDIUM (view-heavy, one data integrity fix)
+**Priority**: REQUIRED — completes Phase 2
+
+**Architecture**: @architect validated 2026-02-17
+
+---
+
+## 🎯 Acceptance Criteria
+
+### Data Integrity (non-negotiable pre-condition)
+- [ ] `Manager::ObjectivesController#objective_params` does NOT permit `:status`
+- [ ] Status transitions only via domain methods (`complete!`, etc.)
+
+### Dashboard
+- [ ] Manager dashboard shows: overdue objectives count, upcoming 1:1s (next 7 days), pending manager reviews count
+- [ ] Employee dashboard shows: my active objectives count, my next 1:1, my pending training assignments count
+- [ ] All new dashboard queries use `.includes()` — no N+1 queries
+- [ ] Dashboard renders without error when employee has no objectives/1:1s/trainings (empty state, nil-safe)
+
+### Views — Manager
+- [ ] `manager/objectives/show` renders without ActionView::MissingTemplate
+- [ ] `manager/objectives/new` and `edit` render and submit correctly
+- [ ] `manager/one_on_ones/show`, `new`, `edit` render and submit correctly
+- [ ] `manager/evaluations/show`, `new`, `edit` render and submit correctly
+
+### Views — Employee (self-service)
+- [ ] `objectives/index` renders current employee's objectives
+- [ ] `one_on_ones/index` renders current employee's 1:1s
+- [ ] `objectives_controller.rb` implements `index` and `show` actions (currently empty)
+- [ ] `one_on_ones_controller.rb` implements `index` and `show` actions (currently empty)
+
+### Tests
+- [ ] `bundle exec rspec` → 0 failures
+- [ ] Coverage does not regress below 28.12%
+
+---
+
+## 🛠️ IMPLEMENTATION STEPS
+
+### TASK 2.4.1 — Fix ObjectivesController Params (Data Integrity)
+
+**Duration**: 5 minutes
+
+**File**: `app/controllers/manager/objectives_controller.rb`
+
+**Problem** (line 58):
+```ruby
+def objective_params
+  params.require(:objective).permit(:title, :description, :owner_id, :owner_type, :deadline, :priority, :status)
+  # ❌ :status permits bypassing domain methods (same issue QA flagged in evaluations)
+end
+```
+
+**Fix**:
+```ruby
+def objective_params
+  params.require(:objective).permit(:title, :description, :owner_id, :owner_type, :deadline, :priority)
+  # ✅ :status removed — use complete!, in_progress! etc. in dedicated actions
+end
+```
+
+**Commit**:
+```bash
+git add app/controllers/manager/objectives_controller.rb
+git commit -m "fix(objectives): remove :status from objective_params strong parameters
+
+- Prevents status bypass via mass-assignment (same pattern as eval HIGH-1)
+- Status transitions must use domain methods (complete!, blocked!, etc.)
+- Data integrity: workflow guards enforced
+
+Sprint 2.4 - Task 2.4.1"
+```
+
+---
+
+### TASK 2.4.2 — Dashboard Controller: Performance Layer Integration
+
+**Duration**: 45 minutes
+
+**File**: `app/controllers/dashboard_controller.rb`
+
+**Current state**: No Performance Layer data loaded at all.
+
+**Add to `show` action** (after existing `@upcoming_leaves`):
+
+```ruby
+# Performance Layer (for all employees)
+load_performance_layer_data
+
+# ... keep existing calculate_weekly_hours private method
+```
+
+**Add private method**:
+```ruby
+def load_performance_layer_data
+  # Employee: my active objectives
+  @my_active_objectives_count = @employee.owned_objectives.active.count
+
+  # Employee: my next 1:1
+  @my_next_one_on_one = @employee.employee_one_on_ones
+                                  .scheduled
+                                  .where('scheduled_at >= ?', Time.current)
+                                  .order(scheduled_at: :asc)
+                                  .first
+
+  # Employee: my pending training assignments
+  @my_pending_training_count = @employee.training_assignments.pending.count
+
+  # Manager-only additions
+  if @employee.manager?
+    # Overdue objectives for team
+    @team_overdue_objectives_count = Objective
+      .for_manager(@employee)
+      .overdue
+      .count
+
+    # Upcoming 1:1s (next 7 days)
+    @upcoming_one_on_ones = OneOnOne
+      .where(manager: @employee)
+      .scheduled
+      .where(scheduled_at: Time.current..7.days.from_now)
+      .includes(:employee)
+      .order(scheduled_at: :asc)
+      .limit(3)
+
+    # Pending manager reviews (evaluations awaiting manager input)
+    @pending_manager_reviews_count = Evaluation
+      .for_manager(@employee)
+      .manager_review_pending
+      .count
+  end
+end
+```
+
+**Commit**:
+```bash
+git add app/controllers/dashboard_controller.rb
+git commit -m "feat(dashboard): integrate Performance Layer widgets
+
+- Employee: active objectives count, next 1:1, pending training count
+- Manager: overdue objectives count, upcoming 1:1s (7 days), pending reviews count
+- All queries nil-safe (no error when employee has no data)
+- Eager loading on upcoming_one_on_ones (:employee)
+
+Sprint 2.4 - Task 2.4.2"
+```
+
+---
+
+### TASK 2.4.3 — Dashboard View: Add Performance Layer Widgets
+
+**Duration**: 1.5 hours
+
+**File**: `app/views/dashboard/show.html.erb`
+
+**Add to the right column sidebar** (after existing Manager Pending Approvals block):
+
+**For all employees — Performance summary widget**:
+```erb
+<%# Performance Layer - Employee Summary %>
+<% if @my_active_objectives_count > 0 || @my_pending_training_count > 0 || @my_next_one_on_one %>
+  <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+    <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Ma performance</h2>
+    <div class="space-y-3">
+      <% if @my_active_objectives_count > 0 %>
+        <%= link_to objectives_path, class: "flex items-center justify-between p-3 bg-blue-50 dark:bg-blue-900 rounded-lg hover:bg-blue-100 dark:hover:bg-blue-800 transition-colors" do %>
+          <div class="flex items-center">
+            <svg class="w-5 h-5 text-blue-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span class="text-sm font-medium text-gray-900 dark:text-gray-100">Objectifs actifs</span>
+          </div>
+          <span class="text-sm font-bold text-blue-700 dark:text-blue-300"><%= @my_active_objectives_count %></span>
+        <% end %>
+      <% end %>
+
+      <% if @my_next_one_on_one %>
+        <div class="flex items-center p-3 bg-purple-50 dark:bg-purple-900 rounded-lg">
+          <svg class="w-5 h-5 text-purple-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z" />
+          </svg>
+          <div>
+            <p class="text-sm font-medium text-gray-900 dark:text-gray-100">Prochain 1:1</p>
+            <p class="text-xs text-gray-600 dark:text-gray-400"><%= l(@my_next_one_on_one.scheduled_at, format: :short) %></p>
+          </div>
+        </div>
+      <% end %>
+
+      <% if @my_pending_training_count > 0 %>
+        <%= link_to training_assignments_path, class: "flex items-center justify-between p-3 bg-yellow-50 dark:bg-yellow-900 rounded-lg hover:bg-yellow-100 dark:hover:bg-yellow-800 transition-colors" do %>
+          <div class="flex items-center">
+            <svg class="w-5 h-5 text-yellow-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+            </svg>
+            <span class="text-sm font-medium text-gray-900 dark:text-gray-100">Formations à compléter</span>
+          </div>
+          <span class="text-sm font-bold text-yellow-700 dark:text-yellow-300"><%= @my_pending_training_count %></span>
+        <% end %>
+      <% end %>
+    </div>
+  </div>
+<% end %>
+```
+
+**For managers — Performance management widget** (add after existing manager pending approvals):
+```erb
+<%# Manager: Performance Management Actions %>
+<% if @employee.manager? && (@team_overdue_objectives_count > 0 || @pending_manager_reviews_count > 0) %>
+  <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+    <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Performance équipe</h2>
+    <div class="space-y-3">
+      <% if @team_overdue_objectives_count > 0 %>
+        <%= link_to manager_objectives_path(status: :in_progress), class: "flex items-center justify-between p-3 bg-red-50 dark:bg-red-900 rounded-lg hover:bg-red-100 dark:hover:bg-red-800 transition-colors" do %>
+          <div class="flex items-center">
+            <svg class="w-5 h-5 text-red-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span class="text-sm font-medium text-gray-900 dark:text-gray-100">Objectifs en retard</span>
+          </div>
+          <span class="text-sm font-bold text-red-700 dark:text-red-300"><%= @team_overdue_objectives_count %></span>
+        <% end %>
+      <% end %>
+
+      <% if @pending_manager_reviews_count > 0 %>
+        <%= link_to manager_evaluations_path(status: :manager_review_pending), class: "flex items-center justify-between p-3 bg-orange-50 dark:bg-orange-900 rounded-lg hover:bg-orange-100 dark:hover:bg-orange-800 transition-colors" do %>
+          <div class="flex items-center">
+            <svg class="w-5 h-5 text-orange-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
+            </svg>
+            <span class="text-sm font-medium text-gray-900 dark:text-gray-100">Évaluations à compléter</span>
+          </div>
+          <span class="text-sm font-bold text-orange-700 dark:text-orange-300"><%= @pending_manager_reviews_count %></span>
+        <% end %>
+      <% end %>
+    </div>
+  </div>
+<% end %>
+
+<%# Manager: Upcoming 1:1s %>
+<% if @employee.manager? && @upcoming_one_on_ones&.any? %>
+  <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+    <div class="flex justify-between items-center mb-4">
+      <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100">Prochains 1:1</h2>
+      <%= link_to 'Voir tout', manager_one_on_ones_path, class: "text-sm text-indigo-600 hover:text-indigo-700" %>
+    </div>
+    <div class="space-y-3">
+      <% @upcoming_one_on_ones.each do |meeting| %>
+        <div class="flex items-center p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+          <div class="flex-1">
+            <p class="text-sm font-medium text-gray-900 dark:text-gray-100"><%= meeting.employee.full_name %></p>
+            <p class="text-xs text-gray-600 dark:text-gray-400"><%= l(meeting.scheduled_at, format: :short) %></p>
+          </div>
+          <%= link_to 'Voir', manager_one_on_one_path(meeting), class: "text-xs text-indigo-600 hover:text-indigo-700 font-medium" %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+<% end %>
+```
+
+**Also add Performance Layer quick links** to the existing "Accès rapides" section:
+```erb
+<%# In the quick links section, add after existing links: %>
+<%= link_to objectives_path, class: "flex items-center p-3 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg transition-colors" do %>
+  <svg class="w-5 h-5 mr-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+  </svg>
+  <span class="font-medium">Mes objectifs</span>
+<% end %>
+<%= link_to training_assignments_path, class: "flex items-center p-3 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg transition-colors" do %>
+  <svg class="w-5 h-5 mr-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+  </svg>
+  <span class="font-medium">Mes formations</span>
+<% end %>
+```
+
+**Commit**:
+```bash
+git add app/views/dashboard/show.html.erb
+git commit -m "feat(dashboard): add Performance Layer widgets
+
+- Employee: active objectives, next 1:1, pending training count
+- Manager: overdue objectives, pending evaluations, upcoming 1:1s list
+- Quick links: objectives, training assignments
+- Mobile-first Tailwind CSS, dark mode compatible
+- Nil-safe: no widgets rendered when data is empty
+
+Sprint 2.4 - Task 2.4.3"
+```
+
+---
+
+### TASK 2.4.4 — Implement Employee-Facing Controllers
+
+**Duration**: 30 minutes
+
+**Files**: `app/controllers/objectives_controller.rb`, `app/controllers/one_on_ones_controller.rb`
+
+**Both are currently empty.** Implement:
+
+**`app/controllers/objectives_controller.rb`**:
+```ruby
+class ObjectivesController < ApplicationController
+  before_action :authenticate_employee!
+
+  def index
+    @objectives = policy_scope(Objective)
+                   .for_owner(current_employee)
+                   .includes(:manager)
+                   .order(deadline: :asc)
+
+    @objectives = @objectives.where(status: params[:status]) if params[:status].present?
+  end
+
+  def show
+    @objective = Objective.find(params[:id])
+    authorize @objective
+  end
+end
+```
+
+**`app/controllers/one_on_ones_controller.rb`**:
+```ruby
+class OneOnOnesController < ApplicationController
+  before_action :authenticate_employee!
+
+  def index
+    @one_on_ones = policy_scope(OneOnOne)
+                    .where(employee: current_employee)
+                    .includes(:manager)
+                    .order(scheduled_at: :desc)
+  end
+
+  def show
+    @one_on_one = OneOnOne.find(params[:id])
+    authorize @one_on_one
+  end
+end
+```
+
+**Commit**:
+```bash
+git add app/controllers/objectives_controller.rb app/controllers/one_on_ones_controller.rb
+git commit -m "feat(controllers): implement employee-facing objectives and one_on_ones controllers
+
+- ObjectivesController: index (employee's own objectives) + show
+- OneOnOnesController: index (employee's 1:1s) + show
+- policy_scope enforces read-only access
+- Eager loading: includes(:manager)
+
+Sprint 2.4 - Task 2.4.4"
+```
+
+---
+
+### TASK 2.4.5 — Create Employee-Facing Views
+
+**Duration**: 1 hour
+
+**Files to create**:
+- `app/views/objectives/index.html.erb`
+- `app/views/objectives/show.html.erb`
+- `app/views/one_on_ones/index.html.erb`
+- `app/views/one_on_ones/show.html.erb`
+
+**`app/views/objectives/index.html.erb`**:
+```erb
+<div class="max-w-4xl mx-auto px-4 py-6">
+  <div class="flex justify-between items-center mb-6">
+    <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100">Mes objectifs</h1>
+  </div>
+
+  <div class="flex gap-2 mb-4 overflow-x-auto pb-2">
+    <%= link_to 'Tous', objectives_path, class: "btn btn-sm #{params[:status].blank? ? 'btn-primary' : 'btn-outline'}" %>
+    <%= link_to 'En cours', objectives_path(status: :in_progress), class: "btn btn-sm #{params[:status] == 'in_progress' ? 'btn-primary' : 'btn-outline'}" %>
+    <%= link_to 'Complétés', objectives_path(status: :completed), class: "btn btn-sm #{params[:status] == 'completed' ? 'btn-primary' : 'btn-outline'}" %>
+  </div>
+
+  <% if @objectives.any? %>
+    <div class="space-y-4">
+      <% @objectives.each do |objective| %>
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4">
+          <div class="flex justify-between items-start">
+            <div class="flex-1">
+              <h3 class="font-semibold text-lg text-gray-900 dark:text-gray-100">
+                <%= link_to objective.title, objective_path(objective), class: "hover:text-indigo-600" %>
+              </h3>
+              <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                Manager : <%= objective.manager.full_name %> &bull;
+                Échéance : <%= l(objective.deadline, format: :short) %>
+              </p>
+            </div>
+            <span class="ml-3 px-2 py-1 text-xs font-medium rounded bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300">
+              <%= objective.status.humanize %>
+            </span>
+          </div>
+          <% if objective.overdue? %>
+            <p class="mt-2 text-sm text-red-600 font-medium">
+              En retard de <%= distance_of_time_in_words(objective.deadline, Date.current) %>
+            </p>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+  <% else %>
+    <div class="text-center py-12 text-gray-500 dark:text-gray-400">
+      <p class="text-lg">Aucun objectif</p>
+      <p class="text-sm mt-1">Votre manager n'a pas encore défini d'objectifs pour vous.</p>
+    </div>
+  <% end %>
+</div>
+```
+
+**`app/views/objectives/show.html.erb`**:
+```erb
+<div class="max-w-3xl mx-auto px-4 py-6">
+  <%= link_to "&larr; Mes objectifs".html_safe, objectives_path, class: "text-sm text-gray-600 dark:text-gray-400 hover:text-indigo-600 mb-4 inline-block" %>
+
+  <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+    <div class="flex justify-between items-start mb-4">
+      <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100"><%= @objective.title %></h1>
+      <span class="px-3 py-1 text-sm font-medium rounded-full bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300">
+        <%= @objective.status.humanize %>
+      </span>
+    </div>
+
+    <% if @objective.description.present? %>
+      <p class="text-gray-700 dark:text-gray-300 mb-6"><%= @objective.description %></p>
+    <% end %>
+
+    <dl class="grid grid-cols-2 gap-4 text-sm">
+      <div>
+        <dt class="font-medium text-gray-600 dark:text-gray-400">Priorité</dt>
+        <dd class="text-gray-900 dark:text-gray-100 mt-1"><%= @objective.priority.humanize %></dd>
+      </div>
+      <div>
+        <dt class="font-medium text-gray-600 dark:text-gray-400">Échéance</dt>
+        <dd class="text-gray-900 dark:text-gray-100 mt-1 <%= @objective.overdue? ? 'text-red-600' : '' %>">
+          <%= l(@objective.deadline, format: :long) %>
+          <% if @objective.overdue? %><span class="ml-1 text-xs">(en retard)</span><% end %>
+        </dd>
+      </div>
+      <div>
+        <dt class="font-medium text-gray-600 dark:text-gray-400">Manager</dt>
+        <dd class="text-gray-900 dark:text-gray-100 mt-1"><%= @objective.manager.full_name %></dd>
+      </div>
+    </dl>
+  </div>
+</div>
+```
+
+**`app/views/one_on_ones/index.html.erb`**:
+```erb
+<div class="max-w-4xl mx-auto px-4 py-6">
+  <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-6">Mes 1:1</h1>
+
+  <% if @one_on_ones.any? %>
+    <div class="space-y-4">
+      <% @one_on_ones.each do |meeting| %>
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4">
+          <div class="flex justify-between items-start">
+            <div>
+              <h3 class="font-semibold text-gray-900 dark:text-gray-100">
+                1:1 avec <%= meeting.manager.full_name %>
+              </h3>
+              <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                <%= l(meeting.scheduled_at, format: :long) %>
+              </p>
+              <% if meeting.agenda.present? %>
+                <p class="text-sm text-gray-700 dark:text-gray-300 mt-2"><%= meeting.agenda %></p>
+              <% end %>
+            </div>
+            <span class="px-2 py-1 text-xs font-medium rounded bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300">
+              <%= meeting.status.humanize %>
+            </span>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  <% else %>
+    <div class="text-center py-12 text-gray-500 dark:text-gray-400">
+      <p class="text-lg">Aucun 1:1 planifié</p>
+      <p class="text-sm mt-1">Votre manager planifiera bientôt un 1:1 avec vous.</p>
+    </div>
+  <% end %>
+</div>
+```
+
+**`app/views/one_on_ones/show.html.erb`**:
+```erb
+<div class="max-w-3xl mx-auto px-4 py-6">
+  <%= link_to "&larr; Mes 1:1".html_safe, one_on_ones_path, class: "text-sm text-gray-600 dark:text-gray-400 hover:text-indigo-600 mb-4 inline-block" %>
+
+  <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+    <div class="flex justify-between items-start mb-4">
+      <h1 class="text-xl font-bold text-gray-900 dark:text-gray-100">
+        1:1 avec <%= @one_on_one.manager.full_name %>
+      </h1>
+      <span class="px-3 py-1 text-sm font-medium rounded-full bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300">
+        <%= @one_on_one.status.humanize %>
+      </span>
+    </div>
+
+    <dl class="space-y-4 text-sm">
+      <div>
+        <dt class="font-medium text-gray-600 dark:text-gray-400">Date</dt>
+        <dd class="text-gray-900 dark:text-gray-100 mt-1"><%= l(@one_on_one.scheduled_at, format: :long) %></dd>
+      </div>
+      <% if @one_on_one.agenda.present? %>
+        <div>
+          <dt class="font-medium text-gray-600 dark:text-gray-400">Agenda</dt>
+          <dd class="text-gray-900 dark:text-gray-100 mt-1"><%= @one_on_one.agenda %></dd>
+        </div>
+      <% end %>
+      <% if @one_on_one.notes.present? %>
+        <div>
+          <dt class="font-medium text-gray-600 dark:text-gray-400">Notes</dt>
+          <dd class="text-gray-700 dark:text-gray-300 mt-1 whitespace-pre-wrap"><%= @one_on_one.notes %></dd>
+        </div>
+      <% end %>
+    </dl>
+  </div>
+</div>
+```
+
+**Commit**:
+```bash
+git add app/views/objectives/ app/views/one_on_ones/
+git commit -m "feat(views): add employee-facing objectives and one_on_ones views
+
+- objectives/index: list with status filter, overdue indicator
+- objectives/show: title, description, priority, deadline, manager
+- one_on_ones/index: list with manager name, date, agenda
+- one_on_ones/show: detail with notes (post-completion)
+- Empty states with helpful messages
+- Mobile-first, dark mode compatible
+
+Sprint 2.4 - Task 2.4.5"
+```
+
+---
+
+### TASK 2.4.6 — Create Manager Views: Objectives show/new/edit
+
+**Duration**: 1 hour
+
+**Files to create**:
+- `app/views/manager/objectives/show.html.erb`
+- `app/views/manager/objectives/new.html.erb`
+- `app/views/manager/objectives/edit.html.erb`
+- `app/views/manager/objectives/_form.html.erb`
+
+**`app/views/manager/objectives/_form.html.erb`**:
+```erb
+<%= form_with(model: [:manager, objective], class: "space-y-4") do |f| %>
+  <% if objective.errors.any? %>
+    <div class="bg-red-50 dark:bg-red-900 border border-red-300 dark:border-red-600 rounded p-4">
+      <% objective.errors.full_messages.each do |msg| %>
+        <p class="text-sm text-red-700 dark:text-red-300"><%= msg %></p>
+      <% end %>
+    </div>
+  <% end %>
+
+  <div>
+    <%= f.label :title, "Titre", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" %>
+    <%= f.text_field :title, class: "w-full rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" %>
+  </div>
+
+  <div>
+    <%= f.label :description, "Description", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" %>
+    <%= f.text_area :description, rows: 4, class: "w-full rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" %>
+  </div>
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+    <div>
+      <%= f.label :owner_id, "Employé concerné", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" %>
+      <%= f.hidden_field :owner_type, value: "Employee" %>
+      <%= f.collection_select :owner_id,
+            policy_scope(Employee).where.not(id: current_employee.id).order(:first_name),
+            :id, :full_name,
+            { prompt: "Sélectionner un employé" },
+            class: "w-full rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" %>
+    </div>
+
+    <div>
+      <%= f.label :priority, "Priorité", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" %>
+      <%= f.select :priority,
+            [['Faible', 'low'], ['Moyenne', 'medium'], ['Haute', 'high'], ['Critique', 'critical']],
+            {},
+            class: "w-full rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" %>
+    </div>
+  </div>
+
+  <div>
+    <%= f.label :deadline, "Échéance", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" %>
+    <%= f.date_field :deadline, class: "rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" %>
+  </div>
+
+  <div class="flex gap-3 pt-4">
+    <%= f.submit "Enregistrer", class: "btn btn-primary" %>
+    <%= link_to "Annuler", manager_objectives_path, class: "btn btn-outline" %>
+  </div>
+<% end %>
+```
+
+**`app/views/manager/objectives/new.html.erb`**:
+```erb
+<div class="max-w-2xl mx-auto px-4 py-6">
+  <%= link_to "&larr; Objectifs".html_safe, manager_objectives_path, class: "text-sm text-gray-600 dark:text-gray-400 hover:text-indigo-600 mb-4 inline-block" %>
+  <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-6">Nouvel objectif</h1>
+  <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+    <%= render 'form', objective: @objective %>
+  </div>
+</div>
+```
+
+**`app/views/manager/objectives/edit.html.erb`**:
+```erb
+<div class="max-w-2xl mx-auto px-4 py-6">
+  <%= link_to "&larr; Objectifs".html_safe, manager_objectives_path, class: "text-sm text-gray-600 dark:text-gray-400 hover:text-indigo-600 mb-4 inline-block" %>
+  <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-6">Modifier l'objectif</h1>
+  <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+    <%= render 'form', objective: @objective %>
+  </div>
+</div>
+```
+
+**`app/views/manager/objectives/show.html.erb`**:
+```erb
+<div class="max-w-3xl mx-auto px-4 py-6">
+  <%= link_to "&larr; Objectifs".html_safe, manager_objectives_path, class: "text-sm text-gray-600 dark:text-gray-400 hover:text-indigo-600 mb-4 inline-block" %>
+
+  <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+    <div class="flex justify-between items-start mb-6">
+      <div class="flex-1">
+        <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100"><%= @objective.title %></h1>
+        <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">
+          <%= @objective.owner.full_name %> &bull;
+          Échéance : <%= l(@objective.deadline, format: :long) %>
+        </p>
+      </div>
+      <span class="ml-3 px-3 py-1 text-sm font-medium rounded-full bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300">
+        <%= @objective.status.humanize %>
+      </span>
+    </div>
+
+    <% if @objective.description.present? %>
+      <p class="text-gray-700 dark:text-gray-300 mb-6"><%= @objective.description %></p>
+    <% end %>
+
+    <div class="flex gap-3">
+      <%= link_to "Modifier", edit_manager_objective_path(@objective), class: "btn btn-outline btn-sm" %>
+      <% unless @objective.completed? || @objective.cancelled? %>
+        <%= button_to "Marquer complété", complete_manager_objective_path(@objective), method: :patch, class: "btn btn-primary btn-sm",
+              data: { confirm: "Marquer cet objectif comme complété ?" } %>
+      <% end %>
+      <%= button_to "Supprimer", manager_objective_path(@objective), method: :delete, class: "btn btn-error btn-sm",
+            data: { confirm: "Supprimer cet objectif ?" } %>
+    </div>
+  </div>
+</div>
+```
+
+**Note**: The `complete` action doesn't exist yet in the controller. Add it:
+
+```ruby
+# In Manager::ObjectivesController, add:
+def complete
+  authorize @objective, :update?
+  @objective.complete!
+  redirect_to manager_objectives_path, notice: 'Objectif complété'
+rescue => e
+  redirect_to manager_objective_path(@objective), alert: e.message
+end
+```
+
+And in routes (add `member` block to objectives):
+```ruby
+namespace :manager do
+  resources :objectives do
+    member do
+      patch :complete
+    end
+  end
+  # ...
+end
+```
+
+**Commit**:
+```bash
+git add app/views/manager/objectives/ app/controllers/manager/objectives_controller.rb config/routes.rb
+git commit -m "feat(views): add manager objectives show/new/edit views
+
+- show: objective details, complete + delete actions
+- new/edit: form with employee selector, priority, deadline
+- complete action added to controller and routes
+- Form partial shared between new/edit
+- Mobile-first Tailwind CSS, dark mode
+
+Sprint 2.4 - Task 2.4.6"
+```
+
+---
+
+### TASK 2.4.7 — Create Manager Views: One-On-Ones show/new/edit
+
+**Duration**: 1 hour
+
+**Files to create**:
+- `app/views/manager/one_on_ones/_form.html.erb`
+- `app/views/manager/one_on_ones/new.html.erb`
+- `app/views/manager/one_on_ones/edit.html.erb`
+- `app/views/manager/one_on_ones/show.html.erb`
+
+**`app/views/manager/one_on_ones/_form.html.erb`**:
+```erb
+<%= form_with(model: [:manager, one_on_one], class: "space-y-4") do |f| %>
+  <% if one_on_one.errors.any? %>
+    <div class="bg-red-50 dark:bg-red-900 border border-red-300 rounded p-4">
+      <% one_on_one.errors.full_messages.each do |msg| %>
+        <p class="text-sm text-red-700 dark:text-red-300"><%= msg %></p>
+      <% end %>
+    </div>
+  <% end %>
+
+  <div>
+    <%= f.label :employee_id, "Employé", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" %>
+    <%= f.collection_select :employee_id,
+          policy_scope(Employee).where.not(id: current_employee.id).order(:first_name),
+          :id, :full_name,
+          { prompt: "Sélectionner un employé" },
+          class: "w-full rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" %>
+  </div>
+
+  <div>
+    <%= f.label :scheduled_at, "Date et heure", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" %>
+    <%= f.datetime_local_field :scheduled_at, class: "rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" %>
+  </div>
+
+  <div>
+    <%= f.label :agenda, "Agenda (optionnel)", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" %>
+    <%= f.text_area :agenda, rows: 3, class: "w-full rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" %>
+  </div>
+
+  <div class="flex gap-3 pt-4">
+    <%= f.submit "Enregistrer", class: "btn btn-primary" %>
+    <%= link_to "Annuler", manager_one_on_ones_path, class: "btn btn-outline" %>
+  </div>
+<% end %>
+```
+
+**`app/views/manager/one_on_ones/new.html.erb`**:
+```erb
+<div class="max-w-2xl mx-auto px-4 py-6">
+  <%= link_to "&larr; 1:1".html_safe, manager_one_on_ones_path, class: "text-sm text-gray-600 dark:text-gray-400 hover:text-indigo-600 mb-4 inline-block" %>
+  <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-6">Planifier un 1:1</h1>
+  <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+    <%= render 'form', one_on_one: @one_on_one %>
+  </div>
+</div>
+```
+
+**`app/views/manager/one_on_ones/edit.html.erb`**:
+```erb
+<div class="max-w-2xl mx-auto px-4 py-6">
+  <%= link_to "&larr; 1:1".html_safe, manager_one_on_ones_path, class: "text-sm text-gray-600 dark:text-gray-400 hover:text-indigo-600 mb-4 inline-block" %>
+  <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-6">Modifier le 1:1</h1>
+  <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+    <%= render 'form', one_on_one: @one_on_one %>
+  </div>
+</div>
+```
+
+**`app/views/manager/one_on_ones/show.html.erb`**:
+```erb
+<div class="max-w-3xl mx-auto px-4 py-6">
+  <%= link_to "&larr; 1:1".html_safe, manager_one_on_ones_path, class: "text-sm text-gray-600 dark:text-gray-400 hover:text-indigo-600 mb-4 inline-block" %>
+
+  <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+    <div class="flex justify-between items-start mb-6">
+      <div>
+        <h1 class="text-xl font-bold text-gray-900 dark:text-gray-100">
+          1:1 avec <%= @one_on_one.employee.full_name %>
+        </h1>
+        <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">
+          <%= l(@one_on_one.scheduled_at, format: :long) %>
+        </p>
+      </div>
+      <span class="px-3 py-1 text-sm font-medium rounded-full bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300">
+        <%= @one_on_one.status.humanize %>
+      </span>
+    </div>
+
+    <% if @one_on_one.agenda.present? %>
+      <div class="mb-6">
+        <h2 class="text-sm font-medium text-gray-600 dark:text-gray-400 mb-2">Agenda</h2>
+        <p class="text-gray-700 dark:text-gray-300"><%= @one_on_one.agenda %></p>
+      </div>
+    <% end %>
+
+    <% if @one_on_one.notes.present? %>
+      <div class="mb-6">
+        <h2 class="text-sm font-medium text-gray-600 dark:text-gray-400 mb-2">Notes</h2>
+        <p class="text-gray-700 dark:text-gray-300 whitespace-pre-wrap"><%= @one_on_one.notes %></p>
+      </div>
+    <% end %>
+
+    <div class="flex gap-3">
+      <% if @one_on_one.scheduled? %>
+        <%= button_to "Marquer complété", complete_manager_one_on_one_path(@one_on_one), method: :patch, class: "btn btn-primary btn-sm",
+              data: { confirm: "Marquer ce 1:1 comme complété ?" } %>
+        <%= link_to "Modifier", edit_manager_one_on_one_path(@one_on_one), class: "btn btn-outline btn-sm" %>
+      <% end %>
+    </div>
+  </div>
+</div>
+```
+
+**Commit**:
+```bash
+git add app/views/manager/one_on_ones/
+git commit -m "feat(views): add manager one_on_ones show/new/edit views
+
+- show: 1:1 details, agenda, notes, complete action
+- new/edit: form with employee selector, datetime, agenda
+- Form partial shared between new/edit
+- Mobile-first, dark mode
+
+Sprint 2.4 - Task 2.4.7"
+```
+
+---
+
+### TASK 2.4.8 — Create Manager Views: Evaluations show/new/edit
+
+**Duration**: 1 hour
+
+**Files to create**:
+- `app/views/manager/evaluations/_form.html.erb`
+- `app/views/manager/evaluations/new.html.erb`
+- `app/views/manager/evaluations/edit.html.erb`
+- `app/views/manager/evaluations/show.html.erb`
+
+**`app/views/manager/evaluations/_form.html.erb`**:
+```erb
+<%= form_with(model: [:manager, evaluation], class: "space-y-4") do |f| %>
+  <% if evaluation.errors.any? %>
+    <div class="bg-red-50 dark:bg-red-900 border border-red-300 rounded p-4">
+      <% evaluation.errors.full_messages.each do |msg| %>
+        <p class="text-sm text-red-700 dark:text-red-300"><%= msg %></p>
+      <% end %>
+    </div>
+  <% end %>
+
+  <div>
+    <%= f.label :employee_id, "Employé", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" %>
+    <%= f.collection_select :employee_id,
+          policy_scope(Employee).where.not(id: current_employee.id).order(:first_name),
+          :id, :full_name,
+          { prompt: "Sélectionner un employé" },
+          class: "w-full rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" %>
+  </div>
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+    <div>
+      <%= f.label :period_start, "Début de période", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" %>
+      <%= f.date_field :period_start, class: "rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" %>
+    </div>
+    <div>
+      <%= f.label :period_end, "Fin de période", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" %>
+      <%= f.date_field :period_end, class: "rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" %>
+    </div>
+  </div>
+
+  <div class="flex gap-3 pt-4">
+    <%= f.submit "Créer l'évaluation", class: "btn btn-primary" %>
+    <%= link_to "Annuler", manager_evaluations_path, class: "btn btn-outline" %>
+  </div>
+<% end %>
+```
+
+**`app/views/manager/evaluations/new.html.erb`**:
+```erb
+<div class="max-w-2xl mx-auto px-4 py-6">
+  <%= link_to "&larr; Évaluations".html_safe, manager_evaluations_path, class: "text-sm text-gray-600 dark:text-gray-400 hover:text-indigo-600 mb-4 inline-block" %>
+  <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-6">Nouvelle évaluation</h1>
+  <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+    <%= render 'form', evaluation: @evaluation %>
+  </div>
+</div>
+```
+
+**`app/views/manager/evaluations/edit.html.erb`**:
+```erb
+<div class="max-w-2xl mx-auto px-4 py-6">
+  <%= link_to "&larr; Évaluations".html_safe, manager_evaluations_path, class: "text-sm text-gray-600 dark:text-gray-400 hover:text-indigo-600 mb-4 inline-block" %>
+  <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-6">Modifier l'évaluation</h1>
+  <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+    <%= render 'form', evaluation: @evaluation %>
+  </div>
+</div>
+```
+
+**`app/views/manager/evaluations/show.html.erb`**:
+```erb
+<div class="max-w-3xl mx-auto px-4 py-6">
+  <%= link_to "&larr; Évaluations".html_safe, manager_evaluations_path, class: "text-sm text-gray-600 dark:text-gray-400 hover:text-indigo-600 mb-4 inline-block" %>
+
+  <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+    <div class="flex justify-between items-start mb-6">
+      <div>
+        <h1 class="text-xl font-bold text-gray-900 dark:text-gray-100">
+          Évaluation — <%= @evaluation.employee.full_name %>
+        </h1>
+        <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">
+          <%= l(@evaluation.period_start, format: :short) %> &ndash; <%= l(@evaluation.period_end, format: :long) %>
+        </p>
+      </div>
+      <span class="px-3 py-1 text-sm font-medium rounded-full bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300">
+        <%= @evaluation.status.humanize %>
+      </span>
+    </div>
+
+    <% if @evaluation.self_review.present? %>
+      <div class="mb-6 p-4 bg-blue-50 dark:bg-blue-900 rounded-lg">
+        <h2 class="text-sm font-semibold text-blue-800 dark:text-blue-200 mb-2">Auto-évaluation</h2>
+        <p class="text-gray-700 dark:text-gray-300 text-sm whitespace-pre-wrap"><%= @evaluation.self_review %></p>
+      </div>
+    <% end %>
+
+    <% if @evaluation.manager_review.present? %>
+      <div class="mb-6 p-4 bg-green-50 dark:bg-green-900 rounded-lg">
+        <h2 class="text-sm font-semibold text-green-800 dark:text-green-200 mb-2">Évaluation manager</h2>
+        <p class="text-gray-700 dark:text-gray-300 text-sm whitespace-pre-wrap"><%= @evaluation.manager_review %></p>
+      </div>
+    <% end %>
+
+    <%# Manager review form (when self-review submitted and manager review pending) %>
+    <% if @evaluation.manager_review_pending? %>
+      <div class="mt-6 p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
+        <h2 class="text-sm font-semibold text-gray-800 dark:text-gray-200 mb-3">Soumettre votre évaluation</h2>
+        <%= form_with url: submit_manager_review_manager_evaluation_path(@evaluation), method: :patch, class: "space-y-4" do |f| %>
+          <%= f.text_area :manager_review, rows: 6, placeholder: "Votre évaluation...",
+                class: "w-full rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" %>
+          <%= f.submit "Soumettre et compléter", class: "btn btn-primary" %>
+        <% end %>
+      </div>
+    <% end %>
+
+    <% if @evaluation.fully_reviewed? && @evaluation.active? %>
+      <div class="mt-6">
+        <%= button_to "Finaliser l'évaluation", complete_manager_evaluation_path(@evaluation), method: :patch, class: "btn btn-primary",
+              data: { confirm: "Finaliser cette évaluation ?" } %>
+      </div>
+    <% end %>
+  </div>
+</div>
+```
+
+**Commit**:
+```bash
+git add app/views/manager/evaluations/
+git commit -m "feat(views): add manager evaluations show/new/edit views
+
+- show: self-review, manager review, submit manager review inline form
+- new/edit: form with employee selector, period dates
+- Complete/finalize actions surfaced in show view
+- Mobile-first, dark mode, French locale
+
+Sprint 2.4 - Task 2.4.8"
+```
+
+---
+
+### TASK 2.4.9 — Final Verification
+
+**Duration**: 30 minutes
+
+**Run full test suite**:
+```bash
+bundle exec rspec
+# Expected: ≥893 examples, 0 failures
+```
+
+**Coverage check**:
+```bash
+open coverage/index.html
+# Verify ≥28.12% overall
+```
+
+**Manual navigation check**:
+```bash
+rails s
+# Test:
+# - /dashboard (employee + manager views)
+# - /manager/objectives (index + new + show + edit)
+# - /manager/one_on_ones (index + new + show)
+# - /manager/evaluations (index + new + show)
+# - /objectives (employee)
+# - /one_on_ones (employee)
+```
+
+**Final commit**:
+```bash
+git add .
+git commit -m "chore(sprint-2.4): final verification
+
+Sprint 2.4 Complete - Dashboards + Polish
+- Data integrity: :status removed from objective_params
+- Dashboard: Performance Layer fully integrated (employee + manager)
+- Manager views: show/new/edit for objectives, 1:1s, evaluations
+- Employee views: objectives + one_on_ones index + show
+- 893+ examples, 0 failures
+- Coverage ≥28.12%
+
+🤖 Generated with [Claude Code](https://claude.com/claude-code)
+Co-Authored-By: Claude <noreply@anthropic.com>"
+```
+
+---
+
+## 📊 Sprint 2.4 Completion Checklist
+
+- [ ] Task 2.4.1: Remove `:status` from ObjectivesController params
+- [ ] Task 2.4.2: DashboardController Performance Layer integration
+- [ ] Task 2.4.3: Dashboard view widgets (employee + manager)
+- [ ] Task 2.4.4: Employee-facing objectives + one_on_ones controllers
+- [ ] Task 2.4.5: Employee-facing views (objectives + one_on_ones)
+- [ ] Task 2.4.6: Manager objectives show/new/edit views + complete action
+- [ ] Task 2.4.7: Manager one_on_ones show/new/edit views
+- [ ] Task 2.4.8: Manager evaluations show/new/edit views
+- [ ] Task 2.4.9: Final verification (tests + coverage + manual)
+
+**When Complete**:
+1. Run `bundle exec rspec` — must be 0 failures
+2. Tag @qa for validation
+3. After @qa approval → @architect final validation
+4. Phase 2 (Performance Layer) marked COMPLETE
+
+---
+
+## 🔄 Handoff to QA
+
+After completing all tasks:
+```
+Load AGENT.qa.md and execute accordingly.
+```
+
+**QA will verify**:
+- [ ] Tests passing (0 failures)
+- [ ] No N+1 queries on dashboard (new performance queries)
+- [ ] Multi-tenancy: employee can only see own objectives/1:1s
+- [ ] Authorization: employee cannot access manager routes
+- [ ] Dashboard widgets render correctly with empty data
+- [ ] Forms submit correctly (objectives, 1:1s, evaluations)
+- [ ] `:status` no longer accepted via mass-assignment on objectives
+
+**After QA Approval**: Hand off to @architect for final validation → Phase 2 COMPLETE
+
+---
+
+**End of Sprint 2.4 Instructions**
+**This completes Phase 2 — Performance Layer**
+**Next Phase**: Return to `project/DEVELOPER_ROADMAP.md` Sprints 1.7+ (API Serializers, Rate Limiting, JSONB Validation, Audit Trail)
