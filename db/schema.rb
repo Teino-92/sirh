@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2026_02_17_085702) do
+ActiveRecord::Schema[7.1].define(version: 2026_02_17_085828) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -107,6 +107,16 @@ ActiveRecord::Schema[7.1].define(version: 2026_02_17_085702) do
     t.index ["evaluation_id"], name: "index_evaluation_objectives_on_evaluation_id"
     t.index ["objective_id"], name: "index_evaluation_objectives_on_objective_id"
     t.index ["organization_id"], name: "index_evaluation_objectives_on_organization_id"
+  end
+
+  create_table "evaluation_trainings", force: :cascade do |t|
+    t.bigint "evaluation_id", null: false
+    t.bigint "training_assignment_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["evaluation_id", "training_assignment_id"], name: "idx_unique_evaluation_trainings", unique: true
+    t.index ["evaluation_id"], name: "index_evaluation_trainings_on_evaluation_id"
+    t.index ["training_assignment_id"], name: "index_evaluation_trainings_on_training_assignment_id"
   end
 
   create_table "evaluations", force: :cascade do |t|
@@ -426,6 +436,48 @@ ActiveRecord::Schema[7.1].define(version: 2026_02_17_085702) do
     t.index ["validated_by_id"], name: "index_time_entries_on_validated_by_id"
   end
 
+  create_table "training_assignments", force: :cascade do |t|
+    t.bigint "training_id", null: false
+    t.bigint "employee_id", null: false
+    t.bigint "assigned_by_id", null: false
+    t.bigint "objective_id"
+    t.string "status", default: "assigned", null: false
+    t.date "assigned_at", default: -> { "CURRENT_DATE" }, null: false
+    t.date "deadline"
+    t.datetime "completed_at"
+    t.text "completion_notes"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["assigned_by_id", "status"], name: "idx_training_assignments_manager"
+    t.index ["assigned_by_id"], name: "index_training_assignments_on_assigned_by_id"
+    t.index ["deadline"], name: "index_training_assignments_on_deadline"
+    t.index ["employee_id", "deadline"], name: "idx_training_assignments_overdue", where: "(((status)::text = ANY ((ARRAY['assigned'::character varying, 'in_progress'::character varying])::text[])) AND (deadline IS NOT NULL))"
+    t.index ["employee_id", "status"], name: "idx_training_assignments_employee"
+    t.index ["employee_id", "training_id"], name: "idx_unique_active_assignment", unique: true, where: "((status)::text = ANY ((ARRAY['assigned'::character varying, 'in_progress'::character varying])::text[]))"
+    t.index ["employee_id"], name: "index_training_assignments_on_employee_id"
+    t.index ["objective_id"], name: "index_training_assignments_on_objective_id"
+    t.index ["status"], name: "index_training_assignments_on_status"
+    t.index ["training_id"], name: "index_training_assignments_on_training_id"
+  end
+
+  create_table "trainings", force: :cascade do |t|
+    t.bigint "organization_id", null: false
+    t.string "title", limit: 255, null: false
+    t.text "description"
+    t.string "training_type", null: false
+    t.integer "duration_estimate"
+    t.string "provider"
+    t.string "external_url"
+    t.datetime "archived_at"
+    t.jsonb "metadata", default: {}, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["archived_at"], name: "index_trainings_on_archived_at"
+    t.index ["organization_id", "training_type"], name: "idx_trainings_org_type"
+    t.index ["organization_id"], name: "index_trainings_on_organization_id"
+    t.index ["training_type"], name: "index_trainings_on_training_type"
+  end
+
   create_table "weekly_schedule_plans", force: :cascade do |t|
     t.bigint "employee_id", null: false
     t.date "week_start_date", null: false
@@ -463,6 +515,8 @@ ActiveRecord::Schema[7.1].define(version: 2026_02_17_085702) do
   add_foreign_key "evaluation_objectives", "evaluations"
   add_foreign_key "evaluation_objectives", "objectives"
   add_foreign_key "evaluation_objectives", "organizations"
+  add_foreign_key "evaluation_trainings", "evaluations"
+  add_foreign_key "evaluation_trainings", "training_assignments"
   add_foreign_key "evaluations", "employees"
   add_foreign_key "evaluations", "employees", column: "created_by_id"
   add_foreign_key "evaluations", "employees", column: "manager_id"
@@ -492,6 +546,11 @@ ActiveRecord::Schema[7.1].define(version: 2026_02_17_085702) do
   add_foreign_key "time_entries", "employees", column: "rejected_by_id"
   add_foreign_key "time_entries", "employees", column: "validated_by_id"
   add_foreign_key "time_entries", "organizations"
+  add_foreign_key "training_assignments", "employees"
+  add_foreign_key "training_assignments", "employees", column: "assigned_by_id"
+  add_foreign_key "training_assignments", "objectives"
+  add_foreign_key "training_assignments", "trainings"
+  add_foreign_key "trainings", "organizations"
   add_foreign_key "weekly_schedule_plans", "employees"
   add_foreign_key "weekly_schedule_plans", "organizations"
   add_foreign_key "work_schedules", "employees"
