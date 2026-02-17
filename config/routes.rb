@@ -39,6 +39,11 @@ Rails.application.routes.draw do
   resources :work_schedules, only: [:show, :edit, :update]
   resources :objectives, only: [:index, :show]
   resources :one_on_ones, only: [:index, :show]
+  resources :evaluations, only: [:index, :show] do
+    member do
+      patch :submit_self_review
+    end
+  end
   resources :action_items, only: [:index] do
     member do
       patch :complete
@@ -64,6 +69,12 @@ Rails.application.routes.draw do
       end
     end
     resources :action_items, only: [:update]
+    resources :evaluations do
+      member do
+        patch :complete
+        patch :submit_manager_review
+      end
+    end
     resources :team_members, only: [:index, :show] do
       resource :work_schedule, only: [:new, :create, :edit, :update]
       resources :weekly_schedule_plans
