@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2026_02_16_225233) do
+ActiveRecord::Schema[7.1].define(version: 2026_02_17_080510) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -95,6 +95,43 @@ ActiveRecord::Schema[7.1].define(version: 2026_02_16_225233) do
     t.index ["organization_id"], name: "index_employees_on_organization_id"
     t.index ["reset_password_token"], name: "index_employees_on_reset_password_token", unique: true
     t.index ["role"], name: "index_employees_on_role"
+  end
+
+  create_table "evaluation_objectives", force: :cascade do |t|
+    t.bigint "evaluation_id", null: false
+    t.bigint "objective_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["evaluation_id", "objective_id"], name: "idx_unique_evaluation_objectives", unique: true
+    t.index ["evaluation_id"], name: "index_evaluation_objectives_on_evaluation_id"
+    t.index ["objective_id"], name: "index_evaluation_objectives_on_objective_id"
+  end
+
+  create_table "evaluations", force: :cascade do |t|
+    t.bigint "organization_id", null: false
+    t.bigint "employee_id", null: false
+    t.bigint "manager_id", null: false
+    t.bigint "created_by_id", null: false
+    t.date "period_start", null: false
+    t.date "period_end", null: false
+    t.string "status", default: "draft", null: false
+    t.text "self_review"
+    t.text "manager_review"
+    t.integer "score"
+    t.date "completed_at"
+    t.jsonb "metadata", default: {}, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["created_by_id"], name: "index_evaluations_on_created_by_id"
+    t.index ["employee_id", "period_end"], name: "idx_evaluations_employee_period"
+    t.index ["employee_id", "period_start", "period_end"], name: "idx_unique_evaluation_per_period", unique: true
+    t.index ["employee_id"], name: "index_evaluations_on_employee_id"
+    t.index ["manager_id", "status"], name: "idx_evaluations_manager_status"
+    t.index ["manager_id"], name: "index_evaluations_on_manager_id"
+    t.index ["organization_id", "period_end"], name: "idx_evaluations_org_period"
+    t.index ["organization_id"], name: "index_evaluations_on_organization_id"
+    t.index ["period_end"], name: "index_evaluations_on_period_end"
+    t.index ["status"], name: "index_evaluations_on_status"
   end
 
   create_table "jwt_denylists", force: :cascade do |t|
@@ -421,6 +458,12 @@ ActiveRecord::Schema[7.1].define(version: 2026_02_16_225233) do
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "employees", "employees", column: "manager_id"
   add_foreign_key "employees", "organizations"
+  add_foreign_key "evaluation_objectives", "evaluations"
+  add_foreign_key "evaluation_objectives", "objectives"
+  add_foreign_key "evaluations", "employees"
+  add_foreign_key "evaluations", "employees", column: "created_by_id"
+  add_foreign_key "evaluations", "employees", column: "manager_id"
+  add_foreign_key "evaluations", "organizations"
   add_foreign_key "leave_balances", "employees"
   add_foreign_key "leave_balances", "organizations"
   add_foreign_key "leave_requests", "employees"
