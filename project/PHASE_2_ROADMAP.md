@@ -27,8 +27,8 @@ This is your **step-by-step implementation guide** for the Performance Layer (Ob
 |--------|-------|--------|--------------|--------|
 | **2.1** | Objectives + 1:1 Meetings | 8-10h | None | ✅ COMPLETE (architect validated 2026-02-17) |
 | **2.2** | Evaluations System | 6-8h | Sprint 2.1 | ✅ COMPLETE (architect validated 2026-02-17) |
-| **2.3** | Training Tracker | 6-8h | Sprint 2.2 | 🔄 READY — fix C1/C2/C3 carry-overs first |
-| **2.4** | Dashboards + Polish | 4-6h | Sprint 2.3 | ⏳ QUEUED |
+| **2.3** | Training Tracker | 6-8h | Sprint 2.2 | ✅ COMPLETE (architect validated 2026-02-17) |
+| **2.4** | Dashboards + Polish | 4-6h | Sprint 2.3 | 🔄 READY |
 
 **Total Estimated Effort**: 24-32 hours (3-4 working days)
 
