@@ -96,10 +96,13 @@ RSpec.describe Evaluations::Services::EvaluationBuilder do
       _ = third_employee
     end
 
-    it 'returns total employee count' do
+    it 'returns total employee count (MEDIUM-2 regression guard: Employee.active scope must work)' do
       result = builder.completion_rate(year: 2025)
       # organization has manager + employee + other_employee + third_employee = 4 active employees
+      # Before fix: Employee.active returned 0 (broken JSONB exact-match query)
+      # After fix: returns all employees whose settings['active'] is absent or true
       expect(result[:total]).to be >= 2
+      expect(result[:total]).to be > 0
     end
 
     it 'returns evaluated count for the year' do

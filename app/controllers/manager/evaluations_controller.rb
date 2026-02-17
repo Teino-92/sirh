@@ -9,7 +9,9 @@ module Manager
                        .includes(:employee, :manager)
                        .order(period_end: :desc)
 
-      @evaluations = @evaluations.where(status: params[:status]) if params[:status].present?
+      if params[:status].present? && Evaluation.statuses.key?(params[:status])
+        @evaluations = @evaluations.where(status: params[:status])
+      end
     end
 
     def show; end
@@ -51,17 +53,18 @@ module Manager
 
     def complete
       authorize @evaluation, :complete?
-      @evaluation.complete!(final_score: params[:score]&.to_i)
+      final_score = params[:score].present? ? params[:score].to_i : nil
+      @evaluation.complete!(final_score: final_score)
       redirect_to manager_evaluations_path, notice: 'Evaluation completed'
     end
 
     def submit_manager_review
       authorize @evaluation, :submit_manager_review?
-      if @evaluation.update(manager_review: params[:manager_review], status: :completed)
-        redirect_to manager_evaluation_path(@evaluation), notice: 'Manager review submitted'
-      else
-        render :show, status: :unprocessable_entity
-      end
+      @evaluation.update!(manager_review: params[:manager_review])
+      @evaluation.complete!
+      redirect_to manager_evaluation_path(@evaluation), notice: 'Manager review submitted'
+    rescue ActiveRecord::RecordInvalid
+      render :show, status: :unprocessable_entity
     end
 
     private
@@ -72,7 +75,7 @@ module Manager
     end
 
     def evaluation_params
-      params.require(:evaluation).permit(:employee_id, :period_start, :period_end, :self_review, :manager_review, :status)
+      params.require(:evaluation).permit(:employee_id, :period_start, :period_end, :self_review, :manager_review)
     end
 
     def current_organization

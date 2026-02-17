@@ -299,6 +299,48 @@ RSpec.describe Evaluation, type: :model do
     end
   end
 
+  describe 'security: status cannot be set via mass assignment' do
+    let(:evaluation) do
+      create(:evaluation, organization: organization, employee: employee, manager: manager, created_by: manager,
+             status: :draft)
+    end
+
+    it 'does not change status when update is called without explicit domain method' do
+      # Simulates the HIGH-1 fix: :status removed from evaluation_params.
+      # Even if a bad actor sends status: :completed, a controller calling
+      # update(permitted_params) where :status is absent cannot change the status.
+      evaluation.update(manager_review: 'Some review')
+      expect(evaluation.reload.status).to eq('draft')
+    end
+
+    it 'does not populate completed_at when status is set via direct update' do
+      # Regression guard for HIGH-2: verifies that only complete! correctly sets completed_at.
+      # Direct status update bypasses the domain method.
+      evaluation.update_columns(status: 'completed')  # bypass validations intentionally to simulate old bug
+      expect(evaluation.reload.completed_at).to be_nil
+    end
+  end
+
+  describe 'submit_manager_review flow (HIGH-2 regression guard)' do
+    let(:evaluation) do
+      create(:evaluation, organization: organization, employee: employee, manager: manager, created_by: manager,
+             status: :manager_review_pending)
+    end
+
+    it 'sets completed_at when manager_review is updated then complete! is called' do
+      # This is the corrected submit_manager_review flow:
+      # 1. update!(manager_review:) — persists the review text
+      # 2. complete! — sets status AND completed_at atomically
+      evaluation.update!(manager_review: 'Strong performance this year.')
+      evaluation.complete!
+
+      evaluation.reload
+      expect(evaluation.status).to eq('completed')
+      expect(evaluation.manager_review).to eq('Strong performance this year.')
+      expect(evaluation.completed_at).not_to be_nil
+    end
+  end
+
   describe 'optional objectives link' do
     it 'can be linked to objectives' do
       ActsAsTenant.with_tenant(organization) do

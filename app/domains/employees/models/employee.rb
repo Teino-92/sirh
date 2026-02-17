@@ -43,7 +43,7 @@ class Employee < ApplicationRecord
   # French contract types
   validates :contract_type, inclusion: { in: %w[CDI CDD Stage Alternance Interim] }
 
-  scope :active, -> { where(settings: { active: true }) }
+  scope :active, -> { where("(settings->>'active') IS NULL OR (settings->>'active') = 'true'") }
   scope :managers, -> { where(role: %w[manager hr admin]) }
   scope :by_department, ->(dept) { where(department: dept) }
 
