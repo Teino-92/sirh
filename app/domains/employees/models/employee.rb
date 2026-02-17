@@ -33,6 +33,10 @@ class Employee < ApplicationRecord
   has_many :employee_one_on_ones, class_name: 'OneOnOne', foreign_key: :employee_id, dependent: :destroy
   has_many :action_items, foreign_key: :responsible_id, dependent: :nullify
 
+  # Evaluations relationships
+  has_many :evaluations, foreign_key: :employee_id, dependent: :destroy
+  has_many :managed_evaluations, class_name: 'Evaluation', foreign_key: :manager_id, dependent: :nullify
+
   validates :first_name, :last_name, :contract_type, :start_date, presence: true
   validates :role, presence: true, inclusion: { in: %w[employee manager hr admin] }
 

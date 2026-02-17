@@ -1,0 +1,98 @@
+class Evaluation < ApplicationRecord
+  # Multi-tenancy
+  belongs_to :organization
+  acts_as_tenant :organization
+
+  # Core relationships
+  belongs_to :employee, class_name: 'Employee'
+  belongs_to :manager, class_name: 'Employee'
+  belongs_to :created_by, class_name: 'Employee'
+
+  # Optional relationships (loose coupling)
+  has_many :evaluation_objectives, dependent: :destroy
+  has_many :objectives, through: :evaluation_objectives
+
+  # Enums
+  enum status: {
+    draft: 'draft',
+    employee_review_pending: 'employee_review_pending',
+    manager_review_pending: 'manager_review_pending',
+    completed: 'completed',
+    cancelled: 'cancelled'
+  }
+
+  enum score: {
+    insufficient: 1,
+    below_expectations: 2,
+    meets_expectations: 3,
+    exceeds_expectations: 4,
+    exceptional: 5
+  }, _prefix: true
+
+  # Validations
+  validates :period_start, presence: true
+  validates :period_end, presence: true
+  validates :status, presence: true
+  validate :period_end_after_start
+  validate :manager_is_manager_role
+  validate :both_in_same_organization
+
+  # Scopes
+  scope :active, -> { where(status: [:draft, :employee_review_pending, :manager_review_pending]) }
+  scope :completed_this_year, -> { where(status: :completed).where('period_end >= ?', Date.current.beginning_of_year) }
+  scope :for_manager, ->(manager) { where(manager: manager) }
+  scope :for_employee, ->(employee) { where(employee: employee) }
+  scope :by_period, ->(year) { where('EXTRACT(YEAR FROM period_end) = ?', year) }
+
+  # Instance methods
+  def complete!(final_score: nil)
+    return if completed?
+    transaction do
+      update!(
+        status: :completed,
+        completed_at: Time.current,
+        score: final_score
+      )
+    end
+  end
+
+  def self_review_submitted?
+    self_review.present?
+  end
+
+  def manager_review_submitted?
+    manager_review.present?
+  end
+
+  def fully_reviewed?
+    self_review_submitted? && manager_review_submitted?
+  end
+
+  private
+
+  def period_end_after_start
+    return unless period_start.present? && period_end.present?
+    return if period_end > period_start
+
+    errors.add(:period_end, 'must be after period start')
+  end
+
+  def manager_is_manager_role
+    return unless manager.present?
+    return if manager.manager? || manager.hr_or_admin?
+
+    errors.add(:manager, 'must have manager or HR role')
+  end
+
+  def both_in_same_organization
+    return unless employee.present? && manager.present? && organization.present?
+
+    if employee.organization_id != organization_id
+      errors.add(:employee, 'must belong to the same organization')
+    end
+
+    if manager.organization_id != organization_id
+      errors.add(:manager, 'must belong to the same organization')
+    end
+  end
+end
