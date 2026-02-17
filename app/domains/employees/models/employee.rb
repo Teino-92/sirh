@@ -38,8 +38,8 @@ class Employee < ApplicationRecord
   has_many :managed_evaluations, class_name: 'Evaluation', foreign_key: :manager_id, dependent: :nullify
 
   # Training relationships
-  has_many :training_assignments, dependent: :destroy
-  has_many :trainings, through: :training_assignments
+  has_many :training_assignments, class_name: 'TrainingAssignment', dependent: :destroy
+  has_many :trainings, class_name: 'Training', through: :training_assignments
   has_many :assigned_trainings, class_name: 'TrainingAssignment', foreign_key: :assigned_by_id, dependent: :nullify
 
   validates :first_name, :last_name, :contract_type, :start_date, presence: true
