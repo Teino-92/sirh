@@ -30,7 +30,7 @@ module Manager
       authorize @evaluation
 
       if @evaluation.save
-        redirect_to manager_evaluations_path, notice: 'Evaluation created'
+        redirect_to manager_evaluations_path, notice: 'Évaluation créée'
       else
         render :new, status: :unprocessable_entity
       end
@@ -40,7 +40,7 @@ module Manager
 
     def update
       if @evaluation.update(evaluation_params)
-        redirect_to manager_evaluation_path(@evaluation), notice: 'Evaluation updated'
+        redirect_to manager_evaluation_path(@evaluation), notice: 'Évaluation mise à jour'
       else
         render :edit, status: :unprocessable_entity
       end
@@ -48,21 +48,23 @@ module Manager
 
     def destroy
       @evaluation.destroy
-      redirect_to manager_evaluations_path, notice: 'Evaluation deleted'
+      redirect_to manager_evaluations_path, notice: 'Évaluation supprimée'
     end
 
     def complete
       authorize @evaluation, :complete?
       final_score = params[:score].present? ? params[:score].to_i : nil
       @evaluation.complete!(final_score: final_score)
-      redirect_to manager_evaluations_path, notice: 'Evaluation completed'
+      redirect_to manager_evaluations_path, notice: 'Évaluation complétée'
     end
 
     def submit_manager_review
       authorize @evaluation, :submit_manager_review?
-      @evaluation.update!(manager_review: params[:manager_review])
-      @evaluation.complete!
-      redirect_to manager_evaluation_path(@evaluation), notice: 'Manager review submitted'
+      @evaluation.transaction do
+        @evaluation.update!(manager_review: params[:manager_review])
+        @evaluation.complete!
+      end
+      redirect_to manager_evaluation_path(@evaluation), notice: 'Évaluation complétée'
     rescue ActiveRecord::RecordInvalid
       render :show, status: :unprocessable_entity
     end

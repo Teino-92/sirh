@@ -24,7 +24,7 @@ module Manager
       authorize @one_on_one
 
       if @one_on_one.save
-        redirect_to manager_one_on_ones_path, notice: '1:1 scheduled'
+        redirect_to manager_one_on_ones_path, notice: '1:1 planifié'
       else
         render :new, status: :unprocessable_entity
       end
@@ -33,7 +33,7 @@ module Manager
     def edit; end
     def update
       if @one_on_one.update(one_on_one_params)
-        redirect_to manager_one_on_ones_path, notice: '1:1 updated'
+        redirect_to manager_one_on_ones_path, notice: '1:1 mis à jour'
       else
         render :edit, status: :unprocessable_entity
       end
@@ -42,12 +42,12 @@ module Manager
     def complete
       authorize @one_on_one
       @one_on_one.complete!(notes: params[:notes])
-      redirect_to manager_one_on_ones_path, notice: '1:1 completed'
+      redirect_to manager_one_on_ones_path, notice: '1:1 complété'
     end
 
     def destroy
       @one_on_one.destroy
-      redirect_to manager_one_on_ones_path, notice: '1:1 deleted'
+      redirect_to manager_one_on_ones_path, notice: '1:1 supprimé'
     end
 
     private

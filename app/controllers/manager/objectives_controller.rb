@@ -9,7 +9,9 @@ module Manager
                       .includes(:owner, :manager)
                       .order(deadline: :asc)
 
-      @objectives = @objectives.where(status: params[:status]) if params[:status].present?
+      if params[:status].present? && Objective.statuses.key?(params[:status])
+        @objectives = @objectives.where(status: params[:status])
+      end
     end
 
     def show; end
@@ -22,12 +24,13 @@ module Manager
       @objective = Objective.new(objective_params.merge(
         organization: current_organization,
         manager: current_employee,
-        created_by: current_employee
+        created_by: current_employee,
+        owner_type: 'Employee'
       ))
       authorize @objective
 
       if @objective.save
-        redirect_to manager_objectives_path, notice: 'Objective created'
+        redirect_to manager_objectives_path, notice: 'Objectif créé'
       else
         render :new, status: :unprocessable_entity
       end
@@ -36,21 +39,23 @@ module Manager
     def edit; end
     def update
       if @objective.update(objective_params)
-        redirect_to manager_objectives_path, notice: 'Objective updated'
+        redirect_to manager_objectives_path, notice: 'Objectif mis à jour'
       else
         render :edit, status: :unprocessable_entity
       end
     end
 
     def complete
-      authorize @objective
+      authorize @objective, :complete?
       @objective.complete!
       redirect_to manager_objectives_path, notice: 'Objectif marqué comme complété'
+    rescue ActiveRecord::RecordInvalid
+      redirect_to manager_objective_path(@objective), alert: 'Impossible de compléter cet objectif.'
     end
 
     def destroy
       @objective.destroy
-      redirect_to manager_objectives_path, notice: 'Objective deleted'
+      redirect_to manager_objectives_path, notice: 'Objectif supprimé'
     end
 
     private
@@ -61,7 +66,7 @@ module Manager
     end
 
     def objective_params
-      params.require(:objective).permit(:title, :description, :owner_id, :owner_type, :deadline, :priority)
+      params.require(:objective).permit(:title, :description, :owner_id, :deadline, :priority)
     end
 
     def current_organization

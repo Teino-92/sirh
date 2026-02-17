@@ -12,6 +12,14 @@ class EvaluationPolicy < ApplicationPolicy
     end
   end
 
+  def index?
+    true
+  end
+
+  def show?
+    user.hr_or_admin? || record.manager == user || record.employee == user
+  end
+
   def create?
     user.manager? || user.hr_or_admin?
   end

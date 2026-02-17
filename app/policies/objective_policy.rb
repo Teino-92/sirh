@@ -12,6 +12,14 @@ class ObjectivePolicy < ApplicationPolicy
     end
   end
 
+  def index?
+    true
+  end
+
+  def show?
+    user.hr_or_admin? || record.manager == user || record.owner == user
+  end
+
   def create?
     user.manager? || user.hr_or_admin?
   end

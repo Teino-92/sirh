@@ -9,7 +9,9 @@ class ObjectivesController < ApplicationController
                    .includes(:manager)
                    .order(deadline: :asc)
 
-    @objectives = @objectives.where(status: params[:status]) if params[:status].present?
+    if params[:status].present? && Objective.statuses.key?(params[:status])
+      @objectives = @objectives.where(status: params[:status])
+    end
   end
 
   def show

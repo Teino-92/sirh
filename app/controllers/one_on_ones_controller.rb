@@ -5,7 +5,6 @@ class OneOnOnesController < ApplicationController
 
   def index
     @one_on_ones = policy_scope(OneOnOne)
-                    .where(employee: current_employee)
                     .includes(:manager)
                     .order(scheduled_at: :desc)
   end
