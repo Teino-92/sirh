@@ -1,0 +1,35 @@
+<%= form_with model: [:manager, one_on_one], class: 'space-y-4' do |f| %>
+  <% if one_on_one.errors.any? %>
+    <div class="alert alert-error">
+      <ul class="list-disc list-inside text-sm">
+        <% one_on_one.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="form-control">
+    <%= f.label :employee_id, 'Collaborateur', class: 'label' %>
+    <%= f.select :employee_id,
+          current_employee.direct_reports.order(:last_name, :first_name).map { |e| [e.full_name, e.id] },
+          { prompt: 'Sélectionner un collaborateur' },
+          class: 'select select-bordered w-full', required: true %>
+  </div>
+
+  <div class="form-control">
+    <%= f.label :scheduled_at, 'Date et heure', class: 'label' %>
+    <%= f.datetime_local_field :scheduled_at, class: 'input input-bordered w-full', required: true %>
+  </div>
+
+  <div class="form-control">
+    <%= f.label :agenda, 'Agenda', class: 'label' %>
+    <%= f.text_area :agenda, rows: 4, class: 'textarea textarea-bordered w-full',
+          placeholder: 'Points à aborder…' %>
+  </div>
+
+  <div class="flex gap-3 pt-2">
+    <%= f.submit class: 'btn btn-primary' %>
+    <%= link_to 'Annuler', manager_one_on_ones_path, class: 'btn btn-ghost' %>
+  </div>
+<% end %>

@@ -68,7 +68,11 @@ Rails.application.routes.draw do
   # Manager-specific routes
   namespace :manager do
     get :dashboard
-    resources :objectives
+    resources :objectives do
+      member do
+        patch :complete
+      end
+    end
     resources :one_on_ones do
       member do
         patch :complete

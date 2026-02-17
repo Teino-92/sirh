@@ -1,0 +1,72 @@
+<div class="container mx-auto px-4 py-6 max-w-3xl">
+  <div class="mb-4">
+    <%= link_to '← Évaluations équipe', manager_evaluations_path, class: 'text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200' %>
+  </div>
+
+  <div class="card bg-white dark:bg-gray-800 shadow-sm p-6 mb-6">
+    <div class="flex justify-between items-start">
+      <div class="flex-1">
+        <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100">
+          Évaluation — <%= @evaluation.employee.full_name %>
+        </h1>
+        <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">
+          Période : <%= l(@evaluation.period_start, format: :long) %> – <%= l(@evaluation.period_end, format: :long) %>
+        </p>
+        <span class="badge badge-<%= @evaluation.status %> mt-2"><%= @evaluation.status.humanize %></span>
+      </div>
+      <div class="flex gap-2 ml-4">
+        <% unless @evaluation.completed? || @evaluation.cancelled? %>
+          <%= link_to 'Modifier', edit_manager_evaluation_path(@evaluation), class: 'btn btn-sm btn-outline' %>
+        <% end %>
+        <%= button_to 'Supprimer', manager_evaluation_path(@evaluation),
+              method: :delete, class: 'btn btn-sm btn-ghost text-red-500',
+              data: { confirm: 'Supprimer cette évaluation ?' } %>
+      </div>
+    </div>
+
+    <% if @evaluation.completed_at.present? %>
+      <p class="mt-4 text-sm text-gray-500 dark:text-gray-400">
+        Complétée le <%= l(@evaluation.completed_at.to_date, format: :long) %>
+        <% if @evaluation.score.present? %>
+          &bull; Score : <%= @evaluation.score.humanize %>
+        <% end %>
+      </p>
+    <% end %>
+  </div>
+
+  <% if @evaluation.self_review.present? %>
+    <div class="card bg-white dark:bg-gray-800 shadow-sm p-6 mb-4">
+      <h2 class="text-sm font-semibold text-gray-600 dark:text-gray-400 mb-2">Auto-évaluation du collaborateur</h2>
+      <p class="text-gray-900 dark:text-gray-100 whitespace-pre-wrap"><%= @evaluation.self_review %></p>
+    </div>
+  <% end %>
+
+  <% if @evaluation.manager_review_pending? %>
+    <div class="card bg-white dark:bg-gray-800 shadow-sm p-6 mb-4">
+      <h2 class="text-lg font-semibold mb-4 text-gray-900 dark:text-gray-100">Soumettre votre avis manager</h2>
+      <%= form_with url: submit_manager_review_manager_evaluation_path(@evaluation), method: :patch do |f| %>
+        <div class="form-control mb-4">
+          <%= label_tag :manager_review, 'Avis manager', class: 'label' %>
+          <%= text_area_tag :manager_review, nil, rows: 5, name: 'manager_review',
+                class: 'textarea textarea-bordered w-full',
+                placeholder: 'Votre appréciation du collaborateur…', required: true %>
+        </div>
+        <%= f.submit 'Soumettre et clôturer', class: 'btn btn-primary' %>
+      <% end %>
+    </div>
+  <% elsif @evaluation.manager_review.present? %>
+    <div class="card bg-white dark:bg-gray-800 shadow-sm p-6 mb-4">
+      <h2 class="text-sm font-semibold text-gray-600 dark:text-gray-400 mb-2">Avis manager</h2>
+      <p class="text-gray-900 dark:text-gray-100 whitespace-pre-wrap"><%= @evaluation.manager_review %></p>
+    </div>
+  <% end %>
+
+  <% if @evaluation.active? && @evaluation.fully_reviewed? %>
+    <div class="card bg-green-50 dark:bg-green-900/20 shadow-sm p-6">
+      <p class="text-green-700 dark:text-green-400 font-medium mb-3">Les deux parties ont soumis leurs avis.</p>
+      <%= button_to 'Clôturer l\'évaluation', complete_manager_evaluation_path(@evaluation),
+            method: :patch, class: 'btn btn-success',
+            data: { confirm: 'Clôturer définitivement cette évaluation ?' } %>
+    </div>
+  <% end %>
+</div>

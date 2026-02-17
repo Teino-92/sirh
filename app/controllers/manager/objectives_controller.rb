@@ -1,7 +1,7 @@
 module Manager
   class ObjectivesController < ApplicationController
     before_action :authenticate_employee!
-    before_action :set_objective, only: [:show, :edit, :update, :destroy]
+    before_action :set_objective, only: [:show, :edit, :update, :destroy, :complete]
 
     def index
       @objectives = policy_scope(Objective)
@@ -40,6 +40,12 @@ module Manager
       else
         render :edit, status: :unprocessable_entity
       end
+    end
+
+    def complete
+      authorize @objective
+      @objective.complete!
+      redirect_to manager_objectives_path, notice: 'Objectif marqué comme complété'
     end
 
     def destroy

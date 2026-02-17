@@ -1,0 +1,36 @@
+<%= form_with model: [:manager, evaluation], class: 'space-y-4' do |f| %>
+  <% if evaluation.errors.any? %>
+    <div class="alert alert-error">
+      <ul class="list-disc list-inside text-sm">
+        <% evaluation.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="form-control">
+    <%= f.label :employee_id, 'Collaborateur', class: 'label' %>
+    <%= f.select :employee_id,
+          current_employee.direct_reports.order(:last_name, :first_name).map { |e| [e.full_name, e.id] },
+          { prompt: 'Sélectionner un collaborateur' },
+          class: 'select select-bordered w-full', required: true %>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div class="form-control">
+      <%= f.label :period_start, 'Début de période', class: 'label' %>
+      <%= f.date_field :period_start, class: 'input input-bordered w-full', required: true %>
+    </div>
+
+    <div class="form-control">
+      <%= f.label :period_end, 'Fin de période', class: 'label' %>
+      <%= f.date_field :period_end, class: 'input input-bordered w-full', required: true %>
+    </div>
+  </div>
+
+  <div class="flex gap-3 pt-2">
+    <%= f.submit class: 'btn btn-primary' %>
+    <%= link_to 'Annuler', manager_evaluations_path, class: 'btn btn-ghost' %>
+  </div>
+<% end %>

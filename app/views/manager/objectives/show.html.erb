@@ -1,0 +1,54 @@
+<div class="container mx-auto px-4 py-6 max-w-3xl">
+  <div class="mb-4">
+    <%= link_to '← Objectifs équipe', manager_objectives_path, class: 'text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200' %>
+  </div>
+
+  <div class="card bg-white dark:bg-gray-800 shadow-sm p-6 mb-6">
+    <div class="flex justify-between items-start">
+      <div class="flex-1">
+        <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100"><%= @objective.title %></h1>
+        <div class="flex gap-2 mt-2 flex-wrap">
+          <span class="badge badge-outline"><%= @objective.priority.humanize %></span>
+          <span class="badge badge-<%= @objective.status %>"><%= @objective.status.humanize %></span>
+          <% if @objective.overdue? %>
+            <span class="badge badge-error">En retard</span>
+          <% end %>
+        </div>
+      </div>
+      <div class="flex gap-2 ml-4">
+        <% unless @objective.completed? || @objective.cancelled? %>
+          <%= link_to 'Modifier', edit_manager_objective_path(@objective), class: 'btn btn-sm btn-outline' %>
+          <%= button_to 'Marquer complété', complete_manager_objective_path(@objective),
+                method: :patch, class: 'btn btn-sm btn-primary',
+                data: { confirm: 'Marquer cet objectif comme complété ?' } %>
+        <% end %>
+        <%= button_to 'Supprimer', manager_objective_path(@objective),
+              method: :delete, class: 'btn btn-sm btn-ghost text-red-500',
+              data: { confirm: 'Supprimer cet objectif ?' } %>
+      </div>
+    </div>
+
+    <% if @objective.description.present? %>
+      <p class="mt-4 text-gray-700 dark:text-gray-300"><%= @objective.description %></p>
+    <% end %>
+
+    <dl class="grid grid-cols-2 gap-4 mt-6 text-sm">
+      <div>
+        <dt class="font-medium text-gray-600 dark:text-gray-400">Collaborateur</dt>
+        <dd class="text-gray-900 dark:text-gray-100 mt-1"><%= @objective.owner.full_name %></dd>
+      </div>
+      <div>
+        <dt class="font-medium text-gray-600 dark:text-gray-400">Échéance</dt>
+        <dd class="mt-1 <%= @objective.overdue? ? 'text-red-600 font-medium' : 'text-gray-900 dark:text-gray-100' %>">
+          <%= l(@objective.deadline, format: :long) %>
+        </dd>
+      </div>
+      <% if @objective.completed_at.present? %>
+        <div>
+          <dt class="font-medium text-gray-600 dark:text-gray-400">Complété le</dt>
+          <dd class="text-gray-900 dark:text-gray-100 mt-1"><%= l(@objective.completed_at.to_date, format: :long) %></dd>
+        </div>
+      <% end %>
+    </dl>
+  </div>
+</div>
