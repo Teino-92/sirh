@@ -21,6 +21,7 @@ module OneOnOnes
       def link_objective_as_action_item(one_on_one:, objective:, deadline:)
         ActionItem.create!(
           one_on_one: one_on_one,
+          organization: one_on_one.organization,
           responsible: objective.owner,
           objective: objective,
           description: "Follow up on: #{objective.title}",

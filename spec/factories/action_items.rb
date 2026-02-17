@@ -3,6 +3,14 @@ FactoryBot.define do
     association :one_on_one
     association :responsible, factory: :employee
 
+    transient do
+      organization { one_on_one&.organization || create(:organization) }
+    end
+
+    after(:build) do |action_item, evaluator|
+      action_item.organization ||= evaluator.organization
+    end
+
     description { Faker::Lorem.sentence }
     deadline { 2.weeks.from_now.to_date }
     status { :pending }

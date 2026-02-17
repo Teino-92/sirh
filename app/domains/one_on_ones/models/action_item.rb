@@ -1,4 +1,8 @@
 class ActionItem < ApplicationRecord
+  # Multi-tenancy
+  belongs_to :organization
+  acts_as_tenant :organization
+
   # Parent relationship
   belongs_to :one_on_one
 
@@ -25,6 +29,7 @@ class ActionItem < ApplicationRecord
   validates :description, presence: true, length: { maximum: 1000 }
   validates :deadline, presence: true
   validates :status, presence: true
+  validates :responsible_type, presence: true, inclusion: { in: responsible_types.keys }
 
   # Scopes
   scope :active, -> { where(status: [:pending, :in_progress]) }

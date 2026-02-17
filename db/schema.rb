@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2026_02_16_222417) do
+ActiveRecord::Schema[7.1].define(version: 2026_02_16_225233) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -26,9 +26,11 @@ ActiveRecord::Schema[7.1].define(version: 2026_02_16_222417) do
     t.text "completion_notes"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "organization_id", null: false
     t.index ["deadline"], name: "index_action_items_on_deadline"
     t.index ["objective_id"], name: "index_action_items_on_objective_id"
     t.index ["one_on_one_id"], name: "index_action_items_on_one_on_one_id"
+    t.index ["organization_id"], name: "index_action_items_on_organization_id"
     t.index ["responsible_id", "deadline"], name: "idx_action_items_overdue", where: "((status)::text = ANY ((ARRAY['pending'::character varying, 'in_progress'::character varying])::text[]))"
     t.index ["responsible_id", "status", "deadline"], name: "idx_action_items_responsible"
     t.index ["responsible_id"], name: "index_action_items_on_responsible_id"
@@ -414,6 +416,7 @@ ActiveRecord::Schema[7.1].define(version: 2026_02_16_222417) do
   add_foreign_key "action_items", "employees", column: "responsible_id"
   add_foreign_key "action_items", "objectives"
   add_foreign_key "action_items", "one_on_ones"
+  add_foreign_key "action_items", "organizations"
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "employees", "employees", column: "manager_id"
