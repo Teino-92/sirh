@@ -1,0 +1,66 @@
+<div class="container mx-auto px-4 py-6 max-w-2xl">
+  <div class="mb-4">
+    <%= link_to '← Back to Trainings', training_assignments_path, class: 'text-sm text-gray-500 hover:text-gray-700' %>
+  </div>
+
+  <div class="card bg-white shadow-sm p-6">
+    <div class="flex justify-between items-start mb-4">
+      <h1 class="text-2xl font-bold"><%= @assignment.training.title %></h1>
+      <span class="badge badge-<%= @assignment.status %>"><%= @assignment.status.humanize %></span>
+    </div>
+
+    <div class="space-y-3 text-sm text-gray-600">
+      <div class="flex gap-2 flex-wrap">
+        <span class="badge badge-outline"><%= @assignment.training.training_type.humanize %></span>
+        <% if @assignment.training.provider.present? %>
+          <span><strong>Provider:</strong> <%= @assignment.training.provider %></span>
+        <% end %>
+        <% if @assignment.training.duration_estimate.present? %>
+          <span><strong>Duration:</strong> <%= @assignment.training.duration_estimate %>h</span>
+        <% end %>
+      </div>
+
+      <p><strong>Assigned by:</strong> <%= @assignment.assigned_by.full_name %></p>
+      <p><strong>Assigned on:</strong> <%= @assignment.assigned_at.strftime('%B %d, %Y') %></p>
+
+      <% if @assignment.deadline.present? %>
+        <p class="<%= @assignment.overdue? ? 'text-red-500 font-medium' : '' %>">
+          <strong>Deadline:</strong> <%= @assignment.deadline.strftime('%B %d, %Y') %>
+          <%= ' — Overdue' if @assignment.overdue? %>
+        </p>
+      <% end %>
+
+      <% if @assignment.completed_at.present? %>
+        <p><strong>Completed:</strong> <%= @assignment.completed_at.strftime('%B %d, %Y at %H:%M') %></p>
+      <% end %>
+    </div>
+
+    <% if @assignment.training.description.present? %>
+      <div class="mt-4 pt-4 border-t border-gray-100">
+        <h2 class="font-semibold mb-2">Description</h2>
+        <p class="text-gray-700"><%= @assignment.training.description %></p>
+      </div>
+    <% end %>
+
+    <% if @assignment.training.external_url.present? %>
+      <div class="mt-4">
+        <%= link_to 'Access Training Material', @assignment.training.external_url,
+              target: '_blank', rel: 'noopener', class: 'btn btn-outline btn-sm' %>
+      </div>
+    <% end %>
+
+    <% if @assignment.active? && policy(@assignment).complete? %>
+      <div class="mt-6 pt-4 border-t border-gray-100">
+        <h2 class="font-semibold mb-3">Mark as Complete</h2>
+        <%= form_with url: complete_training_assignment_path(@assignment), method: :patch, class: 'space-y-3' do |f| %>
+          <div class="form-control">
+            <%= f.label :completion_notes, 'Completion notes (optional)', class: 'label' %>
+            <%= f.text_area :completion_notes, rows: 3, class: 'textarea textarea-bordered w-full',
+                  placeholder: 'Add any notes about completing this training...' %>
+          </div>
+          <%= f.submit 'Mark as Complete', class: 'btn btn-primary' %>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+</div>

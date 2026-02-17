@@ -1,0 +1,60 @@
+<div class="container mx-auto px-4 py-6">
+  <div class="flex justify-between items-center mb-6">
+    <h1 class="text-2xl font-bold">Training Catalogue</h1>
+    <%= link_to 'New Training', new_manager_training_path, class: 'btn btn-primary' %>
+  </div>
+
+  <div class="flex gap-2 mb-4 overflow-x-auto">
+    <%= link_to 'Active', manager_trainings_path, class: "btn btn-sm #{params[:archived] != 'true' ? 'btn-primary' : 'btn-outline'}" %>
+    <%= link_to 'Archived', manager_trainings_path(archived: true), class: "btn btn-sm #{params[:archived] == 'true' ? 'btn-primary' : 'btn-outline'}" %>
+  </div>
+
+  <div class="flex gap-2 mb-6 overflow-x-auto">
+    <% Training.training_types.keys.each do |type| %>
+      <%= link_to type.humanize,
+            manager_trainings_path(training_type: type, archived: params[:archived]),
+            class: "btn btn-xs #{params[:training_type] == type ? 'btn-secondary' : 'btn-outline'}" %>
+    <% end %>
+  </div>
+
+  <div class="space-y-4">
+    <% @trainings.each do |training| %>
+      <div class="card bg-white shadow-sm p-4">
+        <div class="flex justify-between items-start">
+          <div class="flex-1">
+            <h3 class="font-semibold text-lg">
+              <%= link_to training.title, manager_training_path(training), class: 'hover:text-blue-600' %>
+            </h3>
+            <div class="flex gap-2 mt-1 flex-wrap">
+              <span class="badge badge-outline text-xs"><%= training.training_type.humanize %></span>
+              <% if training.provider.present? %>
+                <span class="text-sm text-gray-500"><%= training.provider %></span>
+              <% end %>
+              <% if training.duration_estimate.present? %>
+                <span class="text-sm text-gray-500"><%= training.duration_estimate %>h</span>
+              <% end %>
+            </div>
+            <% if training.description.present? %>
+              <p class="text-sm text-gray-600 mt-2 line-clamp-2"><%= training.description %></p>
+            <% end %>
+          </div>
+          <div class="flex gap-2 items-center ml-4">
+            <% if training.archived? %>
+              <%= button_to 'Restore', unarchive_manager_training_path(training),
+                    method: :patch, class: 'btn btn-sm btn-outline' %>
+            <% else %>
+              <%= link_to 'Edit', edit_manager_training_path(training), class: 'btn btn-sm btn-outline' %>
+              <%= button_to 'Archive', archive_manager_training_path(training),
+                    method: :patch, class: 'btn btn-sm btn-ghost text-gray-400',
+                    data: { confirm: 'Archive this training?' } %>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    <% end %>
+
+    <% if @trainings.empty? %>
+      <p class="text-gray-500 text-center py-8">No trainings found.</p>
+    <% end %>
+  </div>
+</div>

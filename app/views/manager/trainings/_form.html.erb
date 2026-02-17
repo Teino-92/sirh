@@ -1,0 +1,51 @@
+<%= form_with model: [:manager, training], class: 'space-y-4' do |f| %>
+  <% if training.errors.any? %>
+    <div class="alert alert-error">
+      <ul class="list-disc list-inside text-sm">
+        <% training.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="form-control">
+    <%= f.label :title, class: 'label' %>
+    <%= f.text_field :title, class: 'input input-bordered w-full', required: true %>
+  </div>
+
+  <div class="form-control">
+    <%= f.label :training_type, class: 'label' %>
+    <%= f.select :training_type,
+          Training.training_types.keys.map { |t| [t.humanize, t] },
+          { prompt: 'Select type' },
+          class: 'select select-bordered w-full', required: true %>
+  </div>
+
+  <div class="form-control">
+    <%= f.label :description, class: 'label' %>
+    <%= f.text_area :description, rows: 4, class: 'textarea textarea-bordered w-full' %>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div class="form-control">
+      <%= f.label :provider, class: 'label' %>
+      <%= f.text_field :provider, class: 'input input-bordered w-full' %>
+    </div>
+
+    <div class="form-control">
+      <%= f.label :duration_estimate, 'Duration (hours)', class: 'label' %>
+      <%= f.number_field :duration_estimate, min: 1, class: 'input input-bordered w-full' %>
+    </div>
+  </div>
+
+  <div class="form-control">
+    <%= f.label :external_url, 'External URL', class: 'label' %>
+    <%= f.url_field :external_url, class: 'input input-bordered w-full', placeholder: 'https://' %>
+  </div>
+
+  <div class="flex gap-3 pt-2">
+    <%= f.submit class: 'btn btn-primary' %>
+    <%= link_to 'Cancel', manager_trainings_path, class: 'btn btn-ghost' %>
+  </div>
+<% end %>
