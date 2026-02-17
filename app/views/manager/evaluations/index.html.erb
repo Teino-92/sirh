@@ -1,0 +1,44 @@
+<div class="container mx-auto px-4 py-6">
+  <div class="flex justify-between items-center mb-6">
+    <h1 class="text-2xl font-bold">Team Evaluations</h1>
+    <%= link_to 'New Evaluation', new_manager_evaluation_path, class: 'btn btn-primary' %>
+  </div>
+
+  <div class="flex gap-2 mb-4 overflow-x-auto">
+    <%= link_to 'All', manager_evaluations_path, class: "btn btn-sm #{params[:status].blank? ? 'btn-primary' : 'btn-outline'}" %>
+    <%= link_to 'In Progress', manager_evaluations_path(status: :employee_review_pending), class: "btn btn-sm #{params[:status] == 'employee_review_pending' ? 'btn-primary' : 'btn-outline'}" %>
+    <%= link_to 'Awaiting Review', manager_evaluations_path(status: :manager_review_pending), class: "btn btn-sm #{params[:status] == 'manager_review_pending' ? 'btn-primary' : 'btn-outline'}" %>
+    <%= link_to 'Completed', manager_evaluations_path(status: :completed), class: "btn btn-sm #{params[:status] == 'completed' ? 'btn-primary' : 'btn-outline'}" %>
+  </div>
+
+  <div class="space-y-4">
+    <% @evaluations.each do |evaluation| %>
+      <div class="card bg-white shadow-sm p-4">
+        <div class="flex justify-between items-start">
+          <div class="flex-1">
+            <h3 class="font-semibold text-lg">
+              <%= link_to evaluation.employee.full_name, manager_evaluation_path(evaluation), class: 'hover:text-blue-600' %>
+            </h3>
+            <p class="text-sm text-gray-600 mt-1">
+              <%= evaluation.period_start.year %> &bull;
+              <%= evaluation.period_start.strftime('%b %d') %> &ndash; <%= evaluation.period_end.strftime('%b %d, %Y') %>
+            </p>
+            <% if evaluation.fully_reviewed? && evaluation.active? %>
+              <p class="text-sm text-green-600 mt-1">Both reviews submitted &mdash; ready to complete</p>
+            <% end %>
+          </div>
+          <span class="badge badge-<%= evaluation.status %>"><%= evaluation.status.humanize %></span>
+        </div>
+        <% if evaluation.manager_review_pending? %>
+          <div class="mt-3">
+            <%= link_to 'Submit Manager Review', manager_evaluation_path(evaluation), class: 'btn btn-sm btn-secondary' %>
+          </div>
+        <% end %>
+      </div>
+    <% end %>
+
+    <% if @evaluations.empty? %>
+      <p class="text-gray-500 text-center py-8">No evaluations found.</p>
+    <% end %>
+  </div>
+</div>
