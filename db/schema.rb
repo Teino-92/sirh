@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2026_02_17_080510) do
+ActiveRecord::Schema[7.1].define(version: 2026_02_17_085702) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -102,9 +102,11 @@ ActiveRecord::Schema[7.1].define(version: 2026_02_17_080510) do
     t.bigint "objective_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "organization_id", null: false
     t.index ["evaluation_id", "objective_id"], name: "idx_unique_evaluation_objectives", unique: true
     t.index ["evaluation_id"], name: "index_evaluation_objectives_on_evaluation_id"
     t.index ["objective_id"], name: "index_evaluation_objectives_on_objective_id"
+    t.index ["organization_id"], name: "index_evaluation_objectives_on_organization_id"
   end
 
   create_table "evaluations", force: :cascade do |t|
@@ -118,7 +120,7 @@ ActiveRecord::Schema[7.1].define(version: 2026_02_17_080510) do
     t.text "self_review"
     t.text "manager_review"
     t.integer "score"
-    t.date "completed_at"
+    t.datetime "completed_at"
     t.jsonb "metadata", default: {}, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -460,6 +462,7 @@ ActiveRecord::Schema[7.1].define(version: 2026_02_17_080510) do
   add_foreign_key "employees", "organizations"
   add_foreign_key "evaluation_objectives", "evaluations"
   add_foreign_key "evaluation_objectives", "objectives"
+  add_foreign_key "evaluation_objectives", "organizations"
   add_foreign_key "evaluations", "employees"
   add_foreign_key "evaluations", "employees", column: "created_by_id"
   add_foreign_key "evaluations", "employees", column: "manager_id"

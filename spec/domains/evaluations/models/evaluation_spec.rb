@@ -233,6 +233,32 @@ RSpec.describe Evaluation, type: :model do
       end
     end
 
+    describe '#advance_to_manager_review!' do
+      let(:evaluation) do
+        create(:evaluation, organization: organization, employee: employee, manager: manager, created_by: manager,
+               status: :employee_review_pending)
+      end
+
+      it 'sets self_review and advances status to manager_review_pending' do
+        evaluation.advance_to_manager_review!(self_review_text: 'This year I achieved...')
+        evaluation.reload
+        expect(evaluation.status).to eq('manager_review_pending')
+        expect(evaluation.self_review).to eq('This year I achieved...')
+      end
+
+      it 'is idempotent — does nothing if already manager_review_pending' do
+        evaluation.update!(status: :manager_review_pending, self_review: 'Original')
+        evaluation.advance_to_manager_review!(self_review_text: 'New text')
+        expect(evaluation.reload.self_review).to eq('Original')
+      end
+
+      it 'is idempotent — does nothing if already completed' do
+        evaluation.update_columns(status: 'completed')
+        evaluation.advance_to_manager_review!(self_review_text: 'Too late')
+        expect(evaluation.reload.status).to eq('completed')
+      end
+    end
+
     describe '#self_review_submitted?' do
       it 'returns false when self_review is blank' do
         expect(evaluation.self_review_submitted?).to be false

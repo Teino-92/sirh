@@ -13,11 +13,10 @@ class EvaluationsController < ApplicationController
 
   def submit_self_review
     authorize @evaluation, :submit_self_review?
-    if @evaluation.update(self_review: params[:self_review], status: :manager_review_pending)
-      redirect_to evaluation_path(@evaluation), notice: 'Self review submitted'
-    else
-      render :show, status: :unprocessable_entity
-    end
+    @evaluation.advance_to_manager_review!(self_review_text: params[:self_review])
+    redirect_to evaluation_path(@evaluation), notice: 'Self review submitted'
+  rescue ActiveRecord::RecordInvalid
+    render :show, status: :unprocessable_entity
   end
 
   private

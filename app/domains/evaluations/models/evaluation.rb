@@ -56,6 +56,13 @@ class Evaluation < ApplicationRecord
     end
   end
 
+  def advance_to_manager_review!(self_review_text:)
+    return if manager_review_pending? || completed?
+    transaction do
+      update!(self_review: self_review_text, status: :manager_review_pending)
+    end
+  end
+
   def self_review_submitted?
     self_review.present?
   end
