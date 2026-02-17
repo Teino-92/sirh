@@ -77,7 +77,7 @@ module Manager
     end
 
     def evaluation_params
-      params.require(:evaluation).permit(:employee_id, :period_start, :period_end, :self_review, :manager_review)
+      params.require(:evaluation).permit(:employee_id, :period_start, :period_end)
     end
 
     def current_organization

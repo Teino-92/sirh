@@ -40,7 +40,7 @@ module Manager
     end
 
     def complete
-      authorize @one_on_one
+      authorize @one_on_one, :complete?
       @one_on_one.complete!(notes: params[:notes])
       redirect_to manager_one_on_ones_path, notice: '1:1 complété'
     end
