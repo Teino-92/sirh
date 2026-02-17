@@ -10,7 +10,6 @@ FactoryBot.define do
     status { :draft }
 
     after(:build) do |evaluation, _evaluator|
-      evaluation.manager.update_columns(role: 'manager') if evaluation.manager.persisted?
       evaluation.organization ||= evaluation.employee&.organization
     end
 
