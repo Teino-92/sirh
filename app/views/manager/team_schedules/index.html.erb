@@ -1,226 +1,469 @@
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
   <!-- Header -->
-  <div class="mb-6">
-    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2">Horaires de l'équipe</h1>
-    <p class="text-sm text-gray-600 dark:text-gray-400">Planifiez les horaires de travail de votre équipe semaine par semaine</p>
+  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6">
+    <div>
+      <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100">Mon équipe</h1>
+      <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">
+        <%= @team_members.count %> membre<%= 's' if @team_members.count != 1 %>
+      </p>
+    </div>
+    <!-- Show Planning button -->
+    <button type="button"
+            onclick="document.getElementById('planning-section').classList.toggle('hidden')"
+            class="mt-4 sm:mt-0 inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 shadow-sm text-sm font-medium rounded-md text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors">
+      <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+      </svg>
+      Voir les plannings
+    </button>
   </div>
 
-  <!-- Stats Cards -->
-  <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
-    <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-lg shadow p-6">
-      <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Membres d'équipe</p>
-      <p class="text-3xl font-bold text-gray-900 dark:text-gray-100 mt-2"><%= @team_members.count %></p>
-    </div>
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <!-- Left: Member Cards -->
+    <div class="lg:col-span-2 space-y-4">
+      <% if @team_members.any? %>
+        <% @team_members.each do |member| %>
+          <%
+            objectives_count  = @member_objectives[member.id]&.count || 0
+            next_one_on_one   = @member_one_on_ones[member.id]&.first
+            trainings_count   = @member_trainings[member.id]&.count || 0
+          %>
+          <div class="bg-white dark:bg-gray-800 rounded-lg shadow border border-gray-200 dark:border-gray-700 overflow-hidden">
+            <!-- Member Header -->
+            <div class="p-4 sm:p-5">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center min-w-0">
+                  <div class="h-12 w-12 rounded-full bg-indigo-100 dark:bg-indigo-800 flex items-center justify-center flex-shrink-0">
+                    <span class="text-indigo-700 dark:text-indigo-300 font-bold text-lg">
+                      <%= member.first_name[0] %><%= member.last_name[0] %>
+                    </span>
+                  </div>
+                  <div class="ml-3 min-w-0">
+                    <p class="font-semibold text-gray-900 dark:text-gray-100 truncate"><%= member.full_name %></p>
+                    <p class="text-sm text-gray-500 dark:text-gray-400 truncate">
+                      <%= member.job_title.presence || member.department.presence || member.role.humanize %>
+                    </p>
+                    <% if member.department.present? && member.job_title.present? %>
+                      <p class="text-xs text-gray-400 dark:text-gray-500"><%= member.department %></p>
+                    <% end %>
+                  </div>
+                </div>
 
-    <div class="bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900 dark:to-green-700 border-2 border-green-300 dark:border-green-500 rounded-lg p-6 shadow-md">
-      <p class="text-sm font-medium text-green-800 dark:text-white opacity-90">Plannings créés</p>
-      <p class="text-3xl font-bold text-green-900 dark:text-white mt-2"><%= @members_with_schedule.count %></p>
-    </div>
-
-    <div class="bg-gradient-to-br from-orange-50 to-orange-100 dark:from-orange-900 dark:to-orange-700 border-2 border-orange-300 dark:border-orange-500 rounded-lg p-6 shadow-md">
-      <p class="text-sm font-medium text-orange-800 dark:text-white opacity-90">À planifier</p>
-      <p class="text-3xl font-bold text-orange-900 dark:text-white mt-2"><%= @members_without_schedule.count %></p>
-    </div>
-  </div>
-
-  <!-- Members Without Schedule (Priority) -->
-  <% if @members_without_schedule.any? %>
-    <div class="bg-orange-50 dark:bg-orange-900 border-2 border-orange-500 rounded-lg p-6 mb-6">
-      <div class="flex items-center mb-4">
-        <svg class="w-6 h-6 text-orange-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
-        </svg>
-        <h2 class="text-lg font-semibold text-orange-900">
-          <%= @members_without_schedule.count %> employé<%= 's' if @members_without_schedule.count > 1 %> sans planning
-        </h2>
-      </div>
-
-      <div class="space-y-3">
-        <% @members_without_schedule.each do |member| %>
-          <div class="bg-white dark:bg-gray-800 rounded-lg p-4 flex items-center justify-between">
-            <div class="flex items-center">
-              <div class="h-10 w-10 rounded-full bg-orange-100 dark:bg-orange-800 flex items-center justify-center mr-3">
-                <span class="text-orange-700 dark:text-orange-300 font-semibold">
-                  <%= member.first_name[0] %><%= member.last_name[0] %>
-                </span>
+                <!-- Quick stats -->
+                <div class="hidden sm:flex items-center gap-3 flex-shrink-0 ml-4">
+                  <% if objectives_count > 0 %>
+                    <div class="text-center">
+                      <p class="text-lg font-bold text-blue-600 dark:text-blue-400"><%= objectives_count %></p>
+                      <p class="text-xs text-gray-500 dark:text-gray-400">objectif<%= 's' if objectives_count != 1 %></p>
+                    </div>
+                  <% end %>
+                  <% if trainings_count > 0 %>
+                    <div class="text-center">
+                      <p class="text-lg font-bold text-yellow-600 dark:text-yellow-400"><%= trainings_count %></p>
+                      <p class="text-xs text-gray-500 dark:text-gray-400">formation<%= 's' if trainings_count != 1 %></p>
+                    </div>
+                  <% end %>
+                  <% if next_one_on_one %>
+                    <div class="text-center">
+                      <p class="text-xs font-semibold text-purple-600 dark:text-purple-400">Prochain 1:1</p>
+                      <p class="text-xs text-gray-500 dark:text-gray-400"><%= l(next_one_on_one.scheduled_at, format: :short) %></p>
+                    </div>
+                  <% end %>
+                </div>
               </div>
-              <div>
-                <p class="font-semibold text-gray-900 dark:text-gray-100"><%= member.full_name %></p>
-                <p class="text-sm text-gray-600 dark:text-gray-400">
-                  <%= member.department || 'Équipe' %> • <%= member.contract_type %>
-                </p>
-              </div>
+
+              <!-- Next 1:1 on mobile -->
+              <% if next_one_on_one %>
+                <div class="mt-3 sm:hidden flex items-center text-sm text-purple-600 dark:text-purple-400">
+                  <svg class="w-4 h-4 mr-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+                  Prochain 1:1 · <%= l(next_one_on_one.scheduled_at, format: :short) %>
+                </div>
+              <% end %>
             </div>
 
-            <%= link_to manager_team_member_weekly_schedule_plans_path(member),
-              class: "inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-orange-600 hover:bg-orange-700" do %>
-              <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+            <!-- Action Bar -->
+            <div class="border-t border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 px-4 py-3">
+              <div class="flex flex-wrap gap-2">
+                <!-- 1:1 actions -->
+                <div class="flex items-center gap-1">
+                  <span class="text-xs text-gray-400 dark:text-gray-500 mr-1">1:1</span>
+                  <%= link_to new_manager_one_on_one_path(one_on_one: { employee_id: member.id }),
+                    class: "inline-flex items-center px-2.5 py-1.5 text-xs font-medium rounded text-purple-700 dark:text-purple-300 bg-purple-100 dark:bg-purple-900 hover:bg-purple-200 dark:hover:bg-purple-800 transition-colors",
+                    title: "Nouveau 1:1" do %>
+                    <svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                    </svg>
+                    Nouveau
+                  <% end %>
+                  <% if next_one_on_one %>
+                    <%= link_to manager_one_on_one_path(next_one_on_one),
+                      class: "inline-flex items-center px-2.5 py-1.5 text-xs font-medium rounded text-purple-700 dark:text-purple-300 bg-purple-50 dark:bg-purple-900 hover:bg-purple-100 dark:hover:bg-purple-800 border border-purple-200 dark:border-purple-700 transition-colors" do %>
+                      Voir
+                    <% end %>
+                  <% end %>
+                  <%= link_to manager_one_on_ones_path,
+                    class: "inline-flex items-center px-2.5 py-1.5 text-xs font-medium rounded text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors" do %>
+                    Tous
+                  <% end %>
+                </div>
+
+                <div class="w-px bg-gray-200 dark:bg-gray-700 self-stretch"></div>
+
+                <!-- Objective actions -->
+                <div class="flex items-center gap-1">
+                  <span class="text-xs text-gray-400 dark:text-gray-500 mr-1">Objectifs</span>
+                  <%= link_to new_manager_objective_path(objective: { owner_id: member.id }),
+                    class: "inline-flex items-center px-2.5 py-1.5 text-xs font-medium rounded text-blue-700 dark:text-blue-300 bg-blue-100 dark:bg-blue-900 hover:bg-blue-200 dark:hover:bg-blue-800 transition-colors" do %>
+                    <svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                    </svg>
+                    Nouveau
+                  <% end %>
+                  <%= link_to manager_objectives_path,
+                    class: "inline-flex items-center px-2.5 py-1.5 text-xs font-medium rounded text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors" do %>
+                    Tous
+                  <% end %>
+                </div>
+
+                <div class="w-px bg-gray-200 dark:bg-gray-700 self-stretch"></div>
+
+                <!-- Training actions -->
+                <div class="flex items-center gap-1">
+                  <span class="text-xs text-gray-400 dark:text-gray-500 mr-1">Formation</span>
+                  <%= link_to new_manager_training_path,
+                    class: "inline-flex items-center px-2.5 py-1.5 text-xs font-medium rounded text-yellow-700 dark:text-yellow-300 bg-yellow-100 dark:bg-yellow-900 hover:bg-yellow-200 dark:hover:bg-yellow-800 transition-colors" do %>
+                    <svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                    </svg>
+                    Nouveau
+                  <% end %>
+                  <%= link_to manager_trainings_path,
+                    class: "inline-flex items-center px-2.5 py-1.5 text-xs font-medium rounded text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors" do %>
+                    Tous
+                  <% end %>
+                </div>
+
+                <!-- Planning (right-aligned) -->
+                <div class="ml-auto">
+                  <%= link_to manager_team_member_weekly_schedule_plans_path(member),
+                    class: "inline-flex items-center px-2.5 py-1.5 text-xs font-medium rounded text-gray-600 dark:text-gray-400 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors" do %>
+                    <svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                    Planning
+                  <% end %>
+                </div>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      <% else %>
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow text-center py-12 px-4">
+          <svg class="mx-auto h-12 w-12 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+          </svg>
+          <h3 class="mt-2 text-sm font-medium text-gray-900 dark:text-gray-100">Aucun membre d'équipe</h3>
+          <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Vous n'avez pas encore de collaborateurs assignés.</p>
+        </div>
+      <% end %>
+    </div>
+
+    <!-- Right: Upcoming 1:1s -->
+    <div class="space-y-4">
+      <div class="bg-white dark:bg-gray-800 rounded-lg shadow border border-gray-200 dark:border-gray-700 p-5">
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="text-base font-semibold text-gray-900 dark:text-gray-100">Prochains 1:1</h2>
+          <%= link_to 'Tous', manager_one_on_ones_path, class: "text-sm text-indigo-600 dark:text-indigo-400 hover:text-indigo-800" %>
+        </div>
+
+        <% if @upcoming_one_on_ones.any? %>
+          <div class="space-y-3">
+            <% @upcoming_one_on_ones.each do |meeting| %>
+              <div class="flex items-center justify-between p-3 bg-purple-50 dark:bg-purple-900 rounded-lg">
+                <div class="flex items-center min-w-0">
+                  <div class="h-8 w-8 rounded-full bg-purple-200 dark:bg-purple-700 flex items-center justify-center flex-shrink-0">
+                    <span class="text-purple-700 dark:text-purple-200 text-xs font-bold">
+                      <%= meeting.employee.first_name[0] %><%= meeting.employee.last_name[0] %>
+                    </span>
+                  </div>
+                  <div class="ml-2 min-w-0">
+                    <p class="text-sm font-medium text-gray-900 dark:text-gray-100 truncate"><%= meeting.employee.full_name %></p>
+                    <p class="text-xs text-gray-500 dark:text-gray-400"><%= l(meeting.scheduled_at, format: :short) %></p>
+                  </div>
+                </div>
+                <div class="flex items-center gap-1 ml-2 flex-shrink-0">
+                  <%= link_to manager_one_on_one_path(meeting), class: "text-xs text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 font-medium" do %>
+                    Voir
+                  <% end %>
+                  <%= link_to edit_manager_one_on_one_path(meeting), class: "text-xs text-gray-500 dark:text-gray-400 hover:text-gray-700" do %>
+                    Modifier
+                  <% end %>
+                </div>
+              </div>
+            <% end %>
+          </div>
+        <% else %>
+          <div class="text-center py-6">
+            <svg class="mx-auto h-8 w-8 text-gray-300 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+            <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">Aucun 1:1 cette semaine</p>
+            <%= link_to new_manager_one_on_one_path, class: "mt-2 inline-flex items-center text-sm text-indigo-600 dark:text-indigo-400 hover:text-indigo-800" do %>
+              <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
               </svg>
-              Planifier
+              Planifier un 1:1
             <% end %>
           </div>
         <% end %>
       </div>
-    </div>
-  <% end %>
 
-  <!-- Members With Schedule -->
-  <div class="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden">
-    <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900">
-      <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100">Plannings configurés</h2>
-    </div>
-
-    <% if @members_with_schedule.any? %>
-      <!-- Desktop Table View -->
-      <div class="hidden sm:block overflow-x-auto">
-        <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-          <thead class="bg-gray-50 dark:bg-gray-900">
-            <tr>
-              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Employé</th>
-              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Contrat</th>
-              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Semaines planifiées</th>
-              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Actions</th>
-            </tr>
-          </thead>
-          <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-            <% @members_with_schedule.each do |member| %>
-              <tr class="hover:bg-gray-50 dark:bg-gray-900">
-                <td class="px-6 py-4 whitespace-nowrap">
-                  <div class="flex items-center">
-                    <div class="h-10 w-10 rounded-full bg-indigo-100 dark:bg-indigo-800 flex items-center justify-center mr-3">
-                      <span class="text-indigo-700 dark:text-indigo-300 font-semibold">
-                        <%= member.first_name[0] %><%= member.last_name[0] %>
-                      </span>
-                    </div>
-                    <div>
-                      <p class="font-semibold text-gray-900 dark:text-gray-100"><%= member.full_name %></p>
-                      <p class="text-sm text-gray-600 dark:text-gray-400"><%= member.department || 'Équipe' %></p>
-                    </div>
-                  </div>
-                </td>
-                <td class="px-6 py-4 whitespace-nowrap">
-                  <p class="text-sm font-medium text-gray-900 dark:text-gray-100"><%= member.contract_type %></p>
-                  <% if member.work_schedule %>
-                    <p class="text-xs text-gray-500 dark:text-gray-400"><%= member.work_schedule.weekly_hours %>h/semaine</p>
-                  <% end %>
-                </td>
-                <td class="px-6 py-4">
-                  <% upcoming_plans = member.weekly_schedule_plans.upcoming.limit(3) %>
-                  <% if upcoming_plans.any? %>
-                    <div class="text-sm space-y-1">
-                      <% upcoming_plans.each do |plan| %>
-                        <div class="flex items-center">
-                          <% if plan.current_week? %>
-                            <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 dark:bg-green-800 text-green-800 dark:text-green-200 mr-2">
-                              Cette semaine
-                            </span>
-                          <% end %>
-                          <span class="text-gray-900 dark:text-gray-100">
-                            <%= l(plan.week_start_date, format: :short) %>
-                            <span class="text-gray-500 dark:text-gray-400">(<%= plan.total_weekly_hours.round(1) %>h)</span>
-                          </span>
-                        </div>
-                      <% end %>
-                      <% if member.weekly_schedule_plans.upcoming.count > 3 %>
-                        <p class="text-xs text-gray-500 dark:text-gray-400">
-                          +<%= member.weekly_schedule_plans.upcoming.count - 3 %> autres...
-                        </p>
-                      <% end %>
-                    </div>
-                  <% else %>
-                    <p class="text-sm text-gray-400 dark:text-gray-500">Aucune semaine à venir</p>
-                  <% end %>
-                </td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm space-y-1">
-                  <%= link_to manager_team_member_weekly_schedule_plans_path(member),
-                    class: "block text-indigo-600 hover:text-indigo-900 font-medium" do %>
-                    📅 Gérer les plannings
-                  <% end %>
-                  <% pending_validations = member.time_entries.pending_validation.count %>
-                  <%= link_to manager_team_member_time_entries_path(member),
-                    class: "block text-orange-600 hover:text-orange-900 font-medium" do %>
-                    ⏰ Valider les heures
-                    <% if pending_validations > 0 %>
-                      <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-orange-100 dark:bg-orange-800 text-orange-800 dark:text-orange-200 ml-1">
-                        <%= pending_validations %>
-                      </span>
-                    <% end %>
-                  <% end %>
-                </td>
-              </tr>
-            <% end %>
-          </tbody>
-        </table>
+      <!-- Quick links to performance lists -->
+      <div class="bg-white dark:bg-gray-800 rounded-lg shadow border border-gray-200 dark:border-gray-700 p-5">
+        <h2 class="text-base font-semibold text-gray-900 dark:text-gray-100 mb-3">Accès rapides</h2>
+        <div class="space-y-1">
+          <%= link_to manager_one_on_ones_path, class: "flex items-center justify-between p-2.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors" do %>
+            <div class="flex items-center">
+              <svg class="w-4 h-4 mr-2 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z" />
+              </svg>
+              <span class="text-sm font-medium text-gray-700 dark:text-gray-300">Tous les 1:1</span>
+            </div>
+            <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+            </svg>
+          <% end %>
+          <%= link_to manager_objectives_path, class: "flex items-center justify-between p-2.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors" do %>
+            <div class="flex items-center">
+              <svg class="w-4 h-4 mr-2 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <span class="text-sm font-medium text-gray-700 dark:text-gray-300">Tous les objectifs</span>
+            </div>
+            <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+            </svg>
+          <% end %>
+          <%= link_to manager_trainings_path, class: "flex items-center justify-between p-2.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors" do %>
+            <div class="flex items-center">
+              <svg class="w-4 h-4 mr-2 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+              </svg>
+              <span class="text-sm font-medium text-gray-700 dark:text-gray-300">Toutes les formations</span>
+            </div>
+            <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+            </svg>
+          <% end %>
+          <%= link_to manager_evaluations_path, class: "flex items-center justify-between p-2.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors" do %>
+            <div class="flex items-center">
+              <svg class="w-4 h-4 mr-2 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+              </svg>
+              <span class="text-sm font-medium text-gray-700 dark:text-gray-300">Toutes les évaluations</span>
+            </div>
+            <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+            </svg>
+          <% end %>
+          <%= link_to pending_approvals_leave_requests_path, class: "flex items-center justify-between p-2.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors" do %>
+            <div class="flex items-center">
+              <svg class="w-4 h-4 mr-2 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <span class="text-sm font-medium text-gray-700 dark:text-gray-300">Approbations congés</span>
+            </div>
+            <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+            </svg>
+          <% end %>
+        </div>
       </div>
+    </div>
+  </div>
 
-      <!-- Mobile Card View -->
-      <div class="sm:hidden divide-y divide-gray-200 dark:divide-gray-700">
-        <% @members_with_schedule.each do |member| %>
-          <div class="p-4">
-            <div class="flex items-center justify-between mb-3">
+  <!-- Planning Section (collapsed by default) -->
+  <div id="planning-section" class="hidden mt-8">
+    <div class="border-t border-gray-200 dark:border-gray-700 pt-6 mb-6">
+      <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100 mb-1">Plannings de l'équipe</h2>
+      <p class="text-sm text-gray-600 dark:text-gray-400">Gérez les horaires de travail semaine par semaine</p>
+    </div>
+
+    <!-- Stats -->
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+      <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-lg shadow p-6">
+        <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Membres d'équipe</p>
+        <p class="text-3xl font-bold text-gray-900 dark:text-gray-100 mt-2"><%= @team_members.count %></p>
+      </div>
+      <div class="bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900 dark:to-green-700 border-2 border-green-300 dark:border-green-500 rounded-lg p-6 shadow-md">
+        <p class="text-sm font-medium text-green-800 dark:text-white opacity-90">Plannings créés</p>
+        <p class="text-3xl font-bold text-green-900 dark:text-white mt-2"><%= @members_with_schedule.count %></p>
+      </div>
+      <div class="bg-gradient-to-br from-orange-50 to-orange-100 dark:from-orange-900 dark:to-orange-700 border-2 border-orange-300 dark:border-orange-500 rounded-lg p-6 shadow-md">
+        <p class="text-sm font-medium text-orange-800 dark:text-white opacity-90">À planifier</p>
+        <p class="text-3xl font-bold text-orange-900 dark:text-white mt-2"><%= @members_without_schedule.count %></p>
+      </div>
+    </div>
+
+    <!-- Members Without Schedule -->
+    <% if @members_without_schedule.any? %>
+      <div class="bg-orange-50 dark:bg-orange-900 border-2 border-orange-500 rounded-lg p-6 mb-6">
+        <div class="flex items-center mb-4">
+          <svg class="w-6 h-6 text-orange-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+          </svg>
+          <h3 class="text-lg font-semibold text-orange-900 dark:text-orange-100">
+            <%= @members_without_schedule.count %> employé<%= 's' if @members_without_schedule.count > 1 %> sans planning
+          </h3>
+        </div>
+        <div class="space-y-3">
+          <% @members_without_schedule.each do |member| %>
+            <div class="bg-white dark:bg-gray-800 rounded-lg p-4 flex items-center justify-between">
               <div class="flex items-center">
-                <div class="h-10 w-10 rounded-full bg-indigo-100 dark:bg-indigo-800 flex items-center justify-center mr-3">
-                  <span class="text-indigo-700 dark:text-indigo-300 font-semibold">
+                <div class="h-10 w-10 rounded-full bg-orange-100 dark:bg-orange-800 flex items-center justify-center mr-3">
+                  <span class="text-orange-700 dark:text-orange-300 font-semibold">
                     <%= member.first_name[0] %><%= member.last_name[0] %>
                   </span>
                 </div>
                 <div>
                   <p class="font-semibold text-gray-900 dark:text-gray-100"><%= member.full_name %></p>
-                  <p class="text-sm text-gray-600 dark:text-gray-400"><%= member.contract_type %></p>
+                  <p class="text-sm text-gray-600 dark:text-gray-400">
+                    <%= member.job_title.presence || member.department.presence || 'Équipe' %> · <%= member.contract_type %>
+                  </p>
                 </div>
               </div>
-            </div>
-
-            <div class="bg-gray-50 dark:bg-gray-900 rounded-lg p-3 mb-3">
-              <% upcoming_plans = member.weekly_schedule_plans.upcoming.limit(2) %>
-              <% if upcoming_plans.any? %>
-                <div class="space-y-2">
-                  <% upcoming_plans.each do |plan| %>
-                    <div class="text-sm">
-                      <%= l(plan.week_start_date, format: :short) %>
-                      <span class="text-gray-600 dark:text-gray-400">(<%= plan.total_weekly_hours.round(1) %>h)</span>
-                    </div>
-                  <% end %>
-                </div>
-              <% else %>
-                <p class="text-sm text-gray-500 dark:text-gray-400">Aucune semaine planifiée</p>
-              <% end %>
-            </div>
-
-            <div class="space-y-2">
               <%= link_to manager_team_member_weekly_schedule_plans_path(member),
-                class: "block w-full text-center px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600" do %>
-                📅 Gérer les plannings
-              <% end %>
-              <% pending_validations = member.time_entries.pending_validation.count %>
-              <%= link_to manager_team_member_time_entries_path(member),
-                class: "block w-full text-center px-4 py-2 border border-orange-300 rounded-md text-sm font-medium text-orange-700 dark:text-orange-300 bg-white dark:bg-gray-800 hover:bg-orange-50 dark:bg-orange-900" do %>
-                ⏰ Valider les heures
-                <% if pending_validations > 0 %>
-                  <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-orange-100 dark:bg-orange-800 text-orange-800 dark:text-orange-200 ml-1">
-                    <%= pending_validations %>
-                  </span>
-                <% end %>
+                class: "inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-orange-600 hover:bg-orange-700" do %>
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                </svg>
+                Planifier
               <% end %>
             </div>
-          </div>
-        <% end %>
-      </div>
-    <% else %>
-      <div class="p-12 text-center">
-        <p class="text-gray-500 dark:text-gray-400">Aucun planning configuré pour le moment.</p>
+          <% end %>
+        </div>
       </div>
     <% end %>
-  </div>
 
-  <!-- Back Link -->
-  <div class="mt-6">
-    <%= link_to pending_approvals_leave_requests_path, class: "inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 shadow-sm text-sm font-medium rounded-md text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600" do %>
-      <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
-      </svg>
-      Retour
-    <% end %>
+    <!-- Members With Schedule -->
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden">
+      <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900">
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100">Plannings configurés</h3>
+      </div>
+      <% if @members_with_schedule.any? %>
+        <div class="hidden sm:block overflow-x-auto">
+          <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+            <thead class="bg-gray-50 dark:bg-gray-900">
+              <tr>
+                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Employé</th>
+                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Contrat</th>
+                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Semaines planifiées</th>
+                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Actions</th>
+              </tr>
+            </thead>
+            <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+              <% @members_with_schedule.each do |member| %>
+                <tr class="hover:bg-gray-50 dark:hover:bg-gray-700">
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="flex items-center">
+                      <div class="h-10 w-10 rounded-full bg-indigo-100 dark:bg-indigo-800 flex items-center justify-center mr-3">
+                        <span class="text-indigo-700 dark:text-indigo-300 font-semibold">
+                          <%= member.first_name[0] %><%= member.last_name[0] %>
+                        </span>
+                      </div>
+                      <div>
+                        <p class="font-semibold text-gray-900 dark:text-gray-100"><%= member.full_name %></p>
+                        <p class="text-sm text-gray-600 dark:text-gray-400"><%= member.job_title.presence || member.department.presence || 'Équipe' %></p>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <p class="text-sm font-medium text-gray-900 dark:text-gray-100"><%= member.contract_type %></p>
+                    <% if member.work_schedule %>
+                      <p class="text-xs text-gray-500 dark:text-gray-400"><%= member.work_schedule.weekly_hours %>h/semaine</p>
+                    <% end %>
+                  </td>
+                  <td class="px-6 py-4">
+                    <% upcoming_plans = member.weekly_schedule_plans.upcoming.limit(3) %>
+                    <% if upcoming_plans.any? %>
+                      <div class="text-sm space-y-1">
+                        <% upcoming_plans.each do |plan| %>
+                          <div class="flex items-center">
+                            <% if plan.current_week? %>
+                              <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 dark:bg-green-800 text-green-800 dark:text-green-200 mr-2">Cette semaine</span>
+                            <% end %>
+                            <span class="text-gray-900 dark:text-gray-100">
+                              <%= l(plan.week_start_date, format: :short) %>
+                              <span class="text-gray-500 dark:text-gray-400">(<%= plan.total_weekly_hours.round(1) %>h)</span>
+                            </span>
+                          </div>
+                        <% end %>
+                        <% if member.weekly_schedule_plans.upcoming.count > 3 %>
+                          <p class="text-xs text-gray-500 dark:text-gray-400">+<%= member.weekly_schedule_plans.upcoming.count - 3 %> autres...</p>
+                        <% end %>
+                      </div>
+                    <% else %>
+                      <p class="text-sm text-gray-400 dark:text-gray-500">Aucune semaine à venir</p>
+                    <% end %>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm space-y-1">
+                    <%= link_to manager_team_member_weekly_schedule_plans_path(member),
+                      class: "block text-indigo-600 hover:text-indigo-900 font-medium" do %>
+                      📅 Gérer les plannings
+                    <% end %>
+                    <% pending_validations = member.time_entries.pending_validation.count %>
+                    <%= link_to manager_team_member_time_entries_path(member),
+                      class: "block text-orange-600 hover:text-orange-900 font-medium" do %>
+                      ⏰ Valider les heures
+                      <% if pending_validations > 0 %>
+                        <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-orange-100 dark:bg-orange-800 text-orange-800 dark:text-orange-200 ml-1">
+                          <%= pending_validations %>
+                        </span>
+                      <% end %>
+                    <% end %>
+                  </td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Mobile -->
+        <div class="sm:hidden divide-y divide-gray-200 dark:divide-gray-700">
+          <% @members_with_schedule.each do |member| %>
+            <div class="p-4">
+              <div class="flex items-center justify-between mb-3">
+                <div class="flex items-center">
+                  <div class="h-10 w-10 rounded-full bg-indigo-100 dark:bg-indigo-800 flex items-center justify-center mr-3">
+                    <span class="text-indigo-700 dark:text-indigo-300 font-semibold"><%= member.first_name[0] %><%= member.last_name[0] %></span>
+                  </div>
+                  <div>
+                    <p class="font-semibold text-gray-900 dark:text-gray-100"><%= member.full_name %></p>
+                    <p class="text-sm text-gray-600 dark:text-gray-400"><%= member.contract_type %></p>
+                  </div>
+                </div>
+              </div>
+              <div class="space-y-2">
+                <%= link_to manager_team_member_weekly_schedule_plans_path(member),
+                  class: "block w-full text-center px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600" do %>
+                  📅 Gérer les plannings
+                <% end %>
+                <% pending_validations = member.time_entries.pending_validation.count %>
+                <%= link_to manager_team_member_time_entries_path(member),
+                  class: "block w-full text-center px-4 py-2 border border-orange-300 dark:border-orange-600 rounded-md text-sm font-medium text-orange-700 dark:text-orange-300 bg-white dark:bg-gray-700 hover:bg-orange-50 dark:hover:bg-orange-900" do %>
+                  ⏰ Valider les heures <%= "(#{pending_validations})" if pending_validations > 0 %>
+                <% end %>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      <% else %>
+        <div class="p-12 text-center">
+          <p class="text-gray-500 dark:text-gray-400">Aucun planning configuré pour le moment.</p>
+        </div>
+      <% end %>
+    </div>
   </div>
 </div>
