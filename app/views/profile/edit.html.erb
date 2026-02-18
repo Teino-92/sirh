@@ -19,10 +19,10 @@
           <div class="flex-1">
             <%= f.file_field :avatar,
                 accept: "image/*",
-                class: "block w-full text-sm text-gray-500 dark:text-gray-400 dark:text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 dark:bg-indigo-900 file:text-indigo-700 dark:text-indigo-300 hover:file:bg-indigo-100 dark:bg-indigo-800 cursor-pointer" %>
-            <p class="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500 mt-2">JPG, PNG ou GIF. Max 5MB.</p>
+                class: "block w-full text-sm text-gray-500 dark:text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 dark:bg-indigo-900 file:text-indigo-700 dark:text-indigo-300 hover:file:bg-indigo-100 dark:bg-indigo-800 cursor-pointer" %>
+            <p class="text-xs text-gray-500 dark:text-gray-400 mt-2">JPG, PNG ou GIF. Max 5MB.</p>
             <% if @employee.avatar.attached? %>
-              <p class="text-xs text-gray-600 dark:text-gray-400 dark:text-gray-500 mt-1">Photo actuelle: <%= @employee.avatar.filename %></p>
+              <p class="text-xs text-gray-600 dark:text-gray-400 mt-1">Photo actuelle: <%= @employee.avatar.filename %></p>
             <% end %>
           </div>
         </div>

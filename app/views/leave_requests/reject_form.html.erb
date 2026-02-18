@@ -2,14 +2,14 @@
   <!-- Header -->
   <div class="mb-6">
     <div class="flex items-center mb-2">
-      <%= link_to pending_approvals_leave_requests_path, class: "text-gray-500 dark:text-gray-400 dark:text-gray-500 hover:text-gray-700 dark:text-gray-300 mr-3" do %>
+      <%= link_to pending_approvals_leave_requests_path, class: "text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:text-gray-300 mr-3" do %>
         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
         </svg>
       <% end %>
       <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100">Refuser la demande</h1>
     </div>
-    <p class="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500">Veuillez expliquer la raison du refus</p>
+    <p class="text-sm text-gray-600 dark:text-gray-400">Veuillez expliquer la raison du refus</p>
   </div>
 
   <!-- Request Details -->
@@ -24,20 +24,20 @@
       </div>
       <div>
         <p class="font-semibold text-gray-900 dark:text-gray-100"><%= @leave_request.employee.full_name %></p>
-        <p class="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500"><%= @leave_request.employee.department || 'Employé' %></p>
+        <p class="text-sm text-gray-600 dark:text-gray-400"><%= @leave_request.employee.department || 'Employé' %></p>
       </div>
     </div>
 
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4 border-t border-gray-200 dark:border-gray-700">
       <div>
-        <p class="text-xs text-gray-600 dark:text-gray-400 dark:text-gray-500 font-medium mb-1">Type de congé</p>
+        <p class="text-xs text-gray-600 dark:text-gray-400 font-medium mb-1">Type de congé</p>
         <p class="text-sm font-semibold text-gray-900 dark:text-gray-100">
           <%= LeaveBalance.leave_type_name(@leave_request.leave_type) %>
         </p>
       </div>
 
       <div>
-        <p class="text-xs text-gray-600 dark:text-gray-400 dark:text-gray-500 font-medium mb-1">Période</p>
+        <p class="text-xs text-gray-600 dark:text-gray-400 font-medium mb-1">Période</p>
         <p class="text-sm font-semibold text-gray-900 dark:text-gray-100">
           <%= l(@leave_request.start_date, format: :short) %>
           <% if @leave_request.start_date != @leave_request.end_date %>
@@ -47,14 +47,14 @@
       </div>
 
       <div>
-        <p class="text-xs text-gray-600 dark:text-gray-400 dark:text-gray-500 font-medium mb-1">Durée</p>
+        <p class="text-xs text-gray-600 dark:text-gray-400 font-medium mb-1">Durée</p>
         <p class="text-sm font-semibold text-gray-900 dark:text-gray-100">
           <%= @leave_request.days_count.to_f.round(1) %> jour<%= 's' if @leave_request.days_count > 1 %>
         </p>
       </div>
 
       <div>
-        <p class="text-xs text-gray-600 dark:text-gray-400 dark:text-gray-500 font-medium mb-1">Demandé</p>
+        <p class="text-xs text-gray-600 dark:text-gray-400 font-medium mb-1">Demandé</p>
         <p class="text-sm font-semibold text-gray-900 dark:text-gray-100">
           <%= time_ago_in_words(@leave_request.created_at) %>
         </p>
@@ -63,7 +63,7 @@
 
     <% if @leave_request.reason.present? %>
       <div class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
-        <p class="text-xs text-gray-600 dark:text-gray-400 dark:text-gray-500 font-medium mb-1">Motif de la demande</p>
+        <p class="text-xs text-gray-600 dark:text-gray-400 font-medium mb-1">Motif de la demande</p>
         <p class="text-sm text-gray-700 dark:text-gray-300 italic">"<%= @leave_request.reason %>"</p>
       </div>
     <% end %>
@@ -80,7 +80,7 @@
           class: "block w-full rounded-md border-gray-300 dark:border-gray-600 shadow-sm focus:border-red-500 focus:ring-red-500 sm:text-sm",
           required: true
         %>
-        <p class="mt-2 text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500">
+        <p class="mt-2 text-xs text-gray-500 dark:text-gray-400">
           Cette raison sera envoyée à l'employé. Soyez professionnel et constructif.
         </p>
       </div>
@@ -104,7 +104,7 @@
       <!-- Actions -->
       <div class="flex flex-col-reverse sm:flex-row sm:justify-end gap-3">
         <%= link_to "Annuler", pending_approvals_leave_requests_path,
-          class: "inline-flex justify-center items-center px-4 py-2 border border-gray-300 dark:border-gray-600 shadow-sm text-sm font-medium rounded-md text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:bg-gray-900"
+          class: "inline-flex justify-center items-center px-4 py-2 border border-gray-300 dark:border-gray-600 shadow-sm text-sm font-medium rounded-md text-gray-700 dark:text-gray-300 bg-white hover:bg-gray-50 dark:hover:bg-gray-700"
         %>
         <%= f.submit "Confirmer le refus",
           class: "inline-flex justify-center items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500",

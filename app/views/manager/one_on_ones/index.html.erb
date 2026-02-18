@@ -1,22 +1,91 @@
-<div class="container mx-auto px-4 py-6">
-  <div class="flex justify-between items-center mb-6">
-    <h1 class="text-2xl font-bold">One-on-Ones</h1>
-    <%= link_to 'Schedule 1:1', new_manager_one_on_one_path, class: 'btn btn-primary' %>
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+  <!-- Header -->
+  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6">
+    <div>
+      <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100">Entretiens 1:1</h1>
+      <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">Planifiez et gérez vos entretiens individuels</p>
+    </div>
+    <%= link_to new_manager_one_on_one_path, class: "mt-4 sm:mt-0 inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 transition-colors" do %>
+      <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+      </svg>
+      Planifier un 1:1
+    <% end %>
   </div>
 
+  <!-- One-on-Ones List -->
   <div class="space-y-4">
-    <% @one_on_ones.each do |one_on_one| %>
-      <div class="card bg-white shadow-sm p-4">
-        <div class="flex justify-between items-start">
-          <div class="flex-1">
-            <h3 class="font-semibold text-lg">
-              <%= link_to "1:1 with #{one_on_one.employee.full_name}", manager_one_on_one_path(one_on_one), class: 'hover:text-blue-600' %>
-            </h3>
-            <p class="text-sm text-gray-600 mt-1">
-              <%= one_on_one.scheduled_at.to_s(:long) %>
-            </p>
+    <% if @one_on_ones.any? %>
+      <% @one_on_ones.each do |one_on_one| %>
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden border border-gray-200 dark:border-gray-700">
+          <div class="p-4 sm:p-6">
+            <div class="flex items-start justify-between">
+              <div class="flex-1 min-w-0">
+                <h3 class="text-base font-semibold text-gray-900 dark:text-gray-100 mb-1">
+                  <%= link_to "1:1 avec #{one_on_one.employee.full_name}", manager_one_on_one_path(one_on_one), class: "hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors" %>
+                </h3>
+                <div class="flex flex-wrap items-center gap-3 text-sm text-gray-600 dark:text-gray-400">
+                  <span class="flex items-center">
+                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                    <%= l(one_on_one.scheduled_at, format: :short) %>
+                  </span>
+                  <% if one_on_one.scheduled_at.future? %>
+                    <span class="text-xs text-indigo-600 dark:text-indigo-400">
+                      dans <%= distance_of_time_in_words(Time.current, one_on_one.scheduled_at) %>
+                    </span>
+                  <% end %>
+                </div>
+                <% if one_on_one.agenda.present? %>
+                  <p class="mt-2 text-sm text-gray-600 dark:text-gray-400 line-clamp-1">
+                    <span class="font-medium">Agenda :</span> <%= one_on_one.agenda %>
+                  </p>
+                <% end %>
+              </div>
+              <div class="ml-4 flex-shrink-0 flex items-center gap-2">
+                <%
+                  status_classes = case one_on_one.status
+                  when 'scheduled' then 'bg-blue-100 dark:bg-blue-800 text-blue-800 dark:text-blue-200'
+                  when 'completed' then 'bg-green-100 dark:bg-green-800 text-green-800 dark:text-green-200'
+                  when 'cancelled' then 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'
+                  else 'bg-yellow-100 dark:bg-yellow-800 text-yellow-800 dark:text-yellow-200'
+                  end
+                  status_label = case one_on_one.status
+                  when 'scheduled' then 'Planifié'
+                  when 'completed' then 'Complété'
+                  when 'cancelled' then 'Annulé'
+                  else one_on_one.status.humanize
+                  end
+                %>
+                <span class="px-2 py-1 text-xs font-semibold rounded-full <%= status_classes %>">
+                  <%= status_label %>
+                </span>
+                <%= link_to manager_one_on_one_path(one_on_one), class: "text-sm text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 font-medium" do %>
+                  Voir
+                <% end %>
+              </div>
+            </div>
           </div>
-          <span class="badge badge-<%= one_on_one.status %>"><%= one_on_one.status.humanize %></span>
+        </div>
+      <% end %>
+    <% else %>
+      <!-- Empty State -->
+      <div class="bg-white dark:bg-gray-800 rounded-lg shadow text-center py-12 px-4">
+        <svg class="mx-auto h-12 w-12 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z" />
+        </svg>
+        <h3 class="mt-2 text-sm font-medium text-gray-900 dark:text-gray-100">Aucun entretien planifié</h3>
+        <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+          Planifiez votre premier entretien individuel.
+        </p>
+        <div class="mt-6">
+          <%= link_to new_manager_one_on_one_path, class: "inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700" do %>
+            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+            </svg>
+            Planifier un 1:1
+          <% end %>
         </div>
       </div>
     <% end %>

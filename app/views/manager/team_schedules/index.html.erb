@@ -2,13 +2,13 @@
   <!-- Header -->
   <div class="mb-6">
     <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2">Horaires de l'équipe</h1>
-    <p class="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500">Planifiez les horaires de travail de votre équipe semaine par semaine</p>
+    <p class="text-sm text-gray-600 dark:text-gray-400">Planifiez les horaires de travail de votre équipe semaine par semaine</p>
   </div>
 
   <!-- Stats Cards -->
   <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
     <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-lg shadow p-6">
-      <p class="text-sm font-medium text-gray-600 dark:text-gray-400 dark:text-gray-500">Membres d'équipe</p>
+      <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Membres d'équipe</p>
       <p class="text-3xl font-bold text-gray-900 dark:text-gray-100 mt-2"><%= @team_members.count %></p>
     </div>
 
@@ -46,7 +46,7 @@
               </div>
               <div>
                 <p class="font-semibold text-gray-900 dark:text-gray-100"><%= member.full_name %></p>
-                <p class="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500">
+                <p class="text-sm text-gray-600 dark:text-gray-400">
                   <%= member.department || 'Équipe' %> • <%= member.contract_type %>
                 </p>
               </div>
@@ -77,10 +77,10 @@
         <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
           <thead class="bg-gray-50 dark:bg-gray-900">
             <tr>
-              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 dark:text-gray-500 uppercase tracking-wider">Employé</th>
-              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 dark:text-gray-500 uppercase tracking-wider">Contrat</th>
-              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 dark:text-gray-500 uppercase tracking-wider">Semaines planifiées</th>
-              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 dark:text-gray-500 uppercase tracking-wider">Actions</th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Employé</th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Contrat</th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Semaines planifiées</th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Actions</th>
             </tr>
           </thead>
           <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
@@ -95,14 +95,14 @@
                     </div>
                     <div>
                       <p class="font-semibold text-gray-900 dark:text-gray-100"><%= member.full_name %></p>
-                      <p class="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500"><%= member.department || 'Équipe' %></p>
+                      <p class="text-sm text-gray-600 dark:text-gray-400"><%= member.department || 'Équipe' %></p>
                     </div>
                   </div>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
                   <p class="text-sm font-medium text-gray-900 dark:text-gray-100"><%= member.contract_type %></p>
                   <% if member.work_schedule %>
-                    <p class="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500"><%= member.work_schedule.weekly_hours %>h/semaine</p>
+                    <p class="text-xs text-gray-500 dark:text-gray-400"><%= member.work_schedule.weekly_hours %>h/semaine</p>
                   <% end %>
                 </td>
                 <td class="px-6 py-4">
@@ -118,12 +118,12 @@
                           <% end %>
                           <span class="text-gray-900 dark:text-gray-100">
                             <%= l(plan.week_start_date, format: :short) %>
-                            <span class="text-gray-500 dark:text-gray-400 dark:text-gray-500">(<%= plan.total_weekly_hours.round(1) %>h)</span>
+                            <span class="text-gray-500 dark:text-gray-400">(<%= plan.total_weekly_hours.round(1) %>h)</span>
                           </span>
                         </div>
                       <% end %>
                       <% if member.weekly_schedule_plans.upcoming.count > 3 %>
-                        <p class="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500">
+                        <p class="text-xs text-gray-500 dark:text-gray-400">
                           +<%= member.weekly_schedule_plans.upcoming.count - 3 %> autres...
                         </p>
                       <% end %>
@@ -167,7 +167,7 @@
                 </div>
                 <div>
                   <p class="font-semibold text-gray-900 dark:text-gray-100"><%= member.full_name %></p>
-                  <p class="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500"><%= member.contract_type %></p>
+                  <p class="text-sm text-gray-600 dark:text-gray-400"><%= member.contract_type %></p>
                 </div>
               </div>
             </div>
@@ -179,18 +179,18 @@
                   <% upcoming_plans.each do |plan| %>
                     <div class="text-sm">
                       <%= l(plan.week_start_date, format: :short) %>
-                      <span class="text-gray-600 dark:text-gray-400 dark:text-gray-500">(<%= plan.total_weekly_hours.round(1) %>h)</span>
+                      <span class="text-gray-600 dark:text-gray-400">(<%= plan.total_weekly_hours.round(1) %>h)</span>
                     </div>
                   <% end %>
                 </div>
               <% else %>
-                <p class="text-sm text-gray-500 dark:text-gray-400 dark:text-gray-500">Aucune semaine planifiée</p>
+                <p class="text-sm text-gray-500 dark:text-gray-400">Aucune semaine planifiée</p>
               <% end %>
             </div>
 
             <div class="space-y-2">
               <%= link_to manager_team_member_weekly_schedule_plans_path(member),
-                class: "block w-full text-center px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:bg-gray-900" do %>
+                class: "block w-full text-center px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 bg-white hover:bg-gray-50 dark:hover:bg-gray-700" do %>
                 📅 Gérer les plannings
               <% end %>
               <% pending_validations = member.time_entries.pending_validation.count %>
@@ -209,14 +209,14 @@
       </div>
     <% else %>
       <div class="p-12 text-center">
-        <p class="text-gray-500 dark:text-gray-400 dark:text-gray-500">Aucun planning configuré pour le moment.</p>
+        <p class="text-gray-500 dark:text-gray-400">Aucun planning configuré pour le moment.</p>
       </div>
     <% end %>
   </div>
 
   <!-- Back Link -->
   <div class="mt-6">
-    <%= link_to pending_approvals_leave_requests_path, class: "inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 shadow-sm text-sm font-medium rounded-md text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:bg-gray-900" do %>
+    <%= link_to pending_approvals_leave_requests_path, class: "inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 shadow-sm text-sm font-medium rounded-md text-gray-700 dark:text-gray-300 bg-white hover:bg-gray-50 dark:hover:bg-gray-700" do %>
       <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
       </svg>

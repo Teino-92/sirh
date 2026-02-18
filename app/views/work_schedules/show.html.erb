@@ -2,14 +2,14 @@
   <!-- Header -->
   <div class="mb-6">
     <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2">Mon horaire de travail</h1>
-    <p class="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500">Consultez votre planning et vos congés</p>
+    <p class="text-sm text-gray-600 dark:text-gray-400">Consultez votre planning et vos congés</p>
   </div>
 
   <!-- Month Navigation -->
   <div class="bg-white dark:bg-gray-800 rounded-lg shadow mb-6 p-4">
     <div class="flex items-center justify-between gap-2">
       <%= link_to work_schedule_path(current_employee.id, date: @current_date - 1.month),
-        class: "flex-shrink-0 inline-flex items-center px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:bg-gray-900" do %>
+        class: "flex-shrink-0 inline-flex items-center px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 bg-white hover:bg-gray-50 dark:hover:bg-gray-700" do %>
         <svg class="w-5 h-5 sm:mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
         </svg>
@@ -21,7 +21,7 @@
       </h2>
 
       <%= link_to work_schedule_path(current_employee.id, date: @current_date + 1.month),
-        class: "flex-shrink-0 inline-flex items-center px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:bg-gray-900" do %>
+        class: "flex-shrink-0 inline-flex items-center px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 bg-white hover:bg-gray-50 dark:hover:bg-gray-700" do %>
         <span class="hidden sm:inline">Mois suivant</span>
         <svg class="w-5 h-5 sm:ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
@@ -40,7 +40,7 @@
   <!-- Stats (hidden on mobile) -->
   <div class="hidden sm:grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
     <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-lg shadow p-6">
-      <p class="text-sm font-medium text-gray-600 dark:text-gray-400 dark:text-gray-500">Contrat</p>
+      <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Contrat</p>
       <p class="text-2xl font-bold text-gray-900 dark:text-gray-100 mt-2"><%= @employee.contract_type %></p>
     </div>
 
@@ -78,12 +78,12 @@
                   <span class="font-semibold text-gray-900 dark:text-gray-100">
                     <%= l(plan.week_start_date, format: :short) %> - <%= l(plan.week_end_date, format: :short) %>
                   </span>
-                  <span class="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500">
+                  <span class="text-sm text-gray-600 dark:text-gray-400">
                     <%= plan.total_weekly_hours.round(1) %>h
                   </span>
                 </div>
                 <% if plan.notes.present? %>
-                  <p class="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500 italic">Note: <%= plan.notes %></p>
+                  <p class="text-sm text-gray-600 dark:text-gray-400 italic">Note: <%= plan.notes %></p>
                 <% end %>
               </div>
             <% end %>
@@ -198,7 +198,7 @@
                 <% elsif is_work_day %>
                   <!-- Work Hours -->
                   <div class="mt-1">
-                    <p class="text-xs text-gray-600 dark:text-gray-400 dark:text-gray-500 font-medium">
+                    <p class="text-xs text-gray-600 dark:text-gray-400 font-medium">
                       <%= work_hours %>
                     </p>
 

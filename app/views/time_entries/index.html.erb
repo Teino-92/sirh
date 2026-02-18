@@ -7,29 +7,29 @@
     <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
       <!-- This Week -->
       <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-lg shadow p-6">
-        <p class="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500 font-medium">Cette semaine</p>
+        <p class="text-sm text-gray-600 dark:text-gray-300 font-medium">Cette semaine</p>
         <p class="text-3xl font-bold text-gray-900 dark:text-gray-100 mt-2">
           <%= @weekly_hours.round(1) %>h
         </p>
-        <p class="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500 mt-1">
+        <p class="text-xs text-gray-500 dark:text-gray-300 mt-1">
           sur <%= @expected_weekly_hours %>h attendues
         </p>
       </div>
 
       <!-- This Month -->
       <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-lg shadow p-6">
-        <p class="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500 font-medium">Ce mois-ci</p>
+        <p class="text-sm text-gray-600 dark:text-gray-300 font-medium">Ce mois-ci</p>
         <p class="text-3xl font-bold text-gray-900 dark:text-gray-100 mt-2">
           <%= @monthly_hours.round(1) %>h
         </p>
-        <p class="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500 mt-1">
+        <p class="text-xs text-gray-500 dark:text-gray-300 mt-1">
           <%= (@monthly_hours / @expected_monthly_hours * 100).round %>% de l'objectif
         </p>
       </div>
 
       <!-- Status -->
       <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-lg shadow p-6">
-        <p class="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500 font-medium">Statut actuel</p>
+        <p class="text-sm text-gray-600 dark:text-gray-300 font-medium">Statut actuel</p>
         <% if @current_shift %>
           <div class="flex items-center mt-2">
             <span class="flex h-3 w-3 relative mr-2">
@@ -38,12 +38,14 @@
             </span>
             <p class="text-lg font-semibold text-green-700 dark:text-green-300">Pointé(e)</p>
           </div>
-          <p class="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500 mt-1">
+          <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
             Depuis <%= l(@current_shift.clock_in, format: :short) %>
           </p>
         <% else %>
           <div class="flex items-center mt-2">
-            <span class="flex h-3 w-3 bg-gray-400 rounded-full mr-2"></span>
+            <span class="flex h-3 w-3 relative mr-2" aria-hidden="true">
+              <span class="relative inline-flex rounded-full h-3 w-3 bg-gray-400"></span>
+            </span>
             <p class="text-lg font-semibold text-gray-700 dark:text-gray-300">Non pointé(e)</p>
           </div>
         <% end %>
@@ -77,11 +79,11 @@
     <div class="border-b border-gray-200 dark:border-gray-700">
       <nav class="-mb-px flex space-x-8 overflow-x-auto" aria-label="Tabs">
         <%= link_to time_entries_path(period: 'week'),
-          class: "whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm #{params[:period] != 'month' ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 dark:text-gray-400 dark:text-gray-500 hover:text-gray-700 dark:text-gray-300 hover:border-gray-300 dark:border-gray-600'}" do %>
+          class: "whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm #{params[:period] != 'month' ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:text-gray-300 hover:border-gray-300 dark:border-gray-600'}" do %>
           Cette semaine
         <% end %>
         <%= link_to time_entries_path(period: 'month'),
-          class: "whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm #{params[:period] == 'month' ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 dark:text-gray-400 dark:text-gray-500 hover:text-gray-700 dark:text-gray-300 hover:border-gray-300 dark:border-gray-600'}" do %>
+          class: "whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm #{params[:period] == 'month' ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:text-gray-300 hover:border-gray-300 dark:border-gray-600'}" do %>
           Ce mois-ci
         <% end %>
       </nav>
@@ -96,11 +98,11 @@
         <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
           <thead class="bg-gray-50 dark:bg-gray-900">
             <tr>
-              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 dark:text-gray-500 uppercase tracking-wider">Date</th>
-              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 dark:text-gray-500 uppercase tracking-wider">Entrée</th>
-              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 dark:text-gray-500 uppercase tracking-wider">Sortie</th>
-              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 dark:text-gray-500 uppercase tracking-wider">Durée</th>
-              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 dark:text-gray-500 uppercase tracking-wider">Statut</th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Date</th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Entrée</th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Sortie</th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Durée</th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Statut</th>
             </tr>
           </thead>
           <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
@@ -110,7 +112,7 @@
                   <div class="text-sm font-medium text-gray-900 dark:text-gray-100">
                     <%= l(entry.clock_in.to_date, format: :long) %>
                   </div>
-                  <div class="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500">
+                  <div class="text-xs text-gray-500 dark:text-gray-400">
                     <%= l(entry.clock_in.to_date, format: '%A') %>
                   </div>
                 </td>
@@ -181,7 +183,7 @@
                 <p class="text-sm font-medium text-gray-900 dark:text-gray-100">
                   <%= l(entry.clock_in.to_date, format: :short) %>
                 </p>
-                <p class="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500">
+                <p class="text-xs text-gray-500 dark:text-gray-400">
                   <%= l(entry.clock_in.to_date, format: '%A') %>
                 </p>
               </div>
@@ -206,7 +208,7 @@
 
             <div class="grid grid-cols-3 gap-4">
               <div>
-                <p class="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500">Entrée</p>
+                <p class="text-xs text-gray-500 dark:text-gray-400">Entrée</p>
                 <p class="text-sm font-medium <%= entry.late? ? 'text-orange-600' : 'text-gray-900 dark:text-gray-100' %>">
                   <%= l(entry.clock_in, format: '%H:%M') %>
                   <% if entry.late? %>
@@ -215,7 +217,7 @@
                 </p>
               </div>
               <div>
-                <p class="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500">Sortie</p>
+                <p class="text-xs text-gray-500 dark:text-gray-400">Sortie</p>
                 <% if entry.clock_out %>
                   <p class="text-sm font-medium text-gray-900 dark:text-gray-100">
                     <%= l(entry.clock_out, format: '%H:%M') %>
@@ -225,7 +227,7 @@
                 <% end %>
               </div>
               <div>
-                <p class="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500">Durée</p>
+                <p class="text-xs text-gray-500 dark:text-gray-400">Durée</p>
                 <% if entry.clock_out %>
                   <p class="text-sm font-semibold text-gray-900 dark:text-gray-100">
                     <%= entry.hours_worked.round(2) %>h
@@ -255,17 +257,9 @@
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
         </svg>
         <h3 class="mt-2 text-sm font-medium text-gray-900 dark:text-gray-100">Aucun pointage</h3>
-        <p class="mt-1 text-sm text-gray-500 dark:text-gray-400 dark:text-gray-500">
-          Commencez par pointer votre arrivée pour suivre vos heures.
+        <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+          Commencez par pointer votre arrivée ci-dessus pour suivre vos heures.
         </p>
-        <div class="mt-6">
-          <%= button_to clock_in_time_entries_path, method: :post, class: "inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700" do %>
-            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-            </svg>
-            Pointer l'entrée
-          <% end %>
-        </div>
       </div>
     <% end %>
   </div>
@@ -281,7 +275,7 @@
               <p class="font-medium text-gray-900 dark:text-gray-100">
                 <%= l(date, format: '%A %d %B') %>
               </p>
-              <p class="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500">
+              <p class="text-xs text-gray-500 dark:text-gray-400">
                 <%= entries.count %> pointage<%= 's' if entries.count > 1 %>
               </p>
             </div>

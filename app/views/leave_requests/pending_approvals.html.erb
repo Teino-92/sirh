@@ -2,14 +2,15 @@
   <!-- Header -->
   <div class="mb-6">
     <div class="flex items-center mb-2">
-      <%= link_to dashboard_path, class: "text-gray-500 dark:text-gray-400 dark:text-gray-500 hover:text-gray-700 dark:text-gray-300 mr-3" do %>
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <%= link_to dashboard_path, class: "inline-flex items-center text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 mr-3 transition-colors" do %>
+        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
         </svg>
+        Tableau de bord
       <% end %>
       <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100">Demandes en attente</h1>
     </div>
-    <p class="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500">Approuvez ou refusez les demandes de congés de votre équipe</p>
+    <p class="text-sm text-gray-600 dark:text-gray-400">Approuvez ou refusez les demandes de congés de votre équipe</p>
   </div>
 
   <!-- Stats Cards -->
@@ -53,7 +54,7 @@
                 <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100">
                   <%= request.employee.full_name %>
                 </h3>
-                <p class="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500">
+                <p class="text-sm text-gray-600 dark:text-gray-400">
                   <%= request.employee.department || 'Employé' %>
                 </p>
               </div>
@@ -63,14 +64,14 @@
             <div class="bg-gray-50 dark:bg-gray-900 rounded-lg p-4 mb-4">
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <p class="text-xs text-gray-600 dark:text-gray-400 dark:text-gray-500 font-medium mb-1">Type de congé</p>
+                  <p class="text-xs text-gray-600 dark:text-gray-400 font-medium mb-1">Type de congé</p>
                   <p class="text-sm font-semibold text-gray-900 dark:text-gray-100">
                     <%= LeaveBalance.leave_type_name(request.leave_type) %>
                   </p>
                 </div>
 
                 <div>
-                  <p class="text-xs text-gray-600 dark:text-gray-400 dark:text-gray-500 font-medium mb-1">Période</p>
+                  <p class="text-xs text-gray-600 dark:text-gray-400 font-medium mb-1">Période</p>
                   <p class="text-sm font-semibold text-gray-900 dark:text-gray-100">
                     <%= l(request.start_date, format: :short) %>
                     <% if request.start_date != request.end_date %>
@@ -80,21 +81,21 @@
                 </div>
 
                 <div>
-                  <p class="text-xs text-gray-600 dark:text-gray-400 dark:text-gray-500 font-medium mb-1">Durée</p>
+                  <p class="text-xs text-gray-600 dark:text-gray-400 font-medium mb-1">Durée</p>
                   <p class="text-sm font-semibold text-gray-900 dark:text-gray-100">
                     <%= request.days_count.to_f.round(1) %> jour<%= 's' if request.days_count > 1 %>
                   </p>
                 </div>
 
                 <div>
-                  <p class="text-xs text-gray-600 dark:text-gray-400 dark:text-gray-500 font-medium mb-1">Demandé</p>
+                  <p class="text-xs text-gray-600 dark:text-gray-400 font-medium mb-1">Demandé</p>
                   <p class="text-sm font-semibold text-gray-900 dark:text-gray-100">
                     <%= time_ago_in_words(request.created_at) %>
                   </p>
                 </div>
 
                 <div class="sm:col-span-2">
-                  <p class="text-xs text-gray-600 dark:text-gray-400 dark:text-gray-500 font-medium mb-1">Solde actuel (<%= LeaveBalance.leave_type_name(request.leave_type) %>)</p>
+                  <p class="text-xs text-gray-600 dark:text-gray-400 font-medium mb-1">Solde actuel (<%= LeaveBalance.leave_type_name(request.leave_type) %>)</p>
                   <% balance = request.employee.leave_balances.find_by(leave_type: request.leave_type) %>
                   <p class="text-sm font-semibold <%= balance && balance.balance >= request.days_count ? 'text-green-700 dark:text-green-300' : 'text-red-700 dark:text-red-300' %>">
                     <%= balance&.balance&.to_f&.round(1) || 0 %> jours disponibles
@@ -109,7 +110,7 @@
 
               <% if request.reason.present? %>
                 <div class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
-                  <p class="text-xs text-gray-600 dark:text-gray-400 dark:text-gray-500 font-medium mb-1">Motif</p>
+                  <p class="text-xs text-gray-600 dark:text-gray-400 font-medium mb-1">Motif</p>
                   <p class="text-sm text-gray-700 dark:text-gray-300 italic">"<%= request.reason %>"</p>
                 </div>
               <% end %>
@@ -162,7 +163,7 @@
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
         </svg>
         <h3 class="mt-2 text-sm font-medium text-gray-900 dark:text-gray-100">Aucune demande en attente</h3>
-        <p class="mt-1 text-sm text-gray-500 dark:text-gray-400 dark:text-gray-500">
+        <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
           Toutes les demandes de congés ont été traitées.
         </p>
         <div class="mt-6">
@@ -179,10 +180,10 @@
 
   <!-- Quick Links -->
   <div class="mt-6 flex gap-3">
-    <%= link_to leave_requests_path, class: "inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 shadow-sm text-sm font-medium rounded-md text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:bg-gray-900" do %>
+    <%= link_to leave_requests_path, class: "inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 shadow-sm text-sm font-medium rounded-md text-gray-700 dark:text-gray-300 bg-white hover:bg-gray-50 dark:hover:bg-gray-700" do %>
       Mes congés
     <% end %>
-    <%= link_to team_calendar_leave_requests_path, class: "inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 shadow-sm text-sm font-medium rounded-md text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:bg-gray-900" do %>
+    <%= link_to team_calendar_leave_requests_path, class: "inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 shadow-sm text-sm font-medium rounded-md text-gray-700 dark:text-gray-300 bg-white hover:bg-gray-50 dark:hover:bg-gray-700" do %>
       <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
       </svg>

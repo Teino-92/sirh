@@ -2,7 +2,7 @@
   <!-- Header -->
   <div class="mb-6">
     <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2">Créer un horaire de travail</h1>
-    <div class="flex items-center text-gray-600 dark:text-gray-400 dark:text-gray-500">
+    <div class="flex items-center text-gray-600 dark:text-gray-400">
       <div class="h-10 w-10 rounded-full bg-indigo-100 dark:bg-indigo-800 flex items-center justify-center mr-3">
         <span class="text-indigo-700 dark:text-indigo-300 font-semibold">
           <%= @team_member.first_name[0] %><%= @team_member.last_name[0] %>
@@ -10,7 +10,7 @@
       </div>
       <div>
         <p class="font-semibold text-gray-900 dark:text-gray-100"><%= @team_member.full_name %></p>
-        <p class="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500"><%= @team_member.department || 'Équipe' %> • <%= @team_member.contract_type %></p>
+        <p class="text-sm text-gray-600 dark:text-gray-400"><%= @team_member.department || 'Équipe' %> • <%= @team_member.contract_type %></p>
       </div>
     </div>
   </div>
@@ -43,7 +43,7 @@
     <!-- Schedule Templates -->
     <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
       <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Modèles d'horaires</h2>
-      <p class="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500 mb-4">Choisissez un modèle pour pré-remplir l'horaire</p>
+      <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">Choisissez un modèle pour pré-remplir l'horaire</p>
 
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-3" id="schedule-templates">
         <% @schedule_templates.each do |key, template| %>
@@ -53,7 +53,7 @@
                   data-weekly-hours="<%= template[:weekly_hours] %>"
                   data-pattern="<%= template[:pattern].to_json %>">
             <div class="font-semibold text-gray-900 dark:text-gray-100"><%= template[:name] %></div>
-            <div class="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500 mt-1"><%= template[:weekly_hours] %>h par semaine</div>
+            <div class="text-sm text-gray-600 dark:text-gray-400 mt-1"><%= template[:weekly_hours] %>h par semaine</div>
           </button>
         <% end %>
       </div>
@@ -81,7 +81,7 @@
             class: "block w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm",
             placeholder: "35",
             required: true %>
-          <p class="mt-1 text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500">Entre 1 et 48 heures par semaine</p>
+          <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Entre 1 et 48 heures par semaine</p>
         </div>
       </div>
     </div>
@@ -89,7 +89,7 @@
     <!-- Daily Schedule Pattern -->
     <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
       <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Horaire quotidien</h2>
-      <p class="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500 mb-4">Définissez les horaires pour chaque jour de la semaine</p>
+      <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">Définissez les horaires pour chaque jour de la semaine</p>
 
       <div class="space-y-3" id="schedule-pattern">
         <% %w[monday tuesday wednesday thursday friday saturday sunday].each do |day| %>
@@ -139,7 +139,7 @@
         class: "inline-flex justify-center items-center px-6 py-3 border border-transparent shadow-sm text-base font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" %>
 
       <%= link_to "Annuler", manager_team_schedules_path,
-        class: "inline-flex justify-center items-center px-6 py-3 border border-gray-300 dark:border-gray-600 shadow-sm text-base font-medium rounded-md text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" %>
+        class: "inline-flex justify-center items-center px-6 py-3 border border-gray-300 dark:border-gray-600 shadow-sm text-base font-medium rounded-md text-gray-700 dark:text-gray-300 bg-white hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" %>
     </div>
   <% end %>
 </div>

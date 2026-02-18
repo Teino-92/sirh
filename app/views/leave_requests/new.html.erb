@@ -2,14 +2,14 @@
   <!-- Header -->
   <div class="mb-6">
     <div class="flex items-center mb-2">
-      <%= link_to leave_requests_path, class: "text-gray-500 dark:text-gray-400 dark:text-gray-500 hover:text-gray-700 dark:text-gray-300 mr-3" do %>
+      <%= link_to leave_requests_path, class: "text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:text-gray-300 mr-3" do %>
         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
         </svg>
       <% end %>
       <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100">Nouvelle demande de congé</h1>
     </div>
-    <p class="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500">Remplissez le formulaire pour soumettre votre demande</p>
+    <p class="text-sm text-gray-600 dark:text-gray-400">Remplissez le formulaire pour soumettre votre demande</p>
   </div>
 
   <!-- Available Balances Card -->
@@ -129,7 +129,7 @@
             {},
             class: "block w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
           %>
-          <p class="mt-1 text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500">Pour un congé d'une demi-journée</p>
+          <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Pour un congé d'une demi-journée</p>
         </div>
 
         <div>
@@ -146,7 +146,7 @@
             {},
             class: "block w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
           %>
-          <p class="mt-1 text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500">Si différent du premier jour</p>
+          <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Si différent du premier jour</p>
         </div>
       </div>
 
@@ -180,7 +180,7 @@
       <!-- Actions -->
       <div class="flex flex-col-reverse sm:flex-row sm:justify-end gap-3">
         <%= link_to "Annuler", leave_requests_path,
-          class: "inline-flex justify-center items-center px-4 py-2 border border-gray-300 dark:border-gray-600 shadow-sm text-sm font-medium rounded-md text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:bg-gray-900"
+          class: "inline-flex justify-center items-center px-4 py-2 border border-gray-300 dark:border-gray-600 shadow-sm text-sm font-medium rounded-md text-gray-700 dark:text-gray-300 bg-white hover:bg-gray-50 dark:hover:bg-gray-700"
         %>
         <%= f.submit "Soumettre la demande",
           class: "inline-flex justify-center items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
@@ -192,7 +192,7 @@
   <!-- Help Section -->
   <div class="mt-6 bg-gray-50 dark:bg-gray-900 rounded-lg p-6">
     <h3 class="text-sm font-semibold text-gray-900 dark:text-gray-100 mb-3">Règles de gestion des congés</h3>
-    <ul class="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500 space-y-2">
+    <ul class="text-sm text-gray-600 dark:text-gray-400 space-y-2">
       <li class="flex items-start">
         <svg class="w-5 h-5 text-green-500 mr-2 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
           <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
