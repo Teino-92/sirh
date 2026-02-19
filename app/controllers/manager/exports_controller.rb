@@ -3,6 +3,9 @@
 require_dependency Rails.root.join('app', 'services', 'exports', 'base_csv_exporter')
 require_dependency Rails.root.join('app', 'services', 'exports', 'time_entries_csv_exporter')
 require_dependency Rails.root.join('app', 'services', 'exports', 'absences_csv_exporter')
+require_dependency Rails.root.join('app', 'services', 'exports', 'one_on_ones_csv_exporter')
+require_dependency Rails.root.join('app', 'services', 'exports', 'evaluations_csv_exporter')
+require_dependency Rails.root.join('app', 'services', 'exports', 'trainings_csv_exporter')
 
 module Manager
   class ExportsController < ApplicationController
@@ -14,20 +17,29 @@ module Manager
     end
 
     def time_entries
-      exporter = Exports::TimeEntriesCsvExporter.new(current_employee, export_params)
-      result = exporter.export
-
-      send_data result[:content],
-                filename: result[:filename],
-                type: 'text/csv; charset=utf-8',
-                disposition: 'attachment'
-    rescue StandardError => e
-      Rails.logger.error "Export CSV error: #{e.message}"
-      redirect_to manager_exports_path, alert: "Erreur lors de l'export: #{e.message}"
+      csv_export(Exports::TimeEntriesCsvExporter)
     end
 
     def absences
-      exporter = Exports::AbsencesCsvExporter.new(current_employee, export_params)
+      csv_export(Exports::AbsencesCsvExporter)
+    end
+
+    def one_on_ones
+      csv_export(Exports::OneOnOnesCsvExporter)
+    end
+
+    def evaluations
+      csv_export(Exports::EvaluationsCsvExporter)
+    end
+
+    def trainings
+      csv_export(Exports::TrainingsCsvExporter)
+    end
+
+    private
+
+    def csv_export(exporter_class)
+      exporter = exporter_class.new(current_employee, export_params)
       result = exporter.export
 
       send_data result[:content],
@@ -38,8 +50,6 @@ module Manager
       Rails.logger.error "Export CSV error: #{e.message}"
       redirect_to manager_exports_path, alert: "Erreur lors de l'export: #{e.message}"
     end
-
-    private
 
     def authorize_manager!
       unless current_employee.manager?

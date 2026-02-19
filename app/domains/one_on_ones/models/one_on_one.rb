@@ -34,6 +34,10 @@ class OneOnOne < ApplicationRecord
   scope :for_employee, ->(employee) { where(employee: employee) }
   scope :this_quarter, -> { where('scheduled_at >= ?', Date.current.beginning_of_quarter) }
 
+  # Calendar integration — fire webhook when a 1:1 is created or rescheduled
+  after_create_commit  :notify_calendar_webhook
+  after_update_commit  :notify_calendar_webhook_if_rescheduled
+
   # Instance methods
   def complete!(notes:)
     transaction do
@@ -47,6 +51,29 @@ class OneOnOne < ApplicationRecord
   end
 
   private
+
+  def notify_calendar_webhook
+    fire_calendar_webhook('one_on_one.scheduled')
+  end
+
+  def notify_calendar_webhook_if_rescheduled
+    return unless saved_change_to_scheduled_at? || saved_change_to_status?
+    fire_calendar_webhook('one_on_one.rescheduled')
+  end
+
+  def fire_calendar_webhook(event_name)
+    payload = {
+      id:           id,
+      type:         'one_on_one',
+      manager:      { id: manager_id, name: manager.full_name },
+      employee:     { id: employee_id, name: employee.full_name },
+      scheduled_at: scheduled_at&.iso8601,
+      agenda:       agenda,
+      status:       status,
+      calendar_event_id: metadata['calendar_event_id']
+    }
+    CalendarWebhookJob.perform_later(event_name, 'OneOnOne', id, payload)
+  end
 
   def manager_different_from_employee
     return unless manager.present? && employee.present?

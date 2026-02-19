@@ -111,8 +111,11 @@ Rails.application.routes.draw do
     # CSV Exports
     resources :exports, only: [:index] do
       collection do
-        get :time_entries, to: 'exports#time_entries'
-        get :absences, to: 'exports#absences'
+        get :time_entries,  to: 'exports#time_entries'
+        get :absences,      to: 'exports#absences'
+        get :one_on_ones,   to: 'exports#one_on_ones'
+        get :evaluations,   to: 'exports#evaluations'
+        get :trainings,     to: 'exports#trainings'
       end
     end
   end

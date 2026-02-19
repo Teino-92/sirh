@@ -43,7 +43,9 @@ module Admin
           :rtt_enabled,
           :overtime_threshold,
           :max_daily_hours,
-          :min_consecutive_leave_days
+          :min_consecutive_leave_days,
+          :calendar_webhook_url,
+          :calendar_provider
         ]
       )
     end

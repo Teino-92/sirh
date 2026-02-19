@@ -169,6 +169,200 @@
       </div>
     </div>
 
+    <!-- Export 1:1 -->
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden border border-gray-200 dark:border-gray-700">
+      <div class="bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900 dark:to-purple-700 border-b-2 border-purple-300 dark:border-purple-500 px-6 py-4">
+        <div class="flex items-center">
+          <div class="flex-shrink-0 bg-purple-100 dark:bg-purple-800 rounded-lg p-2.5">
+            <svg class="h-5 w-5 text-purple-700 dark:text-purple-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+            </svg>
+          </div>
+          <div class="ml-3">
+            <h2 class="text-lg font-semibold text-purple-900 dark:text-white">Entretiens 1:1</h2>
+            <p class="text-xs text-purple-800 dark:text-white opacity-90 mt-0.5">Historique des échanges manager/collaborateur</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="p-5">
+        <%= form_with url: one_on_ones_manager_exports_path, method: :get, local: true, class: "space-y-5" do |f| %>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Période</label>
+            <%= f.select :period,
+                options_for_select([
+                  ['Ce mois', 'this_month'],
+                  ['Mois dernier', 'last_month'],
+                  ['Ce trimestre', 'this_quarter'],
+                  ['Cette année', 'this_year'],
+                  ['Personnalisée', 'custom']
+                ], 'this_quarter'),
+                {},
+                class: "block w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 shadow-sm focus:border-purple-500 focus:ring-purple-500 text-sm"
+            %>
+          </div>
+
+          <div id="custom-dates-one-on-ones" class="hidden space-y-3 p-4 bg-gray-50 dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Date début</label>
+              <%= f.date_field :start_date, class: "block w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 shadow-sm focus:ring-purple-500 focus:border-purple-500 text-sm" %>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Date fin</label>
+              <%= f.date_field :end_date, class: "block w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 shadow-sm focus:ring-purple-500 focus:border-purple-500 text-sm" %>
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Statut</label>
+            <%= f.select :status,
+                options_for_select([
+                  ['Tous', ''],
+                  ['Planifié', 'scheduled'],
+                  ['Complété', 'completed'],
+                  ['Annulé', 'cancelled']
+                ]),
+                {},
+                class: "block w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 shadow-sm focus:border-purple-500 focus:ring-purple-500 text-sm"
+            %>
+          </div>
+
+          <div class="pt-2">
+            <%= f.submit "Télécharger CSV", class: "w-full flex justify-center py-2.5 px-4 border border-transparent rounded-md shadow-sm text-sm font-semibold text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition-all" %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+
+    <!-- Export Évaluations -->
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden border border-gray-200 dark:border-gray-700">
+      <div class="bg-gradient-to-br from-orange-50 to-orange-100 dark:from-orange-900 dark:to-orange-700 border-b-2 border-orange-300 dark:border-orange-500 px-6 py-4">
+        <div class="flex items-center">
+          <div class="flex-shrink-0 bg-orange-100 dark:bg-orange-800 rounded-lg p-2.5">
+            <svg class="h-5 w-5 text-orange-700 dark:text-orange-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+            </svg>
+          </div>
+          <div class="ml-3">
+            <h2 class="text-lg font-semibold text-orange-900 dark:text-white">Évaluations de performance</h2>
+            <p class="text-xs text-orange-800 dark:text-white opacity-90 mt-0.5">Scores, auto-évaluations, avis manager</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="p-5">
+        <%= form_with url: evaluations_manager_exports_path, method: :get, local: true, class: "space-y-5" do |f| %>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Période (fin de période)</label>
+            <%= f.select :period,
+                options_for_select([
+                  ['Ce trimestre', 'this_quarter'],
+                  ['Cette année', 'this_year'],
+                  ['Personnalisée', 'custom']
+                ], 'this_year'),
+                {},
+                class: "block w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 shadow-sm focus:border-orange-500 focus:ring-orange-500 text-sm"
+            %>
+          </div>
+
+          <div id="custom-dates-evaluations" class="hidden space-y-3 p-4 bg-gray-50 dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Date début</label>
+              <%= f.date_field :start_date, class: "block w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 shadow-sm focus:ring-orange-500 focus:border-orange-500 text-sm" %>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Date fin</label>
+              <%= f.date_field :end_date, class: "block w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 shadow-sm focus:ring-orange-500 focus:border-orange-500 text-sm" %>
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Statut</label>
+            <%= f.select :status,
+                options_for_select([
+                  ['Tous', ''],
+                  ['Complétée', 'completed'],
+                  ['En cours', 'manager_review_pending'],
+                  ['Auto-éval. attendue', 'employee_review_pending']
+                ]),
+                {},
+                class: "block w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 shadow-sm focus:border-orange-500 focus:ring-orange-500 text-sm"
+            %>
+          </div>
+
+          <div class="pt-2">
+            <%= f.submit "Télécharger CSV", class: "w-full flex justify-center py-2.5 px-4 border border-transparent rounded-md shadow-sm text-sm font-semibold text-white bg-orange-600 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 transition-all" %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+
+    <!-- Export Formations -->
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden border border-gray-200 dark:border-gray-700">
+      <div class="bg-gradient-to-br from-teal-50 to-teal-100 dark:from-teal-900 dark:to-teal-700 border-b-2 border-teal-300 dark:border-teal-500 px-6 py-4">
+        <div class="flex items-center">
+          <div class="flex-shrink-0 bg-teal-100 dark:bg-teal-800 rounded-lg p-2.5">
+            <svg class="h-5 w-5 text-teal-700 dark:text-teal-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+            </svg>
+          </div>
+          <div class="ml-3">
+            <h2 class="text-lg font-semibold text-teal-900 dark:text-white">Formations</h2>
+            <p class="text-xs text-teal-800 dark:text-white opacity-90 mt-0.5">Suivi des formations assignées et complétées</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="p-5">
+        <%= form_with url: trainings_manager_exports_path, method: :get, local: true, class: "space-y-5" do |f| %>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Période (date d'assignation)</label>
+            <%= f.select :period,
+                options_for_select([
+                  ['Ce mois', 'this_month'],
+                  ['Mois dernier', 'last_month'],
+                  ['Ce trimestre', 'this_quarter'],
+                  ['Cette année', 'this_year'],
+                  ['Personnalisée', 'custom']
+                ], 'this_year'),
+                {},
+                class: "block w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 shadow-sm focus:border-teal-500 focus:ring-teal-500 text-sm"
+            %>
+          </div>
+
+          <div id="custom-dates-trainings" class="hidden space-y-3 p-4 bg-gray-50 dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Date début</label>
+              <%= f.date_field :start_date, class: "block w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 shadow-sm focus:ring-teal-500 focus:border-teal-500 text-sm" %>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Date fin</label>
+              <%= f.date_field :end_date, class: "block w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 shadow-sm focus:ring-teal-500 focus:border-teal-500 text-sm" %>
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Statut</label>
+            <%= f.select :status,
+                options_for_select([
+                  ['Tous', ''],
+                  ['Assignée', 'assigned'],
+                  ['En cours', 'in_progress'],
+                  ['Terminée', 'completed'],
+                  ['Annulée', 'cancelled']
+                ]),
+                {},
+                class: "block w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 shadow-sm focus:border-teal-500 focus:ring-teal-500 text-sm"
+            %>
+          </div>
+
+          <div class="pt-2">
+            <%= f.submit "Télécharger CSV", class: "w-full flex justify-center py-2.5 px-4 border border-transparent rounded-md shadow-sm text-sm font-semibold text-white bg-teal-600 hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 transition-all" %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+
   </div>
 
   <!-- Info Notice -->
@@ -191,35 +385,30 @@
 </div>
 
 <script>
-  // Show/hide custom date fields based on period selection
   document.addEventListener('DOMContentLoaded', function() {
-    // Time entries period selector
-    const timeEntriesPeriodSelect = document.querySelector('select[name="period"]');
-    const customDatesTimeEntries = document.getElementById('custom-dates-time-entries');
+    // Map each form's period select to its custom-dates panel via data attributes
+    const mappings = [
+      { formAction: 'time_entries', panelId: 'custom-dates-time-entries' },
+      { formAction: 'absences',     panelId: 'custom-dates-absences' },
+      { formAction: 'one_on_ones',  panelId: 'custom-dates-one-on-ones' },
+      { formAction: 'evaluations',  panelId: 'custom-dates-evaluations' },
+      { formAction: 'trainings',    panelId: 'custom-dates-trainings' }
+    ];
 
-    if (timeEntriesPeriodSelect) {
-      timeEntriesPeriodSelect.addEventListener('change', function() {
-        if (this.value === 'custom') {
-          customDatesTimeEntries.classList.remove('hidden');
-        } else {
-          customDatesTimeEntries.classList.add('hidden');
-        }
+    mappings.forEach(function(m) {
+      const panel = document.getElementById(m.panelId);
+      if (!panel) return;
+
+      // Find the form that submits to this action
+      const form = panel.closest('form') || panel.parentElement.closest('form');
+      if (!form) return;
+
+      const select = form.querySelector('select[name="period"]');
+      if (!select) return;
+
+      select.addEventListener('change', function() {
+        panel.classList.toggle('hidden', this.value !== 'custom');
       });
-    }
-
-    // Absences period selector (find the second period select)
-    const allPeriodSelects = document.querySelectorAll('select[name="period"]');
-    if (allPeriodSelects.length > 1) {
-      const absencesPeriodSelect = allPeriodSelects[1];
-      const customDatesAbsences = document.getElementById('custom-dates-absences');
-
-      absencesPeriodSelect.addEventListener('change', function() {
-        if (this.value === 'custom') {
-          customDatesAbsences.classList.remove('hidden');
-        } else {
-          customDatesAbsences.classList.add('hidden');
-        }
-      });
-    }
+    });
   });
 </script>
