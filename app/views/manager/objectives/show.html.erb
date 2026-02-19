@@ -1,29 +1,54 @@
-<div class="container mx-auto px-4 py-6 max-w-3xl">
+<div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
   <div class="mb-4">
-    <%= link_to '← Objectifs équipe', manager_objectives_path, class: 'text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200' %>
+    <%= link_to '← Objectifs équipe', manager_objectives_path,
+          class: 'text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200' %>
   </div>
 
-  <div class="card bg-white dark:bg-gray-800 shadow-sm p-6 mb-6">
+  <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 mb-6">
     <div class="flex justify-between items-start">
       <div class="flex-1">
         <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100"><%= @objective.title %></h1>
         <div class="flex gap-2 mt-2 flex-wrap">
-          <span class="badge badge-outline"><%= @objective.priority.humanize %></span>
-          <span class="badge badge-<%= @objective.status %>"><%= @objective.status.humanize %></span>
+          <%
+            priority_classes = {
+              'low'    => 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 border-gray-200 dark:border-gray-600',
+              'medium' => 'bg-yellow-100 dark:bg-yellow-900/40 text-yellow-800 dark:text-yellow-300 border-yellow-200 dark:border-yellow-700',
+              'high'   => 'bg-red-100 dark:bg-red-900/40 text-red-800 dark:text-red-300 border-red-200 dark:border-red-700'
+            }
+            priority_labels = { 'low' => 'Faible', 'medium' => 'Moyenne', 'high' => 'Haute' }
+            status_classes = {
+              'pending'    => 'bg-yellow-100 dark:bg-yellow-900/40 text-yellow-800 dark:text-yellow-300 border-yellow-200 dark:border-yellow-700',
+              'in_progress'=> 'bg-blue-100 dark:bg-blue-900/40 text-blue-800 dark:text-blue-300 border-blue-200 dark:border-blue-700',
+              'completed'  => 'bg-green-100 dark:bg-green-900/40 text-green-800 dark:text-green-300 border-green-200 dark:border-green-700',
+              'cancelled'  => 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 border-gray-200 dark:border-gray-600'
+            }
+            status_labels = { 'pending' => 'En attente', 'in_progress' => 'En cours', 'completed' => 'Complété', 'cancelled' => 'Annulé' }
+          %>
+          <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium border <%= priority_classes[@objective.priority] || 'bg-gray-100 text-gray-600' %>">
+            <%= priority_labels[@objective.priority] || @objective.priority.humanize %>
+          </span>
+          <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium border <%= status_classes[@objective.status] || 'bg-gray-100 text-gray-600' %>">
+            <%= status_labels[@objective.status] || @objective.status.humanize %>
+          </span>
           <% if @objective.overdue? %>
-            <span class="badge badge-error">En retard</span>
+            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-400 border border-red-200 dark:border-red-700">
+              En retard
+            </span>
           <% end %>
         </div>
       </div>
       <div class="flex gap-2 ml-4">
         <% unless @objective.completed? || @objective.cancelled? %>
-          <%= link_to 'Modifier', edit_manager_objective_path(@objective), class: 'btn btn-sm btn-outline' %>
+          <%= link_to 'Modifier', edit_manager_objective_path(@objective),
+                class: 'inline-flex items-center py-1.5 px-3 border border-gray-300 dark:border-gray-600 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 transition-all' %>
           <%= button_to 'Marquer complété', complete_manager_objective_path(@objective),
-                method: :patch, class: 'btn btn-sm btn-primary',
+                method: :patch,
+                class: 'inline-flex items-center py-1.5 px-3 border border-transparent rounded-md text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 transition-all cursor-pointer',
                 data: { confirm: 'Marquer cet objectif comme complété ?' } %>
         <% end %>
         <%= button_to 'Supprimer', manager_objective_path(@objective),
-              method: :delete, class: 'btn btn-sm btn-ghost text-red-500',
+              method: :delete,
+              class: 'inline-flex items-center py-1.5 px-3 border border-transparent rounded-md text-sm font-medium text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all cursor-pointer',
               data: { confirm: 'Supprimer cet objectif ?' } %>
       </div>
     </div>
@@ -39,7 +64,7 @@
       </div>
       <div>
         <dt class="font-medium text-gray-600 dark:text-gray-400">Échéance</dt>
-        <dd class="mt-1 <%= @objective.overdue? ? 'text-red-600 font-medium' : 'text-gray-900 dark:text-gray-100' %>">
+        <dd class="mt-1 <%= @objective.overdue? ? 'text-red-600 dark:text-red-400 font-medium' : 'text-gray-900 dark:text-gray-100' %>">
           <%= l(@objective.deadline, format: :long) %>
         </dd>
       </div>

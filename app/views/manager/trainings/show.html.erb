@@ -1,65 +1,98 @@
-<div class="container mx-auto px-4 py-6 max-w-4xl">
+<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
   <div class="mb-4">
-    <%= link_to '← Back to Trainings', manager_trainings_path, class: 'text-sm text-gray-500 hover:text-gray-700' %>
+    <%= link_to '← Formations équipe', manager_trainings_path,
+          class: 'text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200' %>
   </div>
 
-  <div class="card bg-white shadow-sm p-6 mb-6">
+  <!-- Header card -->
+  <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 mb-6">
     <div class="flex justify-between items-start">
       <div class="flex-1">
-        <h1 class="text-2xl font-bold"><%= @training.title %></h1>
-        <div class="flex gap-3 mt-2 flex-wrap text-sm text-gray-600">
-          <span class="badge badge-outline"><%= @training.training_type.humanize %></span>
+        <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100"><%= @training.title %></h1>
+        <div class="flex flex-wrap gap-3 mt-2 text-sm text-gray-600 dark:text-gray-400">
+          <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 dark:bg-indigo-900/40 text-indigo-800 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-700">
+            <%= {
+              'internal' => 'Interne',
+              'external' => 'Externe',
+              'certification' => 'Certification',
+              'e_learning' => 'E-learning',
+              'mentoring' => 'Mentorat'
+            }[@training.training_type] || @training.training_type.humanize %>
+          </span>
           <% if @training.provider.present? %>
-            <span><strong>Provider:</strong> <%= @training.provider %></span>
+            <span><strong class="text-gray-700 dark:text-gray-300">Organisme :</strong> <%= @training.provider %></span>
           <% end %>
           <% if @training.duration_estimate.present? %>
-            <span><strong>Duration:</strong> <%= @training.duration_estimate %>h</span>
+            <span><strong class="text-gray-700 dark:text-gray-300">Durée :</strong> <%= @training.duration_estimate %>h</span>
           <% end %>
           <% if @training.external_url.present? %>
-            <%= link_to 'External Link', @training.external_url,
-                  target: '_blank', rel: 'noopener', class: 'text-blue-600 hover:underline' %>
+            <%= link_to 'Lien externe', @training.external_url,
+                  target: '_blank', rel: 'noopener',
+                  class: 'text-indigo-600 dark:text-indigo-400 hover:underline' %>
           <% end %>
         </div>
         <% if @training.description.present? %>
-          <p class="mt-4 text-gray-700"><%= @training.description %></p>
+          <p class="mt-4 text-gray-700 dark:text-gray-300"><%= @training.description %></p>
         <% end %>
       </div>
       <div class="flex gap-2 ml-4">
         <% if @training.archived? %>
-          <%= button_to 'Restore', unarchive_manager_training_path(@training),
-                method: :patch, class: 'btn btn-sm btn-outline' %>
+          <%= button_to 'Restaurer', unarchive_manager_training_path(@training),
+                method: :patch,
+                class: 'inline-flex items-center py-1.5 px-3 border border-gray-300 dark:border-gray-600 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 transition-all cursor-pointer' %>
         <% else %>
-          <%= link_to 'Edit', edit_manager_training_path(@training), class: 'btn btn-sm btn-outline' %>
-          <%= button_to 'Archive', archive_manager_training_path(@training),
-                method: :patch, class: 'btn btn-sm btn-ghost text-gray-400',
-                data: { confirm: 'Archive this training?' } %>
+          <%= link_to 'Modifier', edit_manager_training_path(@training),
+                class: 'inline-flex items-center py-1.5 px-3 border border-gray-300 dark:border-gray-600 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 transition-all' %>
+          <%= button_to 'Archiver', archive_manager_training_path(@training),
+                method: :patch,
+                class: 'inline-flex items-center py-1.5 px-3 border border-transparent rounded-md text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-400 bg-transparent transition-all cursor-pointer',
+                data: { confirm: 'Archiver cette formation ?' } %>
         <% end %>
       </div>
     </div>
   </div>
 
-  <div class="card bg-white shadow-sm p-6">
-    <h2 class="text-lg font-semibold mb-4">Assignments (<%= @assignments.count %>)</h2>
+  <!-- Assignments -->
+  <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+    <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">
+      Assignations (<%= @assignments.count %>)
+    </h2>
 
     <% if @assignments.any? %>
       <div class="space-y-3">
         <% @assignments.each do |assignment| %>
-          <div class="flex justify-between items-center py-2 border-b border-gray-100 last:border-0">
+          <div class="flex justify-between items-center py-2 border-b border-gray-100 dark:border-gray-700 last:border-0">
             <div>
-              <span class="font-medium"><%= assignment.employee.full_name %></span>
-              <span class="text-sm text-gray-500 ml-2">
-                Assigned <%= assignment.assigned_at.strftime('%b %d, %Y') %>
+              <span class="font-medium text-gray-900 dark:text-gray-100"><%= assignment.employee.full_name %></span>
+              <span class="text-sm text-gray-500 dark:text-gray-400 ml-2">
+                Assigné le <%= l(assignment.assigned_at.to_date, format: :short) %>
               </span>
               <% if assignment.deadline.present? %>
-                <span class="text-sm text-gray-500"> &bull; Due <%= assignment.deadline.strftime('%b %d, %Y') %></span>
+                <span class="text-sm text-gray-500 dark:text-gray-400"> &bull; Échéance <%= l(assignment.deadline, format: :short) %></span>
               <% end %>
             </div>
-            <span class="badge badge-<%= assignment.status %>"><%= assignment.status.humanize %></span>
+            <%
+              status_classes = {
+                'pending'    => 'bg-yellow-100 dark:bg-yellow-900/40 text-yellow-800 dark:text-yellow-300 border-yellow-200 dark:border-yellow-700',
+                'in_progress'=> 'bg-blue-100 dark:bg-blue-900/40 text-blue-800 dark:text-blue-300 border-blue-200 dark:border-blue-700',
+                'completed'  => 'bg-green-100 dark:bg-green-900/40 text-green-800 dark:text-green-300 border-green-200 dark:border-green-700',
+                'cancelled'  => 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 border-gray-200 dark:border-gray-600'
+              }
+              status_labels = {
+                'pending'    => 'En attente',
+                'in_progress'=> 'En cours',
+                'completed'  => 'Terminé',
+                'cancelled'  => 'Annulé'
+              }
+            %>
+            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium border <%= status_classes[assignment.status] || 'bg-gray-100 text-gray-600' %>">
+              <%= status_labels[assignment.status] || assignment.status.humanize %>
+            </span>
           </div>
         <% end %>
       </div>
     <% else %>
-      <p class="text-gray-500 text-sm">No assignments yet.</p>
+      <p class="text-gray-500 dark:text-gray-400 text-sm">Aucune assignation pour cette formation.</p>
     <% end %>
   </div>
 </div>

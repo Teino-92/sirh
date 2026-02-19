@@ -1,55 +1,77 @@
-<div class="container mx-auto px-4 py-6">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+  <!-- Header -->
   <div class="flex justify-between items-center mb-6">
-    <h1 class="text-2xl font-bold">Training Catalogue</h1>
-    <%= link_to 'New Training', new_manager_training_path, class: 'btn btn-primary' %>
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100">Catalogue de formations</h1>
+    <%= link_to 'Nouvelle formation', new_manager_training_path,
+          class: 'inline-flex items-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all' %>
   </div>
 
+  <!-- Status tabs -->
   <div class="flex gap-2 mb-4 overflow-x-auto">
-    <%= link_to 'Active', manager_trainings_path, class: "btn btn-sm #{params[:archived] != 'true' ? 'btn-primary' : 'btn-outline'}" %>
-    <%= link_to 'Archived', manager_trainings_path(archived: true), class: "btn btn-sm #{params[:archived] == 'true' ? 'btn-primary' : 'btn-outline'}" %>
+    <%= link_to 'Actives', manager_trainings_path,
+          class: "inline-flex items-center py-1.5 px-4 rounded-md text-sm font-medium transition-all #{params[:archived] != 'true' ? 'bg-indigo-600 text-white shadow-sm' : 'bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700'}" %>
+    <%= link_to 'Archivées', manager_trainings_path(archived: true),
+          class: "inline-flex items-center py-1.5 px-4 rounded-md text-sm font-medium transition-all #{params[:archived] == 'true' ? 'bg-indigo-600 text-white shadow-sm' : 'bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700'}" %>
   </div>
 
-  <div class="flex gap-2 mb-6 overflow-x-auto">
-    <%= link_to 'All types',
+  <!-- Type filter tabs -->
+  <%
+    type_labels = {
+      'internal' => 'Interne',
+      'external' => 'Externe',
+      'certification' => 'Certification',
+      'e_learning' => 'E-learning',
+      'mentoring' => 'Mentorat'
+    }
+  %>
+  <div class="flex gap-2 mb-6 overflow-x-auto pb-1">
+    <%= link_to 'Tous les types',
           manager_trainings_path(archived: params[:archived]),
-          class: "btn btn-xs #{params[:training_type].blank? ? 'btn-secondary' : 'btn-outline'}" %>
+          class: "inline-flex items-center py-1 px-3 rounded-full text-xs font-medium transition-all whitespace-nowrap #{params[:training_type].blank? ? 'bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900' : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'}" %>
     <% Training.training_types.keys.each do |type| %>
-      <%= link_to type.humanize,
+      <%= link_to type_labels[type] || type.humanize,
             manager_trainings_path(training_type: type, archived: params[:archived]),
-            class: "btn btn-xs #{params[:training_type] == type ? 'btn-secondary' : 'btn-outline'}" %>
+            class: "inline-flex items-center py-1 px-3 rounded-full text-xs font-medium transition-all whitespace-nowrap #{params[:training_type] == type ? 'bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900' : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'}" %>
     <% end %>
   </div>
 
+  <!-- Trainings list -->
   <div class="space-y-4">
     <% @trainings.each do |training| %>
-      <div class="card bg-white shadow-sm p-4">
+      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4">
         <div class="flex justify-between items-start">
           <div class="flex-1">
-            <h3 class="font-semibold text-lg">
-              <%= link_to training.title, manager_training_path(training), class: 'hover:text-blue-600' %>
+            <h3 class="font-semibold text-lg text-gray-900 dark:text-gray-100">
+              <%= link_to training.title, manager_training_path(training),
+                    class: 'hover:text-indigo-600 dark:hover:text-indigo-400' %>
             </h3>
-            <div class="flex gap-2 mt-1 flex-wrap">
-              <span class="badge badge-outline text-xs"><%= training.training_type.humanize %></span>
+            <div class="flex gap-2 mt-1 flex-wrap items-center">
+              <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-indigo-100 dark:bg-indigo-900/40 text-indigo-800 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-700">
+                <%= type_labels[training.training_type] || training.training_type.humanize %>
+              </span>
               <% if training.provider.present? %>
-                <span class="text-sm text-gray-500"><%= training.provider %></span>
+                <span class="text-sm text-gray-500 dark:text-gray-400"><%= training.provider %></span>
               <% end %>
               <% if training.duration_estimate.present? %>
-                <span class="text-sm text-gray-500"><%= training.duration_estimate %>h</span>
+                <span class="text-sm text-gray-500 dark:text-gray-400"><%= training.duration_estimate %>h</span>
               <% end %>
             </div>
             <% if training.description.present? %>
-              <p class="text-sm text-gray-600 mt-2 line-clamp-2"><%= training.description %></p>
+              <p class="text-sm text-gray-600 dark:text-gray-400 mt-2 line-clamp-2"><%= training.description %></p>
             <% end %>
           </div>
           <div class="flex gap-2 items-center ml-4">
             <% if training.archived? %>
-              <%= button_to 'Restore', unarchive_manager_training_path(training),
-                    method: :patch, class: 'btn btn-sm btn-outline' %>
+              <%= button_to 'Restaurer', unarchive_manager_training_path(training),
+                    method: :patch,
+                    class: 'inline-flex items-center py-1.5 px-3 border border-gray-300 dark:border-gray-600 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 transition-all cursor-pointer' %>
             <% else %>
-              <%= link_to 'Edit', edit_manager_training_path(training), class: 'btn btn-sm btn-outline' %>
-              <%= button_to 'Archive', archive_manager_training_path(training),
-                    method: :patch, class: 'btn btn-sm btn-ghost text-gray-400',
-                    data: { confirm: 'Archive this training?' } %>
+              <%= link_to 'Modifier', edit_manager_training_path(training),
+                    class: 'inline-flex items-center py-1.5 px-3 border border-gray-300 dark:border-gray-600 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 transition-all' %>
+              <%= button_to 'Archiver', archive_manager_training_path(training),
+                    method: :patch,
+                    class: 'inline-flex items-center py-1.5 px-3 border border-transparent rounded-md text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-400 bg-transparent transition-all cursor-pointer',
+                    data: { confirm: 'Archiver cette formation ?' } %>
             <% end %>
           </div>
         </div>
@@ -57,7 +79,14 @@
     <% end %>
 
     <% if @trainings.empty? %>
-      <p class="text-gray-500 text-center py-8">No trainings found.</p>
+      <div class="text-center py-12">
+        <svg class="mx-auto h-12 w-12 text-gray-400 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+        </svg>
+        <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">Aucune formation trouvée.</p>
+        <%= link_to 'Créer une formation', new_manager_training_path,
+              class: 'mt-3 inline-flex items-center text-sm text-indigo-600 dark:text-indigo-400 hover:underline' %>
+      </div>
     <% end %>
   </div>
 </div>

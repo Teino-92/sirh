@@ -1,7 +1,7 @@
 <%= form_with model: [:manager, one_on_one], class: 'space-y-4' do |f| %>
   <% if one_on_one.errors.any? %>
-    <div class="alert alert-error">
-      <ul class="list-disc list-inside text-sm">
+    <div class="rounded-md bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-700 p-4">
+      <ul class="list-disc list-inside text-sm text-red-700 dark:text-red-400">
         <% one_on_one.errors.full_messages.each do |msg| %>
           <li><%= msg %></li>
         <% end %>
@@ -9,27 +9,30 @@
     </div>
   <% end %>
 
-  <div class="form-control">
-    <%= f.label :employee_id, 'Collaborateur', class: 'label' %>
+  <div>
+    <%= f.label :employee_id, 'Collaborateur', class: 'block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1' %>
     <%= f.select :employee_id,
           current_employee.direct_reports.order(:last_name, :first_name).map { |e| [e.full_name, e.id] },
           { prompt: 'Sélectionner un collaborateur' },
-          class: 'select select-bordered w-full', required: true %>
+          class: 'block w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 shadow-sm focus:border-purple-500 focus:ring-purple-500 text-sm', required: true %>
   </div>
 
-  <div class="form-control">
-    <%= f.label :scheduled_at, 'Date et heure', class: 'label' %>
-    <%= f.datetime_local_field :scheduled_at, class: 'input input-bordered w-full', required: true %>
+  <div>
+    <%= f.label :scheduled_at, 'Date et heure', class: 'block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1' %>
+    <%= f.datetime_local_field :scheduled_at, class: 'block w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 shadow-sm focus:border-purple-500 focus:ring-purple-500 text-sm', required: true %>
   </div>
 
-  <div class="form-control">
-    <%= f.label :agenda, 'Agenda', class: 'label' %>
-    <%= f.text_area :agenda, rows: 4, class: 'textarea textarea-bordered w-full',
+  <div>
+    <%= f.label :agenda, 'Agenda', class: 'block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1' %>
+    <%= f.text_area :agenda, rows: 4,
+          class: 'block w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 shadow-sm focus:border-purple-500 focus:ring-purple-500 text-sm',
           placeholder: 'Points à aborder…' %>
   </div>
 
   <div class="flex gap-3 pt-2">
-    <%= f.submit class: 'btn btn-primary' %>
-    <%= link_to 'Annuler', manager_one_on_ones_path, class: 'btn btn-ghost' %>
+    <%= f.submit one_on_one.persisted? ? 'Enregistrer' : 'Planifier le 1:1',
+          class: 'inline-flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-semibold text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition-all cursor-pointer' %>
+    <%= link_to 'Annuler', manager_one_on_ones_path,
+          class: 'inline-flex justify-center py-2 px-4 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 transition-all' %>
   </div>
 <% end %>

@@ -1,9 +1,9 @@
-<div class="container mx-auto px-4 py-6 max-w-2xl">
+<div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
   <div class="mb-4">
     <%= link_to '← 1:1 équipe', manager_one_on_ones_path, class: 'text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200' %>
   </div>
 
-  <div class="card bg-white dark:bg-gray-800 shadow-sm p-6">
+  <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
     <h1 class="text-xl font-bold text-gray-900 dark:text-gray-100 mb-6">Planifier un 1:1</h1>
     <%= render 'form', one_on_one: @one_on_one %>
   </div>

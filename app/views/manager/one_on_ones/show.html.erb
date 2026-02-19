@@ -1,9 +1,11 @@
-<div class="container mx-auto px-4 py-6 max-w-3xl">
+<div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
   <div class="mb-4">
-    <%= link_to '← 1:1 équipe', manager_one_on_ones_path, class: 'text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200' %>
+    <%= link_to '← 1:1 équipe', manager_one_on_ones_path,
+          class: 'text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200' %>
   </div>
 
-  <div class="card bg-white dark:bg-gray-800 shadow-sm p-6 mb-6">
+  <!-- Header card -->
+  <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 mb-6">
     <div class="flex justify-between items-start">
       <div class="flex-1">
         <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100">
@@ -12,14 +14,26 @@
         <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">
           <%= l(@one_on_one.scheduled_at, format: :long) %>
         </p>
-        <span class="badge badge-<%= @one_on_one.status %> mt-2"><%= @one_on_one.status.humanize %></span>
+        <%
+          status_classes = {
+            'scheduled'  => 'bg-blue-100 dark:bg-blue-900/40 text-blue-800 dark:text-blue-300 border-blue-200 dark:border-blue-700',
+            'completed'  => 'bg-green-100 dark:bg-green-900/40 text-green-800 dark:text-green-300 border-green-200 dark:border-green-700',
+            'cancelled'  => 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 border-gray-200 dark:border-gray-600'
+          }
+          status_labels = { 'scheduled' => 'Planifié', 'completed' => 'Complété', 'cancelled' => 'Annulé' }
+        %>
+        <span class="mt-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border <%= status_classes[@one_on_one.status] || 'bg-gray-100 text-gray-600' %>">
+          <%= status_labels[@one_on_one.status] || @one_on_one.status.humanize %>
+        </span>
       </div>
       <div class="flex gap-2 ml-4">
         <% if @one_on_one.scheduled? %>
-          <%= link_to 'Modifier', edit_manager_one_on_one_path(@one_on_one), class: 'btn btn-sm btn-outline' %>
+          <%= link_to 'Modifier', edit_manager_one_on_one_path(@one_on_one),
+                class: 'inline-flex items-center py-1.5 px-3 border border-gray-300 dark:border-gray-600 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 transition-all' %>
         <% end %>
         <%= button_to 'Supprimer', manager_one_on_one_path(@one_on_one),
-              method: :delete, class: 'btn btn-sm btn-ghost text-red-500',
+              method: :delete,
+              class: 'inline-flex items-center py-1.5 px-3 border border-transparent rounded-md text-sm font-medium text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all cursor-pointer',
               data: { confirm: 'Supprimer ce 1:1 ?' } %>
       </div>
     </div>
@@ -39,16 +53,19 @@
     <% end %>
   </div>
 
+  <!-- Clôture -->
   <% if @one_on_one.scheduled? %>
-    <div class="card bg-white dark:bg-gray-800 shadow-sm p-6">
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
       <h2 class="text-lg font-semibold mb-4 text-gray-900 dark:text-gray-100">Clôturer ce 1:1</h2>
       <%= form_with url: complete_manager_one_on_one_path(@one_on_one), method: :patch do |f| %>
-        <div class="form-control mb-4">
-          <%= label_tag :notes, 'Notes de séance', class: 'label' %>
-          <%= text_area_tag :notes, @one_on_one.notes, rows: 4, class: 'textarea textarea-bordered w-full',
+        <div class="mb-4">
+          <%= label_tag :notes, 'Notes de séance', class: 'block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1' %>
+          <%= text_area_tag :notes, @one_on_one.notes, rows: 4,
+                class: 'block w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 shadow-sm focus:border-purple-500 focus:ring-purple-500 text-sm',
                 placeholder: 'Points abordés, décisions prises, actions à suivre…' %>
         </div>
-        <%= f.submit 'Marquer comme complété', class: 'btn btn-primary' %>
+        <%= f.submit 'Marquer comme complété',
+              class: 'inline-flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-semibold text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition-all cursor-pointer' %>
       <% end %>
     </div>
   <% end %>
