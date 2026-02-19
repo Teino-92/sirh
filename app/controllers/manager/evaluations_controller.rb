@@ -1,7 +1,7 @@
 module Manager
   class EvaluationsController < ApplicationController
     before_action :authenticate_employee!
-    before_action :set_evaluation, only: [:show, :edit, :update, :destroy, :complete, :submit_manager_review, :launch]
+    before_action :set_evaluation, only: [:show, :edit, :update, :destroy, :complete, :submit_manager_review]
 
     def index
       @evaluations = policy_scope(Evaluation)
@@ -52,6 +52,7 @@ module Manager
     end
 
     def launch
+      @evaluation = Evaluation.find(params[:id])
       authorize @evaluation, :update?
       unless @evaluation.draft? || @evaluation.employee_review_pending?
         redirect_to manager_evaluation_path(@evaluation), alert: 'Cette évaluation ne peut pas être relancée'
