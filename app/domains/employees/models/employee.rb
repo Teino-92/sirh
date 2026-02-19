@@ -76,6 +76,12 @@ class Employee < ApplicationRecord
     settings.fetch('active', true)
   end
 
+  # "Cadre" employees have a fixed salary — no clocking in/out and no work schedule.
+  # This is independent of role: a manager can be non-cadre and a plain employee can be cadre.
+  def cadre?
+    settings.fetch('cadre', false)
+  end
+
   def tenure_in_months
     ((Time.current.to_date - start_date) / 30).to_i
   end

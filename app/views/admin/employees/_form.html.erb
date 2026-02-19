@@ -119,6 +119,25 @@
           accept: "image/*",
           class: "mt-1 block w-full text-sm text-gray-500 dark:text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 dark:file:bg-indigo-900 file:text-indigo-700 dark:file:text-indigo-300 hover:file:bg-indigo-100 dark:hover:file:bg-indigo-800" %>
     </div>
+
+    <div class="sm:col-span-2">
+      <fieldset class="border border-gray-200 dark:border-gray-600 rounded-md p-4">
+        <legend class="text-sm font-medium text-gray-700 dark:text-gray-300 px-1">Statut contractuel</legend>
+        <label class="flex items-start gap-3 cursor-pointer">
+          <%= form.fields_for :settings do |sf| %>
+            <%= sf.check_box :cadre,
+                { checked: employee.cadre?, class: "mt-0.5 h-4 w-4 text-indigo-600 border-gray-300 dark:border-gray-600 rounded focus:ring-indigo-500" },
+                true, false %>
+          <% end %>
+          <div>
+            <span class="text-sm font-medium text-gray-900 dark:text-gray-100">Cadre (forfait jours)</span>
+            <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+              Les cadres au forfait n'ont pas de planning ni de pointage. Les onglets Horaire et Pointage sont masqués sur leur interface.
+            </p>
+          </div>
+        </label>
+      </fieldset>
+    </div>
   </div>
 
   <div class="flex justify-end gap-3 pt-4">

@@ -51,9 +51,9 @@
               <div class="hidden sm:ml-6 sm:flex sm:space-x-4">
                 <%= link_to "Dashboard", dashboard_path,
                     class: "inline-flex items-center px-3 py-2 text-sm font-medium #{current_page?(dashboard_path) ? 'text-indigo-600 dark:text-indigo-400 border-b-2 border-indigo-600 dark:border-indigo-400' : 'text-gray-700 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400'}" %>
+                <% unless current_employee.cadre? %>
                 <%= link_to "Pointage", time_entries_path,
                     class: "inline-flex items-center px-3 py-2 text-sm font-medium #{current_page?(time_entries_path) ? 'text-indigo-600 dark:text-indigo-400 border-b-2 border-indigo-600 dark:border-indigo-400' : 'text-gray-700 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400'}" %>
-                <% unless current_employee.manager? || current_employee.hr_or_admin? %>
                 <%= link_to "Horaire", work_schedule_path(current_employee.work_schedule || current_employee.id),
                     class: "inline-flex items-center px-3 py-2 text-sm font-medium #{controller_name == 'work_schedules' ? 'text-indigo-600 dark:text-indigo-400 border-b-2 border-indigo-600 dark:border-indigo-400' : 'text-gray-700 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400'}" %>
                <% end %>
@@ -129,6 +129,7 @@
               <span>Accueil</span>
             <% end %>
 
+            <% unless current_employee.cadre? %>
             <%= link_to time_entries_path, class: "flex-1 flex flex-col items-center py-2 text-xs #{current_page?(time_entries_path) ? 'text-indigo-600 dark:text-indigo-400' : 'text-gray-600 dark:text-gray-300'}" do %>
               <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
@@ -136,7 +137,6 @@
               <span>Pointage</span>
             <% end %>
 
-            <% unless current_employee.manager? || current_employee.hr_or_admin? %>
             <%= link_to work_schedule_path(current_employee.work_schedule || current_employee.id), class: "flex-1 flex flex-col items-center py-2 text-xs #{controller_name == 'work_schedules' ? 'text-indigo-600 dark:text-indigo-400' : 'text-gray-600 dark:text-gray-300'}" do %>
               <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>

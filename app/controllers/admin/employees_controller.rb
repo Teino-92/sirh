@@ -53,7 +53,12 @@ module Admin
     end
 
     def update
-      if @employee.update(employee_params)
+      attrs = employee_params
+      # Merge settings so we don't clobber existing keys (e.g. 'active')
+      if attrs[:settings].present?
+        attrs = attrs.merge(settings: @employee.settings.merge(attrs[:settings].to_h))
+      end
+      if @employee.update(attrs)
         respond_to do |format|
           format.html { redirect_to admin_employee_path(@employee), notice: 'Employé mis à jour avec succès.' }
           format.turbo_stream
@@ -95,7 +100,8 @@ module Admin
         :department,
         :job_title,
         :manager_id,
-        :avatar
+        :avatar,
+        settings: [:cadre]
       )
     end
   end
