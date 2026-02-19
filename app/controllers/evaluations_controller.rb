@@ -14,7 +14,7 @@ class EvaluationsController < ApplicationController
   def submit_self_review
     authorize @evaluation, :submit_self_review?
     @evaluation.advance_to_manager_review!(self_review_text: params[:self_review])
-    redirect_to evaluation_path(@evaluation), notice: 'Self review submitted'
+    redirect_to evaluation_path(@evaluation), notice: 'Auto-évaluation soumise'
   rescue ActiveRecord::RecordInvalid
     render :show, status: :unprocessable_entity
   end

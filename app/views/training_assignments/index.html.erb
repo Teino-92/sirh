@@ -1,44 +1,83 @@
-<div class="container mx-auto px-4 py-6">
-  <div class="flex justify-between items-center mb-6">
-    <h1 class="text-2xl font-bold">My Trainings</h1>
+<%
+  type_labels = {
+    'internal'      => 'Interne',
+    'external'      => 'Externe',
+    'certification' => 'Certification',
+    'e_learning'    => 'E-learning',
+    'mentoring'     => 'Mentorat'
+  }
+  status_classes = {
+    'assigned'    => 'bg-blue-100 dark:bg-blue-900/40 text-blue-800 dark:text-blue-300 border-blue-200 dark:border-blue-700',
+    'in_progress' => 'bg-indigo-100 dark:bg-indigo-900/40 text-indigo-800 dark:text-indigo-300 border-indigo-200 dark:border-indigo-700',
+    'completed'   => 'bg-green-100 dark:bg-green-900/40 text-green-800 dark:text-green-300 border-green-200 dark:border-green-700',
+    'cancelled'   => 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 border-gray-200 dark:border-gray-600'
+  }
+  status_labels = {
+    'assigned'    => 'Assignée',
+    'in_progress' => 'En cours',
+    'completed'   => 'Terminée',
+    'cancelled'   => 'Annulée'
+  }
+%>
+
+<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+  <div class="mb-6">
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100">Mes formations</h1>
+    <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">Formations assignées par votre manager</p>
   </div>
 
-  <div class="flex gap-2 mb-4 overflow-x-auto">
-    <%= link_to 'All', training_assignments_path, class: "btn btn-sm #{params[:status].blank? ? 'btn-primary' : 'btn-outline'}" %>
-    <%= link_to 'In Progress', training_assignments_path(status: :in_progress), class: "btn btn-sm #{params[:status] == 'in_progress' ? 'btn-primary' : 'btn-outline'}" %>
-    <%= link_to 'Assigned', training_assignments_path(status: :assigned), class: "btn btn-sm #{params[:status] == 'assigned' ? 'btn-primary' : 'btn-outline'}" %>
-    <%= link_to 'Completed', training_assignments_path(status: :completed), class: "btn btn-sm #{params[:status] == 'completed' ? 'btn-primary' : 'btn-outline'}" %>
+  <!-- Filtres statut -->
+  <div class="flex gap-2 mb-6 overflow-x-auto pb-1">
+    <%= link_to 'Toutes', training_assignments_path,
+          class: "inline-flex items-center py-1.5 px-4 rounded-md text-sm font-medium transition-all whitespace-nowrap #{params[:status].blank? ? 'bg-indigo-600 text-white shadow-sm' : 'bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700'}" %>
+    <%= link_to 'En cours', training_assignments_path(status: :in_progress),
+          class: "inline-flex items-center py-1.5 px-4 rounded-md text-sm font-medium transition-all whitespace-nowrap #{params[:status] == 'in_progress' ? 'bg-indigo-600 text-white shadow-sm' : 'bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700'}" %>
+    <%= link_to 'Assignées', training_assignments_path(status: :assigned),
+          class: "inline-flex items-center py-1.5 px-4 rounded-md text-sm font-medium transition-all whitespace-nowrap #{params[:status] == 'assigned' ? 'bg-indigo-600 text-white shadow-sm' : 'bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700'}" %>
+    <%= link_to 'Terminées', training_assignments_path(status: :completed),
+          class: "inline-flex items-center py-1.5 px-4 rounded-md text-sm font-medium transition-all whitespace-nowrap #{params[:status] == 'completed' ? 'bg-indigo-600 text-white shadow-sm' : 'bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700'}" %>
   </div>
 
   <div class="space-y-4">
     <% @assignments.each do |assignment| %>
-      <div class="card bg-white shadow-sm p-4">
-        <div class="flex justify-between items-start">
-          <div class="flex-1">
-            <h3 class="font-semibold text-lg">
-              <%= link_to assignment.training.title, training_assignment_path(assignment), class: 'hover:text-blue-600' %>
+      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-5">
+        <div class="flex justify-between items-start gap-4">
+          <div class="flex-1 min-w-0">
+            <h3 class="font-semibold text-gray-900 dark:text-gray-100 text-base">
+              <%= link_to assignment.training.title, training_assignment_path(assignment),
+                    class: 'hover:text-indigo-600 dark:hover:text-indigo-400' %>
             </h3>
-            <div class="text-sm text-gray-500 mt-1">
-              <span class="badge badge-outline text-xs"><%= assignment.training.training_type.humanize %></span>
-              <span class="ml-2">Assigned by <%= assignment.assigned_by.full_name %></span>
+            <div class="flex flex-wrap items-center gap-2 mt-1.5 text-sm text-gray-500 dark:text-gray-400">
+              <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-indigo-100 dark:bg-indigo-900/40 text-indigo-800 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-700">
+                <%= type_labels[assignment.training.training_type] || assignment.training.training_type.humanize %>
+              </span>
+              <span>Assignée par <%= assignment.assigned_by.full_name %></span>
               <% if assignment.deadline.present? %>
-                <span class="ml-2 <%= assignment.overdue? ? 'text-red-500 font-medium' : '' %>">
-                  Due <%= assignment.deadline.strftime('%b %d, %Y') %>
-                  <%= ' (overdue)' if assignment.overdue? %>
+                <span class="<%= assignment.overdue? ? 'text-red-600 dark:text-red-400 font-medium' : '' %>">
+                  Échéance : <%= l(assignment.deadline, format: :short) %>
+                  <% if assignment.overdue? %><span class="font-semibold"> · En retard</span><% end %>
                 </span>
               <% end %>
             </div>
           </div>
-          <div class="flex gap-2 items-center ml-4">
-            <span class="badge badge-<%= assignment.status %>"><%= assignment.status.humanize %></span>
-            <%= link_to 'View', training_assignment_path(assignment), class: 'btn btn-sm btn-outline' %>
+          <div class="flex items-center gap-3 flex-shrink-0">
+            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border <%= status_classes[assignment.status] || 'bg-gray-100 text-gray-600' %>">
+              <%= status_labels[assignment.status] || assignment.status.humanize %>
+            </span>
+            <%= link_to 'Voir', training_assignment_path(assignment),
+                  class: 'text-sm text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300 font-medium' %>
           </div>
         </div>
       </div>
     <% end %>
 
     <% if @assignments.empty? %>
-      <p class="text-gray-500 text-center py-8">No training assignments found.</p>
+      <div class="text-center py-12">
+        <svg class="mx-auto h-12 w-12 text-gray-400 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+        </svg>
+        <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">Aucune formation assignée pour le moment.</p>
+      </div>
     <% end %>
   </div>
 </div>
