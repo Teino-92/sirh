@@ -1,10 +1,27 @@
+<%
+  status_classes = {
+    'draft'                    => 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 border-gray-200 dark:border-gray-600',
+    'employee_review_pending'  => 'bg-yellow-100 dark:bg-yellow-900/40 text-yellow-800 dark:text-yellow-300 border-yellow-200 dark:border-yellow-700',
+    'manager_review_pending'   => 'bg-orange-100 dark:bg-orange-900/40 text-orange-800 dark:text-orange-300 border-orange-200 dark:border-orange-700',
+    'completed'                => 'bg-green-100 dark:bg-green-900/40 text-green-800 dark:text-green-300 border-green-200 dark:border-green-700',
+    'cancelled'                => 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 border-gray-200 dark:border-gray-600'
+  }
+  status_labels = {
+    'draft'                   => 'Brouillon',
+    'employee_review_pending' => 'Auto-éval. en attente',
+    'manager_review_pending'  => 'Scoring manager',
+    'completed'               => 'Complétée',
+    'cancelled'               => 'Annulée'
+  }
+%>
+
 <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
   <div class="mb-4">
     <%= link_to '← Évaluations équipe', manager_evaluations_path,
           class: 'text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200' %>
   </div>
 
-  <!-- Header card -->
+  <!-- Header -->
   <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 mb-6">
     <div class="flex justify-between items-start">
       <div class="flex-1">
@@ -14,25 +31,22 @@
         <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">
           Période : <%= l(@evaluation.period_start, format: :long) %> – <%= l(@evaluation.period_end, format: :long) %>
         </p>
-        <%
-          status_classes = {
-            'draft'                    => 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 border-gray-200 dark:border-gray-600',
-            'employee_review_pending'  => 'bg-yellow-100 dark:bg-yellow-900/40 text-yellow-800 dark:text-yellow-300 border-yellow-200 dark:border-yellow-700',
-            'manager_review_pending'   => 'bg-orange-100 dark:bg-orange-900/40 text-orange-800 dark:text-orange-300 border-orange-200 dark:border-orange-700',
-            'completed'                => 'bg-green-100 dark:bg-green-900/40 text-green-800 dark:text-green-300 border-green-200 dark:border-green-700',
-            'cancelled'                => 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 border-gray-200 dark:border-gray-600'
-          }
-          status_labels = {
-            'draft'                   => 'Brouillon',
-            'employee_review_pending' => 'Auto-éval. en attente',
-            'manager_review_pending'  => 'Avis manager attendu',
-            'completed'               => 'Complétée',
-            'cancelled'               => 'Annulée'
-          }
-        %>
-        <span class="mt-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border <%= status_classes[@evaluation.status] || 'bg-gray-100 text-gray-600' %>">
-          <%= status_labels[@evaluation.status] || @evaluation.status.humanize %>
-        </span>
+        <div class="mt-2 flex items-center gap-3 flex-wrap">
+          <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border <%= status_classes[@evaluation.status] %>">
+            <%= status_labels[@evaluation.status] %>
+          </span>
+          <% if @evaluation.completed_at.present? %>
+            <span class="text-xs text-gray-500 dark:text-gray-400">
+              Complétée le <%= l(@evaluation.completed_at.to_date, format: :long) %>
+            </span>
+          <% end %>
+          <% avg = @evaluation.average_score %>
+          <% if avg %>
+            <span class="text-xs font-semibold text-orange-600 dark:text-orange-400">
+              Score moyen : <%= avg %>/5
+            </span>
+          <% end %>
+        </div>
       </div>
       <div class="flex gap-2 ml-4">
         <% unless @evaluation.completed? || @evaluation.cancelled? %>
@@ -45,69 +59,76 @@
               data: { confirm: 'Supprimer cette évaluation ?' } %>
       </div>
     </div>
-
-    <% if @evaluation.completed_at.present? %>
-      <p class="mt-4 text-sm text-gray-500 dark:text-gray-400">
-        Complétée le <%= l(@evaluation.completed_at.to_date, format: :long) %>
-        <% avg = @evaluation.average_score %>
-        <% if avg %>
-          &bull; Score moyen : <strong class="text-gray-700 dark:text-gray-300"><%= avg %>/5</strong>
-        <% end %>
-      </p>
-    <% end %>
   </div>
 
-  <!-- Auto-évaluation -->
-  <% if @evaluation.self_review.present? %>
+  <!-- STATE: draft — launch action -->
+  <% if @evaluation.draft? %>
     <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 mb-4">
-      <h2 class="text-sm font-semibold text-gray-600 dark:text-gray-400 mb-2">Auto-évaluation du collaborateur</h2>
-      <p class="text-gray-900 dark:text-gray-100 whitespace-pre-wrap"><%= @evaluation.self_review %></p>
-    </div>
-  <% end %>
-
-  <!-- Scores critères (si évaluation complétée) -->
-  <% criteria = @evaluation.criteria_scores %>
-  <% if @evaluation.completed? && criteria.any? %>
-    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 mb-4">
-      <div class="flex items-center justify-between mb-4">
-        <h2 class="text-sm font-semibold text-gray-700 dark:text-gray-300">Critères d'évaluation</h2>
-        <% avg = @evaluation.average_score %>
-        <% if avg %>
-          <span class="text-sm font-semibold text-orange-600 dark:text-orange-400">Moyenne : <%= avg %>/5</span>
-        <% end %>
-      </div>
-      <div class="space-y-3">
-        <% criteria.each do |criterion| %>
-          <div class="flex items-center gap-3">
-            <span class="flex-1 text-sm text-gray-700 dark:text-gray-300"><%= criterion["name"] %></span>
-            <div class="flex items-center gap-1">
-              <% (1..5).each do |i| %>
-                <% filled = i <= criterion["score"] %>
-                <div class="w-6 h-6 rounded-full border-2 flex items-center justify-center text-xs font-bold
-                  <%= filled ? 'bg-orange-500 border-orange-500 text-white' : 'border-gray-300 dark:border-gray-600 text-gray-400' %>">
-                  <%= i %>
-                </div>
-              <% end %>
-              <span class="ml-2 text-sm font-semibold text-gray-700 dark:text-gray-300"><%= criterion["score"] %>/5</span>
-            </div>
-          </div>
-        <% end %>
+      <div class="flex items-start gap-4">
+        <div class="flex-shrink-0 w-10 h-10 rounded-full bg-orange-100 dark:bg-orange-900/40 flex items-center justify-center">
+          <svg class="w-5 h-5 text-orange-600 dark:text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+          </svg>
+        </div>
+        <div class="flex-1">
+          <h2 class="text-base font-semibold text-gray-900 dark:text-gray-100 mb-1">Évaluation en brouillon</h2>
+          <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">
+            Lancez l'évaluation pour accéder au formulaire de notation. Vous pourrez saisir vos critères et scores directement.
+          </p>
+          <%= button_to 'Lancer l\'évaluation', launch_manager_evaluation_path(@evaluation),
+                method: :patch,
+                class: 'inline-flex items-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-semibold text-white bg-orange-600 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 transition-all cursor-pointer' %>
+        </div>
       </div>
     </div>
-  <% end %>
 
-  <!-- Avis manager -->
-  <% if @evaluation.manager_review_pending? %>
+  <!-- STATE: employee_review_pending — waiting + shortcut -->
+  <% elsif @evaluation.employee_review_pending? %>
     <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 mb-4">
-      <h2 class="text-lg font-semibold mb-4 text-gray-900 dark:text-gray-100">Soumettre votre avis manager</h2>
+      <div class="flex items-start gap-4">
+        <div class="flex-shrink-0 w-10 h-10 rounded-full bg-yellow-100 dark:bg-yellow-900/40 flex items-center justify-center">
+          <svg class="w-5 h-5 text-yellow-600 dark:text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          </svg>
+        </div>
+        <div class="flex-1">
+          <h2 class="text-base font-semibold text-gray-900 dark:text-gray-100 mb-1">En attente de l'auto-évaluation</h2>
+          <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">
+            <%= @evaluation.employee.full_name %> doit soumettre son auto-évaluation avant que vous puissiez noter.
+            Vous pouvez également passer directement au scoring.
+          </p>
+          <%= button_to 'Passer au scoring manager', launch_manager_evaluation_path(@evaluation),
+                method: :patch,
+                class: 'inline-flex items-center py-1.5 px-3 border border-gray-300 dark:border-gray-600 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 transition-all cursor-pointer' %>
+        </div>
+      </div>
+    </div>
+    <% if @evaluation.self_review.present? %>
+      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 mb-4">
+        <h2 class="text-sm font-semibold text-gray-600 dark:text-gray-400 mb-2">Auto-évaluation du collaborateur</h2>
+        <p class="text-gray-900 dark:text-gray-100 whitespace-pre-wrap"><%= @evaluation.self_review %></p>
+      </div>
+    <% end %>
+
+  <!-- STATE: manager_review_pending — scoring form -->
+  <% elsif @evaluation.manager_review_pending? %>
+    <% if @evaluation.self_review.present? %>
+      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 mb-4">
+        <h2 class="text-sm font-semibold text-gray-600 dark:text-gray-400 mb-2">Auto-évaluation du collaborateur</h2>
+        <p class="text-gray-900 dark:text-gray-100 whitespace-pre-wrap"><%= @evaluation.self_review %></p>
+      </div>
+    <% end %>
+
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 mb-4">
+      <h2 class="text-lg font-semibold mb-5 text-gray-900 dark:text-gray-100">Évaluation du collaborateur</h2>
       <%= form_with url: submit_manager_review_manager_evaluation_path(@evaluation), method: :patch do |f| %>
 
         <!-- Critères de notation -->
         <div class="mb-6">
           <div class="flex items-center justify-between mb-3">
             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-              Critères d'évaluation
-              <span class="text-xs font-normal text-gray-500 dark:text-gray-400 ml-1">(note de 0 à 5)</span>
+              Critères &amp; notes
+              <span class="text-xs font-normal text-gray-500 dark:text-gray-400 ml-1">(0 = non évalué, 5 = excellent)</span>
             </label>
             <button type="button" id="add-criterion"
               class="text-xs text-orange-600 dark:text-orange-400 hover:underline font-medium">
@@ -115,18 +136,17 @@
             </button>
           </div>
           <div id="criteria-list" class="space-y-2">
-            <!-- Default criteria rows -->
             <% [
               'Qualité du travail',
               'Autonomie',
-              'Esprit d\'équipe',
+              "Esprit d'équipe",
               'Communication',
               'Atteinte des objectifs'
             ].each_with_index do |name, idx| %>
               <div class="criterion-row flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700">
                 <input type="text" name="criteria_scores[<%= idx %>][name]" value="<%= name %>"
                   placeholder="Nom du critère"
-                  class="flex-1 text-sm rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:border-orange-500 focus:ring-orange-500">
+                  class="flex-1 min-w-0 text-sm rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:border-orange-500 focus:ring-orange-500">
                 <div class="flex items-center gap-1 flex-shrink-0">
                   <% (1..5).each do |score| %>
                     <label class="cursor-pointer">
@@ -135,46 +155,77 @@
                       <div class="w-7 h-7 rounded-full border-2 border-gray-300 dark:border-gray-600
                         peer-checked:bg-orange-500 peer-checked:border-orange-500 peer-checked:text-white
                         text-gray-400 dark:text-gray-500 flex items-center justify-center text-xs font-bold
-                        hover:border-orange-400 transition-colors">
+                        hover:border-orange-400 transition-colors select-none">
                         <%= score %>
                       </div>
                     </label>
                   <% end %>
                 </div>
-                <button type="button" class="remove-criterion text-gray-400 hover:text-red-500 dark:hover:text-red-400 text-lg leading-none flex-shrink-0">&times;</button>
+                <button type="button" class="remove-criterion text-gray-400 hover:text-red-500 dark:hover:text-red-400 text-xl leading-none flex-shrink-0 px-1">&times;</button>
               </div>
             <% end %>
           </div>
         </div>
 
         <!-- Avis texte -->
-        <div class="mb-4">
-          <%= label_tag :manager_review, 'Avis général', class: 'block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1' %>
+        <div class="mb-5">
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            Avis général
+          </label>
           <%= text_area_tag :manager_review, nil, rows: 5, name: 'manager_review',
                 class: 'block w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 shadow-sm focus:border-orange-500 focus:ring-orange-500 text-sm',
                 placeholder: 'Votre appréciation globale du collaborateur…', required: true %>
         </div>
 
-        <%= f.submit 'Soumettre et clôturer',
-              class: 'inline-flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-semibold text-white bg-orange-600 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 transition-all cursor-pointer' %>
+        <%= f.submit 'Valider l\'évaluation',
+              class: 'inline-flex justify-center py-2 px-5 border border-transparent rounded-md shadow-sm text-sm font-semibold text-white bg-orange-600 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 transition-all cursor-pointer' %>
       <% end %>
     </div>
-  <% elsif @evaluation.manager_review.present? %>
-    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 mb-4">
-      <h2 class="text-sm font-semibold text-gray-600 dark:text-gray-400 mb-2">Avis manager</h2>
-      <p class="text-gray-900 dark:text-gray-100 whitespace-pre-wrap"><%= @evaluation.manager_review %></p>
-    </div>
-  <% end %>
 
-  <!-- Clôture -->
-  <% if !@evaluation.completed? && !@evaluation.cancelled? && @evaluation.fully_reviewed? %>
-    <div class="bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-200 dark:border-green-700 p-6">
-      <p class="text-green-700 dark:text-green-400 font-medium mb-3">Les deux parties ont soumis leurs avis.</p>
-      <%= button_to 'Clôturer l\'évaluation', complete_manager_evaluation_path(@evaluation),
-            method: :patch,
-            class: 'inline-flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-semibold text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-all cursor-pointer',
-            data: { confirm: 'Clôturer définitivement cette évaluation ?' } %>
-    </div>
+  <!-- STATE: completed — summary -->
+  <% elsif @evaluation.completed? %>
+    <% criteria = @evaluation.criteria_scores %>
+    <% if criteria.any? %>
+      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 mb-4">
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="text-sm font-semibold text-gray-700 dark:text-gray-300">Critères d'évaluation</h2>
+          <% avg = @evaluation.average_score %>
+          <% if avg %>
+            <span class="text-sm font-semibold text-orange-600 dark:text-orange-400">Moyenne : <%= avg %>/5</span>
+          <% end %>
+        </div>
+        <div class="space-y-3">
+          <% criteria.each do |criterion| %>
+            <div class="flex items-center gap-3">
+              <span class="flex-1 text-sm text-gray-700 dark:text-gray-300"><%= criterion["name"] %></span>
+              <div class="flex items-center gap-1">
+                <% (1..5).each do |i| %>
+                  <div class="w-7 h-7 rounded-full border-2 flex items-center justify-center text-xs font-bold
+                    <%= i <= criterion["score"] ? 'bg-orange-500 border-orange-500 text-white' : 'border-gray-300 dark:border-gray-600 text-gray-400 dark:text-gray-500' %>">
+                    <%= i %>
+                  </div>
+                <% end %>
+                <span class="ml-1 text-sm font-semibold text-gray-700 dark:text-gray-300 w-8 text-right"><%= criterion["score"] %>/5</span>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+
+    <% if @evaluation.self_review.present? %>
+      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 mb-4">
+        <h2 class="text-sm font-semibold text-gray-600 dark:text-gray-400 mb-2">Auto-évaluation</h2>
+        <p class="text-gray-900 dark:text-gray-100 whitespace-pre-wrap"><%= @evaluation.self_review %></p>
+      </div>
+    <% end %>
+
+    <% if @evaluation.manager_review.present? %>
+      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 mb-4">
+        <h2 class="text-sm font-semibold text-gray-600 dark:text-gray-400 mb-2">Avis manager</h2>
+        <p class="text-gray-900 dark:text-gray-100 whitespace-pre-wrap"><%= @evaluation.manager_review %></p>
+      </div>
+    <% end %>
   <% end %>
 </div>
 
@@ -188,23 +239,23 @@
       row.className = 'criterion-row flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700';
       row.innerHTML = `
         <input type="text" name="criteria_scores[${idx}][name]" placeholder="Nom du critère"
-          class="flex-1 text-sm rounded-md border-gray-300 bg-white text-gray-900 focus:border-orange-500 focus:ring-orange-500">
+          class="flex-1 min-w-0 text-sm rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:border-orange-500 focus:ring-orange-500">
         <div class="flex items-center gap-1 flex-shrink-0">
           ${[1,2,3,4,5].map(score => `
             <label class="cursor-pointer">
               <input type="radio" name="criteria_scores[${idx}][score]" value="${score}" class="sr-only peer">
-              <div class="w-7 h-7 rounded-full border-2 border-gray-300
+              <div class="w-7 h-7 rounded-full border-2 border-gray-300 dark:border-gray-600
                 peer-checked:bg-orange-500 peer-checked:border-orange-500 peer-checked:text-white
-                text-gray-400 flex items-center justify-center text-xs font-bold hover:border-orange-400 transition-colors">
+                text-gray-400 dark:text-gray-500 flex items-center justify-center text-xs font-bold
+                hover:border-orange-400 transition-colors select-none">
                 ${score}
               </div>
             </label>
           `).join('')}
         </div>
-        <button type="button" class="remove-criterion text-gray-400 hover:text-red-500 text-lg leading-none flex-shrink-0">&times;</button>
+        <button type="button" class="remove-criterion text-gray-400 hover:text-red-500 dark:hover:text-red-400 text-xl leading-none flex-shrink-0 px-1">&times;</button>
       `;
       document.getElementById('criteria-list').appendChild(row);
-      row.querySelector('.remove-criterion').addEventListener('click', () => row.remove());
     });
 
     document.getElementById('criteria-list')?.addEventListener('click', function(e) {

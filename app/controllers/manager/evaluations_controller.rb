@@ -1,7 +1,7 @@
 module Manager
   class EvaluationsController < ApplicationController
     before_action :authenticate_employee!
-    before_action :set_evaluation, only: [:show, :edit, :update, :destroy, :complete, :submit_manager_review]
+    before_action :set_evaluation, only: [:show, :edit, :update, :destroy, :complete, :submit_manager_review, :launch]
 
     def index
       @evaluations = policy_scope(Evaluation)
@@ -49,6 +49,16 @@ module Manager
     def destroy
       @evaluation.destroy
       redirect_to manager_evaluations_path, notice: 'Évaluation supprimée'
+    end
+
+    def launch
+      authorize @evaluation, :update?
+      unless @evaluation.draft? || @evaluation.employee_review_pending?
+        redirect_to manager_evaluation_path(@evaluation), alert: 'Cette évaluation ne peut pas être relancée'
+        return
+      end
+      @evaluation.update!(status: :manager_review_pending)
+      redirect_to manager_evaluation_path(@evaluation), notice: 'Évaluation lancée — vous pouvez maintenant noter le collaborateur'
     end
 
     def complete

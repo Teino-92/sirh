@@ -83,6 +83,7 @@ Rails.application.routes.draw do
       member do
         patch :complete
         patch :submit_manager_review
+        patch :launch
       end
     end
     resources :trainings do
