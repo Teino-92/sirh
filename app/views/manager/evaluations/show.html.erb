@@ -49,8 +49,9 @@
     <% if @evaluation.completed_at.present? %>
       <p class="mt-4 text-sm text-gray-500 dark:text-gray-400">
         Complétée le <%= l(@evaluation.completed_at.to_date, format: :long) %>
-        <% if @evaluation.score.present? %>
-          &bull; Score : <%= @evaluation.score.humanize %>
+        <% avg = @evaluation.average_score %>
+        <% if avg %>
+          &bull; Score moyen : <strong class="text-gray-700 dark:text-gray-300"><%= avg %>/5</strong>
         <% end %>
       </p>
     <% end %>
@@ -64,17 +65,96 @@
     </div>
   <% end %>
 
-  <!-- Manager review -->
+  <!-- Scores critères (si évaluation complétée) -->
+  <% criteria = @evaluation.criteria_scores %>
+  <% if @evaluation.completed? && criteria.any? %>
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 mb-4">
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-sm font-semibold text-gray-700 dark:text-gray-300">Critères d'évaluation</h2>
+        <% avg = @evaluation.average_score %>
+        <% if avg %>
+          <span class="text-sm font-semibold text-orange-600 dark:text-orange-400">Moyenne : <%= avg %>/5</span>
+        <% end %>
+      </div>
+      <div class="space-y-3">
+        <% criteria.each do |criterion| %>
+          <div class="flex items-center gap-3">
+            <span class="flex-1 text-sm text-gray-700 dark:text-gray-300"><%= criterion["name"] %></span>
+            <div class="flex items-center gap-1">
+              <% (1..5).each do |i| %>
+                <% filled = i <= criterion["score"] %>
+                <div class="w-6 h-6 rounded-full border-2 flex items-center justify-center text-xs font-bold
+                  <%= filled ? 'bg-orange-500 border-orange-500 text-white' : 'border-gray-300 dark:border-gray-600 text-gray-400' %>">
+                  <%= i %>
+                </div>
+              <% end %>
+              <span class="ml-2 text-sm font-semibold text-gray-700 dark:text-gray-300"><%= criterion["score"] %>/5</span>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+
+  <!-- Avis manager -->
   <% if @evaluation.manager_review_pending? %>
     <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 mb-4">
       <h2 class="text-lg font-semibold mb-4 text-gray-900 dark:text-gray-100">Soumettre votre avis manager</h2>
       <%= form_with url: submit_manager_review_manager_evaluation_path(@evaluation), method: :patch do |f| %>
+
+        <!-- Critères de notation -->
+        <div class="mb-6">
+          <div class="flex items-center justify-between mb-3">
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+              Critères d'évaluation
+              <span class="text-xs font-normal text-gray-500 dark:text-gray-400 ml-1">(note de 0 à 5)</span>
+            </label>
+            <button type="button" id="add-criterion"
+              class="text-xs text-orange-600 dark:text-orange-400 hover:underline font-medium">
+              + Ajouter un critère
+            </button>
+          </div>
+          <div id="criteria-list" class="space-y-2">
+            <!-- Default criteria rows -->
+            <% [
+              'Qualité du travail',
+              'Autonomie',
+              'Esprit d\'équipe',
+              'Communication',
+              'Atteinte des objectifs'
+            ].each_with_index do |name, idx| %>
+              <div class="criterion-row flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700">
+                <input type="text" name="criteria_scores[<%= idx %>][name]" value="<%= name %>"
+                  placeholder="Nom du critère"
+                  class="flex-1 text-sm rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:border-orange-500 focus:ring-orange-500">
+                <div class="flex items-center gap-1 flex-shrink-0">
+                  <% (1..5).each do |score| %>
+                    <label class="cursor-pointer">
+                      <input type="radio" name="criteria_scores[<%= idx %>][score]" value="<%= score %>"
+                        class="sr-only peer" <%= score == 3 ? 'checked' : '' %>>
+                      <div class="w-7 h-7 rounded-full border-2 border-gray-300 dark:border-gray-600
+                        peer-checked:bg-orange-500 peer-checked:border-orange-500 peer-checked:text-white
+                        text-gray-400 dark:text-gray-500 flex items-center justify-center text-xs font-bold
+                        hover:border-orange-400 transition-colors">
+                        <%= score %>
+                      </div>
+                    </label>
+                  <% end %>
+                </div>
+                <button type="button" class="remove-criterion text-gray-400 hover:text-red-500 dark:hover:text-red-400 text-lg leading-none flex-shrink-0">&times;</button>
+              </div>
+            <% end %>
+          </div>
+        </div>
+
+        <!-- Avis texte -->
         <div class="mb-4">
-          <%= label_tag :manager_review, 'Avis manager', class: 'block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1' %>
+          <%= label_tag :manager_review, 'Avis général', class: 'block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1' %>
           <%= text_area_tag :manager_review, nil, rows: 5, name: 'manager_review',
                 class: 'block w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 shadow-sm focus:border-orange-500 focus:ring-orange-500 text-sm',
-                placeholder: 'Votre appréciation du collaborateur…', required: true %>
+                placeholder: 'Votre appréciation globale du collaborateur…', required: true %>
         </div>
+
         <%= f.submit 'Soumettre et clôturer',
               class: 'inline-flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-semibold text-white bg-orange-600 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 transition-all cursor-pointer' %>
       <% end %>
@@ -97,3 +177,40 @@
     </div>
   <% end %>
 </div>
+
+<script>
+  (function() {
+    let criterionCount = document.querySelectorAll('.criterion-row').length;
+
+    document.getElementById('add-criterion')?.addEventListener('click', function() {
+      const idx = criterionCount++;
+      const row = document.createElement('div');
+      row.className = 'criterion-row flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700';
+      row.innerHTML = `
+        <input type="text" name="criteria_scores[${idx}][name]" placeholder="Nom du critère"
+          class="flex-1 text-sm rounded-md border-gray-300 bg-white text-gray-900 focus:border-orange-500 focus:ring-orange-500">
+        <div class="flex items-center gap-1 flex-shrink-0">
+          ${[1,2,3,4,5].map(score => `
+            <label class="cursor-pointer">
+              <input type="radio" name="criteria_scores[${idx}][score]" value="${score}" class="sr-only peer">
+              <div class="w-7 h-7 rounded-full border-2 border-gray-300
+                peer-checked:bg-orange-500 peer-checked:border-orange-500 peer-checked:text-white
+                text-gray-400 flex items-center justify-center text-xs font-bold hover:border-orange-400 transition-colors">
+                ${score}
+              </div>
+            </label>
+          `).join('')}
+        </div>
+        <button type="button" class="remove-criterion text-gray-400 hover:text-red-500 text-lg leading-none flex-shrink-0">&times;</button>
+      `;
+      document.getElementById('criteria-list').appendChild(row);
+      row.querySelector('.remove-criterion').addEventListener('click', () => row.remove());
+    });
+
+    document.getElementById('criteria-list')?.addEventListener('click', function(e) {
+      if (e.target.classList.contains('remove-criterion')) {
+        e.target.closest('.criterion-row').remove();
+      }
+    });
+  })();
+</script>

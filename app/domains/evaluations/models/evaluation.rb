@@ -77,6 +77,27 @@ class Evaluation < ApplicationRecord
     self_review_submitted? && manager_review_submitted?
   end
 
+  # Criteria scores — stored in metadata[:criteria_scores]
+  # Format: [{ "name" => "Qualité du travail", "score" => 4 }, ...]
+  def criteria_scores
+    (metadata["criteria_scores"] || []).map do |c|
+      { "name" => c["name"].to_s, "score" => c["score"].to_i }
+    end
+  end
+
+  def criteria_scores=(entries)
+    valid = Array(entries)
+      .reject { |c| c["name"].to_s.strip.blank? }
+      .map { |c| { "name" => c["name"].to_s.strip, "score" => c["score"].to_i.clamp(0, 5) } }
+    self.metadata = metadata.merge("criteria_scores" => valid)
+  end
+
+  def average_score
+    scores = criteria_scores.map { |c| c["score"] }
+    return nil if scores.empty?
+    (scores.sum.to_f / scores.size).round(1)
+  end
+
   private
 
   def period_end_after_start

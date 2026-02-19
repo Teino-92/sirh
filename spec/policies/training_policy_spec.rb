@@ -65,8 +65,8 @@ RSpec.describe TrainingPolicy, type: :policy do
       expect(subject).to permit(admin, training)
     end
 
-    it 'denies manager' do
-      expect(subject).not_to permit(manager, training)
+    it 'permits manager' do
+      expect(subject).to permit(manager, training)
     end
 
     it 'denies employee' do
@@ -79,8 +79,8 @@ RSpec.describe TrainingPolicy, type: :policy do
       expect(subject).to permit(hr, training)
     end
 
-    it 'denies manager' do
-      expect(subject).not_to permit(manager, training)
+    it 'permits manager' do
+      expect(subject).to permit(manager, training)
     end
 
     it 'denies employee' do

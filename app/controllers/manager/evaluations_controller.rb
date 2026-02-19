@@ -61,6 +61,8 @@ module Manager
     def submit_manager_review
       authorize @evaluation, :submit_manager_review?
       @evaluation.transaction do
+        criteria = params[:criteria_scores]&.values || []
+        @evaluation.criteria_scores = criteria if criteria.any?
         @evaluation.update!(manager_review: params[:manager_review])
         @evaluation.complete!
       end

@@ -14,7 +14,7 @@ class TrainingPolicy < ApplicationPolicy
   end
 
   def update?
-    user.hr_or_admin?
+    user.manager? || user.hr_or_admin?
   end
 
   def destroy?
@@ -22,6 +22,6 @@ class TrainingPolicy < ApplicationPolicy
   end
 
   def archive?
-    user.hr_or_admin?
+    user.manager? || user.hr_or_admin?
   end
 end
