@@ -16,16 +16,18 @@
         </p>
         <%
           status_classes = {
-            'pending'    => 'bg-yellow-100 dark:bg-yellow-900/40 text-yellow-800 dark:text-yellow-300 border-yellow-200 dark:border-yellow-700',
-            'active'     => 'bg-blue-100 dark:bg-blue-900/40 text-blue-800 dark:text-blue-300 border-blue-200 dark:border-blue-700',
-            'completed'  => 'bg-green-100 dark:bg-green-900/40 text-green-800 dark:text-green-300 border-green-200 dark:border-green-700',
-            'cancelled'  => 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 border-gray-200 dark:border-gray-600'
+            'draft'                    => 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 border-gray-200 dark:border-gray-600',
+            'employee_review_pending'  => 'bg-yellow-100 dark:bg-yellow-900/40 text-yellow-800 dark:text-yellow-300 border-yellow-200 dark:border-yellow-700',
+            'manager_review_pending'   => 'bg-orange-100 dark:bg-orange-900/40 text-orange-800 dark:text-orange-300 border-orange-200 dark:border-orange-700',
+            'completed'                => 'bg-green-100 dark:bg-green-900/40 text-green-800 dark:text-green-300 border-green-200 dark:border-green-700',
+            'cancelled'                => 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 border-gray-200 dark:border-gray-600'
           }
           status_labels = {
-            'pending'   => 'En attente',
-            'active'    => 'En cours',
-            'completed' => 'Complétée',
-            'cancelled' => 'Annulée'
+            'draft'                   => 'Brouillon',
+            'employee_review_pending' => 'Auto-éval. en attente',
+            'manager_review_pending'  => 'Avis manager attendu',
+            'completed'               => 'Complétée',
+            'cancelled'               => 'Annulée'
           }
         %>
         <span class="mt-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border <%= status_classes[@evaluation.status] || 'bg-gray-100 text-gray-600' %>">
@@ -85,7 +87,7 @@
   <% end %>
 
   <!-- Clôture -->
-  <% if @evaluation.active? && @evaluation.fully_reviewed? %>
+  <% if !@evaluation.completed? && !@evaluation.cancelled? && @evaluation.fully_reviewed? %>
     <div class="bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-200 dark:border-green-700 p-6">
       <p class="text-green-700 dark:text-green-400 font-medium mb-3">Les deux parties ont soumis leurs avis.</p>
       <%= button_to 'Clôturer l\'évaluation', complete_manager_evaluation_path(@evaluation),
