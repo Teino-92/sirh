@@ -30,11 +30,11 @@ class LeaveRequestPolicy < ApplicationPolicy
   end
 
   def approve?
-    manager_of_owner? || hr_admin?
+    hr_admin? || (manager_of_owner? && managers_can_approve?)
   end
 
   def reject?
-    manager_of_owner? || hr_admin?
+    hr_admin? || (manager_of_owner? && managers_can_approve?)
   end
 
   def reject_form?
@@ -78,5 +78,10 @@ class LeaveRequestPolicy < ApplicationPolicy
 
   def hr_admin?
     user.hr_or_admin?
+  end
+
+  def managers_can_approve?
+    value = record.employee.organization.group_policies.fetch('manager_can_approve_leave', true)
+    ActiveRecord::Type::Boolean.new.cast(value) != false
   end
 end

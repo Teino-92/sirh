@@ -1,3 +1,9 @@
 @import "tailwindcss";
 
 @variant dark (.dark &);
+
+/* SortableJS drag classes — cannot use Tailwind JIT classes for these */
+.sortable-ghost  { opacity: 0.25; }
+.sortable-drag   { opacity: 1; cursor: grabbing; }
+
+.dashboard-card--hidden { display: none !important; }

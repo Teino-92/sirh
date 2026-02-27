@@ -13,26 +13,31 @@ module Manager
     before_action :authorize_manager!
 
     def index
-      # Page centrale des exports avec formulaires de filtres
+      authorize :exports, policy_class: ExportPolicy
     end
 
     def time_entries
+      authorize :exports, policy_class: ExportPolicy
       csv_export(Exports::TimeEntriesCsvExporter)
     end
 
     def absences
+      authorize :exports, policy_class: ExportPolicy
       csv_export(Exports::AbsencesCsvExporter)
     end
 
     def one_on_ones
+      authorize :exports, policy_class: ExportPolicy
       csv_export(Exports::OneOnOnesCsvExporter)
     end
 
     def evaluations
+      authorize :exports, policy_class: ExportPolicy
       csv_export(Exports::EvaluationsCsvExporter)
     end
 
     def trainings
+      authorize :exports, policy_class: ExportPolicy
       csv_export(Exports::TrainingsCsvExporter)
     end
 

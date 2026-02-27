@@ -12,7 +12,9 @@ Rails.application.routes.draw do
 
   # Web UI - Responsive (works great on mobile AND desktop)
   resource :dashboard, only: [:show], controller: 'dashboard'
-  resource :profile, only: [:show, :edit, :update], controller: 'profile'
+  resource :profile, only: [:show, :edit, :update], controller: 'profile' do
+    patch :dashboard_layout, on: :member
+  end
 
   resources :time_entries, only: [:index] do
     collection do
@@ -55,6 +57,8 @@ Rails.application.routes.draw do
       patch :complete
     end
   end
+
+  resources :onboardings, only: [:show]
 
   resources :notifications, only: [:index] do
     member do
@@ -107,6 +111,12 @@ Rails.application.routes.draw do
       end
     end
     get 'team_schedules', to: 'team_schedules#index'
+
+    # Onboarding
+    resources :onboardings do
+      resources :onboarding_tasks,   only: [:update], shallow: true
+      resources :onboarding_reviews, only: [:new, :create], shallow: true
+    end
 
     # CSV Exports
     resources :exports, only: [:index] do
@@ -171,6 +181,16 @@ Rails.application.routes.draw do
     root to: 'employees#index'
     resources :employees
     resource :organization, only: [:show, :edit, :update]
+    resources :onboarding_templates do
+      resources :onboarding_template_tasks, only: [:new, :create, :edit, :update, :destroy],
+                                            shallow: true
+    end
+    resource :group_policies, only: [:edit, :update] do
+      collection do
+        post :preview
+      end
+    end
+    resource :payroll, only: [:show], controller: 'payroll'
   end
 
   # Default root for non-authenticated users

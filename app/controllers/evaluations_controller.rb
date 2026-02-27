@@ -22,7 +22,7 @@ class EvaluationsController < ApplicationController
   private
 
   def set_evaluation
-    @evaluation = Evaluation.find(params[:id])
+    @evaluation = current_employee.organization.evaluations.find(params[:id])
     authorize @evaluation
   end
 end

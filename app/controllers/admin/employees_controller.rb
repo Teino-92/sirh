@@ -5,7 +5,8 @@ module Admin
     before_action :set_employee, only: [:show, :edit, :update, :destroy]
 
     def index
-      @employees = Employee.includes(:organization, :manager, avatar_attachment: :blob)
+      @employees = current_employee.organization.employees
+                                   .includes(:manager, avatar_attachment: :blob)
 
       # Search functionality
       if params[:q].present?
@@ -83,11 +84,11 @@ module Admin
     private
 
     def set_employee
-      @employee = Employee.find(params[:id])
+      @employee = current_employee.organization.employees.find(params[:id])
     end
 
     def employee_params
-      params.require(:employee).permit(
+      permitted = params.require(:employee).permit(
         :email,
         :password,
         :password_confirmation,
@@ -101,8 +102,25 @@ module Admin
         :job_title,
         :manager_id,
         :avatar,
+        :gross_salary_eur,
+        :variable_pay_eur,
+        :employer_charges_rate,
         settings: [:cadre]
       )
+
+      # Virtual euro fields → convert to cents for storage
+      if permitted[:gross_salary_eur].present?
+        permitted[:gross_salary_cents] = (permitted.delete(:gross_salary_eur).to_f * 100).round
+      else
+        permitted.delete(:gross_salary_eur)
+      end
+      if permitted[:variable_pay_eur].present?
+        permitted[:variable_pay_cents] = (permitted.delete(:variable_pay_eur).to_f * 100).round
+      else
+        permitted.delete(:variable_pay_eur)
+      end
+
+      permitted
     end
   end
 end

@@ -16,7 +16,7 @@ module Exports
       records = OneOnOne
                   .where(employee_id: member_ids)
                   .where('scheduled_at BETWEEN ? AND ?', start_date.beginning_of_day, end_date.end_of_day)
-                  .includes(:employee, :manager)
+                  .includes(:employee, :manager, :action_items)
                   .order(:scheduled_at)
 
       if filters[:status].present?

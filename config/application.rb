@@ -46,6 +46,7 @@ module EasyRh
     config.eager_load_paths += Dir[Rails.root.join('app', 'domains', '*', 'models')]
     config.eager_load_paths += Dir[Rails.root.join('app', 'domains')]
 
+
     # API-only mode for v1 (keeping views for future admin panel)
     config.api_only = false
 

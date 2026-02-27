@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2026_02_17_085828) do
+ActiveRecord::Schema[7.1].define(version: 2026_02_19_223419) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -87,6 +87,9 @@ ActiveRecord::Schema[7.1].define(version: 2026_02_17_085828) do
     t.string "job_title"
     t.date "end_date"
     t.jsonb "contract_overrides", default: {}, null: false
+    t.integer "gross_salary_cents", default: 0, null: false
+    t.integer "variable_pay_cents", default: 0, null: false
+    t.decimal "employer_charges_rate", precision: 5, scale: 4, default: "1.45", null: false
     t.index ["department"], name: "index_employees_on_department"
     t.index ["email"], name: "index_employees_on_email", unique: true
     t.index ["manager_id", "organization_id"], name: "idx_employees_manager_org"
@@ -241,6 +244,87 @@ ActiveRecord::Schema[7.1].define(version: 2026_02_17_085828) do
     t.index ["owner_type", "owner_id", "status"], name: "idx_objectives_owner_status"
     t.index ["owner_type", "owner_id"], name: "index_objectives_on_owner"
     t.index ["status"], name: "index_objectives_on_status"
+  end
+
+  create_table "onboarding_reviews", force: :cascade do |t|
+    t.bigint "onboarding_id", null: false
+    t.bigint "organization_id", null: false
+    t.string "reviewer_type", null: false
+    t.integer "review_day", default: 30, null: false
+    t.jsonb "employee_feedback_json", default: {}, null: false
+    t.jsonb "manager_feedback_json", default: {}, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["onboarding_id", "reviewer_type", "review_day"], name: "idx_onboarding_reviews_unique", unique: true
+    t.index ["organization_id"], name: "index_onboarding_reviews_on_organization_id"
+  end
+
+  create_table "onboarding_tasks", force: :cascade do |t|
+    t.bigint "onboarding_id", null: false
+    t.bigint "organization_id", null: false
+    t.string "title", null: false
+    t.text "description"
+    t.string "assigned_to_role", null: false
+    t.bigint "assigned_to_id"
+    t.date "due_date", null: false
+    t.string "status", default: "pending", null: false
+    t.string "task_type", default: "manual", null: false
+    t.datetime "completed_at"
+    t.bigint "completed_by_id"
+    t.jsonb "metadata", default: {}, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["assigned_to_id", "due_date"], name: "idx_onboarding_tasks_assignee_due"
+    t.index ["onboarding_id", "status"], name: "idx_onboarding_tasks_onboarding_status"
+    t.index ["organization_id", "due_date"], name: "idx_onboarding_tasks_org_pending_due", where: "((status)::text = 'pending'::text)"
+    t.index ["organization_id"], name: "index_onboarding_tasks_on_organization_id"
+  end
+
+  create_table "onboarding_template_tasks", force: :cascade do |t|
+    t.bigint "onboarding_template_id", null: false
+    t.bigint "organization_id", null: false
+    t.string "title", null: false
+    t.text "description"
+    t.string "assigned_to_role", null: false
+    t.integer "due_day_offset", null: false
+    t.string "task_type", default: "manual", null: false
+    t.integer "position", default: 0, null: false
+    t.jsonb "metadata", default: {}, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["onboarding_template_id", "position"], name: "idx_template_tasks_template_position"
+    t.index ["organization_id"], name: "index_onboarding_template_tasks_on_organization_id"
+  end
+
+  create_table "onboarding_templates", force: :cascade do |t|
+    t.bigint "organization_id", null: false
+    t.string "name", null: false
+    t.text "description"
+    t.integer "duration_days", default: 90, null: false
+    t.boolean "active", default: true, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["organization_id", "active"], name: "idx_onboarding_templates_org_active"
+    t.index ["organization_id"], name: "index_onboarding_templates_on_organization_id"
+  end
+
+  create_table "onboardings", force: :cascade do |t|
+    t.bigint "organization_id", null: false
+    t.bigint "employee_id", null: false
+    t.bigint "manager_id", null: false
+    t.bigint "onboarding_template_id", null: false
+    t.date "start_date", null: false
+    t.date "end_date", null: false
+    t.string "status", default: "active", null: false
+    t.text "notes"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "progress_percentage_cache", default: 0, null: false
+    t.integer "integration_score_cache", default: 0, null: false
+    t.index ["employee_id"], name: "idx_onboardings_employee_active", unique: true, where: "((status)::text = 'active'::text)"
+    t.index ["manager_id", "status"], name: "idx_onboardings_manager_status"
+    t.index ["organization_id", "status"], name: "idx_onboardings_org_status"
+    t.index ["organization_id"], name: "index_onboardings_on_organization_id"
   end
 
   create_table "one_on_one_objectives", force: :cascade do |t|
@@ -531,6 +615,19 @@ ActiveRecord::Schema[7.1].define(version: 2026_02_17_085828) do
   add_foreign_key "objectives", "employees", column: "created_by_id"
   add_foreign_key "objectives", "employees", column: "manager_id"
   add_foreign_key "objectives", "organizations"
+  add_foreign_key "onboarding_reviews", "onboardings"
+  add_foreign_key "onboarding_reviews", "organizations"
+  add_foreign_key "onboarding_tasks", "employees", column: "assigned_to_id"
+  add_foreign_key "onboarding_tasks", "employees", column: "completed_by_id"
+  add_foreign_key "onboarding_tasks", "onboardings"
+  add_foreign_key "onboarding_tasks", "organizations"
+  add_foreign_key "onboarding_template_tasks", "onboarding_templates"
+  add_foreign_key "onboarding_template_tasks", "organizations"
+  add_foreign_key "onboarding_templates", "organizations"
+  add_foreign_key "onboardings", "employees"
+  add_foreign_key "onboardings", "employees", column: "manager_id"
+  add_foreign_key "onboardings", "onboarding_templates"
+  add_foreign_key "onboardings", "organizations"
   add_foreign_key "one_on_one_objectives", "objectives"
   add_foreign_key "one_on_one_objectives", "one_on_ones"
   add_foreign_key "one_on_ones", "employees"

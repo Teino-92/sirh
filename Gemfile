@@ -79,7 +79,7 @@ group :development do
   # gem "spring"
 end
 
-
+gem "ostruct"
 gem "devise", "~> 4.9"
 gem "devise-jwt", "~> 0.12.1" # JWT authentication for API
 gem "pundit", "~> 2.5"

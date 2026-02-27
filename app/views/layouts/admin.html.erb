@@ -34,8 +34,14 @@
             <div class="hidden sm:ml-6 sm:flex sm:space-x-4">
               <%= link_to "Employés", admin_employees_path,
                   class: "inline-flex items-center px-3 py-2 text-sm font-medium #{controller_name == 'employees' ? 'text-white border-b-2 border-white dark:border-indigo-400 dark:text-indigo-400' : 'text-indigo-200 dark:text-gray-300 hover:text-white dark:hover:text-white'}" %>
-              <%= link_to "Organisation", admin_organization_path,
-                  class: "inline-flex items-center px-3 py-2 text-sm font-medium #{controller_name == 'organizations' ? 'text-white border-b-2 border-white' : 'text-indigo-200 dark:text-gray-400 hover:text-white dark:hover:text-white'}" %>
+              <%= link_to "Paramètres", admin_organization_path,
+                  class: "inline-flex items-center px-3 py-2 text-sm font-medium #{controller_name == 'organizations' ? 'text-white border-b-2 border-white dark:border-indigo-400 dark:text-indigo-400' : 'text-indigo-200 dark:text-gray-400 hover:text-white dark:hover:text-white'}" %>
+              <%= link_to "Règles RH", edit_admin_group_policies_path,
+                  class: "inline-flex items-center px-3 py-2 text-sm font-medium #{controller_name == 'group_policies' ? 'text-white border-b-2 border-white dark:border-indigo-400 dark:text-indigo-400' : 'text-indigo-200 dark:text-gray-400 hover:text-white dark:hover:text-white'}" %>
+              <%= link_to "Onboarding", admin_onboarding_templates_path,
+                  class: "inline-flex items-center px-3 py-2 text-sm font-medium #{%w[onboarding_templates onboarding_template_tasks].include?(controller_name) ? 'text-white border-b-2 border-white dark:border-indigo-400 dark:text-indigo-400' : 'text-indigo-200 dark:text-gray-400 hover:text-white dark:hover:text-white'}" %>
+              <%= link_to "Masse salariale", admin_payroll_path,
+                  class: "inline-flex items-center px-3 py-2 text-sm font-medium #{controller_name == 'payroll' ? 'text-white border-b-2 border-white dark:border-indigo-400 dark:text-indigo-400' : 'text-indigo-200 dark:text-gray-400 hover:text-white dark:hover:text-white'}" %>
               <%= link_to "Retour à l'app", dashboard_path,
                   class: "inline-flex items-center px-3 py-2 text-sm font-medium text-indigo-200 dark:text-gray-400 hover:text-white dark:hover:text-white" %>
             </div>
@@ -69,7 +75,28 @@
             <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
             </svg>
-            <span>Organisation</span>
+            <span>Paramètres</span>
+          <% end %>
+
+          <%= link_to edit_admin_group_policies_path, class: "flex-1 flex flex-col items-center py-2 text-xs #{controller_name == 'group_policies' ? 'text-white dark:text-indigo-400' : 'text-indigo-200 dark:text-gray-300'}" do %>
+            <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+            </svg>
+            <span>Règles RH</span>
+          <% end %>
+
+          <%= link_to admin_onboarding_templates_path, class: "flex-1 flex flex-col items-center py-2 text-xs #{%w[onboarding_templates onboarding_template_tasks].include?(controller_name) ? 'text-white dark:text-indigo-400' : 'text-indigo-200 dark:text-gray-300'}" do %>
+            <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+            </svg>
+            <span>Onboarding</span>
+          <% end %>
+
+          <%= link_to admin_payroll_path, class: "flex-1 flex flex-col items-center py-2 text-xs #{controller_name == 'payroll' ? 'text-white dark:text-indigo-400' : 'text-indigo-200 dark:text-gray-300'}" do %>
+            <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            <span>Masse sal.</span>
           <% end %>
 
           <%= link_to dashboard_path, class: "flex-1 flex flex-col items-center py-2 text-xs text-indigo-200 dark:text-gray-300" do %>

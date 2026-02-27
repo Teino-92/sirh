@@ -60,10 +60,15 @@ module Exports
       format('%02d:%02d', hours, minutes)
     end
 
-    # Get team members based on filters
+    # Get exportable employees based on the requester's role.
+    # HR and admin see all org employees; managers see only their direct team.
     def team_members
       @team_members ||= begin
-        members = @manager.team_members
+        members = if @manager.hr_or_admin?
+                    @manager.organization.employees
+                  else
+                    @manager.team_members
+                  end
 
         # Filter by specific employees if provided
         if @filters[:employee_ids].present?

@@ -133,11 +133,18 @@ module LeaveManagement
       def can_auto_approve?(leave_request)
         return false unless leave_request.leave_type == 'CP'
 
-        # Auto-approve if:
+        # Role-based auto-approval override (set via group policy)
+        # Still respects balance to avoid financial errors
+        role_auto = organization.group_policies.dig('auto_approve_leave_by_role', employee.role)
+        if ActiveRecord::Type::Boolean.new.cast(role_auto) == true
+          sufficient_balance = employee.leave_balances.find_by(leave_type: 'CP')&.balance.to_f >= leave_request.days_count
+          return sufficient_balance
+        end
+
+        # Standard auto-approve logic:
         # 1. Employee has sufficient balance (threshold configurable per organization)
         # 2. Request is for short duration (configurable per organization)
         # 3. No team conflicts
-        # 4. Not during blackout period (company-specific)
 
         threshold_days = get_setting(:auto_approve_threshold_days)
         max_request_days = get_setting(:auto_approve_max_request_days)

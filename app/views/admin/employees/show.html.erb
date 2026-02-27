@@ -75,6 +75,46 @@
         </dl>
       </div>
 
+      <!-- Rémunération -->
+      <div class="border-t border-gray-200 dark:border-gray-700 pt-6">
+        <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Rémunération</h2>
+        <% if @employee.gross_salary_cents > 0 %>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div class="bg-indigo-50 dark:bg-indigo-900 rounded-lg p-4">
+              <p class="text-xs text-indigo-600 dark:text-indigo-400 font-medium uppercase tracking-wide mb-1">Brut mensuel</p>
+              <p class="text-xl font-bold text-indigo-900 dark:text-white">
+                <%= number_to_currency(@employee.gross_salary, unit: '€', format: '%n %u', delimiter: ' ', precision: 0) %>
+              </p>
+            </div>
+            <% if @employee.variable_pay_cents > 0 %>
+              <div class="bg-purple-50 dark:bg-purple-900 rounded-lg p-4">
+                <p class="text-xs text-purple-600 dark:text-purple-400 font-medium uppercase tracking-wide mb-1">Part variable</p>
+                <p class="text-xl font-bold text-purple-900 dark:text-white">
+                  <%= number_to_currency(@employee.variable_pay, unit: '€', format: '%n %u', delimiter: ' ', precision: 0) %>
+                </p>
+              </div>
+            <% end %>
+            <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4">
+              <p class="text-xs text-gray-500 dark:text-gray-400 font-medium uppercase tracking-wide mb-1">Coût employeur / mois</p>
+              <p class="text-xl font-bold text-gray-900 dark:text-white">
+                <%= number_to_currency(@employee.total_employer_cost, unit: '€', format: '%n %u', delimiter: ' ', precision: 0) %>
+              </p>
+              <p class="text-xs text-gray-400 dark:text-gray-500 mt-1">
+                charges incluses (×<%= number_with_precision(@employee.employer_charges_rate, precision: 2) %>)
+              </p>
+            </div>
+          </div>
+          <p class="text-xs text-gray-400 dark:text-gray-500 mt-3">
+            Coût annuel estimé : <%= number_to_currency(@employee.total_employer_cost * 12, unit: '€', format: '%n %u', delimiter: ' ', precision: 0) %>
+          </p>
+        <% else %>
+          <p class="text-sm text-gray-500 dark:text-gray-400 italic">
+            Aucun salaire renseigné.
+            <%= link_to "Modifier la fiche", edit_admin_employee_path(@employee), class: "text-indigo-600 hover:text-indigo-700 dark:text-indigo-400" %>
+          </p>
+        <% end %>
+      </div>
+
       <% if @employee.manager? && @employee.direct_reports.any? %>
         <div class="border-t border-gray-200 dark:border-gray-700 pt-6">
           <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Équipe (<%= @employee.direct_reports.count %>)</h2>

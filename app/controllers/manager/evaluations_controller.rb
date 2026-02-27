@@ -52,7 +52,7 @@ module Manager
     end
 
     def launch
-      @evaluation = Evaluation.find(params[:id])
+      @evaluation = current_organization.evaluations.find(params[:id])
       authorize @evaluation, :update?
       unless @evaluation.draft? || @evaluation.employee_review_pending?
         redirect_to manager_evaluation_path(@evaluation), alert: 'Cette évaluation ne peut pas être relancée'
@@ -85,7 +85,7 @@ module Manager
     private
 
     def set_evaluation
-      @evaluation = Evaluation.find(params[:id])
+      @evaluation = current_organization.evaluations.find(params[:id])
       authorize @evaluation
     end
 

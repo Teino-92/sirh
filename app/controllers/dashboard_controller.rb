@@ -41,11 +41,54 @@ class DashboardController < ApplicationController
     @weekly_hours = calculate_weekly_hours
     @expected_hours = @schedule&.weekly_hours || 35
 
+    # Personal weekly plan
+    week_start = @today.beginning_of_week(:monday)
+    @weekly_plan = @employee.weekly_schedule_plans.find_by(week_start_date: week_start)
+    @week_time_entries = @employee.time_entries.this_week.completed
+                                  .group_by { |e| e.clock_in.to_date }
+
+    # Manager: team weekly presence summary
+    if @employee.manager?
+      @team_this_week = load_team_week_summary(week_start)
+    end
+
     # Performance Layer
     load_performance_layer_data
+
+    # HR/Admin: company-wide overview
+    load_hr_overview_data if @employee.hr_or_admin?
   end
 
   private
+
+  def load_team_week_summary(week_start)
+    days = (0..6).map { |i| week_start + i.days }
+    team = @employee.team_members.includes(:weekly_schedule_plans, :leave_requests)
+
+    team.map do |member|
+      plan = member.weekly_schedule_plans.find { |p| p.week_start_date == week_start }
+      leaves_this_week = member.leave_requests
+                               .where(status: %w[approved auto_approved])
+                               .where('start_date <= ? AND end_date >= ?', week_start + 6.days, week_start)
+
+      day_statuses = days.map do |day|
+        day_name = day.strftime('%A').downcase
+        on_leave = leaves_this_week.any? { |l| day >= l.start_date && day <= l.end_date }
+        has_schedule = plan&.schedule_pattern&.dig(day_name).present? &&
+                       plan.schedule_pattern[day_name] != 'off'
+
+        if on_leave
+          :leave
+        elsif has_schedule
+          :work
+        else
+          :off
+        end
+      end
+
+      { employee: member, days: day_statuses }
+    end
+  end
 
   def calculate_weekly_hours
     entries = @employee.time_entries.this_week.completed
@@ -89,5 +132,25 @@ class DashboardController < ApplicationController
       .for_manager(@employee)
       .where(status: :manager_review_pending)
       .count
+  end
+
+  def load_hr_overview_data
+    today = Date.current
+    org   = @employee.organization
+
+    # Absences today (approved leave covering today)
+    @absences_today = LeaveRequest
+      .where(organization: org)
+      .where(status: %w[approved auto_approved])
+      .where('start_date <= ? AND end_date >= ?', today, today)
+      .includes(:employee)
+      .order(:leave_type)
+
+    # Active onboardings with progress
+    @active_onboardings = Onboarding
+      .where(organization: org)
+      .active
+      .includes(:employee, :manager, :onboarding_tasks)
+      .order(:start_date)
   end
 end
