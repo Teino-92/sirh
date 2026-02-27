@@ -31,7 +31,7 @@ class OnboardingTemplatePolicy < ApplicationPolicy
 
   class Scope < Scope
     def resolve
-      scope.where(organization: user.organization).active
+      scope.where(organization_id: user.organization_id).active
     end
   end
 end

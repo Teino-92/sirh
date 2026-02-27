@@ -52,7 +52,7 @@ module Manager
     private
 
     def set_one_on_one
-      @one_on_one = OneOnOne.find(params[:id])
+      @one_on_one = current_organization.one_on_ones.find(params[:id])
       authorize @one_on_one
     end
 

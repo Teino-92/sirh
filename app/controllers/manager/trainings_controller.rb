@@ -71,7 +71,7 @@ module Manager
     private
 
     def set_training
-      @training = Training.find(params[:id])
+      @training = current_organization.trainings.find(params[:id])
       authorize @training
     end
 

@@ -60,7 +60,7 @@ module Manager
     private
 
     def set_objective
-      @objective = Objective.find(params[:id])
+      @objective = current_organization.objectives.find(params[:id])
       authorize @objective
     end
 
