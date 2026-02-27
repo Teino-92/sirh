@@ -1,0 +1,53 @@
+<%# locals: (size:, employee:) %>
+<% if size == 'compact' %>
+  <div class="card-inner bg-white dark:bg-gray-800 rounded-lg shadow px-4 py-3 flex items-center justify-between gap-3">
+    <span class="text-xs font-medium text-gray-500 dark:text-gray-400 truncate">Objectifs actifs</span>
+    <span class="text-xl font-bold text-blue-700 dark:text-blue-300 flex-shrink-0"><%= @my_active_objectives_count.to_i %></span>
+  </div>
+<% else %>
+  <div class="card-inner bg-white dark:bg-gray-800 rounded-lg shadow p-5">
+    <h2 class="text-base font-semibold text-gray-900 dark:text-gray-100 mb-4">Ma performance</h2>
+    <% if @my_active_objectives_count.to_i > 0 || @my_pending_training_count.to_i > 0 || @my_next_one_on_one %>
+      <div class="space-y-3">
+        <% if @my_active_objectives_count.to_i > 0 %>
+          <%= link_to objectives_path, class: "flex items-center justify-between p-3 bg-blue-50 dark:bg-blue-900 rounded-lg hover:bg-blue-100 dark:hover:bg-blue-800 transition-colors" do %>
+            <div class="flex items-center">
+              <svg class="w-5 h-5 text-blue-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+              </svg>
+              <span class="text-sm font-medium text-gray-900 dark:text-gray-100">Objectifs actifs</span>
+            </div>
+            <span class="text-sm font-bold text-blue-700 dark:text-blue-300"><%= @my_active_objectives_count %></span>
+          <% end %>
+        <% end %>
+        <% if @my_next_one_on_one %>
+          <div class="flex items-center p-3 bg-purple-50 dark:bg-purple-900 rounded-lg">
+            <svg class="w-5 h-5 text-purple-600 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z"/>
+            </svg>
+            <div>
+              <p class="text-sm font-medium text-gray-900 dark:text-gray-100">Prochain 1:1</p>
+              <p class="text-xs text-gray-600 dark:text-gray-400">
+                <%= l(@my_next_one_on_one.scheduled_at, format: :short) %>
+                <% if size == 'wide' %> · <%= @my_next_one_on_one.manager.full_name %><% end %>
+              </p>
+            </div>
+          </div>
+        <% end %>
+        <% if @my_pending_training_count.to_i > 0 %>
+          <%= link_to training_assignments_path, class: "flex items-center justify-between p-3 bg-yellow-50 dark:bg-yellow-900 rounded-lg hover:bg-yellow-100 dark:hover:bg-yellow-800 transition-colors" do %>
+            <div class="flex items-center">
+              <svg class="w-5 h-5 text-yellow-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+              </svg>
+              <span class="text-sm font-medium text-gray-900 dark:text-gray-100">Formations à compléter</span>
+            </div>
+            <span class="text-sm font-bold text-yellow-700 dark:text-yellow-300"><%= @my_pending_training_count %></span>
+          <% end %>
+        <% end %>
+      </div>
+    <% else %>
+      <p class="text-sm text-gray-400 dark:text-gray-500 text-center py-4">Aucun élément de performance en cours</p>
+    <% end %>
+  </div>
+<% end %>

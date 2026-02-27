@@ -1,0 +1,44 @@
+<div id="policy-preview" class="bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-200 dark:border-indigo-700 rounded-lg px-6 py-4">
+  <h3 class="text-sm font-semibold text-indigo-900 dark:text-indigo-100 mb-3">Aperçu de l'impact</h3>
+
+  <% role_labels = { 'employee' => 'Employé', 'manager' => 'Manager', 'hr' => 'RH', 'admin' => 'Administrateur' } %>
+
+  <!-- Manager approval impact -->
+  <% manager_can_approve = policies.fetch('manager_can_approve_leave', true) %>
+  <% manager_can_approve = manager_can_approve == '1' || manager_can_approve == true %>
+  <div class="mb-3">
+    <p class="text-sm text-indigo-800 dark:text-indigo-200">
+      <span class="font-medium">Approbation par les managers :</span>
+      <% if manager_can_approve %>
+        <span class="text-green-700 dark:text-green-400">Activée</span>
+        — <%= affected[:managers] %> manager<%= 's' if affected[:managers] != 1 %> peuvent approuver.
+      <% else %>
+        <span class="text-amber-700 dark:text-amber-400">Désactivée</span>
+        — seuls les RH/Admin peuvent approuver.
+        <% if affected[:managers] > 0 %>
+          (<%= affected[:managers] %> manager<%= 's' if affected[:managers] != 1 %> impacté<%= 's' if affected[:managers] != 1 %>)
+        <% end %>
+      <% end %>
+    </p>
+  </div>
+
+  <!-- Auto-approve impact -->
+  <% auto_by_role = policies.fetch('auto_approve_leave_by_role', {}) %>
+  <% enabled_roles = Employee::ROLES.select { |r| auto_by_role[r] == true || auto_by_role[r] == '1' } %>
+  <div>
+    <p class="text-sm text-indigo-800 dark:text-indigo-200 font-medium mb-1">Auto-approbation :</p>
+    <% if enabled_roles.any? %>
+      <ul class="space-y-1">
+        <% enabled_roles.each do |role| %>
+          <li class="text-sm text-indigo-700 dark:text-indigo-300">
+            • <%= role_labels[role] %> :
+            <span class="font-medium"><%= affected[:by_role][role] || 0 %> employé<%= 's' if (affected[:by_role][role] || 0) != 1 %></span>
+            bénéficieront de l'auto-approbation.
+          </li>
+        <% end %>
+      </ul>
+    <% else %>
+      <p class="text-sm text-gray-500 dark:text-gray-400 italic">Aucun rôle sélectionné.</p>
+    <% end %>
+  </div>
+</div>

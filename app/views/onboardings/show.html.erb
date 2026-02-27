@@ -1,0 +1,117 @@
+<div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+  <%
+    progress = @onboarding.progress_percentage
+    score    = @onboarding.integration_score
+    overdue  = @onboarding.overdue_tasks.count
+    type_icons = {
+      'manual'        => '✓',
+      'objective_30'  => '🎯',
+      'objective_60'  => '🎯',
+      'objective_90'  => '🎯',
+      'training'      => '📚',
+      'one_on_one'    => '💬'
+    }
+  %>
+
+  <!-- Header card -->
+  <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 mb-6">
+    <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100">Mon intégration</h1>
+    <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">
+      <%= @onboarding.onboarding_template.name %>
+      · Débuté le <%= l(@onboarding.start_date, format: :long) %>
+      <% if @onboarding.active? %>
+        · Jour J+<%= @onboarding.day_number %>
+      <% end %>
+    </p>
+
+    <!-- Score and progress -->
+    <div class="mt-4 grid grid-cols-2 gap-4">
+      <div class="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4 text-center">
+        <div class="text-3xl font-bold <%= score >= 70 ? 'text-green-600 dark:text-green-400' : score >= 40 ? 'text-yellow-600 dark:text-yellow-400' : 'text-red-600 dark:text-red-400' %>">
+          <%= score %>
+        </div>
+        <div class="text-xs text-gray-500 dark:text-gray-400 mt-1">Score d'intégration</div>
+      </div>
+      <div class="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4 text-center">
+        <div class="text-3xl font-bold text-indigo-600 dark:text-indigo-400"><%= progress %>%</div>
+        <div class="text-xs text-gray-500 dark:text-gray-400 mt-1">Progression</div>
+      </div>
+    </div>
+
+    <div class="mt-4">
+      <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5">
+        <div class="bg-indigo-600 h-2.5 rounded-full" style="width: <%= progress %>%"></div>
+      </div>
+    </div>
+
+    <% if overdue > 0 %>
+      <p class="mt-3 text-sm text-orange-600 dark:text-orange-400 font-medium">
+        ⚠ <%= overdue %> tâche<%= 's' if overdue > 1 %> en retard — pensez à les compléter rapidement.
+      </p>
+    <% end %>
+  </div>
+
+  <!-- My tasks (employee role only) -->
+  <%
+    my_tasks = @onboarding.onboarding_tasks.where(assigned_to_role: 'employee').order(:due_date)
+  %>
+
+  <% if my_tasks.any? %>
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 mb-6">
+      <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Mes tâches</h2>
+      <div class="space-y-3">
+        <% my_tasks.each do |task| %>
+          <div class="flex items-start gap-3 p-3 rounded-lg <%= task.completed? ? 'bg-green-50 dark:bg-green-900/10' : task.overdue? ? 'bg-red-50 dark:bg-red-900/10' : 'bg-gray-50 dark:bg-gray-700/40' %>">
+            <div class="flex-shrink-0 mt-0.5">
+              <% if task.completed? %>
+                <span class="w-5 h-5 flex items-center justify-center rounded-full bg-green-500">
+                  <svg class="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
+                  </svg>
+                </span>
+              <% elsif task.overdue? %>
+                <span class="w-5 h-5 flex items-center justify-center rounded-full bg-red-400">
+                  <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd" />
+                  </svg>
+                </span>
+              <% else %>
+                <span class="w-5 h-5 flex items-center justify-center rounded-full border-2 border-gray-300 dark:border-gray-500"></span>
+              <% end %>
+            </div>
+            <div class="flex-1 min-w-0">
+              <p class="text-sm font-medium <%= task.completed? ? 'line-through text-gray-400 dark:text-gray-500' : 'text-gray-900 dark:text-gray-100' %>">
+                <%= type_icons[task.task_type] %> <%= task.title %>
+              </p>
+              <% if task.description.present? %>
+                <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5"><%= task.description %></p>
+              <% end %>
+              <% linked = task.linked_record rescue nil %>
+              <% if linked %>
+                <p class="text-xs text-indigo-600 dark:text-indigo-400 mt-1">
+                  Associé : <%= linked.try(:title) || linked.try(:name) %>
+                </p>
+              <% end %>
+            </div>
+            <div class="flex-shrink-0 text-right">
+              <p class="text-xs <%= task.overdue? && task.pending? ? 'text-red-600 dark:text-red-400 font-medium' : 'text-gray-500 dark:text-gray-400' %>">
+                <%= l(task.due_date, format: :short) %>
+              </p>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+
+  <!-- Manager info -->
+  <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+    <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">Votre manager référent</h2>
+    <p class="text-gray-700 dark:text-gray-300"><%= @onboarding.manager.full_name %></p>
+    <% if @onboarding.manager.email.present? %>
+      <p class="text-sm text-indigo-600 dark:text-indigo-400 mt-1">
+        <%= mail_to @onboarding.manager.email, @onboarding.manager.email %>
+      </p>
+    <% end %>
+  </div>
+</div>

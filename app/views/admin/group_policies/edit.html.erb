@@ -1,0 +1,94 @@
+<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+  <div class="mb-6">
+    <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100">Règles RH</h1>
+    <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Configurez les règles d'approbation et d'auto-approbation par rôle.</p>
+  </div>
+
+  <%= form_with url: admin_group_policies_path, method: :patch, data: { controller: "group-policies" } do |f| %>
+    <div class="space-y-6">
+
+      <!-- Card 1 — Approbation des congés -->
+      <div class="bg-white dark:bg-gray-800 shadow-sm rounded-lg overflow-hidden">
+        <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+          <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100">Approbation des congés</h2>
+          <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+            Définissez qui peut approuver les demandes de congé.
+          </p>
+        </div>
+        <div class="px-6 py-5">
+          <label class="flex items-start gap-4 cursor-pointer">
+            <%= check_box_tag 'group_policies[manager_can_approve_leave]',
+                '1',
+                @policies.fetch('manager_can_approve_leave', true),
+                id: 'manager_can_approve_leave',
+                class: "mt-1 h-4 w-4 text-indigo-600 border-gray-300 dark:border-gray-600 rounded focus:ring-indigo-500",
+                data: { action: "change->group-policies#requestPreview" } %>
+            <div>
+              <span class="block text-sm font-medium text-gray-900 dark:text-gray-100">
+                Les managers peuvent approuver les demandes de congé
+              </span>
+              <span class="block mt-1 text-sm text-gray-500 dark:text-gray-400">
+                Désactivé : seuls les RH et administrateurs pourront approuver ou refuser.
+              </span>
+            </div>
+          </label>
+          <p class="mt-3 text-xs text-gray-400 dark:text-gray-500" id="manager-approve-hint">
+            <% manager_count = @organization.employees.where(role: 'manager').count %>
+            <%= manager_count %> manager<%= 's' if manager_count != 1 %> concerné<%= 's' if manager_count != 1 %>.
+          </p>
+        </div>
+      </div>
+
+      <!-- Card 2 — Auto-approbation par rôle -->
+      <div class="bg-white dark:bg-gray-800 shadow-sm rounded-lg overflow-hidden">
+        <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+          <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100">Auto-approbation par rôle</h2>
+          <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+            Les demandes des rôles sélectionnés seront auto-approuvées à la soumission.
+            Le solde disponible reste toujours vérifié.
+          </p>
+        </div>
+        <div class="px-6 py-5 space-y-4">
+          <% auto_by_role = @policies.fetch('auto_approve_leave_by_role', {}) %>
+          <% role_labels = { 'employee' => 'Employé', 'manager' => 'Manager', 'hr' => 'RH', 'admin' => 'Administrateur' } %>
+
+          <% Employee::ROLES.each do |role| %>
+            <% role_count = @organization.employees.where(role: role).count %>
+            <label class="flex items-start gap-4 cursor-pointer">
+              <%= check_box_tag "group_policies[auto_approve_leave_by_role][#{role}]",
+                  '1',
+                  auto_by_role[role] == true || auto_by_role[role] == '1',
+                  id: "auto_approve_role_#{role}",
+                  class: "mt-1 h-4 w-4 text-indigo-600 border-gray-300 dark:border-gray-600 rounded focus:ring-indigo-500",
+                  data: { action: "change->group-policies#requestPreview" } %>
+              <div>
+                <span class="block text-sm font-medium text-gray-900 dark:text-gray-100">
+                  <%= role_labels[role] %>
+                </span>
+                <span class="block mt-0.5 text-xs text-gray-500 dark:text-gray-400">
+                  <%= role_count %> employé<%= 's' if role_count != 1 %>
+                </span>
+              </div>
+            </label>
+          <% end %>
+
+          <p class="mt-2 text-xs text-indigo-600 dark:text-indigo-400 font-medium">
+            Le solde disponible est toujours vérifié, même avec l'auto-approbation activée.
+          </p>
+        </div>
+      </div>
+
+      <!-- Preview zone (Turbo Stream target) -->
+      <%= render 'admin/group_policies/preview', affected: {
+        managers: @organization.employees.where(role: 'manager').count,
+        by_role: @organization.employees.group(:role).count
+      }, policies: @policies %>
+
+      <!-- Save -->
+      <div class="flex justify-end">
+        <%= f.submit "Enregistrer les règles RH",
+            class: "px-5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-md shadow-sm cursor-pointer" %>
+      </div>
+    </div>
+  <% end %>
+</div>

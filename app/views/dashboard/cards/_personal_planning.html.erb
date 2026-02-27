@@ -1,0 +1,69 @@
+<%# locals: (size:, employee:) %>
+<% if size == 'compact' %>
+  <%
+    today_key   = @today.strftime('%A').downcase
+    today_hours = @weekly_plan&.schedule_pattern&.dig(today_key)
+    label       = today_hours.present? && today_hours != 'off' ? today_hours : 'Repos'
+  %>
+  <div class="card-inner bg-white dark:bg-gray-800 rounded-lg shadow px-4 py-3 flex items-center justify-between gap-3">
+    <span class="text-xs font-medium text-gray-500 dark:text-gray-400 truncate">Aujourd'hui</span>
+    <span class="text-base font-bold text-gray-900 dark:text-gray-100 flex-shrink-0"><%= label %></span>
+  </div>
+<% else %>
+  <div class="card-inner bg-white dark:bg-gray-800 rounded-lg shadow p-5">
+    <div class="flex items-center justify-between mb-4">
+      <h2 class="text-base font-semibold text-gray-900 dark:text-gray-100">Planning de la semaine</h2>
+      <%= link_to 'Voir tout', work_schedule_path(employee.id), class: "text-sm text-indigo-600 hover:text-indigo-700 dark:text-indigo-400" %>
+    </div>
+    <% if @weekly_plan %>
+      <% week_start = @today.beginning_of_week(:monday) %>
+      <div class="grid grid-cols-7 gap-1 mb-4">
+        <% %w[monday tuesday wednesday thursday friday saturday sunday].each_with_index do |day_name, index| %>
+          <%
+            day_date   = week_start + index.days
+            is_today   = day_date == @today
+            hours      = @weekly_plan.schedule_pattern[day_name]
+            has_worked = @week_time_entries.key?(day_date)
+            is_work_day = hours.present? && hours != 'off'
+          %>
+          <div class="<%= is_today ? 'ring-2 ring-indigo-600' : 'border border-gray-200 dark:border-gray-700' %>
+                      <%= has_worked ? 'bg-green-50 dark:bg-green-900' : (is_work_day ? 'bg-indigo-50 dark:bg-indigo-900' : 'bg-gray-50 dark:bg-gray-900') %>
+                      rounded-lg p-2 text-center">
+            <p class="text-xs font-medium <%= is_today ? 'text-indigo-600' : 'text-gray-600 dark:text-gray-400' %>">
+              <%= l(day_date, format: '%a') %>
+            </p>
+            <p class="text-xs text-gray-500 dark:text-gray-400"><%= day_date.day %>/<%= day_date.month %></p>
+            <% if is_work_day %>
+              <p class="text-xs font-semibold <%= has_worked ? 'text-green-700 dark:text-green-300' : 'text-gray-900 dark:text-gray-100' %>">
+                <%= hours %>
+              </p>
+              <% if has_worked %><p class="text-xs text-green-600">✓</p><% end %>
+            <% else %>
+              <p class="text-xs text-gray-400">—</p>
+            <% end %>
+          </div>
+        <% end %>
+      </div>
+      <% if size == 'wide' %>
+        <div class="flex items-end justify-between pt-4 border-t border-gray-200 dark:border-gray-700">
+          <div>
+            <p class="text-3xl font-bold text-gray-900 dark:text-gray-100"><%= @weekly_hours.round(1) %>h</p>
+            <p class="text-sm text-gray-600 dark:text-gray-400">sur <%= @expected_hours.round(1) %>h prévues</p>
+          </div>
+          <div class="flex-1 ml-6">
+            <div class="h-6 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+              <% pct = [(@expected_hours > 0 ? (@weekly_hours / @expected_hours * 100).to_i : 0), 100].min %>
+              <div class="h-full bg-indigo-600 rounded-full" style="width: <%= pct %>%"></div>
+            </div>
+            <p class="text-xs text-gray-600 dark:text-gray-400 text-right mt-1"><%= pct %>%</p>
+          </div>
+        </div>
+      <% end %>
+    <% else %>
+      <div class="bg-yellow-50 dark:bg-yellow-900 border border-yellow-200 dark:border-yellow-700 rounded-lg p-4 text-center">
+        <p class="text-yellow-800 dark:text-yellow-200 font-medium text-sm">Aucun planning pour cette semaine</p>
+        <p class="text-xs text-yellow-700 dark:text-yellow-300 mt-1">Contactez votre manager</p>
+      </div>
+    <% end %>
+  </div>
+<% end %>

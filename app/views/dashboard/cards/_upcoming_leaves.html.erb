@@ -1,0 +1,44 @@
+<%# locals: (size:, employee:) %>
+<% if size == 'compact' %>
+  <div class="card-inner bg-white dark:bg-gray-800 rounded-lg shadow px-4 py-3 flex items-center justify-between gap-3">
+    <span class="text-xs font-medium text-gray-500 dark:text-gray-400 truncate">Prochain congé</span>
+    <% if @upcoming_leaves.any? %>
+      <span class="text-sm font-bold text-blue-700 dark:text-blue-300 flex-shrink-0">
+        <%= l(@upcoming_leaves.first.start_date, format: :short) %>
+      </span>
+    <% else %>
+      <span class="text-xs text-gray-400 flex-shrink-0">—</span>
+    <% end %>
+  </div>
+<% else %>
+  <div class="card-inner bg-white dark:bg-gray-800 rounded-lg shadow p-5">
+    <h2 class="text-base font-semibold text-gray-900 dark:text-gray-100 mb-4">Prochains congés</h2>
+    <% if @upcoming_leaves.any? %>
+      <% limit = size == 'wide' ? 5 : 3 %>
+      <div class="space-y-3">
+        <% @upcoming_leaves.first(limit).each do |leave| %>
+          <div class="flex items-center justify-between p-3 bg-blue-50 dark:bg-blue-900 rounded-lg">
+            <div class="flex items-center">
+              <svg class="w-5 h-5 text-blue-600 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+              </svg>
+              <div>
+                <p class="font-medium text-gray-900 dark:text-gray-100 text-sm">
+                  <%= l(leave.start_date, format: :short) %> - <%= l(leave.end_date, format: :short) %>
+                </p>
+                <p class="text-xs text-gray-600 dark:text-gray-400">
+                  <%= leave.days_count.to_f.round(1) %> jours · <%= LeaveBalance.leave_type_name(leave.leave_type) %>
+                </p>
+              </div>
+            </div>
+            <span class="px-2 py-1 text-xs font-medium text-green-800 dark:text-green-200 bg-green-100 dark:bg-green-800 rounded flex-shrink-0">
+              <%= leave.status == 'auto_approved' ? 'Auto' : 'Approuvé' %>
+            </span>
+          </div>
+        <% end %>
+      </div>
+    <% else %>
+      <p class="text-sm text-gray-400 dark:text-gray-500 text-center py-4">Aucun congé à venir</p>
+    <% end %>
+  </div>
+<% end %>

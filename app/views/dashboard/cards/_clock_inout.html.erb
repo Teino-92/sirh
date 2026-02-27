@@ -1,0 +1,62 @@
+<%# locals: (size:, employee:) %>
+<% if @current_shift %>
+  <% if size == 'compact' %>
+    <div class="card-inner bg-green-50 dark:bg-green-900 border border-green-400 rounded-lg px-4 py-3 flex items-center justify-between gap-3">
+      <div>
+        <p class="text-xs font-medium text-green-800 dark:text-green-200">Pointé depuis</p>
+        <p class="text-base font-bold text-green-900 dark:text-green-100"><%= l(@current_shift.clock_in, format: :short) %></p>
+      </div>
+      <%= button_to clock_out_time_entries_path, method: :post, class: "bg-red-600 hover:bg-red-700 text-white font-semibold py-1.5 px-3 rounded-lg transition-colors text-xs flex-shrink-0" do %>
+        Sortie
+      <% end %>
+    </div>
+  <% else %>
+    <div class="card-inner bg-green-50 dark:bg-green-900 border-2 border-green-500 rounded-lg p-5">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-sm font-medium text-green-800 dark:text-green-200">Vous êtes pointé(e) depuis</p>
+          <p class="text-3xl font-bold text-green-900 dark:text-green-100"><%= l(@current_shift.clock_in, format: :short) %></p>
+          <% if size == 'wide' %>
+            <p class="text-sm text-green-700 dark:text-green-300 mt-1">
+              <%= distance_of_time_in_words(Time.current, @current_shift.clock_in) %>
+            </p>
+          <% end %>
+        </div>
+        <%= button_to clock_out_time_entries_path, method: :post, class: "bg-red-600 hover:bg-red-700 text-white font-semibold py-3 px-5 rounded-lg transition-colors shadow flex-shrink-0" do %>
+          <div class="flex items-center gap-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+            Pointer la sortie
+          </div>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+<% else %>
+  <% if size == 'compact' %>
+    <div class="card-inner bg-indigo-50 dark:bg-indigo-900 border border-indigo-300 rounded-lg px-4 py-3 flex items-center justify-between gap-3">
+      <span class="text-xs font-medium text-indigo-800 dark:text-indigo-200">Pointer l'arrivée</span>
+      <%= button_to clock_in_time_entries_path, method: :post, class: "bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-1.5 px-3 rounded-lg transition-colors text-xs flex-shrink-0" do %>
+        Entrée
+      <% end %>
+    </div>
+  <% else %>
+    <div class="card-inner bg-gradient-to-r from-indigo-500 to-purple-600 rounded-lg p-5 text-white shadow-xl">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-sm font-medium opacity-90">Prêt(e) à commencer ?</p>
+          <p class="text-2xl font-bold mt-1">Pointez votre arrivée</p>
+        </div>
+        <%= button_to clock_in_time_entries_path, method: :post, class: "bg-white dark:bg-gray-800 hover:bg-gray-100 text-indigo-600 font-semibold py-3 px-5 rounded-lg transition-colors shadow flex-shrink-0" do %>
+          <div class="flex items-center gap-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+            Pointer l'entrée
+          </div>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+<% end %>

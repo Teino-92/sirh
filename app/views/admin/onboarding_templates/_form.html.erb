@@ -1,0 +1,46 @@
+<%= form_with(model: [:admin, template], class: "space-y-5") do |f| %>
+  <% if template.errors.any? %>
+    <div class="bg-red-50 dark:bg-red-900/20 border border-red-300 dark:border-red-700 rounded-md p-4">
+      <ul class="list-disc list-inside text-sm text-red-600 dark:text-red-400">
+        <% template.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div>
+    <%= f.label :name, "Nom du modèle", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" %>
+    <%= f.text_field :name,
+          class: "block w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm",
+          placeholder: "Ex : Intégration développeur" %>
+  </div>
+
+  <div>
+    <%= f.label :description, "Description", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" %>
+    <%= f.text_area :description, rows: 3,
+          class: "block w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm",
+          placeholder: "Décrivez le contexte et les objectifs de ce parcours..." %>
+  </div>
+
+  <div>
+    <%= f.label :duration_days, "Durée (jours)", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" %>
+    <%= f.number_field :duration_days, min: 1,
+          class: "block w-32 rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm" %>
+    <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+      La durée détermine la date de fin calculée automatiquement.
+    </p>
+  </div>
+
+  <div class="flex items-center gap-3">
+    <%= f.check_box :active, class: "h-4 w-4 rounded border-gray-300 dark:border-gray-600 text-indigo-600 focus:ring-indigo-500" %>
+    <%= f.label :active, "Modèle actif (disponible pour les managers)", class: "text-sm text-gray-700 dark:text-gray-300" %>
+  </div>
+
+  <div class="flex justify-end gap-3 pt-2">
+    <%= link_to "Annuler", admin_onboarding_templates_path,
+          class: "inline-flex items-center py-2 px-4 border border-gray-300 dark:border-gray-600 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 transition-all" %>
+    <%= f.submit (template.new_record? ? "Créer le modèle" : "Mettre à jour"),
+          class: "inline-flex items-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-700 cursor-pointer transition-all" %>
+  </div>
+<% end %>

@@ -1,0 +1,36 @@
+<%# locals: (size:, employee:) %>
+<% if size == 'compact' %>
+  <div class="card-inner bg-white dark:bg-gray-800 rounded-lg shadow px-4 py-3 flex items-center justify-between gap-3">
+    <span class="text-xs font-medium text-gray-500 dark:text-gray-400 truncate">Prochain 1:1</span>
+    <% if @upcoming_one_on_ones&.first %>
+      <span class="text-sm font-bold text-gray-900 dark:text-gray-100 flex-shrink-0">
+        <%= l(@upcoming_one_on_ones.first.scheduled_at, format: :short) %>
+      </span>
+    <% else %>
+      <span class="text-xs text-gray-400 flex-shrink-0">—</span>
+    <% end %>
+  </div>
+<% else %>
+  <div class="card-inner bg-white dark:bg-gray-800 rounded-lg shadow p-5">
+    <div class="flex justify-between items-center mb-4">
+      <h2 class="text-base font-semibold text-gray-900 dark:text-gray-100">Prochains 1:1</h2>
+      <%= link_to 'Voir tout', manager_one_on_ones_path, class: "text-sm text-indigo-600 hover:text-indigo-700 dark:text-indigo-400" %>
+    </div>
+    <% if @upcoming_one_on_ones&.any? %>
+      <% limit = size == 'wide' ? 5 : 3 %>
+      <div class="space-y-3">
+        <% @upcoming_one_on_ones.first(limit).each do |meeting| %>
+          <div class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+            <div>
+              <p class="text-sm font-medium text-gray-900 dark:text-gray-100"><%= meeting.employee.full_name %></p>
+              <p class="text-xs text-gray-600 dark:text-gray-400"><%= l(meeting.scheduled_at, format: :short) %></p>
+            </div>
+            <%= link_to 'Voir', manager_one_on_one_path(meeting), class: "text-xs text-indigo-600 hover:text-indigo-700 font-medium" %>
+          </div>
+        <% end %>
+      </div>
+    <% else %>
+      <p class="text-sm text-gray-400 dark:text-gray-500 text-center py-4">Aucun 1:1 planifié</p>
+    <% end %>
+  </div>
+<% end %>

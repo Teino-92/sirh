@@ -1,0 +1,87 @@
+<%
+  type_labels = {
+    'manual'        => 'Manuel (tâche libre)',
+    'objective_30'  => 'Objectif J+30 (créé automatiquement)',
+    'objective_60'  => 'Objectif J+60 (créé automatiquement)',
+    'objective_90'  => 'Objectif J+90 (créé automatiquement)',
+    'training'      => 'Formation (créée automatiquement)',
+    'one_on_one'    => '1:1 (créé automatiquement)'
+  }
+  role_labels = { 'hr' => 'RH', 'manager' => 'Manager', 'employee' => 'Collaborateur' }
+%>
+
+<%
+  form_url = task.new_record? \
+    ? admin_onboarding_template_onboarding_template_tasks_path(@template) \
+    : admin_onboarding_template_task_path(task)
+%>
+<%= form_with(model: task, url: form_url, class: "space-y-5") do |f| %>
+  <% if task.errors.any? %>
+    <div class="bg-red-50 dark:bg-red-900/20 border border-red-300 dark:border-red-700 rounded-md p-4">
+      <ul class="list-disc list-inside text-sm text-red-600 dark:text-red-400">
+        <% task.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div>
+    <%= f.label :title, "Titre de l'étape", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" %>
+    <%= f.text_field :title,
+          class: "block w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm",
+          placeholder: "Ex : Rencontre avec le RH, Objectif stratégique T1..." %>
+  </div>
+
+  <div>
+    <%= f.label :description, "Description (optionnelle)", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" %>
+    <%= f.text_area :description, rows: 2,
+          class: "block w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm" %>
+  </div>
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+    <div>
+      <%= f.label :task_type, "Type de tâche", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" %>
+      <%= f.select :task_type,
+            OnboardingTemplateTask::TASK_TYPES.map { |t| [type_labels[t] || t, t] },
+            {},
+            class: "block w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm" %>
+      <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+        Les types non-manuels créent automatiquement un enregistrement lié.
+      </p>
+    </div>
+
+    <div>
+      <%= f.label :assigned_to_role, "Responsable", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" %>
+      <%= f.select :assigned_to_role,
+            OnboardingTemplateTask::ASSIGNED_ROLES.map { |r| [role_labels[r] || r, r] },
+            {},
+            class: "block w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm" %>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+    <div>
+      <%= f.label :due_day_offset, "Échéance (jour depuis le début)", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" %>
+      <%= f.number_field :due_day_offset, min: 0,
+            class: "block w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm",
+            placeholder: "Ex : 30" %>
+      <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+        J+0 = jour du début, J+30 = 30 jours après le démarrage.
+      </p>
+    </div>
+
+    <div>
+      <%= f.label :position, "Position dans le parcours", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" %>
+      <%= f.number_field :position, min: 1,
+            class: "block w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm" %>
+    </div>
+  </div>
+
+  <div class="flex justify-end gap-3 pt-2">
+    <%= link_to "Annuler", admin_onboarding_template_path(@template),
+          class: "inline-flex items-center py-2 px-4 border border-gray-300 dark:border-gray-600 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 transition-all" %>
+    <%= f.submit (task.new_record? ? "Ajouter l'étape" : "Mettre à jour"),
+          class: "inline-flex items-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-700 cursor-pointer transition-all" %>
+  </div>
+<% end %>

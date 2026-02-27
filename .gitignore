@@ -38,3 +38,9 @@
 !/app/assets/builds/.keep
 
 /node_modules
+
+# Sprint/session artifacts — not project code
+CONVERSATION_SUMMARY.md
+HANDOFF_TO_DEVELOPER.md
+PERFORMANCE_LAYER_ARCHITECTURE.md
+SPRINT_*.md
