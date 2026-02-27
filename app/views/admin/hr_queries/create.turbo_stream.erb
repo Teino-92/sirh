@@ -1,0 +1,9 @@
+<%= turbo_stream.replace "hr_query_results" do %>
+  <turbo-frame id="hr_query_results">
+    <%= render 'results',
+               rows: @rows,
+               columns: @columns,
+               filters_param: @filters_param,
+               query: @query %>
+  </turbo-frame>
+<% end %>

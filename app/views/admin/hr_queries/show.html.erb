@@ -1,0 +1,76 @@
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+  <!-- Header -->
+  <div class="mb-8">
+    <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Requêtes RH — IA</h1>
+    <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+      Interrogez vos données RH en français naturel. Ex : <em>« Employés CDI du département Ventes avec plus de 10 jours de RTT cette année »</em>
+    </p>
+  </div>
+
+  <!-- Query form -->
+  <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 mb-6"
+       data-controller="hr-query">
+
+    <%= form_with url: admin_hr_query_path, method: :post,
+                  data: { action: "submit->hr-query#onSubmit", "hr-query-target": "form" } do |f| %>
+
+      <label for="query" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+        Votre requête RH
+      </label>
+      <textarea id="query" name="query"
+                rows="3"
+                placeholder="Ex: Employés cadres du département IT avec une évaluation supérieure à 3 cette année"
+                class="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white px-4 py-3 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-transparent resize-none"
+                data-hr-query-target="textarea"
+      ><%= params[:query] %></textarea>
+
+      <div class="mt-4 flex items-center gap-4">
+        <button type="submit"
+                data-hr-query-target="submitBtn"
+                class="inline-flex items-center gap-2 px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg transition-colors disabled:opacity-60 disabled:cursor-not-allowed">
+          <svg data-hr-query-target="spinner"
+               class="hidden animate-spin h-4 w-4 text-white"
+               xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+            </path>
+          </svg>
+          <span data-hr-query-target="btnText">Rechercher</span>
+        </button>
+
+        <p data-hr-query-target="loadingMsg"
+           class="hidden text-sm text-gray-500 dark:text-gray-400 italic">
+          Analyse en cours (~2–4 s)…
+        </p>
+      </div>
+    <% end %>
+
+    <% if @error.present? %>
+      <div class="mt-4 rounded-lg bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 p-4">
+        <div class="flex items-start gap-2">
+          <svg class="h-5 w-5 text-red-500 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+          </svg>
+          <p class="text-sm text-red-700 dark:text-red-300"><%= @error %></p>
+        </div>
+      </div>
+    <% end %>
+  </div>
+
+  <!-- Results -->
+  <% if @rows %>
+    <%= render 'results', rows: @rows, columns: @columns, filters_param: @filters_param, query: params[:query] %>
+  <% else %>
+    <div class="text-center py-16 text-gray-400 dark:text-gray-500">
+      <svg class="mx-auto h-12 w-12 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+      </svg>
+      <p class="text-sm">Lancez une recherche pour afficher les résultats.</p>
+    </div>
+  <% end %>
+
+</div>

@@ -58,7 +58,7 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :onboardings, only: [:show]
+  resources :employee_onboardings, only: [:show]
 
   resources :notifications, only: [:index] do
     member do
@@ -112,10 +112,10 @@ Rails.application.routes.draw do
     end
     get 'team_schedules', to: 'team_schedules#index'
 
-    # Onboarding
-    resources :onboardings do
-      resources :onboarding_tasks,   only: [:update], shallow: true
-      resources :onboarding_reviews, only: [:new, :create], shallow: true
+    # Employee Onboarding
+    resources :employee_onboardings do
+      resources :employee_onboarding_tasks,   only: [:update], shallow: true
+      resources :employee_onboarding_reviews, only: [:new, :create], shallow: true
     end
 
     # CSV Exports
@@ -190,7 +190,16 @@ Rails.application.routes.draw do
         post :preview
       end
     end
-    resource :payroll, only: [:show], controller: 'payroll'
+    resource :payroll, only: [:show], controller: 'payroll' do
+      collection do
+        get :export
+      end
+    end
+    resource :hr_query, only: [:show, :create] do
+      collection do
+        get :export
+      end
+    end
   end
 
   # Default root for non-authenticated users
