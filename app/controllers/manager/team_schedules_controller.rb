@@ -2,9 +2,7 @@
   # Authorization handled by authorize_manager! before_action
 
 module Manager
-  class TeamSchedulesController < ApplicationController
-    before_action :authenticate_employee!
-    before_action :authorize_manager!
+  class TeamSchedulesController < BaseController
 
     def index
       @team_members = policy_scope(Employee)
@@ -42,10 +40,5 @@ module Manager
 
     private
 
-    def authorize_manager!
-      unless current_employee.manager?
-        redirect_to dashboard_path, alert: 'Accès réservé aux managers'
-      end
-    end
   end
 end

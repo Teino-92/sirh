@@ -1,6 +1,5 @@
 module Manager
-  class EvaluationsController < ApplicationController
-    before_action :authenticate_employee!
+  class EvaluationsController < BaseController
     before_action :set_evaluation, only: [:show, :edit, :update, :destroy, :complete, :submit_manager_review]
 
     def index
@@ -93,8 +92,5 @@ module Manager
       params.require(:evaluation).permit(:employee_id, :period_start, :period_end)
     end
 
-    def current_organization
-      current_employee.organization
-    end
   end
 end

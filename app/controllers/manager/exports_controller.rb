@@ -8,9 +8,7 @@ require_dependency Rails.root.join('app', 'services', 'exports', 'evaluations_cs
 require_dependency Rails.root.join('app', 'services', 'exports', 'trainings_csv_exporter')
 
 module Manager
-  class ExportsController < ApplicationController
-    before_action :authenticate_employee!
-    before_action :authorize_manager!
+  class ExportsController < BaseController
 
     def index
       authorize :exports, policy_class: ExportPolicy
@@ -54,12 +52,6 @@ module Manager
     rescue StandardError => e
       Rails.logger.error "Export CSV error: #{e.message}"
       redirect_to manager_exports_path, alert: "Erreur lors de l'export: #{e.message}"
-    end
-
-    def authorize_manager!
-      unless current_employee.manager?
-        redirect_to dashboard_path, alert: 'Accès réservé aux managers'
-      end
     end
 
     def export_params

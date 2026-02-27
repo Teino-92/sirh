@@ -1,8 +1,7 @@
 # frozen_string_literal: true
 
 module Manager
-  class OnboardingTasksController < ApplicationController
-    before_action :authenticate_employee!
+  class OnboardingTasksController < BaseController
 
     def update
       @task = current_employee.organization.onboarding_tasks.find(params[:id])

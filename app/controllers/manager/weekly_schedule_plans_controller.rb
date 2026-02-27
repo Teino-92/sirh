@@ -2,9 +2,7 @@
   # Authorization handled by authorize_manager! before_action
 
 module Manager
-  class WeeklySchedulePlansController < ApplicationController
-    before_action :authenticate_employee!
-    before_action :authorize_manager!
+  class WeeklySchedulePlansController < BaseController
     before_action :set_team_member
     before_action :set_weekly_plan, only: [:edit, :update, :destroy]
 
@@ -109,12 +107,6 @@ module Manager
     rescue ActiveRecord::RecordNotFound
       redirect_to manager_team_member_weekly_schedule_plans_path(@team_member),
                   alert: 'Planning non trouvé'
-    end
-
-    def authorize_manager!
-      unless current_employee.manager?
-        redirect_to dashboard_path, alert: 'Accès réservé aux managers'
-      end
     end
 
     def weekly_plan_params

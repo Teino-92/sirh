@@ -2,9 +2,7 @@
   # Authorization handled by authorize_manager! before_action
 
 module Manager
-  class TimeEntriesController < ApplicationController
-    before_action :authenticate_employee!
-    before_action :authorize_manager!
+  class TimeEntriesController < BaseController
     before_action :set_team_member, only: [:index, :validate_week]
     skip_before_action :verify_authenticity_token, only: [:reject_entry]
 
@@ -93,10 +91,5 @@ module Manager
       @team_member = current_employee.team_members.find(params[:team_member_id])
     end
 
-    def authorize_manager!
-      unless current_employee.manager?
-        redirect_to dashboard_path, alert: 'Accès réservé aux managers'
-      end
-    end
   end
 end

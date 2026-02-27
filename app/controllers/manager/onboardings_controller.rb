@@ -1,8 +1,7 @@
 # frozen_string_literal: true
 
 module Manager
-  class OnboardingsController < ApplicationController
-    before_action :authenticate_employee!
+  class OnboardingsController < BaseController
     before_action :set_onboarding, only: [:show, :edit, :update]
 
     def index
@@ -68,8 +67,5 @@ module Manager
                                          :start_date, :end_date, :notes)
     end
 
-    def current_organization
-      current_employee.organization
-    end
   end
 end

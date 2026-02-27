@@ -2,9 +2,7 @@
   # Authorization handled by authorize_manager! before_action
 
 module Manager
-  class WorkSchedulesController < ApplicationController
-    before_action :authenticate_employee!
-    before_action :authorize_manager!
+  class WorkSchedulesController < BaseController
     before_action :set_team_member
 
     def new
@@ -73,12 +71,6 @@ module Manager
       @team_member = current_employee.team_members.find(params[:team_member_id])
     rescue ActiveRecord::RecordNotFound
       redirect_to manager_team_schedules_path, alert: 'Employé non trouvé dans votre équipe'
-    end
-
-    def authorize_manager!
-      unless current_employee.manager?
-        redirect_to dashboard_path, alert: 'Accès réservé aux managers'
-      end
     end
 
     def work_schedule_params

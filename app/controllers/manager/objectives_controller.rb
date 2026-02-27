@@ -1,6 +1,5 @@
 module Manager
-  class ObjectivesController < ApplicationController
-    before_action :authenticate_employee!
+  class ObjectivesController < BaseController
     before_action :set_objective, only: [:show, :edit, :update, :destroy, :complete]
 
     def index
@@ -69,8 +68,5 @@ module Manager
       params.require(:objective).permit(:title, :description, :owner_id, :deadline, :priority)
     end
 
-    def current_organization
-      current_employee.organization
-    end
   end
 end

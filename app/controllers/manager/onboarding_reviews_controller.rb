@@ -1,8 +1,7 @@
 # frozen_string_literal: true
 
 module Manager
-  class OnboardingReviewsController < ApplicationController
-    before_action :authenticate_employee!
+  class OnboardingReviewsController < BaseController
 
     def new
       @onboarding = current_employee.organization.onboardings.find(params[:onboarding_id])

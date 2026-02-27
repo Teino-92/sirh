@@ -1,6 +1,5 @@
 module Manager
-  class OneOnOnesController < ApplicationController
-    before_action :authenticate_employee!
+  class OneOnOnesController < BaseController
     before_action :set_one_on_one, only: [:show, :edit, :update, :destroy, :complete]
 
     def index
@@ -61,8 +60,5 @@ module Manager
       params.require(:one_on_one).permit(:employee_id, :scheduled_at, :agenda, :notes)
     end
 
-    def current_organization
-      current_employee.organization
-    end
   end
 end

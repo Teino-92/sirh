@@ -1,6 +1,5 @@
 module Manager
-  class TrainingsController < ApplicationController
-    before_action :authenticate_employee!
+  class TrainingsController < BaseController
     before_action :set_training, only: [:show, :edit, :update, :destroy, :archive, :unarchive]
 
     def index
@@ -83,8 +82,5 @@ module Manager
       )
     end
 
-    def current_organization
-      current_employee.organization
-    end
   end
 end
