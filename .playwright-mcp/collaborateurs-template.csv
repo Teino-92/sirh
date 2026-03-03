@@ -1,0 +1,5 @@
+Prénom;Nom;Email;Téléphone;Département;Poste;Type de contrat;Date d'entrée;Date de fin;Salaire brut;Manager (email);Rôle
+Thomas;Martin;thomas.martin@entreprise.fr;0612345678;Engineering;Lead Dev;CDI;15/01/2022;;58000;directeur@entreprise.fr;manager
+Marie;Dupont;marie.dupont@entreprise.fr;;Marketing;Content Manager;CDI;01/03/2023;;42000;;employee
+Jean;Bernard;jean.bernard@entreprise.fr;0698765432;RH;Chargé RH;CDI;10/06/2021;;38000;directeur@entreprise.fr;hr
+Sophie;Lefevre;sophie.lefevre@entreprise.fr;;Engineering;Développeuse;CDD;01/09/2024;31/08/2025;35000;thomas.martin@entreprise.fr;employee

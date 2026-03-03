@@ -1,0 +1,36 @@
+Bonjour <%= @employee.first_name %>,
+
+Bienvenue sur Easy-RH ! Votre espace "<%= @organization.name %>" est prêt.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+VOS ACCÈS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+URL de connexion : <%= @login_url %>
+Email            : <%= @employee.email %>
+<% if @temp_password.present? %>
+Mot de passe     : <%= @temp_password %>
+
+Pensez à changer votre mot de passe dès la première connexion.
+<% else %>
+Pour définir votre mot de passe, cliquez sur "Mot de passe oublié ?" sur la page de connexion.
+<% end %>
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+3 PREMIÈRES ÉTAPES RECOMMANDÉES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1. Connectez-vous à votre espace
+   → <%= @login_url %>
+
+2. Complétez votre profil
+   → Informations personnelles, photo
+
+3. Consultez vos congés et votre planning
+   → Tableau de bord
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Des questions ? Répondez directement à cet email.
+
+L'équipe Easy-RH

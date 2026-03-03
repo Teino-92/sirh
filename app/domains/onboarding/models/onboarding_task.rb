@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class OnboardingTask < ApplicationRecord
-  belongs_to :onboarding
+  belongs_to :employee_onboarding, foreign_key: :employee_onboarding_id
   belongs_to :organization
   acts_as_tenant :organization
 

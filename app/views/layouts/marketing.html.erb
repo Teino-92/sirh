@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+
+    <!-- SEO — P2: title enrichi + meta description avec CTA -->
+    <title><%= content_for?(:title) ? yield(:title) : "Easy-RH — Logiciel RH pour PME françaises | Congés, Pointage, Paie" %></title>
+    <meta name="description" content="<%= content_for?(:description) ? yield(:description) : "Gérez congés, RTT, pointage, performance et onboarding en un seul outil. Conforme Code du Travail. Données en Europe. Essai gratuit 30 jours sans carte bancaire." %>">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="<%= request.base_url + request.path %>">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Easy-RH">
+    <meta property="og:title" content="Easy-RH — Logiciel RH pour PME françaises | Congés, Pointage, Paie">
+    <meta property="og:description" content="Gérez congés, pointage, performance et onboarding. Conforme droit du travail français. Essai gratuit 30 jours sans CB.">
+    <meta property="og:image" content="<%= request.base_url %>/screenshots/og-image.png">
+    <meta property="og:url" content="<%= request.base_url + request.path %>">
+    <meta property="og:locale" content="fr_FR">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Easy-RH — Logiciel RH pour PME françaises">
+    <meta name="twitter:description" content="Congés, pointage, performance, onboarding. Essai gratuit 30 jours.">
+    <meta name="twitter:image" content="<%= request.base_url %>/screenshots/og-image.png">
+
+    <!-- PWA / Favicon -->
+    <meta name="theme-color" content="#4F46E5">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+
+    <!-- Alpine.js for FAQ accordion & mobile menu -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    <!-- GSAP + ScrollTrigger -->
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+
+    <!-- P1 SEO: JSON-LD structured data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Organization",
+          "@id": "<%= request.base_url %>/#organization",
+          "name": "Easy-RH",
+          "url": "<%= request.base_url %>",
+          "logo": "<%= request.base_url %>/screenshots/og-image.png",
+          "contactPoint": {
+            "@type": "ContactPoint",
+            "email": "contact@easy-rh.fr",
+            "contactType": "customer support",
+            "availableLanguage": "French"
+          }
+        },
+        {
+          "@type": "SoftwareApplication",
+          "name": "Easy-RH",
+          "applicationCategory": "BusinessApplication",
+          "operatingSystem": "Web, iOS, Android",
+          "description": "SIRH moderne pour PME françaises — gestion congés, pointage, performance, onboarding.",
+          "offers": [
+            {
+              "@type": "Offer",
+              "name": "Essentiel",
+              "price": "49",
+              "priceCurrency": "EUR",
+              "billingIncrement": "P1M"
+            },
+            {
+              "@type": "Offer",
+              "name": "Pro",
+              "price": "149",
+              "priceCurrency": "EUR",
+              "billingIncrement": "P1M"
+            },
+            {
+              "@type": "Offer",
+              "name": "Entreprise",
+              "price": "499",
+              "priceCurrency": "EUR",
+              "billingIncrement": "P1M"
+            }
+          ]
+        },
+        {
+          "@type": "FAQPage",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "Easy-RH est-il conforme au droit du travail français ?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Oui. Easy-RH applique automatiquement les règles légales françaises : acquisition CP à 2,5 jours par mois, plafond de 10h de travail par jour, 48h par semaine, calcul RTT pour les contrats 39h+. Les règles sont configurables selon votre convention collective."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Où sont hébergées nos données ?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Toutes vos données sont hébergées en Europe, sur des serveurs conformes RGPD. Les données sont chiffrées au repos et en transit. Les informations sensibles (NIR, IBAN) sont chiffrées avec ActiveRecord Encryption."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "L'application fonctionne-t-elle sur mobile ?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Easy-RH est une PWA (Progressive Web App) installable sur iOS et Android, optimisée mobile-first. Le plan Pro inclut également une API mobile complète (JWT) pour les intégrations natives."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Comment fonctionne l'essai gratuit ?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Votre espace est créé instantanément sans carte bancaire. Vous avez accès à toutes les fonctionnalités pendant 30 jours. À la fin de l'essai, vous choisissez un plan ou vos données sont conservées 30 jours supplémentaires avant suppression."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Puis-je importer mes collaborateurs depuis mon ancien SIRH ?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Oui. Easy-RH accepte n'importe quel fichier CSV — qu'il vienne d'Excel, Sage, Lucca, Factorial, PayFit, BambooHR ou d'un export maison. Détection automatique du format, rapport d'erreurs ligne par ligne. La migration prend généralement moins de 5 minutes."
+              }
+            }
+          ]
+        }
+      ]
+    }
+    </script>
+  </head>
+
+  <body class="bg-white dark:bg-gray-950 text-gray-900 dark:text-gray-100 antialiased">
+    <!-- P2 Accessibilité: skip to content -->
+    <a href="#main-content" class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:bg-indigo-600 focus:text-white focus:rounded-lg focus:text-sm focus:font-semibold">
+      Aller au contenu principal
+    </a>
+
+    <%= yield %>
+  </body>
+</html>

@@ -1,0 +1,130 @@
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+  <!-- Header -->
+  <div class="mb-6">
+    <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Journal d'audit</h1>
+    <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+      Historique immuable des modifications sur les soldes de congés, demandes de congés et onboardings.
+    </p>
+  </div>
+
+  <!-- Filters -->
+  <%= form_with url: admin_audit_log_path, method: :get, local: true,
+                class: "bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-4 mb-6 flex flex-wrap gap-3 items-end" do |f| %>
+    <div>
+      <label class="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Type</label>
+      <%= f.select :item_type,
+            [["Tous", ""]] + @item_types.map { |t| [t, t] },
+            { selected: params[:item_type] },
+            class: "rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm text-gray-900 dark:text-white focus:ring-indigo-500" %>
+    </div>
+    <div>
+      <label class="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Événement</label>
+      <%= f.select :event,
+            [["Tous", ""], ["Création", "create"], ["Modification", "update"], ["Suppression", "destroy"]],
+            { selected: params[:event] },
+            class: "rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm text-gray-900 dark:text-white focus:ring-indigo-500" %>
+    </div>
+    <div>
+      <label class="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Du</label>
+      <%= f.date_field :from, value: params[:from],
+            class: "rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm text-gray-900 dark:text-white focus:ring-indigo-500" %>
+    </div>
+    <div>
+      <label class="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Au</label>
+      <%= f.date_field :to, value: params[:to],
+            class: "rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm text-gray-900 dark:text-white focus:ring-indigo-500" %>
+    </div>
+    <%= f.submit "Filtrer",
+          class: "px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg transition-colors" %>
+    <%= link_to "Réinitialiser", admin_audit_log_path,
+          class: "px-4 py-2 border border-gray-300 dark:border-gray-600 text-sm font-medium rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors" %>
+  <% end %>
+
+  <!-- Table -->
+  <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
+    <% if @versions.empty? %>
+      <div class="text-center py-16 text-gray-400 dark:text-gray-500">
+        <p class="text-sm">Aucune entrée d'audit pour ces filtres.</p>
+      </div>
+    <% else %>
+      <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+          <thead class="bg-gray-50 dark:bg-gray-700/50">
+            <tr>
+              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Date</th>
+              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Type</th>
+              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">ID</th>
+              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Événement</th>
+              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Par</th>
+              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Modifications</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-100 dark:divide-gray-700">
+            <% @versions.each do |version| %>
+              <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/30">
+                <td class="px-4 py-3 text-xs text-gray-500 dark:text-gray-400 whitespace-nowrap">
+                  <%= l(version.created_at, format: :short) %>
+                </td>
+                <td class="px-4 py-3 text-xs font-medium text-gray-700 dark:text-gray-300">
+                  <%= version.item_type %>
+                </td>
+                <td class="px-4 py-3 text-xs text-gray-500 dark:text-gray-400">
+                  #<%= version.item_id %>
+                </td>
+                <td class="px-4 py-3">
+                  <% badge_class = case version.event
+                                   when 'create' then 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
+                                   when 'update' then 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400'
+                                   when 'destroy' then 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'
+                                   else 'bg-gray-100 text-gray-800'
+                                   end %>
+                  <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium <%= badge_class %>">
+                    <%= version.event %>
+                  </span>
+                </td>
+                <td class="px-4 py-3 text-xs text-gray-500 dark:text-gray-400">
+                  <% if version.whodunnit.present?
+                       employee = Employee.find_by(id: version.whodunnit)
+                     end %>
+                  <%= employee&.full_name || version.whodunnit || "système" %>
+                </td>
+                <td class="px-4 py-3 text-xs text-gray-500 dark:text-gray-400 max-w-xs">
+                  <% if version.object_changes.present?
+                       changes = YAML.safe_load(version.object_changes, permitted_classes: [Time, Date, BigDecimal, Symbol]) rescue {}
+                       relevant = changes.except('updated_at', 'created_at')
+                     end %>
+                  <% if relevant.present? %>
+                    <ul class="space-y-0.5">
+                      <% relevant.each do |field, (before, after)| %>
+                        <li><span class="font-medium"><%= field %></span>: <%= before.inspect %> → <%= after.inspect %></li>
+                      <% end %>
+                    </ul>
+                  <% else %>
+                    <span class="italic">création</span>
+                  <% end %>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Pagination -->
+      <div class="px-4 py-3 border-t border-gray-200 dark:border-gray-700 flex items-center justify-between">
+        <p class="text-xs text-gray-500 dark:text-gray-400">
+          <%= @versions.total_count %> entrées
+        </p>
+        <div class="flex gap-2">
+          <%= link_to_if @versions.prev_page, "← Précédent",
+                admin_audit_log_path(params.permit!.merge(page: @versions.prev_page)),
+                class: "px-3 py-1 text-xs border border-gray-300 dark:border-gray-600 rounded text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700" %>
+          <%= link_to_if @versions.next_page, "Suivant →",
+                admin_audit_log_path(params.permit!.merge(page: @versions.next_page)),
+                class: "px-3 py-1 text-xs border border-gray-300 dark:border-gray-600 rounded text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700" %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+
+</div>

@@ -46,3 +46,5 @@ PERFORMANCE_LAYER_ARCHITECTURE.md
 SPRINT_*.md
 .env
 .env.local
+
+/config/credentials/development.key

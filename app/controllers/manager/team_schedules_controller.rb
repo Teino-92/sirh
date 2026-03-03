@@ -15,7 +15,7 @@ module Manager
       @members_without_schedule = @team_members.select { |m| m.weekly_schedule_plans.empty? }
 
       # Next 1:1s across the whole team (next 7 days)
-      @upcoming_one_on_ones = OneOnOne
+      @upcoming_one_on_ones = current_organization.one_on_ones
                                 .where(manager: current_employee)
                                 .scheduled
                                 .where(scheduled_at: Time.current..7.days.from_now)
@@ -24,16 +24,19 @@ module Manager
 
       # Per-member performance data (keyed by employee id)
       member_ids = @team_members.map(&:id)
-      @member_objectives = Objective.for_manager(current_employee)
+      @member_objectives = current_organization.objectives
+                                    .for_manager(current_employee)
                                     .where(owner_id: member_ids)
                                     .active
                                     .group_by(&:owner_id)
-      @member_one_on_ones = OneOnOne.where(manager: current_employee, employee_id: member_ids)
+      @member_one_on_ones = current_organization.one_on_ones
+                                    .where(manager: current_employee, employee_id: member_ids)
                                     .scheduled
                                     .where(scheduled_at: Time.current..)
                                     .order(:scheduled_at)
                                     .group_by(&:employee_id)
-      @member_trainings = TrainingAssignment.where(employee_id: member_ids)
+      @member_trainings = current_organization.training_assignments
+                                            .where(employee_id: member_ids)
                                             .active
                                             .group_by(&:employee_id)
     end

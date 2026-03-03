@@ -12,26 +12,24 @@ class LeaveRequestNotificationJob < ApplicationJob
 
     case action
     when :submitted
-      # TODO: Implement LeaveRequestMailer in Sprint 2.x
-      Rails.logger.info "[EMAIL] Leave request submitted: #{leave_request.id} (Employee: #{leave_request.employee.email})"
-      # Notifier le manager si présent
+      LeaveRequestMailer.submitted(leave_request).deliver_later
       if leave_request.employee.manager.present?
-        Rails.logger.info "[EMAIL] Pending approval notification for manager: #{leave_request.employee.manager.email}"
+        LeaveRequestMailer.pending_approval(leave_request, leave_request.employee.manager).deliver_later
       end
 
     when :approved
-      Rails.logger.info "[EMAIL] Leave request approved: #{leave_request.id} (Employee: #{leave_request.employee.email})"
+      LeaveRequestMailer.approved(leave_request).deliver_later
 
     when :rejected
-      Rails.logger.info "[EMAIL] Leave request rejected: #{leave_request.id} (Employee: #{leave_request.employee.email})"
+      LeaveRequestMailer.rejected(leave_request).deliver_later
 
     when :cancelled
-      Rails.logger.info "[EMAIL] Leave request cancelled: #{leave_request.id} (Employee: #{leave_request.employee.email})"
+      LeaveRequestMailer.cancelled(leave_request).deliver_later
 
     when :pending_approval
       if recipient_id.present?
         manager = Employee.find(recipient_id)
-        Rails.logger.info "[EMAIL] Pending approval notification for manager: #{manager.email} (Leave request: #{leave_request.id})"
+        LeaveRequestMailer.pending_approval(leave_request, manager).deliver_later
       end
 
     else

@@ -300,6 +300,7 @@ RSpec.describe Employee, type: :model do
 
     it 'accepts CDD contract type' do
       employee.contract_type = 'CDD'
+      employee.end_date = 1.year.from_now.to_date
       expect(employee).to be_valid
     end
 
@@ -348,6 +349,92 @@ RSpec.describe Employee, type: :model do
         :validatable,
         :jwt_authenticatable
       )
+    end
+  end
+
+  describe 'NIR/IBAN encryption' do
+    let(:emp) { create(:employee, organization: organization, nir: '1850975123456', iban: 'FR7630006000011234567890189') }
+
+    it 'stores NIR encrypted (ciphertext differs from plaintext)' do
+      raw = emp.read_attribute_before_type_cast(:nir)
+      expect(raw).not_to eq('1850975123456')
+      expect(raw).to be_present
+    end
+
+    it 'stores IBAN encrypted (ciphertext differs from plaintext)' do
+      raw = emp.read_attribute_before_type_cast(:iban)
+      expect(raw).not_to eq('FR7630006000011234567890189')
+      expect(raw).to be_present
+    end
+
+    it 'decrypts NIR transparently on read' do
+      reloaded = Employee.find(emp.id)
+      expect(reloaded.nir).to eq('1850975123456')
+    end
+
+    it 'decrypts IBAN transparently on read' do
+      reloaded = Employee.find(emp.id)
+      expect(reloaded.iban).to eq('FR7630006000011234567890189')
+    end
+  end
+
+  describe 'NIR validations' do
+    let(:emp) { build(:employee, organization: organization) }
+
+    it 'accepts a valid NIR starting with 1' do
+      emp.nir = '1850975123456'
+      expect(emp).to be_valid
+    end
+
+    it 'accepts a valid NIR starting with 2' do
+      emp.nir = '2850975123456'
+      expect(emp).to be_valid
+    end
+
+    it 'rejects a NIR with wrong length' do
+      emp.nir = '18509751234'
+      expect(emp).not_to be_valid
+      expect(emp.errors[:nir]).to be_present
+    end
+
+    it 'rejects a NIR starting with invalid digit' do
+      emp.nir = '385097512345678'
+      expect(emp).not_to be_valid
+    end
+
+    it 'allows blank NIR' do
+      emp.nir = nil
+      expect(emp).to be_valid
+    end
+  end
+
+  describe 'NIR uniqueness within organization' do
+    it 'rejects duplicate NIR within the same organization' do
+      ActsAsTenant.with_tenant(organization) do
+        create(:employee, organization: organization, nir: '1850975123456')
+        dup = build(:employee, organization: organization, nir: '1850975123456')
+        expect(dup).not_to be_valid
+        expect(dup.errors[:nir]).to include('est déjà utilisé par un autre employé')
+      end
+    end
+
+    it 'allows the same NIR in different organizations' do
+      org2 = create(:organization)
+      ActsAsTenant.with_tenant(organization) do
+        create(:employee, organization: organization, nir: '1850975123456')
+      end
+      emp2 = ActsAsTenant.with_tenant(org2) do
+        build(:employee, organization: org2, nir: '1850975123456')
+      end
+      expect(emp2).to be_valid
+    end
+
+    it 'allows updating an employee without changing NIR' do
+      ActsAsTenant.with_tenant(organization) do
+        emp = create(:employee, organization: organization, nir: '1850975123456')
+        emp.first_name = 'Updated'
+        expect(emp).to be_valid
+      end
     end
   end
 end

@@ -5,10 +5,20 @@ Rails.application.routes.draw do
   # Health check
   get "up" => "rails/health#show", as: :rails_health_check
 
-  # Root path - Dashboard for authenticated, sign in for guests
+  # Root path — Landing for guests, Dashboard for authenticated
+  root to: 'pages#home'
+
   authenticated :employee do
     root to: 'dashboard#show', as: :authenticated_root
   end
+
+  # Trial registration (public)
+  resource :trial_registration, only: [:create]
+
+  # Legal pages (public)
+  get '/cgu',                          to: 'pages#cgu',                          as: :cgu
+  get '/politique-de-confidentialite', to: 'pages#politique_de_confidentialite', as: :politique_de_confidentialite
+  get '/mentions-legales',             to: 'pages#mentions_legales',             as: :mentions_legales
 
   # Web UI - Responsive (works great on mobile AND desktop)
   resource :dashboard, only: [:show], controller: 'dashboard'
@@ -59,6 +69,14 @@ Rails.application.routes.draw do
   end
 
   resources :employee_onboardings, only: [:show]
+
+  resources :trial_period_decisions, only: [] do
+    member do
+      post :confirm
+      post :renew
+      post :terminate
+    end
+  end
 
   resources :notifications, only: [:index] do
     member do
@@ -121,11 +139,10 @@ Rails.application.routes.draw do
     # CSV Exports
     resources :exports, only: [:index] do
       collection do
-        get :time_entries,  to: 'exports#time_entries'
-        get :absences,      to: 'exports#absences'
-        get :one_on_ones,   to: 'exports#one_on_ones'
-        get :evaluations,   to: 'exports#evaluations'
-        get :trainings,     to: 'exports#trainings'
+        get  :time_entries,   to: 'exports#time_entries'
+        get  :absences,       to: 'exports#absences'
+        post :search,         to: 'exports#search'
+        get  :search_export,  to: 'exports#search_export'
       end
     end
   end
@@ -168,6 +185,13 @@ Rails.application.routes.draw do
       # Work schedules
       resources :work_schedules, only: [:show, :update]
 
+      # Payroll — HR/Admin only
+      scope :payroll do
+        get  'employees',     to: 'payroll#employees',      as: :payroll_employees
+        get  'employees/:id', to: 'payroll#employee_detail', as: :payroll_employee
+        get  'summary',       to: 'payroll#summary',        as: :payroll_summary
+      end
+
       # Team management (managers only)
       namespace :team do
         resources :employees, only: [:index, :show]
@@ -192,16 +216,18 @@ Rails.application.routes.draw do
     end
     resource :payroll, only: [:show], controller: 'payroll' do
       collection do
-        get :export
+        get  :export
+        get  :export_silae
+        post :push_silae
       end
+      resources :payroll_periods, only: [:create, :destroy]
     end
     resource :hr_query, only: [:show, :create] do
       collection do
         get :export
       end
     end
+    resource :audit_log, only: [:show], controller: 'audit_logs'
+    resource :employee_import, only: [:new, :create]
   end
-
-  # Default root for non-authenticated users
-  root to: redirect('/employees/sign_in')
 end

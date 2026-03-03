@@ -1,0 +1,7 @@
+[     527ms] [WARNING] Alpine Warning: You can't use [x-collapse] without first installing the "Collapse" plugin here: https://alpinejs.dev/plugins/collapse JSHandle@node @ https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js:4
+[     527ms] [WARNING] Alpine Warning: You can't use [x-collapse] without first installing the "Collapse" plugin here: https://alpinejs.dev/plugins/collapse JSHandle@node @ https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js:4
+[     527ms] [WARNING] Alpine Warning: You can't use [x-collapse] without first installing the "Collapse" plugin here: https://alpinejs.dev/plugins/collapse JSHandle@node @ https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js:4
+[     528ms] [WARNING] Alpine Warning: You can't use [x-collapse] without first installing the "Collapse" plugin here: https://alpinejs.dev/plugins/collapse JSHandle@node @ https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js:4
+[     528ms] [WARNING] Alpine Warning: You can't use [x-collapse] without first installing the "Collapse" plugin here: https://alpinejs.dev/plugins/collapse JSHandle@node @ https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js:4
+[     562ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3000/icon-192.png:0
+[     562ms] [WARNING] Error while trying to use the following icon from the Manifest: http://localhost:3000/icon-192.png (Download error or resource isn't a valid image) @ http://localhost:3000/:0

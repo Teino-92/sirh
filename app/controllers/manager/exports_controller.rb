@@ -3,9 +3,6 @@
 require_dependency Rails.root.join('app', 'services', 'exports', 'base_csv_exporter')
 require_dependency Rails.root.join('app', 'services', 'exports', 'time_entries_csv_exporter')
 require_dependency Rails.root.join('app', 'services', 'exports', 'absences_csv_exporter')
-require_dependency Rails.root.join('app', 'services', 'exports', 'one_on_ones_csv_exporter')
-require_dependency Rails.root.join('app', 'services', 'exports', 'evaluations_csv_exporter')
-require_dependency Rails.root.join('app', 'services', 'exports', 'trainings_csv_exporter')
 
 module Manager
   class ExportsController < BaseController
@@ -24,19 +21,33 @@ module Manager
       csv_export(Exports::AbsencesCsvExporter)
     end
 
-    def one_on_ones
+    def search
       authorize :exports, policy_class: ExportPolicy
-      csv_export(Exports::OneOnOnesCsvExporter)
+      @query = params[:query].to_s.strip
+      if @query.blank?
+        @search_error = "Veuillez saisir une requête."
+        return render :index, status: :unprocessable_entity
+      end
+      result = HrQuery::HrQueryInterpreterService.new(@query).call
+      if result.success
+        @filters       = result.filters
+        @rows          = HrQuery::HrQueryExecutorService.new(@filters, current_employee).call
+        @columns       = column_labels(@rows)
+        @filters_param = @filters.to_json
+      else
+        @search_error = result.error
+      end
+      render :index
     end
 
-    def evaluations
+    def search_export
       authorize :exports, policy_class: ExportPolicy
-      csv_export(Exports::EvaluationsCsvExporter)
-    end
-
-    def trainings
-      authorize :exports, policy_class: ExportPolicy
-      csv_export(Exports::TrainingsCsvExporter)
+      filters = JSON.parse(params[:filters].to_s)
+      result  = HrQuery::HrQueryCsvExporter.new(current_employee, filters).export
+      send_data result[:content], filename: result[:filename],
+                type: 'text/csv; charset=utf-8', disposition: 'attachment'
+    rescue JSON::ParserError
+      redirect_to manager_exports_path, alert: "Paramètres invalides."
     end
 
     private
@@ -68,6 +79,15 @@ module Manager
         employee_ids: [],
         leave_types: []
       ).to_h
+    end
+
+    COLUMN_LABELS = HrQuery::HrQueryCsvExporter::COLUMN_LABELS
+
+    def column_labels(rows)
+      return {} if rows.empty?
+      rows.first.keys.each_with_object({}) do |key, h|
+        h[key] = COLUMN_LABELS.fetch(key, key.humanize)
+      end
     end
   end
 end

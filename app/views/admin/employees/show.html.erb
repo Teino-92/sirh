@@ -76,6 +76,7 @@
       </div>
 
       <!-- Rémunération -->
+      <% if policy(@employee).see_salary? %>
       <div class="border-t border-gray-200 dark:border-gray-700 pt-6">
         <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Rémunération</h2>
         <% if @employee.gross_salary_cents > 0 %>
@@ -114,6 +115,7 @@
           </p>
         <% end %>
       </div>
+      <% end %>
 
       <% if @employee.manager? && @employee.direct_reports.any? %>
         <div class="border-t border-gray-200 dark:border-gray-700 pt-6">

@@ -1,11 +1,43 @@
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
   <!-- Header -->
-  <div class="mb-8">
-    <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100">Masse salariale</h1>
-    <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
-      Synthèse RH · <%= l(Date.current, format: :long) %>
-    </p>
+  <div class="mb-8 flex items-start justify-between gap-4 flex-wrap">
+    <div>
+      <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100">Masse salariale</h1>
+      <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
+        Synthèse RH · <%= l(Date.current, format: :long) %>
+      </p>
+    </div>
+
+    <div class="flex items-center gap-3 flex-wrap">
+      <!-- Export CSV standard -->
+      <%= link_to export_admin_payroll_path, class: "inline-flex items-center gap-2 px-4 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-200 text-sm font-medium rounded-lg shadow-sm transition" do %>
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+        </svg>
+        Export masse salariale
+      <% end %>
+
+      <!-- Export Silae avec sélecteur de période -->
+      <form action="<%= export_silae_admin_payroll_path %>" method="get" class="flex items-center gap-2">
+        <div class="relative">
+          <input type="month"
+                 name="period"
+                 value="<%= Date.current.strftime('%Y-%m') %>"
+                 max="<%= Date.current.strftime('%Y-%m') %>"
+                 class="block pl-3 pr-8 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 cursor-pointer"
+                 title="Sélectionner la période de paie">
+        </div>
+        <button type="submit"
+                class="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg shadow-sm transition"
+                title="Générer le fichier d'import Silae pour la période sélectionnée">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+          </svg>
+          Export Silae
+        </button>
+      </form>
+    </div>
   </div>
 
   <!-- ── KPI Cards ─────────────────────────────────────────────────────── -->
@@ -305,5 +337,7 @@
       </div>
     <% end %>
   </div>
+
+  <%= render 'payroll_periods' %>
 
 </div>

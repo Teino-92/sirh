@@ -24,7 +24,7 @@ module Api
       expected_hours = schedule&.hours_for_day(today) || 7
 
       render json: {
-        entry: time_entry_json(time_entry),
+        entry: serialize_time_entry(time_entry),
         expected_clock_out: time_entry.clock_in + expected_hours.hours,
         message: 'Pointage effectué avec succès'
       }, status: :created
@@ -44,7 +44,7 @@ module Api
       )
 
       render json: {
-        entry: time_entry_json(time_entry),
+        entry: serialize_time_entry(time_entry),
         hours_worked: time_entry.hours_worked,
         overtime: time_entry.overtime?,
         message: 'Pointage de sortie effectué avec succès'
@@ -58,7 +58,7 @@ module Api
                                  .limit(30)
 
       render json: {
-        entries: entries.map { |e| time_entry_json(e) },
+        entries: entries.map { |e| serialize_time_entry(e) },
         summary: {
           this_week: weekly_summary,
           this_month: monthly_summary
@@ -69,27 +69,13 @@ module Api
     # GET /api/v1/time_entries/:id
     def show
       entry = current_employee.time_entries.find(params[:id])
-      render json: time_entry_json(entry)
+      render json: serialize_time_entry(entry)
     end
 
     private
 
     def clock_params
       params.permit(:location => {})
-    end
-
-    def time_entry_json(entry)
-      {
-        id: entry.id,
-        clock_in: entry.clock_in,
-        clock_out: entry.clock_out,
-        duration_minutes: entry.duration_minutes,
-        hours_worked: entry.hours_worked,
-        active: entry.active?,
-        overtime: entry.overtime?,
-        worked_date: entry.worked_date,
-        location: entry.location
-      }
     end
 
     def weekly_summary

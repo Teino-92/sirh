@@ -23,6 +23,8 @@ module Admin
     end
 
     def show
+      authorize @employee, :see_salary?
+      log_payroll_access if sensitive_payroll_data_stored?
     end
 
     def new
@@ -51,9 +53,12 @@ module Admin
     end
 
     def edit
+      authorize @employee, :see_salary?
+      log_payroll_access if sensitive_payroll_data_stored?
     end
 
     def update
+      authorize @employee, :see_salary?
       attrs = employee_params
       # Merge settings so we don't clobber existing keys (e.g. 'active')
       if attrs[:settings].present?
@@ -87,6 +92,25 @@ module Admin
       @employee = current_employee.organization.employees.find(params[:id])
     end
 
+    # Checks presence of sensitive fields without decrypting — reads raw ciphertext column.
+    def sensitive_payroll_data_stored?
+      @employee.read_attribute_before_type_cast(:nir).present? ||
+        @employee.read_attribute_before_type_cast(:iban).present?
+    end
+
+    def log_payroll_access
+      PaperTrail::Version.create!(
+        item_type:       'Employee',
+        item_id:         @employee.id,
+        event:           'payroll_data_viewed',
+        whodunnit:       current_employee.id.to_s,
+        organization_id: current_organization.id,
+        object_changes:  { ip: request.remote_ip }.to_json
+      )
+    rescue StandardError => e
+      Rails.logger.error("[AuditLog] payroll_data_viewed failed: #{e.message}")
+    end
+
     def employee_params
       permitted = params.require(:employee).permit(
         :email,
@@ -105,6 +129,23 @@ module Admin
         :gross_salary_eur,
         :variable_pay_eur,
         :employer_charges_rate,
+        # Payroll / DSN fields
+        :nir,
+        :nir_key,
+        :birth_date,
+        :birth_city,
+        :birth_department,
+        :birth_country,
+        :nationality,
+        :iban,
+        :bic,
+        :convention_collective,
+        :qualification,
+        :coefficient,
+        :part_time_rate,
+        :trial_period_end,
+        :termination_date,
+        :termination_reason,
         settings: [:cadre]
       )
 

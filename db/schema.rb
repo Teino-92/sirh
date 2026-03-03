@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2026_02_19_223419) do
+ActiveRecord::Schema[7.1].define(version: 2026_02_28_230653) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -65,6 +65,25 @@ ActiveRecord::Schema[7.1].define(version: 2026_02_19_223419) do
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
   end
 
+  create_table "employee_onboardings", force: :cascade do |t|
+    t.bigint "organization_id", null: false
+    t.bigint "employee_id", null: false
+    t.bigint "manager_id", null: false
+    t.bigint "onboarding_template_id", null: false
+    t.date "start_date", null: false
+    t.date "end_date", null: false
+    t.string "status", default: "active", null: false
+    t.text "notes"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "progress_percentage_cache", default: 0, null: false
+    t.integer "integration_score_cache", default: 0, null: false
+    t.index ["employee_id"], name: "idx_onboardings_employee_active", unique: true, where: "((status)::text = 'active'::text)"
+    t.index ["manager_id", "status"], name: "idx_onboardings_manager_status"
+    t.index ["organization_id", "status"], name: "idx_onboardings_org_status"
+    t.index ["organization_id"], name: "index_employee_onboardings_on_organization_id"
+  end
+
   create_table "employees", force: :cascade do |t|
     t.bigint "organization_id", null: false
     t.string "email", null: false
@@ -90,6 +109,23 @@ ActiveRecord::Schema[7.1].define(version: 2026_02_19_223419) do
     t.integer "gross_salary_cents", default: 0, null: false
     t.integer "variable_pay_cents", default: 0, null: false
     t.decimal "employer_charges_rate", precision: 5, scale: 4, default: "1.45", null: false
+    t.string "nir", limit: 255
+    t.string "nir_key", limit: 2
+    t.date "birth_date"
+    t.string "birth_city"
+    t.string "birth_department", limit: 3
+    t.string "birth_country", default: "FR"
+    t.string "nationality", default: "FR"
+    t.string "iban", limit: 255
+    t.string "bic"
+    t.string "convention_collective"
+    t.string "qualification"
+    t.string "coefficient"
+    t.decimal "part_time_rate", precision: 5, scale: 4, default: "1.0"
+    t.date "trial_period_end"
+    t.date "termination_date"
+    t.string "termination_reason"
+    t.index ["birth_date"], name: "index_employees_on_birth_date"
     t.index ["department"], name: "index_employees_on_department"
     t.index ["email"], name: "index_employees_on_email", unique: true
     t.index ["manager_id", "organization_id"], name: "idx_employees_manager_org"
@@ -247,7 +283,7 @@ ActiveRecord::Schema[7.1].define(version: 2026_02_19_223419) do
   end
 
   create_table "onboarding_reviews", force: :cascade do |t|
-    t.bigint "onboarding_id", null: false
+    t.bigint "employee_onboarding_id", null: false
     t.bigint "organization_id", null: false
     t.string "reviewer_type", null: false
     t.integer "review_day", default: 30, null: false
@@ -255,12 +291,12 @@ ActiveRecord::Schema[7.1].define(version: 2026_02_19_223419) do
     t.jsonb "manager_feedback_json", default: {}, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["onboarding_id", "reviewer_type", "review_day"], name: "idx_onboarding_reviews_unique", unique: true
+    t.index ["employee_onboarding_id", "reviewer_type", "review_day"], name: "idx_onboarding_reviews_unique", unique: true
     t.index ["organization_id"], name: "index_onboarding_reviews_on_organization_id"
   end
 
   create_table "onboarding_tasks", force: :cascade do |t|
-    t.bigint "onboarding_id", null: false
+    t.bigint "employee_onboarding_id", null: false
     t.bigint "organization_id", null: false
     t.string "title", null: false
     t.text "description"
@@ -275,7 +311,7 @@ ActiveRecord::Schema[7.1].define(version: 2026_02_19_223419) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["assigned_to_id", "due_date"], name: "idx_onboarding_tasks_assignee_due"
-    t.index ["onboarding_id", "status"], name: "idx_onboarding_tasks_onboarding_status"
+    t.index ["employee_onboarding_id", "status"], name: "idx_onboarding_tasks_onboarding_status"
     t.index ["organization_id", "due_date"], name: "idx_onboarding_tasks_org_pending_due", where: "((status)::text = 'pending'::text)"
     t.index ["organization_id"], name: "index_onboarding_tasks_on_organization_id"
   end
@@ -306,25 +342,6 @@ ActiveRecord::Schema[7.1].define(version: 2026_02_19_223419) do
     t.datetime "updated_at", null: false
     t.index ["organization_id", "active"], name: "idx_onboarding_templates_org_active"
     t.index ["organization_id"], name: "index_onboarding_templates_on_organization_id"
-  end
-
-  create_table "onboardings", force: :cascade do |t|
-    t.bigint "organization_id", null: false
-    t.bigint "employee_id", null: false
-    t.bigint "manager_id", null: false
-    t.bigint "onboarding_template_id", null: false
-    t.date "start_date", null: false
-    t.date "end_date", null: false
-    t.string "status", default: "active", null: false
-    t.text "notes"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.integer "progress_percentage_cache", default: 0, null: false
-    t.integer "integration_score_cache", default: 0, null: false
-    t.index ["employee_id"], name: "idx_onboardings_employee_active", unique: true, where: "((status)::text = 'active'::text)"
-    t.index ["manager_id", "status"], name: "idx_onboardings_manager_status"
-    t.index ["organization_id", "status"], name: "idx_onboardings_org_status"
-    t.index ["organization_id"], name: "index_onboardings_on_organization_id"
   end
 
   create_table "one_on_one_objectives", force: :cascade do |t|
@@ -367,6 +384,28 @@ ActiveRecord::Schema[7.1].define(version: 2026_02_19_223419) do
     t.string "siret"
     t.text "address"
     t.index ["name"], name: "index_organizations_on_name"
+  end
+
+  create_table "payroll_periods", force: :cascade do |t|
+    t.bigint "organization_id", null: false
+    t.date "period", null: false
+    t.datetime "locked_at", null: false
+    t.bigint "locked_by_id", null: false
+    t.text "notes"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["organization_id", "period"], name: "index_payroll_periods_on_organization_id_and_period", unique: true
+  end
+
+  create_table "solid_cache_entries", force: :cascade do |t|
+    t.binary "key", null: false
+    t.binary "value", null: false
+    t.datetime "created_at", null: false
+    t.bigint "key_hash", null: false
+    t.integer "byte_size", null: false
+    t.index ["byte_size"], name: "index_solid_cache_entries_on_byte_size"
+    t.index ["key_hash", "byte_size"], name: "index_solid_cache_entries_on_key_hash_and_byte_size"
+    t.index ["key_hash"], name: "index_solid_cache_entries_on_key_hash", unique: true
   end
 
   create_table "solid_queue_blocked_executions", force: :cascade do |t|
@@ -506,6 +545,7 @@ ActiveRecord::Schema[7.1].define(version: 2026_02_19_223419) do
     t.bigint "rejected_by_id"
     t.text "rejection_reason"
     t.bigint "organization_id", null: false
+    t.integer "break_duration_minutes", default: 0, null: false
     t.index ["clock_in"], name: "index_time_entries_on_clock_in"
     t.index ["clock_out"], name: "index_time_entries_on_clock_out"
     t.index ["employee_id", "clock_in"], name: "idx_time_entries_employee_clock_in"
@@ -562,6 +602,19 @@ ActiveRecord::Schema[7.1].define(version: 2026_02_19_223419) do
     t.index ["training_type"], name: "index_trainings_on_training_type"
   end
 
+  create_table "versions", force: :cascade do |t|
+    t.string "whodunnit"
+    t.datetime "created_at"
+    t.bigint "item_id", null: false
+    t.string "item_type", null: false
+    t.string "event", null: false
+    t.text "object"
+    t.text "object_changes"
+    t.integer "organization_id"
+    t.index ["item_type", "item_id", "event"], name: "index_versions_on_item_type_item_id_event"
+    t.index ["item_type", "item_id"], name: "index_versions_on_item_type_and_item_id"
+  end
+
   create_table "weekly_schedule_plans", force: :cascade do |t|
     t.bigint "employee_id", null: false
     t.date "week_start_date", null: false
@@ -594,6 +647,10 @@ ActiveRecord::Schema[7.1].define(version: 2026_02_19_223419) do
   add_foreign_key "action_items", "organizations"
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "employee_onboardings", "employees"
+  add_foreign_key "employee_onboardings", "employees", column: "manager_id"
+  add_foreign_key "employee_onboardings", "onboarding_templates"
+  add_foreign_key "employee_onboardings", "organizations"
   add_foreign_key "employees", "employees", column: "manager_id"
   add_foreign_key "employees", "organizations"
   add_foreign_key "evaluation_objectives", "evaluations"
@@ -615,24 +672,22 @@ ActiveRecord::Schema[7.1].define(version: 2026_02_19_223419) do
   add_foreign_key "objectives", "employees", column: "created_by_id"
   add_foreign_key "objectives", "employees", column: "manager_id"
   add_foreign_key "objectives", "organizations"
-  add_foreign_key "onboarding_reviews", "onboardings"
+  add_foreign_key "onboarding_reviews", "employee_onboardings"
   add_foreign_key "onboarding_reviews", "organizations"
+  add_foreign_key "onboarding_tasks", "employee_onboardings"
   add_foreign_key "onboarding_tasks", "employees", column: "assigned_to_id"
   add_foreign_key "onboarding_tasks", "employees", column: "completed_by_id"
-  add_foreign_key "onboarding_tasks", "onboardings"
   add_foreign_key "onboarding_tasks", "organizations"
   add_foreign_key "onboarding_template_tasks", "onboarding_templates"
   add_foreign_key "onboarding_template_tasks", "organizations"
   add_foreign_key "onboarding_templates", "organizations"
-  add_foreign_key "onboardings", "employees"
-  add_foreign_key "onboardings", "employees", column: "manager_id"
-  add_foreign_key "onboardings", "onboarding_templates"
-  add_foreign_key "onboardings", "organizations"
   add_foreign_key "one_on_one_objectives", "objectives"
   add_foreign_key "one_on_one_objectives", "one_on_ones"
   add_foreign_key "one_on_ones", "employees"
   add_foreign_key "one_on_ones", "employees", column: "manager_id"
   add_foreign_key "one_on_ones", "organizations"
+  add_foreign_key "payroll_periods", "employees", column: "locked_by_id"
+  add_foreign_key "payroll_periods", "organizations"
   add_foreign_key "solid_queue_blocked_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_claimed_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_failed_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade

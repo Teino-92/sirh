@@ -1,36 +1,34 @@
 <%# locals: (size:, employee:) %>
-<% if size == 'compact' %>
-  <div class="card-inner bg-white dark:bg-gray-800 rounded-lg shadow px-4 py-3 flex items-center justify-between gap-3">
-    <span class="text-xs font-medium text-gray-500 dark:text-gray-400 truncate">Demandes en cours</span>
-    <span class="text-xl font-bold text-yellow-700 dark:text-yellow-300 flex-shrink-0"><%= @my_pending_requests.count %></span>
+<% requests = @my_pending_requests %>
+<div class="card-inner h-full flex flex-col bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden">
+  <div class="flex items-center justify-between px-3 py-2 border-b border-gray-100 dark:border-gray-700 flex-shrink-0">
+    <span class="text-xs font-semibold text-gray-600 dark:text-gray-300 flex items-center gap-1.5">
+      <svg class="w-3.5 h-3.5 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+      </svg>
+      Demandes en cours
+    </span>
+    <span class="text-sm font-bold <%= requests.any? ? 'text-yellow-500' : 'text-gray-400 dark:text-gray-500' %>"><%= requests.count %></span>
   </div>
-<% else %>
-  <div class="card-inner bg-white dark:bg-gray-800 rounded-lg shadow p-5">
-    <h2 class="text-base font-semibold text-gray-900 dark:text-gray-100 mb-4">Mes demandes en cours</h2>
-    <% if @my_pending_requests.any? %>
-      <% limit = size == 'wide' ? 4 : 2 %>
-      <div class="space-y-3">
-        <% @my_pending_requests.first(limit).each do |request| %>
-          <div class="p-3 bg-yellow-50 dark:bg-yellow-900 rounded-lg border border-yellow-200 dark:border-yellow-700">
-            <div class="flex items-center justify-between mb-1">
-              <span class="text-xs font-medium text-yellow-800 dark:text-yellow-100 bg-yellow-200 dark:bg-yellow-700 px-2 py-0.5 rounded">
-                En attente
-              </span>
-              <span class="text-xs text-gray-600 dark:text-gray-400">
-                <%= time_ago_in_words(request.created_at) %>
-              </span>
+  <div class="flex-1 overflow-auto px-3 py-2">
+    <% if requests.any? %>
+      <div class="space-y-1.5">
+        <% requests.first(5).each do |req| %>
+          <div class="flex items-center justify-between gap-2 py-1 border-b border-gray-50 dark:border-gray-700 last:border-0">
+            <div class="min-w-0">
+              <p class="text-xs font-medium text-gray-900 dark:text-gray-100 truncate">
+                <%= LeaveBalance.leave_type_name(req.leave_type) %>
+              </p>
+              <p class="text-[10px] text-gray-500 dark:text-gray-400">
+                <%= l(req.start_date, format: :short) %> → <%= l(req.end_date, format: :short) %> · <%= req.days_count.to_f.round(1) %>j
+              </p>
             </div>
-            <p class="text-sm font-medium text-gray-900 dark:text-gray-100">
-              <%= l(request.start_date, format: :short) %> - <%= l(request.end_date, format: :short) %>
-            </p>
-            <p class="text-xs text-gray-600 dark:text-gray-400">
-              <%= request.days_count.to_f.round(1) %> jours · <%= LeaveBalance.leave_type_name(request.leave_type) %>
-            </p>
+            <span class="text-[10px] px-1.5 py-0.5 rounded flex-shrink-0 bg-yellow-100 dark:bg-yellow-900/40 text-yellow-700 dark:text-yellow-300">En attente</span>
           </div>
         <% end %>
       </div>
     <% else %>
-      <p class="text-sm text-gray-400 dark:text-gray-500 text-center py-4">Aucune demande en cours</p>
+      <p class="text-xs text-gray-400 dark:text-gray-500 text-center py-2">Aucune demande en cours</p>
     <% end %>
   </div>
-<% end %>
+</div>

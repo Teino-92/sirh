@@ -3,8 +3,9 @@
 class Rack::Attack
   ### Configure Cache ###
 
-  # Use Rails cache (defaults to MemoryStore in dev, Redis recommended for production)
-  Rack::Attack.cache.store = ActiveSupport::Cache::MemoryStore.new
+  # Use SolidCache in production (shared across dynos via the DB) or MemoryStore in dev/test.
+  # Without a shared cache, each dyno tracks its own counters — throttling is ineffective with multiple dynos.
+  Rack::Attack.cache.store = Rails.cache
 
   ### Throttle Spammy Clients ###
 
@@ -59,6 +60,22 @@ class Rack::Attack
     }
 
     [429, headers, [{ error: 'Too many requests. Please try again later.' }.to_json]]
+  end
+
+  ### Throttle Trial Registration (prevent fake org creation spam) ###
+
+  # Allow 5 trial registrations per hour per IP
+  throttle("trial_registrations/ip", limit: 5, period: 1.hour) do |req|
+    req.ip if req.path == "/trial_registration" && req.post?
+  end
+
+  ### Throttle LLM-backed endpoints (costly external API calls) ###
+
+  # HR Query Engine calls Anthropic — limit to 20 requests per 5 minutes per user
+  throttle('hr_query/user', limit: 20, period: 5.minutes) do |req|
+    if req.path == '/admin/hr_query' && req.post? && req.env['warden']&.user
+      req.env['warden'].user.id
+    end
   end
 
   ### Blocklist & Allowlist ###

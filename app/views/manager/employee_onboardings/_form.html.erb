@@ -1,0 +1,64 @@
+<%= form_with(model: [:manager, onboarding], class: "space-y-6") do |f| %>
+  <% if onboarding.errors.any? %>
+    <div class="bg-red-50 dark:bg-red-900/20 border border-red-300 dark:border-red-700 rounded-md p-4">
+      <p class="text-sm font-medium text-red-700 dark:text-red-400">
+        <%= pluralize(onboarding.errors.count, 'erreur') %> :
+      </p>
+      <ul class="mt-1 list-disc list-inside text-sm text-red-600 dark:text-red-400">
+        <% onboarding.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div>
+    <%= f.label :employee_id, "Collaborateur", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" %>
+    <%= f.collection_select :employee_id,
+          current_employee.team_members.order(:last_name),
+          :id, :full_name,
+          { include_blank: "Choisir un collaborateur" },
+          class: "block w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm" %>
+  </div>
+
+  <div>
+    <%= f.label :onboarding_template_id, "Modèle d'onboarding", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" %>
+    <%= f.collection_select :onboarding_template_id,
+          @templates,
+          :id, :name,
+          { include_blank: "Choisir un modèle" },
+          class: "block w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm" %>
+    <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+      Les modèles sont configurés par l'administration.
+    </p>
+  </div>
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+    <div>
+      <%= f.label :start_date, "Date de début", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" %>
+      <%= f.date_field :start_date,
+            class: "block w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm",
+            value: (onboarding.start_date || Date.current).strftime('%Y-%m-%d') %>
+    </div>
+    <div>
+      <%= f.label :end_date, "Date de fin prévue", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" %>
+      <%= f.date_field :end_date,
+            class: "block w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm",
+            value: onboarding.end_date&.strftime('%Y-%m-%d') %>
+    </div>
+  </div>
+
+  <div>
+    <%= f.label :notes, "Notes (optionnel)", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" %>
+    <%= f.text_area :notes, rows: 3,
+          class: "block w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm",
+          placeholder: "Contexte, points d'attention particuliers..." %>
+  </div>
+
+  <div class="flex justify-end gap-3">
+    <%= link_to "Annuler", manager_employee_onboardings_path,
+          class: "inline-flex items-center py-2 px-4 border border-gray-300 dark:border-gray-600 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 transition-all" %>
+    <%= f.submit (onboarding.new_record? ? "Démarrer l'onboarding" : "Mettre à jour"),
+          class: "inline-flex items-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-700 cursor-pointer transition-all" %>
+  </div>
+<% end %>

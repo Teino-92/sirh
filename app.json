@@ -1,0 +1,121 @@
+{
+  "name": "Easy-RH",
+  "description": "SIRH SaaS pour entreprises françaises",
+  "keywords": ["rails", "hrms", "saas"],
+  "website": "https://easy-rh.com",
+  "repository": "https://github.com/Teino-92/easy-rh",
+  "logo": "https://easy-rh.com/logo.png",
+  "success_url": "/",
+  "scripts": {
+    "postdeploy": "bundle exec rails db:migrate"
+  },
+  "formation": {
+    "web": {
+      "quantity": 1,
+      "size": "standard-1x"
+    },
+    "worker": {
+      "quantity": 1,
+      "size": "standard-1x"
+    }
+  },
+  "addons": [
+    {
+      "plan": "heroku-postgresql:basic",
+      "as": "DATABASE"
+    }
+  ],
+  "env": {
+    "RAILS_ENV": {
+      "value": "production"
+    },
+    "RAILS_LOG_TO_STDOUT": {
+      "value": "enabled"
+    },
+    "RAILS_SERVE_STATIC_FILES": {
+      "value": "enabled"
+    },
+    "RAILS_MASTER_KEY": {
+      "description": "Master key for Rails credentials. Found in config/master.key (never commit this file).",
+      "required": true
+    },
+    "APP_HOST": {
+      "description": "Production hostname (e.g. app.easy-rh.com or yourapp.herokuapp.com)",
+      "required": true
+    },
+    "SMTP_ADDRESS": {
+      "description": "SMTP server address (e.g. smtp.sendgrid.net)",
+      "required": true
+    },
+    "SMTP_PORT": {
+      "description": "SMTP port (587 for TLS)",
+      "value": "587"
+    },
+    "SMTP_DOMAIN": {
+      "description": "Your sending domain (e.g. easy-rh.com)",
+      "required": true
+    },
+    "SMTP_USERNAME": {
+      "description": "SMTP authentication username",
+      "required": true
+    },
+    "SMTP_PASSWORD": {
+      "description": "SMTP authentication password",
+      "required": true
+    },
+    "SMTP_AUTHENTICATION": {
+      "value": "plain"
+    },
+    "SMTP_ENABLE_STARTTLS_AUTO": {
+      "value": "true"
+    },
+    "ANTHROPIC_API_KEY": {
+      "description": "Anthropic API key for the HR Query Engine (NL-to-Filters feature)",
+      "required": false
+    },
+    "AWS_ACCESS_KEY_ID": {
+      "description": "AWS access key for S3 file storage (avatars). Required unless STORAGE_SERVICE=local.",
+      "required": false
+    },
+    "AWS_SECRET_ACCESS_KEY": {
+      "description": "AWS secret key for S3 file storage",
+      "required": false
+    },
+    "AWS_REGION": {
+      "description": "AWS region for S3 bucket (default: eu-west-3)",
+      "value": "eu-west-3"
+    },
+    "AWS_S3_BUCKET": {
+      "description": "S3 bucket name for file uploads",
+      "required": false
+    },
+    "STORAGE_SERVICE": {
+      "description": "Active Storage service: 'amazon' (default, requires AWS vars) or 'local' (ephemeral, dev only)",
+      "value": "amazon"
+    },
+    "RAILS_MAX_THREADS": {
+      "description": "Puma thread count and DB pool size (default: 5)",
+      "value": "5"
+    },
+    "WEB_CONCURRENCY": {
+      "description": "Puma worker processes (default: 1 for Standard-1X with 512MB RAM)",
+      "value": "1"
+    },
+    "JOB_CONCURRENCY": {
+      "description": "Solid Queue worker processes for default queue",
+      "value": "1"
+    },
+    "ACCRUAL_CONCURRENCY": {
+      "description": "Solid Queue worker processes for accruals queue",
+      "value": "1"
+    }
+  },
+  "buildpacks": [
+    {
+      "url": "heroku/nodejs"
+    },
+    {
+      "url": "heroku/ruby"
+    }
+  ]
+}

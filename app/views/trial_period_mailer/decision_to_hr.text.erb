@@ -1,0 +1,17 @@
+Bonjour,
+
+Le manager <%= @manager.full_name %> a pris une décision concernant la période d'essai de <%= @employee.full_name %> (fin le <%= @employee.trial_period_end.strftime('%d/%m/%Y') %>) :
+
+<% case @decision %>
+<% when 'confirm' %>
+Décision : VALIDATION — La période d'essai est confirmée. L'employé est officiellement intégré.
+<% when 'renew' %>
+Décision : RENOUVELLEMENT — La période d'essai est prolongée d'un mois (nouvelle date de fin : <%= @employee.trial_period_end.strftime('%d/%m/%Y') %>).
+<% when 'terminate' %>
+Décision : FIN DE COLLABORATION — Le manager souhaite mettre fin à la période d'essai. Veuillez prendre les mesures nécessaires.
+<% end %>
+
+Veuillez mettre à jour le dossier RH de <%= @employee.full_name %> en conséquence.
+
+Cordialement,
+Easy-RH

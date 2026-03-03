@@ -1,6 +1,9 @@
 # frozen_string_literal: true
 
 class LeaveRequest < ApplicationRecord
+  has_paper_trail on: %i[create update destroy],
+                  meta: { organization_id: :organization_id }
+
   acts_as_tenant :organization
 
   belongs_to :employee
@@ -13,6 +16,7 @@ class LeaveRequest < ApplicationRecord
   validate :sufficient_balance, on: :create
   validate :employee_belongs_to_same_organization
   validate :approver_belongs_to_same_organization
+  validate :period_not_locked, on: %i[create update]
 
   scope :pending, -> { where(status: 'pending') }
   scope :approved, -> { where(status: %w[approved auto_approved]) }
@@ -124,6 +128,14 @@ class LeaveRequest < ApplicationRecord
 
     if approved_by.organization_id != organization_id
       errors.add(:approved_by, 'must belong to the same organization')
+    end
+  end
+
+  def period_not_locked
+    return unless start_date.present? && organization_id.present?
+
+    if PayrollPeriod.locked?(organization_id, start_date)
+      errors.add(:base, "La période #{start_date.strftime('%B %Y')} est clôturée.")
     end
   end
 end

@@ -28,18 +28,23 @@ class ProfileController < ApplicationController
     @employee = current_employee
     authorize @employee, :update?
 
-    raw = params.require(:dashboard_layout)
-
-    order  = Array(raw[:order]).map(&:to_s)
+    raw    = params.require(:dashboard_layout)
     hidden = Array(raw[:hidden]).map(&:to_s)
-    sizes  = (raw[:sizes].presence || {}).to_unsafe_h.transform_values(&:to_s)
 
-    # Server-side: strip role-forbidden cards
-    permitted = order.select { |c| @employee.dashboard_card_permitted?(c) }
+    # GridStack format: grid is an array of { id, x, y, w, h }
+    grid = Array(raw[:grid]).filter_map do |item|
+      id = item[:id].to_s
+      next unless @employee.dashboard_card_permitted?(id)
+      { 'id' => id,
+        'x'  => item[:x].to_i,
+        'y'  => item[:y].to_i,
+        'w'  => item[:w].to_i.clamp(1, 12),
+        'h'  => item[:h].to_i.clamp(1, 20) }
+    end
+
     layout = {
-      'order'  => permitted,
-      'hidden' => hidden.select { |c| @employee.dashboard_card_permitted?(c) },
-      'sizes'  => sizes.slice(*permitted)
+      'grid'   => grid,
+      'hidden' => hidden.select { |c| @employee.dashboard_card_permitted?(c) }
     }
 
     @employee.dashboard_layout = layout

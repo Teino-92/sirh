@@ -52,6 +52,9 @@ class DashboardController < ApplicationController
       @team_this_week = load_team_week_summary(week_start)
     end
 
+    # Trial period alerts (manager + HR/admin)
+    @trial_period_alerts = load_trial_period_alerts if @employee.manager? || @employee.hr_or_admin?
+
     # Performance Layer
     load_performance_layer_data
 
@@ -134,6 +137,20 @@ class DashboardController < ApplicationController
       .count
   end
 
+  def load_trial_period_alerts
+    cutoff = Date.today + 14.days
+    base = @employee.organization.employees
+                    .where.not(trial_period_end: nil)
+                    .where(trial_period_end: Date.today..cutoff)
+                    .order(:trial_period_end)
+
+    if @employee.hr_or_admin?
+      base
+    else
+      base.where(manager_id: @employee.id)
+    end
+  end
+
   def load_hr_overview_data
     today = Date.current
     org   = @employee.organization
@@ -147,7 +164,7 @@ class DashboardController < ApplicationController
       .order(:leave_type)
 
     # Active onboardings with progress
-    @active_onboardings = Onboarding
+    @active_onboardings = EmployeeOnboarding
       .where(organization: org)
       .active
       .includes(:employee, :manager, :onboarding_tasks)

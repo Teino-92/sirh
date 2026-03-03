@@ -44,6 +44,193 @@ Next: Phase 3 — to be scoped by @architect.
 
 ---
 
+## ✅ SPRINTS 1.7 → 2.3 — COMPLETE (2026-02-27)
+
+**Sprint 1.7 — API Serializers** ✅
+- `Api::V1::Concerns::Serializable` : module partagé entre tous les controllers API
+- `serialize_employee` salary gated via `hr_or_admin?`
+- `LeaveBalancesController#index` et `WorkSchedulesController#show/update` créés (routes orphelines)
+- `TimeEntriesController`, `DashboardController`, `LeaveRequestsController` refactorisés
+- Suppression des méthodes `_json` dupliquées dans chaque controller
+
+**Sprint 1.8 — Rate Limiting** ✅
+- rack-attack déjà en place (300rpm/IP, 5/20s login brute-force, 10/5min par email, 100rpm/user)
+- Ajout : throttle LLM `hr_query/user` — 20 req/5min sur `POST /admin/hr_query`
+
+**Sprint 2.1 — Shard Background Jobs** ✅
+- `LeaveAccrualDispatcherJob` + `OrganizationLeaveAccrualJob` (queue `accruals`)
+- `RttAccrualDispatcherJob` + `OrganizationRttAccrualJob` (queue `accruals`)
+- `config/queue.yml` : 3 queues dédiées (schedulers, accruals, default)
+- Traitement parallèle par org, idempotent (`discard_on RecordNotFound`)
+
+**Sprint 2.2 — JSONB Schema Validation** ✅
+- `JsonbValidatable` concern : allowed keys, required keys, type checks, boolean-safe (TrueClass/FalseClass)
+- `Organization#settings` : type check sur clés connues, open-ended (extensible par design)
+- `WorkSchedule#schedule_pattern` : format HH:MM-HH:MM par jour valide (`VALID_DAYS`)
+- `TimeEntry#location` : structure lat/lng/accuracy/address si Hash
+- 214 examples, 0 failures
+
+**Sprint 2.3 — Audit Trail** ✅
+- `paper_trail:install` + table `versions` + colonne `organization_id` (tenant-scoped)
+- `has_paper_trail` : `LeaveBalance` (create/update), `LeaveRequest` (create/update/destroy), `EmployeeOnboarding` (create/update)
+- `Admin::AuditLogsController` + `AuditLogPolicy` (hr_or_admin? uniquement)
+- Vue `/admin/audit_log` : filtres type/événement/date, pagination kaminari, diff des changements
+- Lien "Audit" dans nav admin desktop
+
+---
+
+## ✅ DIRECTION F — COMPLETE (architect sign-off 2026-02-27)
+
+**Theme**: HR Query Engine — NL-to-Filters (IA pour admin/RH)
+
+### F-1 — `HrQueryInterpreterService` ✅
+- Appel Anthropic API (`claude-haiku-4-5-20251001`), timeout 15s, retry 2x
+- JSON prefill `{"version":"1",` — forçage JSON structuré
+- `PromptBuilder` : system prompt strict + schéma complet dans user message (jamais noms tables SQL)
+- 7 exemples de spec (stub Faraday), tous verts
+
+### F-2 — `HrQueryExecutorService` ✅
+- Filtres JSON → scopes ActiveRecord (jamais SQL brut)
+- Domaines : employee, leave (subquery SUM), evaluation, onboarding
+- `MAX_RESULTS = 500`, salary re-gaté via `requester.hr_or_admin?`
+- 8 exemples de spec, isolation tenant confirmée
+
+### F-3 — `HrQueryCsvExporter` ✅
+- Colonnes dynamiques selon `output.columns`, hérite `Exports::BaseCsvExporter`
+- Double guard salary côté exporter
+
+### F-4 — `HrQueryPolicy` + `Admin::HrQueriesController` ✅
+- `show?`, `create?`, `export?` → `user.hr_or_admin?`
+- 12 exemples de spec policy (admin ✅, hr ✅, manager ❌, employee ❌)
+
+### F-5 — Vue + Stimulus controller ✅
+- Textarea requête, loading state (spinner + disable button), résultats inline
+- Lien "Requêtes IA" dans nav admin desktop + mobile
+- Bouton "Exporter CSV" avec `filters` param JSON-encodé
+
+**Architectural integrity:**
+- SQL injection : impossible — le LLM ne produit jamais de SQL
+- Schema leakage : prompt ne contient que les noms de champs filtres, pas les tables PostgreSQL
+- Multi-tenancy : `acts_as_tenant` actif, `organization_id` jamais dans les filtres LLM
+- Salary : `EmployeePolicy#see_salary?` re-vérifié en Ruby dans executor ET exporter
+
+---
+
+## ✅ DIRECTION D — COMPLETE (architect sign-off 2026-02-27)
+
+**Theme**: Confidentialité salariale — droit du travail français
+
+### D-1 — `EmployeePolicy#see_salary?` ✅
+- Règle : `hr_or_admin? || user == record`
+- Contractualise la confidentialité salariale au niveau domaine, pas routing
+
+### D-2 — Vues conditionnées par policy ✅
+- `admin/employees/show.html.erb` : bloc Rémunération sous `policy(@employee).see_salary?`
+- `profile/show.html.erb` : guard `policy(@employee).see_salary? && gross_salary_cents > 0`
+
+### D-3 — Spec `EmployeePolicy#see_salary?` ✅
+- 6 cas : admin ✅, hr ✅, soi-même ✅, manager→subordonné ❌, manager→pair ❌, employé→pair ❌
+
+### D-4 — `Admin::EmployeesController#show` : authorize explicite ✅
+- `authorize @employee, :see_salary?` — couche métier indépendante du routing
+
+**Architectural integrity:**
+- Multi-tenancy: `set_employee` scoped via `organization.employees` — cross-org impossible
+- Exports CSV: 0 colonne salaire confirmé
+- QA observation medium: `edit`/`update` sans `authorize :see_salary?` — protégés par `Admin::BaseController`, non-bloquant. À traiter en Direction E.
+
+---
+
+## ✅ DIRECTION C — COMPLETE (architect sign-off 2026-02-27)
+
+**Theme**: Complete onboarding domain + close remaining policy gaps
+
+### C-1 — `GroupPoliciesPolicy` spec ✅
+### C-2 — `OnboardingReview` model spec ✅
+### C-3 — `PayrollController` authorization (`PayrollPolicy`) ✅
+### C-4 — Payroll cadre_count N+1 fix ✅
+
+**22 examples, 0 failures (Directions C+D combined)**
+
+---
+
+## ✅ DIRECTION E — COMPLETE (2026-02-27)
+
+**Theme**: Clôturer les observations QA ouvertes + solidifier la surface salary
+
+### E-1 — `authorize :see_salary?` dans `edit` et `update` (Medium QA obs.)
+- `Admin::EmployeesController#edit` et `#update` : ajouter `authorize @employee, :see_salary?`
+- Symétrie avec `show`, défense en profondeur sur la mutation salariale
+- Spec : étendre `employee_policy_spec.rb` avec cas `edit?`/`update?` salary guard
+
+### E-2 — `_form` : masquer les champs salaire si non autorisé
+- `admin/employees/_form.html.erb` : envelopper le fieldset Rémunération dans `policy(@employee).see_salary?`
+- Cohérence vue/controller : même guard partout
+
+**Résultat:**
+- [x] `edit` + `update` : `authorize :see_salary?` en place
+- [x] `_form` : fieldset Rémunération conditionné par policy
+- [x] Specs étendues, 9 examples, 0 failure
+
+---
+
+## ✅ DIRECTION B — COMPLETE (architect sign-off 2026-02-27)
+
+**Streams validated:**
+
+### B-1 — Pundit policy gaps closed ✅
+- `OnboardingTaskPolicy` created: HR/admin sees all, manager scoped via `manager_id`, employee via `employee_id`
+- `manager_of_onboarding?` guard: safe single-record check, no N+1
+- 4 policy specs added (81 examples total, 0 failures):
+  - `spec/policies/export_policy_spec.rb` (4 examples)
+  - `spec/policies/employee_onboarding_policy_spec.rb` (17 examples)
+  - `spec/policies/onboarding_task_policy_spec.rb` (7 examples)
+  - `spec/policies/onboarding_template_policy_spec.rb` (10 examples)
+
+### B-2 — Admin views ✅ (already in place, verified)
+### B-3 — Initializer spec ✅ (already in place, verified)
+
+**Architectural integrity confirmed:**
+- All 4 onboarding controllers have corresponding Pundit policies
+- Scope queries are single-JOIN — no N+1
+- No domain leakage: policies in `app/policies/` (correct cross-cutting layer)
+- `GroupPoliciesPolicy` unspecced — added to Direction C
+
+---
+
+## ✅ DIRECTION A — COMPLETE (architect sign-off 2026-02-27)
+
+**Streams validated:**
+
+### Stream 2 — TeamSchedulesController explicit org scoping ✅
+- All cross-domain queries (`OneOnOne`, `Objective`, `TrainingAssignment`) scoped via `current_organization`
+- `Organization` model: added `has_many :objectives`, `:one_on_ones`, `:trainings`, `:training_assignments (through: :trainings)`
+- Zero cross-tenant leak risk confirmed
+
+### Stream 1 — P1 tests for onboarding services ✅
+- 4 spec files created (43 examples, 0 failures):
+  - `spec/domains/onboarding/services/employee_onboarding_initializer_service_spec.rb` (16 examples)
+  - `spec/domains/onboarding/services/employee_onboarding_progress_calculator_service_spec.rb` (9 examples)
+  - `spec/domains/onboarding/services/employee_onboarding_integration_score_service_spec.rb` (9 examples)
+  - `spec/jobs/employee_onboarding_score_refresh_job_spec.rb` (9 examples)
+- Covers: 0%/100%, weight redistribution, tenant isolation, idempotency, skip-if-inactive
+- Factory `spec/factories/onboardings.rb` with full traits
+
+### Stream 3 — Full rename Onboarding → EmployeeOnboarding ✅
+- Resolves real Zeitwerk namespace conflict (`class Onboarding` cannot be Ruby module)
+- Migration: `rename_table :onboardings :employee_onboardings` + FK columns
+- `Object.const_get` workaround eliminated
+- Full sweep: model, services, job, policies, controllers, routes, views, seeds, factories, specs
+- Both dev and test DBs migrated
+
+**Architectural integrity confirmed:**
+- Multi-tenancy: all scoping preserved post-rename
+- No domain leakage introduced
+- `has_many :training_assignments, through: :trainings` pattern correct (no direct org_id on table)
+- Known acceptable: `app/jobs/employee_onboarding_score_refresh_job.rb` in `app/jobs/` (issue M5, non-blocking)
+
+---
+
 # SPRINT 2.1 — OBJECTIVES + 1:1 MEETINGS
 
 **Objective**: Implement goal tracking and structured 1:1 meetings for managers

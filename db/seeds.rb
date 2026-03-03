@@ -25,7 +25,7 @@ end
 
 puts "🧹 Clearing existing data..."
 [
-  OnboardingTask, OnboardingReview, Onboarding, OnboardingTemplateTask, OnboardingTemplate,
+  OnboardingTask, OnboardingReview, EmployeeOnboarding, OnboardingTemplateTask, OnboardingTemplate,
   TrainingAssignment, Training,
   ActionItem, Evaluation, OneOnOne, Objective,
   TimeEntry, LeaveRequest, LeaveBalance, WeeklySchedulePlan, WorkSchedule,
@@ -941,7 +941,7 @@ end
 # Ana Ferreira, stagiaire backend — démarre il y a 3 jours
 
 ob1_start = 3.days.ago.to_date
-ob1 = Onboarding.create!(
+ob1 = EmployeeOnboarding.create!(
   organization: org,
   employee: be_employees[4],   # Ana Ferreira
   manager: mgr_backend,
@@ -973,13 +973,13 @@ OnboardingTask.create!(onboarding: ob1, organization: org, title: "Formation sé
   status: 'pending', assigned_to: be_employees[4])
 
 # Rafraîchir le cache
-OnboardingScoreRefreshJob.perform_now(ob1.id)
+EmployeeOnboardingScoreRefreshJob.perform_now(ob1.id)
 
 # ── Onboarding 2 : À mi-parcours (~J45 sur 90) ────────────────────────────────
 # Yanis Benali, alternant frontend — commencé il y a 45 jours
 
 ob2_start = 45.days.ago.to_date
-ob2 = Onboarding.create!(
+ob2 = EmployeeOnboarding.create!(
   organization: org,
   employee: fe_employees[3],   # Yanis Benali
   manager: mgr_frontend,
@@ -1019,13 +1019,13 @@ tasks_ob2.each do |t|
   end
 end
 
-OnboardingScoreRefreshJob.perform_now(ob2.id)
+EmployeeOnboardingScoreRefreshJob.perform_now(ob2.id)
 
 # ── Onboarding 3 : Presque terminé (~J80 sur 90) ──────────────────────────────
 # Sarah Cohen, Business Developer Sales — commencée il y a 50 jours sur template 60j
 
 ob3_start = 50.days.ago.to_date
-ob3 = Onboarding.create!(
+ob3 = EmployeeOnboarding.create!(
   organization: org,
   employee: sales_employees[4],  # Sarah Cohen
   manager: mgr_sales,
@@ -1061,7 +1061,7 @@ tasks_ob3.each do |t|
   end
 end
 
-OnboardingScoreRefreshJob.perform_now(ob3.id)
+EmployeeOnboardingScoreRefreshJob.perform_now(ob3.id)
 
 puts "  Created #{Onboarding.where(organization: org).count} onboardings, #{OnboardingTask.where(organization: org).count} tasks"
 

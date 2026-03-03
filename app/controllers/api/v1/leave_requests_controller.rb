@@ -15,7 +15,7 @@ module Api
       requests = scope.order(created_at: :desc).limit(50)
 
       render json: {
-        requests: requests.map { |r| leave_request_json(r) }
+        requests: requests.map { |r| serialize_leave_request(r) }
       }
     end
 
@@ -52,7 +52,7 @@ module Api
         leave_request.auto_approve!
 
         return render json: {
-          request: leave_request_json(leave_request),
+          request: serialize_leave_request(leave_request),
           auto_approved: true,
           message: 'Demande de congé approuvée automatiquement'
         }, status: :created
@@ -62,7 +62,7 @@ module Api
       leave_request.save!
 
       render json: {
-        request: leave_request_json(leave_request),
+        request: serialize_leave_request(leave_request),
         auto_approved: false,
         message: 'Demande de congé créée. En attente d\'approbation.'
       }, status: :created
@@ -76,7 +76,7 @@ module Api
       leave_request.approve!(current_employee)
 
       render json: {
-        request: leave_request_json(leave_request),
+        request: serialize_leave_request(leave_request),
         message: 'Demande de congé approuvée'
       }
     end
@@ -89,7 +89,7 @@ module Api
       leave_request.reject!(current_employee)
 
       render json: {
-        request: leave_request_json(leave_request),
+        request: serialize_leave_request(leave_request),
         message: 'Demande de congé refusée'
       }
     end
@@ -104,7 +104,7 @@ module Api
                              .order(created_at: :asc)
 
       render json: {
-        requests: requests.map { |r| leave_request_json(r, include_employee: true) },
+        requests: requests.map { |r| serialize_leave_request(r, include_employee: true) },
         count: requests.count
       }
     end
@@ -122,7 +122,7 @@ module Api
                              .for_date_range(start_date, end_date)
 
       render json: {
-        requests: requests.map { |r| leave_request_json(r, include_employee: true) },
+        requests: requests.map { |r| serialize_leave_request(r, include_employee: true) },
         coverage_analysis: analyze_team_coverage(requests, start_date, end_date)
       }
     end
@@ -142,38 +142,6 @@ module Api
       end
 
       leave_request
-    end
-
-    def leave_request_json(request, include_employee: false)
-      data = {
-        id: request.id,
-        leave_type: request.leave_type,
-        leave_type_name: LeaveBalance.leave_type_name(request.leave_type),
-        start_date: request.start_date,
-        end_date: request.end_date,
-        days_count: request.days_count,
-        status: request.status,
-        reason: request.reason,
-        approved_at: request.approved_at,
-        created_at: request.created_at
-      }
-
-      if include_employee
-        data[:employee] = {
-          id: request.employee.id,
-          full_name: request.employee.full_name,
-          department: request.employee.department
-        }
-      end
-
-      if request.approved_by
-        data[:approved_by] = {
-          id: request.approved_by.id,
-          full_name: request.approved_by.full_name
-        }
-      end
-
-      data
     end
 
     def analyze_team_coverage(requests, start_date, end_date)

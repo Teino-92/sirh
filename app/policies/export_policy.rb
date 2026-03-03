@@ -15,15 +15,11 @@ class ExportPolicy < ApplicationPolicy
     user.manager?
   end
 
-  def one_on_ones?
+  def search?
     user.manager?
   end
 
-  def evaluations?
-    user.manager?
-  end
-
-  def trainings?
+  def search_export?
     user.manager?
   end
 end

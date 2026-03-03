@@ -31,7 +31,7 @@ module Admin
     end
 
     def organization_params
-      params.require(:organization).permit(
+      permitted = params.require(:organization).permit(
         :name,
         :address,
         :siret,
@@ -45,9 +45,16 @@ module Admin
           :max_daily_hours,
           :min_consecutive_leave_days,
           :calendar_webhook_url,
-          :calendar_provider
+          :calendar_provider,
+          :payroll_webhook_url,
+          :payroll_webhook_secret
         ]
       )
+      # Do not overwrite an existing secret with a blank submission
+      if permitted.dig(:settings, :payroll_webhook_secret).blank?
+        permitted[:settings]&.delete(:payroll_webhook_secret)
+      end
+      permitted
     end
   end
 end

@@ -1,0 +1,129 @@
+<% content_for :title, "Résultat de l'import" %>
+
+<div class="max-w-3xl mx-auto px-4 py-8">
+
+  <!-- Header -->
+  <div class="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400 mb-6">
+    <%= link_to "Employés", admin_employees_path, class: "hover:text-indigo-600 dark:hover:text-indigo-400" %>
+    <span>›</span>
+    <%= link_to "Import CSV", new_admin_employee_import_path, class: "hover:text-indigo-600 dark:hover:text-indigo-400" %>
+    <span>›</span>
+    <span>Résultat</span>
+  </div>
+
+  <!-- Summary cards -->
+  <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+    <!-- Imported -->
+    <div class="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-xl p-5 text-center">
+      <div class="text-3xl font-bold text-green-600 dark:text-green-400"><%= @imported.count %></div>
+      <div class="text-sm font-medium text-green-700 dark:text-green-300 mt-1">
+        <%= @imported.count == 1 ? "collaborateur importé" : "collaborateurs importés" %>
+      </div>
+    </div>
+
+    <!-- Skipped -->
+    <div class="bg-<%= @skipped.count > 0 ? 'amber' : 'gray' %>-50 dark:bg-<%= @skipped.count > 0 ? 'amber' : 'gray' %>-900/20 border border-<%= @skipped.count > 0 ? 'amber' : 'gray' %>-200 dark:border-<%= @skipped.count > 0 ? 'amber' : 'gray' %>-700 rounded-xl p-5 text-center">
+      <div class="text-3xl font-bold text-<%= @skipped.count > 0 ? 'amber' : 'gray' %>-600 dark:text-<%= @skipped.count > 0 ? 'amber' : 'gray' %>-400"><%= @skipped.count %></div>
+      <div class="text-sm font-medium text-<%= @skipped.count > 0 ? 'amber' : 'gray' %>-700 dark:text-<%= @skipped.count > 0 ? 'amber' : 'gray' %>-300 mt-1">
+        <%= @skipped.count == 1 ? "ligne ignorée" : "lignes ignorées" %>
+      </div>
+    </div>
+
+    <!-- Total -->
+    <div class="bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-5 text-center">
+      <div class="text-3xl font-bold text-gray-600 dark:text-gray-300"><%= @imported.count + @skipped.count %></div>
+      <div class="text-sm font-medium text-gray-500 dark:text-gray-400 mt-1">
+        lignes traitées
+      </div>
+    </div>
+  </div>
+
+  <% if @imported.any? %>
+    <!-- Success message -->
+    <div class="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-xl p-4 mb-6 flex items-start gap-3">
+      <svg class="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+      </svg>
+      <div>
+        <p class="text-sm font-medium text-green-800 dark:text-green-200">
+          <%= pluralize(@imported.count, "collaborateur", "collaborateurs") %> importé<%= @imported.count > 1 ? "s" : "" %> avec succès.
+        </p>
+        <p class="text-sm text-green-700 dark:text-green-300 mt-0.5">
+          Chaque collaborateur a reçu un email pour définir son mot de passe.
+        </p>
+      </div>
+    </div>
+  <% end %>
+
+  <!-- Errors list -->
+  <% if @errors.any? %>
+    <div class="bg-white dark:bg-gray-800 rounded-xl border border-red-200 dark:border-red-800 p-5 mb-6">
+      <div class="flex items-center gap-2 mb-4">
+        <svg class="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+        </svg>
+        <h2 class="text-sm font-semibold text-red-700 dark:text-red-400">
+          <%= pluralize(@errors.count, "erreur", "erreurs") %> détectée<%= @errors.count > 1 ? "s" : "" %>
+        </h2>
+      </div>
+      <ul class="space-y-2">
+        <% @errors.each do |err| %>
+          <li class="flex items-start gap-2 text-sm text-red-700 dark:text-red-300">
+            <span class="flex-shrink-0 mt-1">—</span>
+            <span><%= err %></span>
+          </li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <!-- Imported employees preview -->
+  <% if @imported.any? %>
+    <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden mb-8">
+      <div class="px-5 py-3 border-b border-gray-100 dark:border-gray-700 flex items-center justify-between">
+        <h2 class="text-sm font-semibold text-gray-700 dark:text-gray-200">Collaborateurs importés</h2>
+        <span class="text-xs text-gray-400 dark:text-gray-500"><%= @imported.count %> au total</span>
+      </div>
+      <div class="divide-y divide-gray-50 dark:divide-gray-700/50 max-h-72 overflow-y-auto">
+        <% @imported.first(50).each do |emp| %>
+          <div class="px-5 py-2.5 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <div class="w-7 h-7 rounded-full bg-indigo-100 dark:bg-indigo-900/40 flex items-center justify-center text-xs font-bold text-indigo-600 dark:text-indigo-400 flex-shrink-0">
+                <%= emp.first_name[0] %><%= emp.last_name[0] %>
+              </div>
+              <div>
+                <span class="text-sm font-medium text-gray-800 dark:text-gray-200"><%= emp.full_name %></span>
+                <span class="text-xs text-gray-400 dark:text-gray-500 ml-2"><%= emp.email %></span>
+              </div>
+            </div>
+            <span class="text-xs text-gray-400 dark:text-gray-500 hidden sm:block"><%= emp.contract_type %></span>
+          </div>
+        <% end %>
+        <% if @imported.count > 50 %>
+          <div class="px-5 py-3 text-sm text-center text-gray-400 dark:text-gray-500">
+            … et <%= @imported.count - 50 %> autres
+          </div>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+
+  <!-- Actions -->
+  <div class="flex flex-col sm:flex-row gap-3">
+    <%= link_to admin_employees_path,
+        class: "flex-1 sm:flex-none inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-lg shadow-sm transition-colors text-sm" do %>
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
+      </svg>
+      Voir les collaborateurs
+    <% end %>
+    <%= link_to new_admin_employee_import_path,
+        class: "flex-1 sm:flex-none inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 font-semibold rounded-lg border border-gray-300 dark:border-gray-600 shadow-sm transition-colors text-sm" do %>
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
+      </svg>
+      Réimporter
+    <% end %>
+  </div>
+
+</div>

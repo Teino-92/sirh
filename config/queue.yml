@@ -3,7 +3,18 @@ default: &default
     - polling_interval: 1
       batch_size: 500
   workers:
-    - queues: "*"
+    # Schedulers queue: low concurrency, fires dispatchers
+    - queues: "schedulers"
+      threads: 2
+      processes: 1
+      polling_interval: 1
+    # Accrual workers: parallelised per-org jobs
+    - queues: "accruals"
+      threads: 5
+      processes: <%= ENV.fetch("ACCRUAL_CONCURRENCY", 2) %>
+      polling_interval: 0.5
+    # Default queue: everything else
+    - queues: "default"
       threads: 3
       processes: <%= ENV.fetch("JOB_CONCURRENCY", 1) %>
       polling_interval: 0.1

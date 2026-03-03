@@ -1,47 +1,76 @@
 import { Controller } from "@hotwired/stimulus"
-import Sortable       from "sortablejs"
+
+// GridStack is loaded via <script> tag in the dashboard view (UMD bundle)
+// It exposes window.GridStack globally.
 
 export default class extends Controller {
-  static targets = ["grid", "card", "saveBtn", "customizeBtn", "feedback"]
+  static targets = ["grid", "card", "saveBtn", "customizeBtn", "cancelBtn", "feedback",
+                    "hiddenPanel", "hiddenList", "emptyHint"]
   static values  = { saveUrl: String }
 
   connect() {
-    this._sortable = null
-    this.cardTargets.forEach(c => {
-      if (c.dataset.cardHidden === 'true') c.classList.add('dashboard-card--hidden')
-    })
+    this._grid = null
+    this._editMode = false
+    this._tryInit(0)
   }
 
-  disconnect() { this._destroySortable() }
+  _tryInit(attempt) {
+    if (window.GridStack) {
+      this._initGrid({ staticGrid: true })
+      return
+    }
+    if (attempt >= 15) {
+      console.error('[dashboard-customizer] GridStack failed to load after retries')
+      return
+    }
+    setTimeout(() => this._tryInit(attempt + 1), 200)
+  }
+
+  disconnect() {
+    if (this._grid) { this._grid.destroy(false); this._grid = null }
+  }
 
   enterEditMode() {
-    this.cardTargets.forEach(c => {
-      c.classList.remove('dashboard-card--hidden')
-      const content = c.querySelector('.card-content')
-      if (content) content.style.opacity = c.dataset.cardHidden === 'true' ? '0.3' : ''
-      const chrome = c.querySelector('.dashboard-edit-chrome')
-      if (chrome) chrome.style.display = 'flex'
+    if (!this._grid) return
+    this._editMode = true
+    this.gridTarget.classList.add('edit-mode')
+    this._grid.setStatic(false)
+
+    this.cardTargets.forEach(card => {
+      const chrome = card.querySelector('.dashboard-edit-chrome')
+      if (chrome) chrome.classList.remove('hidden')
     })
-    this._initSortable()
+
+    if (this.hasHiddenPanelTarget) this.hiddenPanelTarget.classList.remove('hidden')
+    this._renderHiddenPills()
+
     this.customizeBtnTarget.style.display = 'none'
     this.saveBtnTarget.style.display      = 'inline-flex'
+    if (this.hasCancelBtnTarget) this.cancelBtnTarget.style.display = 'inline-flex'
   }
 
   exitEditMode() {
-    this._destroySortable()
-    this.cardTargets.forEach(c => {
-      const chrome = c.querySelector('.dashboard-edit-chrome')
-      if (chrome) chrome.style.display = 'none'
-      const content = c.querySelector('.card-content')
-      if (content) content.style.opacity = ''
-      if (c.dataset.cardHidden === 'true') c.classList.add('dashboard-card--hidden')
+    this._editMode = false
+    this.gridTarget.classList.remove('edit-mode')
+    this._grid.setStatic(true)
+
+    this.cardTargets.forEach(card => {
+      const chrome = card.querySelector('.dashboard-edit-chrome')
+      if (chrome) chrome.classList.add('hidden')
     })
+
+    if (this.hasHiddenPanelTarget) this.hiddenPanelTarget.classList.add('hidden')
+
     this.saveBtnTarget.style.display      = 'none'
+    if (this.hasCancelBtnTarget) this.cancelBtnTarget.style.display = 'none'
     this.customizeBtnTarget.style.display = ''
   }
 
   save() {
     const layout = this._collectLayout()
+    this.saveBtnTarget.disabled = true
+    this.saveBtnTarget.textContent = 'Sauvegarde…'
+
     fetch(this.saveUrlValue, {
       method: 'PATCH',
       headers: {
@@ -61,59 +90,131 @@ export default class extends Controller {
       }
     })
     .catch(() => this._toast('Erreur réseau', 'red'))
+    .finally(() => {
+      this.saveBtnTarget.disabled = false
+      this.saveBtnTarget.innerHTML = `
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+        </svg>
+        Sauvegarder`
+    })
   }
 
+  // Hide button clicked on a card in the grid
   toggleHide(event) {
-    const card      = event.currentTarget.closest('[data-card-id]')
-    const hidden    = card.dataset.cardHidden === 'true'
-    const nowHidden = !hidden
-    card.dataset.cardHidden = nowHidden ? 'true' : 'false'
-    const content = card.querySelector('.card-content')
-    if (content) content.style.opacity = nowHidden ? '0.3' : ''
-    card.querySelector('[data-eye-open]')?.classList.toggle('hidden', nowHidden)
-    card.querySelector('[data-eye-closed]')?.classList.toggle('hidden', !nowHidden)
-  }
-
-  setSize(event) {
-    const size = event.params.size
     const card = event.currentTarget.closest('[data-card-id]')
-    card.dataset.cardSize = size
-    card.style.width = size === 'wide' ? '66.666%' : '33.333%'
-    card.querySelectorAll('[data-size-btn]').forEach(btn => {
-      const active = btn.dataset.sizeBtn === size
-      btn.classList.toggle('bg-indigo-600', active)
-      btn.classList.toggle('text-white',    active)
-      btn.classList.toggle('bg-gray-100',   !active)
-      btn.classList.toggle('dark:bg-gray-700', !active)
-    })
+    if (!card) return
+
+    const id = card.dataset.cardId
+    card.dataset.cardHidden = 'true'
+
+    // Physically remove from GridStack (node stays in DOM, just detached from grid)
+    this._grid.removeWidget(card, false)
+
+    // Move DOM node out of grid container into a stash div
+    this._getStash().appendChild(card)
+
+    this._renderHiddenPills()
   }
 
-  _initSortable() {
-    this._sortable = new Sortable(this.gridTarget, {
-      animation:      200,
-      handle:         '[data-drag-handle]',
-      ghostClass:     'sortable-ghost',
-      dragClass:      'sortable-drag',
-      forceFallback:  false,
-      fallbackOnBody: true,
-      scroll:         true,
-      bubbleScroll:   true
-    })
+  // Restore button clicked on a pill
+  restoreCard(event) {
+    const id = event.currentTarget.dataset.restoreId
+    const card = this._getStash().querySelector(`[data-card-id="${id}"]`)
+    if (!card) return
+
+    card.dataset.cardHidden = 'false'
+
+    // Move back into grid container, then let GridStack manage it
+    this.gridTarget.appendChild(card)
+    this._grid.makeWidget(card)
+
+    // Show edit chrome since we're in edit mode
+    const chrome = card.querySelector('.dashboard-edit-chrome')
+    if (chrome) chrome.classList.remove('hidden')
+
+    this._renderHiddenPills()
   }
 
-  _destroySortable() {
-    if (this._sortable) { this._sortable.destroy(); this._sortable = null }
+  // ── Private ─────────────────────────────────────────────────────────────────
+
+  // The stash div is rendered server-side (display:none) and holds hidden card DOM nodes
+  _getStash() {
+    return this.element.querySelector('#dashboard-card-stash')
+  }
+
+  _initGrid(options = {}) {
+    try {
+      this._grid = window.GridStack.init({
+        column: 12,
+        cellHeight: 90,
+        cellHeightUnit: 'px',
+        margin: 8,
+        animate: true,
+        resizable: { handles: 'se' },
+        draggable: { handle: '.grid-stack-item-content' },
+        ...options
+      }, this.gridTarget)
+    } catch(e) {
+      console.error('[dashboard-customizer] GridStack.init threw:', e)
+    }
   }
 
   _collectLayout() {
-    const order = [], hidden = [], sizes = {}
+    const grid   = []
+    const hidden = []
+    const stash  = this._getStash()
+
+    // Active cards in the grid
     this.cardTargets.forEach(card => {
-      const id = card.dataset.cardId
-      order.push(id)
-      sizes[id] = card.dataset.cardSize || 'normal'
-      if (card.dataset.cardHidden === 'true') hidden.push(id)
+      if (card.dataset.cardHidden === 'true') return
+      const id   = card.dataset.cardId
+      const node = card.gridstackNode
+      if (!id || !node) return
+      grid.push({ id, x: node.x, y: node.y, w: node.w, h: node.h })
     })
-    return { order, hidden, sizes }
+
+    // Hidden cards in the stash — keep their original position
+    stash.querySelectorAll('[data-card-id]').forEach(card => {
+      const id = card.dataset.cardId
+      const x  = parseInt(card.dataset.cardX, 10) || 0
+      const y  = parseInt(card.dataset.cardY, 10) || 0
+      const w  = parseInt(card.dataset.cardW, 10) || 4
+      const h  = parseInt(card.dataset.cardH, 10) || 3
+      hidden.push(id)
+      grid.push({ id, x, y, w, h })
+    })
+
+    return { grid, hidden }
+  }
+
+  _renderHiddenPills() {
+    if (!this.hasHiddenListTarget) return
+    const list  = this.hiddenListTarget
+    const stash = this._getStash()
+    const cards = Array.from(stash.querySelectorAll('[data-card-id]'))
+
+    if (this.hasEmptyHintTarget) {
+      this.emptyHintTarget.style.display = cards.length === 0 ? '' : 'none'
+    }
+
+    list.querySelectorAll('.hidden-card-pill').forEach(p => p.remove())
+
+    cards.forEach(card => {
+      const id    = card.dataset.cardId
+      const label = card.dataset.cardLabel || id
+      const pill  = document.createElement('button')
+      pill.type      = 'button'
+      pill.className = 'hidden-card-pill'
+      pill.dataset.restoreId = id
+      pill.dataset.action    = 'click->dashboard-customizer#restoreCard'
+      pill.innerHTML = `
+        <svg class="w-3 h-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/>
+        </svg>
+        <span>${label}</span>`
+      list.appendChild(pill)
+    })
   }
 
   _toast(msg, color) {

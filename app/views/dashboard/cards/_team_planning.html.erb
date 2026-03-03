@@ -7,7 +7,7 @@
 <% else %>
   <div class="card-inner bg-white dark:bg-gray-800 rounded-lg shadow p-5">
     <div class="flex justify-between items-center mb-4">
-      <h2 class="text-base font-semibold text-gray-900 dark:text-gray-100">Planning équipe — semaine</h2>
+      <h2 class="text-sm font-semibold text-gray-900 dark:text-gray-100">Planning équipe — semaine</h2>
       <%= link_to 'Gérer', manager_team_schedules_path, class: "text-sm text-indigo-600 hover:text-indigo-700 dark:text-indigo-400" %>
     </div>
     <% if @team_this_week&.any? %>

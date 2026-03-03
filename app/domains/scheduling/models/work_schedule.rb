@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class WorkSchedule < ApplicationRecord
+  include JsonbValidatable
+
   acts_as_tenant :organization
 
   belongs_to :employee
@@ -9,6 +11,9 @@ class WorkSchedule < ApplicationRecord
   validates :weekly_hours, numericality: { greater_than: 0, less_than_or_equal_to: 48 } # French legal max
   validates :employee_id, uniqueness: true
   validate :employee_belongs_to_same_organization
+  validate :schedule_pattern_structure
+
+  VALID_DAYS = %w[monday tuesday wednesday thursday friday saturday sunday].freeze
 
   # Standard schedule templates
   TEMPLATES = {
@@ -107,6 +112,23 @@ class WorkSchedule < ApplicationRecord
   end
 
   private
+
+  def schedule_pattern_structure
+    return if schedule_pattern.blank?
+    return errors.add(:schedule_pattern, "doit être un objet JSON") unless schedule_pattern.is_a?(Hash)
+
+    schedule_pattern.each do |day, pattern|
+      unless VALID_DAYS.include?(day.to_s)
+        errors.add(:schedule_pattern, "jour invalide : #{day}")
+        next
+      end
+      next if pattern.blank?
+
+      unless pattern.is_a?(String) && pattern.match?(/\A\d{2}:\d{2}-\d{2}:\d{2}\z/)
+        errors.add(:schedule_pattern, "format invalide pour #{day} (attendu HH:MM-HH:MM, reçu: #{pattern.inspect})")
+      end
+    end
+  end
 
   def calculate_rtt_rate
     return unless rtt_eligible?

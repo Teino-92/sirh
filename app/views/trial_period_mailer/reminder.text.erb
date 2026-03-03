@@ -1,0 +1,13 @@
+Bonjour <%= @recipient.first_name %>,
+
+La période d'essai de <%= @employee.full_name %> se termine dans 7 jours, le <%= @employee.trial_period_end.strftime('%d/%m/%Y') %>.
+
+Vous devez prendre une décision avant cette date :
+- Valider la période d'essai (confirmation de l'embauche)
+- Renouveler la période d'essai (prolongation d'un mois)
+- Mettre fin à la collaboration
+
+Connectez-vous à Easy-RH pour agir depuis votre tableau de bord.
+
+Cordialement,
+L'équipe Easy-RH

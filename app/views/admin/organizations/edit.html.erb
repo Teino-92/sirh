@@ -203,6 +203,49 @@
           </div>
         <% end %>
 
+        <!-- Intégration Silae / Paie -->
+        <%= form.fields_for :settings do |sf| %>
+          <div class="border-t border-gray-200 dark:border-gray-700 pt-6">
+            <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-1">Intégration Paie (Silae / ADP)</h2>
+            <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">
+              Configurez un webhook pour pousser automatiquement les données de paie vers Silae ou ADP lors d'une clôture.
+              Le payload JSON contient les données de tous les employés actifs (NIR, IBAN, heures, absences).
+            </p>
+            <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+              <div class="sm:col-span-2">
+                <%= sf.label :payroll_webhook_url, "URL du Webhook Silae", class: "block text-sm font-medium text-gray-700 dark:text-gray-300" %>
+                <%= sf.url_field :payroll_webhook_url,
+                    value: @organization.settings['payroll_webhook_url'],
+                    placeholder: "https://silae.votre-domaine.com/api/webhooks/paie",
+                    class: "mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm font-mono" %>
+                <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                  Easy-RH fera un POST JSON à cette URL lors de chaque envoi de clôture.
+                </p>
+              </div>
+
+              <div class="sm:col-span-2">
+                <%= sf.label :payroll_webhook_secret, "Secret / Token Bearer", class: "block text-sm font-medium text-gray-700 dark:text-gray-300" %>
+                <%= sf.password_field :payroll_webhook_secret,
+                    value: '',
+                    placeholder: @organization.settings['payroll_webhook_secret'].present? ? '••••••••••••••••' : 'Optionnel — envoyé comme Authorization: Bearer …',
+                    autocomplete: 'new-password',
+                    class: "mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm font-mono" %>
+                <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                  Laissez vide pour ne pas modifier le secret existant.
+                </p>
+              </div>
+            </div>
+
+            <% if @organization.payroll_webhook_url.present? %>
+              <div class="mt-4 p-3 bg-green-50 dark:bg-green-900/30 border border-green-200 dark:border-green-700 rounded-md">
+                <p class="text-xs text-green-800 dark:text-green-300 font-medium">
+                  Webhook Silae actif — le bouton "Envoyer à Silae" sera visible sur les périodes clôturées.
+                </p>
+              </div>
+            <% end %>
+          </div>
+        <% end %>
+
         <div class="flex justify-end gap-3 pt-4 border-t border-gray-200 dark:border-gray-700">
           <%= link_to "Annuler", admin_organization_path,
               class: "px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700" %>

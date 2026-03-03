@@ -1,0 +1,186 @@
+# frozen_string_literal: true
+
+class EmployeeCsvImportService
+  ImportResult = Struct.new(:imported, :skipped, :errors)
+
+  # Mapping flexible des noms de colonnes — insensible à la casse et aux accents
+  COLUMN_ALIASES = {
+    'first_name'    => %w[prenom firstname first_name],
+    'last_name'     => %w[nom lastname last_name],
+    'email'         => %w[email mail e-mail],
+    'phone'         => %w[telephone phone mobile],
+    'department'    => %w[departement department dept service],
+    'job_title'     => %w[poste titre fonction job_title],
+    'contract_type' => %w[contrat type_contrat contract contract_type type_de_contrat],
+    'start_date'    => %w[date_entree date_arrivee date_debut start_date date_d_entree],
+    'end_date'      => %w[date_fin end_date],
+    'gross_salary'  => %w[salaire salaire_brut gross_salary remuneration],
+    'manager_email' => %w[manager manager_email responsable],
+    'role'          => %w[role profil]
+  }.freeze
+
+  CONTRACT_ALIASES = {
+    'cdi'        => 'CDI',
+    'cdd'        => 'CDD',
+    'stage'      => 'Stage',
+    'alternance' => 'Alternance',
+    'interim'    => 'Interim',
+    'intérim'    => 'Interim',
+    'interimaire' => 'Interim'
+  }.freeze
+
+  MAX_FILE_SIZE = 5.megabytes
+
+  def initialize(file, organization)
+    @file         = file
+    @organization = organization
+  end
+
+  def call
+    return size_error if @file.size > MAX_FILE_SIZE
+
+    rows   = parse_csv
+    result = ImportResult.new([], [], [])
+
+    # 1st pass — create all employees (no manager yet)
+    ActsAsTenant.with_tenant(@organization) do
+      ActiveRecord::Base.transaction do
+        rows.each_with_index do |row, i|
+          import_row(row, i + 2, result)
+        end
+      end
+    end
+
+    # 2nd pass — resolve managers (all employees now exist)
+    resolve_managers(rows, result)
+
+    result
+  rescue CSV::MalformedCSVError => e
+    ImportResult.new([], [], ["Fichier CSV invalide : #{e.message}"])
+  rescue Encoding::InvalidByteSequenceError, Encoding::UndefinedConversionError
+    ImportResult.new([], [], ["Encodage invalide — sauvegardez le fichier en UTF-8 et réessayez."])
+  end
+
+  private
+
+  def size_error
+    ImportResult.new([], [], ["Fichier trop volumineux (max 5 Mo)."])
+  end
+
+  def parse_csv
+    raw = @file.read
+    # Force UTF-8, replace invalid bytes
+    content = raw.encode('UTF-8', invalid: :replace, undef: :replace, replace: '?')
+    # Strip BOM (Excel sometimes adds UTF-8 BOM)
+    content.gsub!("\xEF\xBB\xBF", '')
+    # Auto-detect separator: if more semicolons than commas → Excel French
+    sep = content.count(';') >= content.count(',') ? ';' : ','
+    CSV.parse(content, headers: true, col_sep: sep,
+              header_converters: ->(h) { normalize_header(h) })
+       .map(&:to_h)
+  end
+
+  def normalize_header(header)
+    normalized = header.to_s.downcase.strip
+                       .gsub(/[éèêë]/, 'e')
+                       .gsub(/[àâä]/, 'a')
+                       .gsub(/[îï]/, 'i')
+                       .gsub(/[ôö]/, 'o')
+                       .gsub(/[ùûü]/, 'u')
+                       .gsub(/[ç]/, 'c')
+                       .gsub(/[\s\-()]+/, '_')
+                       .gsub(/_+/, '_')
+                       .gsub(/\A_|_\z/, '')
+    COLUMN_ALIASES.each do |canonical, aliases|
+      return canonical if aliases.include?(normalized)
+    end
+    normalized
+  end
+
+  def import_row(row, line_num, result)
+    attrs = build_employee_attrs(row)
+
+    if attrs[:first_name].blank? || attrs[:last_name].blank? || attrs[:email].blank?
+      result.errors << "Ligne #{line_num} : Prénom, Nom et Email sont obligatoires"
+      result.skipped << row
+      return
+    end
+
+    employee = Employee.new(attrs.merge(
+      organization: @organization,
+      password:     SecureRandom.hex(10)
+    ))
+
+    if employee.save
+      result.imported << employee
+    else
+      result.errors << "Ligne #{line_num} (#{row['email']}) : #{employee.errors.full_messages.join(', ')}"
+      result.skipped << row
+    end
+  end
+
+  def build_employee_attrs(row)
+    {
+      first_name:         row['first_name'].to_s.strip,
+      last_name:          row['last_name'].to_s.strip,
+      email:              row['email'].to_s.strip.downcase,
+      phone:              row['phone']&.strip.presence,
+      department:         row['department']&.strip.presence,
+      job_title:          row['job_title']&.strip.presence,
+      contract_type:      normalize_contract(row['contract_type']),
+      start_date:         parse_date(row['start_date']),
+      end_date:           parse_date(row['end_date']),
+      gross_salary_cents: parse_salary(row['gross_salary']),
+      role:               normalize_role(row['role'])
+    }.compact
+  end
+
+  def normalize_contract(val)
+    CONTRACT_ALIASES[val.to_s.downcase.strip] || 'CDI'
+  end
+
+  def normalize_role(val)
+    r = val.to_s.downcase.strip
+    Employee::ROLES.include?(r) ? r : 'employee'
+  end
+
+  def parse_date(val)
+    return nil if val.blank?
+    str = val.strip
+    %w[%d/%m/%Y %Y-%m-%d %d-%m-%Y %m/%d/%Y].each do |fmt|
+      begin
+        return Date.strptime(str, fmt)
+      rescue Date::Error, ArgumentError
+        next
+      end
+    end
+    nil
+  end
+
+  def parse_salary(val)
+    return nil if val.blank?
+    # Accepte "58000", "58 000", "58 000,00 €", "58000.00"
+    cleaned = val.to_s.gsub(/[^\d.,]/, '').gsub(/,(?=\d{2}\z)/, '.').gsub(',', '')
+    cents = cleaned.to_f * 100
+    cents.positive? ? cents.to_i : nil
+  end
+
+  def resolve_managers(rows, result)
+    ActsAsTenant.with_tenant(@organization) do
+      rows.each do |row|
+        next if row['manager_email'].blank?
+
+        manager_email  = row['manager_email'].strip.downcase
+        employee_email = row['email']&.strip&.downcase
+        next if employee_email.blank?
+
+        employee = Employee.find_by(email: employee_email)
+        manager  = Employee.find_by(email: manager_email)
+
+        next unless employee && manager
+
+        employee.update_columns(manager_id: manager.id)
+      end
+    end
+  end
+end

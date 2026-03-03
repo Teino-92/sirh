@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class TimeEntry < ApplicationRecord
+  include JsonbValidatable
+
   acts_as_tenant :organization
 
   belongs_to :employee
@@ -13,6 +15,11 @@ class TimeEntry < ApplicationRecord
   validate :max_daily_hours
   validate :employee_belongs_to_same_organization
   validate :validators_belong_to_same_organization
+  validate :period_not_locked, on: %i[create update]
+
+  validates_jsonb_keys :location,
+    allowed: %i[latitude longitude accuracy address],
+    types: { latitude: Numeric, longitude: Numeric, accuracy: Numeric }
 
   before_save :calculate_duration
   after_save :check_rtt_accrual
@@ -50,7 +57,8 @@ class TimeEntry < ApplicationRecord
     return 0 unless completed?
     return 0 if duration_minutes.nil?
 
-    duration_minutes / 60.0
+    net = duration_minutes - break_duration_minutes.to_i
+    [net, 0].max / 60.0
   end
 
   def overtime?
@@ -170,6 +178,14 @@ class TimeEntry < ApplicationRecord
 
     if employee.organization_id != organization_id
       errors.add(:employee, 'must belong to the same organization')
+    end
+  end
+
+  def period_not_locked
+    return unless clock_in.present? && organization_id.present?
+
+    if PayrollPeriod.locked?(organization_id, clock_in.to_date)
+      errors.add(:base, "La période #{clock_in.to_date.strftime('%B %Y')} est clôturée.")
     end
   end
 

@@ -1,0 +1,16 @@
+Bonjour <%= @manager.first_name %>,
+
+<%= @employee.full_name %> a soumis une nouvelle demande de congé qui nécessite votre validation.
+
+Détails :
+- Employé : <%= @employee.full_name %>
+- Type : <%= @leave_request.leave_type_label %>
+- Du : <%= @leave_request.start_date.strftime('%d/%m/%Y') %>
+- Au : <%= @leave_request.end_date.strftime('%d/%m/%Y') %>
+- Durée : <%= @leave_request.business_days %> jour(s)
+<% if @leave_request.comment.present? %>- Motif : <%= @leave_request.comment %>
+<% end %>
+Connectez-vous à Easy-RH pour approuver ou refuser cette demande.
+
+Cordialement,
+L'équipe Easy-RH

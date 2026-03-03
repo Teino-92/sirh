@@ -65,8 +65,13 @@ class LeaveRequestsController < ApplicationController
 
       # Check auto-approval via LeavePolicyEngine
       if policy_engine.can_auto_approve?(@leave_request)
-        @leave_request.auto_approve!
-        redirect_to leave_requests_path, notice: 'Demande de congé approuvée automatiquement ✓'
+        begin
+          @leave_request.auto_approve!
+          redirect_to leave_requests_path, notice: 'Demande de congé approuvée automatiquement ✓'
+        rescue ActiveRecord::RecordInvalid
+          # Period locked between save and auto_approve! — leave as pending
+          redirect_to leave_requests_path, notice: 'Demande de congé créée. En attente d\'approbation.'
+        end
       else
         redirect_to leave_requests_path, notice: 'Demande de congé créée. En attente d\'approbation.'
       end
@@ -104,6 +109,9 @@ class LeaveRequestsController < ApplicationController
     LeaveRequestNotificationJob.perform_later(:approved, @leave_request.id)
 
     redirect_to pending_approvals_leave_requests_path, notice: 'Demande approuvée'
+  rescue ActiveRecord::RecordInvalid => e
+    redirect_to pending_approvals_leave_requests_path,
+                alert: e.record.errors.full_messages.first || 'Impossible d\'approuver cette demande'
   end
 
   def reject_form
@@ -119,6 +127,9 @@ class LeaveRequestsController < ApplicationController
     LeaveRequestNotificationJob.perform_later(:rejected, @leave_request.id)
 
     redirect_to pending_approvals_leave_requests_path, notice: 'Demande refusée'
+  rescue ActiveRecord::RecordInvalid => e
+    redirect_to pending_approvals_leave_requests_path,
+                alert: e.record.errors.full_messages.first || 'Impossible de refuser cette demande'
   end
 
   def cancel
@@ -135,6 +146,9 @@ class LeaveRequestsController < ApplicationController
     LeaveRequestNotificationJob.perform_later(:cancelled, @leave_request.id)
 
     redirect_to leave_requests_path, notice: 'Demande annulée avec succès'
+  rescue ActiveRecord::RecordInvalid => e
+    redirect_to leave_requests_path,
+                alert: e.record.errors.full_messages.first || 'Impossible d\'annuler cette demande'
   end
 
   def team_calendar

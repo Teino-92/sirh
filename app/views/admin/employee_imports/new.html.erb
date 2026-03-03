@@ -1,0 +1,194 @@
+<% content_for :title, "Importer des collaborateurs" %>
+
+<div class="max-w-3xl mx-auto px-4 py-8">
+
+  <!-- Header -->
+  <div class="mb-8">
+    <div class="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400 mb-2">
+      <%= link_to "Employés", admin_employees_path, class: "hover:text-indigo-600 dark:hover:text-indigo-400" %>
+      <span>›</span>
+      <span>Import CSV</span>
+    </div>
+    <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Importer vos collaborateurs</h1>
+    <p class="mt-1 text-gray-500 dark:text-gray-400">
+      Importez votre listing depuis Excel, votre ancien SIRH ou tout logiciel avec export CSV.
+    </p>
+  </div>
+
+  <!-- Upload Card -->
+  <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 mb-6">
+    <%= form_with url: admin_employee_import_path, method: :post, multipart: true, local: true do |f| %>
+
+      <!-- Drop zone -->
+      <div
+        id="drop-zone"
+        class="relative border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-xl p-10 text-center transition-colors hover:border-indigo-400 dark:hover:border-indigo-500 cursor-pointer"
+        onclick="document.getElementById('csv-file-input').click()"
+      >
+        <!-- Icon -->
+        <div class="flex justify-center mb-4">
+          <div class="w-14 h-14 bg-indigo-50 dark:bg-indigo-900/30 rounded-full flex items-center justify-center">
+            <svg class="w-7 h-7 text-indigo-600 dark:text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
+            </svg>
+          </div>
+        </div>
+
+        <!-- Text -->
+        <p class="text-base font-medium text-gray-700 dark:text-gray-200">
+          Glissez votre fichier CSV ici
+        </p>
+        <p class="text-sm text-gray-400 dark:text-gray-500 mt-1 mb-4">ou cliquez pour sélectionner</p>
+
+        <!-- File input (hidden) -->
+        <input
+          type="file"
+          name="file"
+          id="csv-file-input"
+          accept=".csv,.txt"
+          class="hidden"
+          onchange="updateFileName(this)"
+        >
+
+        <!-- Selected file name -->
+        <div id="file-name-display" class="hidden mt-3 inline-flex items-center gap-2 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 text-sm px-4 py-1.5 rounded-full">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+          </svg>
+          <span id="file-name-text"></span>
+        </div>
+      </div>
+
+      <!-- Template download -->
+      <div class="mt-4 flex items-center justify-between flex-wrap gap-3">
+        <a href="/templates/collaborateurs_template.csv" download
+           class="inline-flex items-center gap-2 text-sm text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-200 font-medium">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+          </svg>
+          Télécharger le modèle CSV
+        </a>
+        <span class="text-xs text-gray-400 dark:text-gray-500">Max 5 Mo — CSV ou Excel (UTF-8)</span>
+      </div>
+
+      <!-- Submit -->
+      <div class="mt-6">
+        <%= f.submit "Importer les collaborateurs →",
+            class: "w-full sm:w-auto flex justify-center px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-lg shadow-sm transition-colors cursor-pointer disabled:opacity-50" %>
+      </div>
+    <% end %>
+  </div>
+
+  <!-- Columns info card -->
+  <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
+    <h2 class="text-sm font-semibold text-gray-700 dark:text-gray-200 uppercase tracking-wide mb-4">
+      Colonnes reconnues automatiquement
+    </h2>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      <!-- Required -->
+      <div>
+        <p class="text-xs font-medium text-red-600 dark:text-red-400 uppercase tracking-wide mb-2">Obligatoires</p>
+        <ul class="space-y-1.5">
+          <% [
+            ["Prénom", "Prenom, Firstname"],
+            ["Nom", "Nom, Lastname"],
+            ["Email", "Email, Mail"],
+            ["Type de contrat", "CDI, CDD, Stage, Alternance, Intérim"],
+            ["Date d'entrée", "JJ/MM/AAAA ou AAAA-MM-JJ"]
+          ].each do |col, hint| %>
+            <li class="flex items-start gap-2 text-sm">
+              <span class="mt-0.5 w-4 h-4 flex-shrink-0 text-red-500">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+              </span>
+              <div>
+                <span class="font-medium text-gray-700 dark:text-gray-200"><%= col %></span>
+                <span class="text-gray-400 dark:text-gray-500"> — <%= hint %></span>
+              </div>
+            </li>
+          <% end %>
+        </ul>
+      </div>
+
+      <!-- Optional -->
+      <div>
+        <p class="text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wide mb-2">Optionnelles</p>
+        <ul class="space-y-1.5">
+          <% [
+            ["Téléphone", "Phone, Mobile"],
+            ["Département", "Departement, Service"],
+            ["Poste", "Titre, Fonction"],
+            ["Salaire brut", "Salaire, Remuneration"],
+            ["Manager", "Email du manager"],
+            ["Rôle", "employee, manager, hr, admin"]
+          ].each do |col, hint| %>
+            <li class="flex items-start gap-2 text-sm">
+              <span class="mt-0.5 w-4 h-4 flex-shrink-0 text-gray-300 dark:text-gray-600">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+              </span>
+              <div>
+                <span class="font-medium text-gray-700 dark:text-gray-200"><%= col %></span>
+                <span class="text-gray-400 dark:text-gray-500"> — <%= hint %></span>
+              </div>
+            </li>
+          <% end %>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Compatibility note -->
+    <div class="mt-5 pt-4 border-t border-gray-100 dark:border-gray-700">
+      <p class="text-xs text-gray-400 dark:text-gray-500">
+        Compatible avec les exports de :
+        <span class="font-medium text-gray-500 dark:text-gray-400">
+          Excel · Sage · Lucca · Factorial · PayFit · BambooHR · tout logiciel avec export CSV
+        </span>
+      </p>
+      <p class="text-xs text-gray-400 dark:text-gray-500 mt-1">
+        Séparateur <code class="bg-gray-100 dark:bg-gray-700 px-1 rounded">,</code> ou
+        <code class="bg-gray-100 dark:bg-gray-700 px-1 rounded">;</code> détecté automatiquement.
+      </p>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  function updateFileName(input) {
+    const display = document.getElementById('file-name-display');
+    const nameEl  = document.getElementById('file-name-text');
+    if (input.files && input.files[0]) {
+      nameEl.textContent = input.files[0].name;
+      display.classList.remove('hidden');
+    }
+  }
+
+  // Drag-and-drop support
+  const zone = document.getElementById('drop-zone');
+  if (zone) {
+    zone.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      zone.classList.add('border-indigo-500', 'bg-indigo-50');
+    });
+    zone.addEventListener('dragleave', () => {
+      zone.classList.remove('border-indigo-500', 'bg-indigo-50');
+    });
+    zone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      zone.classList.remove('border-indigo-500', 'bg-indigo-50');
+      const file = e.dataTransfer.files[0];
+      if (file) {
+        const input = document.getElementById('csv-file-input');
+        const dt = new DataTransfer();
+        dt.items.add(file);
+        input.files = dt.files;
+        updateFileName(input);
+      }
+    });
+  }
+</script>

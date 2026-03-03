@@ -1,3 +1,19 @@
-LeaveRequest#submitted
+Bonjour <%= @employee.first_name %>,
 
-<%= @greeting %>, find me in app/views/leave_request_mailer/submitted.text.erb
+Votre demande de congé a bien été enregistrée et est en attente d'approbation.
+
+Détails :
+- Type : <%= @leave_request.leave_type_label %>
+- Du : <%= @leave_request.start_date.strftime('%d/%m/%Y') %>
+- Au : <%= @leave_request.end_date.strftime('%d/%m/%Y') %>
+- Durée : <%= @leave_request.business_days %> jour(s)
+<% if @leave_request.comment.present? %>- Commentaire : <%= @leave_request.comment %>
+<% end %>
+<% if @manager.present? %>
+Votre demande a été transmise à <%= @manager.full_name %> pour validation.
+<% end %>
+
+Vous recevrez un email dès qu'une décision aura été prise.
+
+Cordialement,
+L'équipe Easy-RH

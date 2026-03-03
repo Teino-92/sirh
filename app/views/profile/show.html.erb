@@ -143,8 +143,8 @@
       </div>
     </div>
 
-    <!-- Rémunération (visible uniquement si renseignée) -->
-    <% if @employee.gross_salary_cents > 0 %>
+    <!-- Rémunération — confidentielle, visible uniquement par l'employé lui-même -->
+    <% if policy(@employee).see_salary? && @employee.gross_salary_cents > 0 %>
       <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 lg:col-span-2">
         <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4 flex items-center">
           <svg class="w-5 h-5 mr-2 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">

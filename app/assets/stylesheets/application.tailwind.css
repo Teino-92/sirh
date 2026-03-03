@@ -1,5 +1,16 @@
 @import "tailwindcss";
 
+@source "../../views/**/*.html.erb";
+@source "../../javascript/**/*.js";
+
+/* Variables de couleur manquantes pour les cards features */
+:root {
+  --color-violet-100: oklch(0.943 0.029 294.588);
+  --color-violet-400: oklch(0.702 0.183 293.541);
+  --color-violet-600: oklch(0.558 0.288 302.321);
+  --color-violet-900: oklch(0.33 0.185 293.541);
+}
+
 @variant dark (.dark &);
 
 /* SortableJS drag classes — cannot use Tailwind JIT classes for these */

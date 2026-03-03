@@ -38,13 +38,17 @@ class Employee < ApplicationRecord
   has_many :managed_evaluations, class_name: 'Evaluation', foreign_key: :manager_id, dependent: :nullify
 
   # Onboarding relationships
-  has_many :onboardings,         foreign_key: :employee_id, dependent: :destroy
-  has_many :managed_onboardings, class_name: 'Onboarding', foreign_key: :manager_id, dependent: :nullify
+  has_many :employee_onboardings,         class_name: 'EmployeeOnboarding', foreign_key: :employee_id, dependent: :destroy
+  has_many :managed_employee_onboardings, class_name: 'EmployeeOnboarding', foreign_key: :manager_id, dependent: :nullify
 
   # Training relationships
   has_many :training_assignments, class_name: 'TrainingAssignment', dependent: :destroy
   has_many :trainings, class_name: 'Training', through: :training_assignments
   has_many :assigned_trainings, class_name: 'TrainingAssignment', foreign_key: :assigned_by_id, dependent: :nullify
+
+  # Sensitive payroll fields — encrypted at rest via ActiveRecord Encryption
+  encrypts :nir,  deterministic: false
+  encrypts :iban, deterministic: false
 
   validates :first_name, :last_name, :contract_type, :start_date, presence: true
   ROLES = %w[employee manager hr admin].freeze
@@ -53,6 +57,26 @@ class Employee < ApplicationRecord
 
   # French contract types
   validates :contract_type, inclusion: { in: %w[CDI CDD Stage Alternance Interim] }
+
+  # Payroll validations
+  validates :nir, format: { with: /\A[12][0-9]{12}\z/, message: "doit contenir 13 chiffres (commence par 1 ou 2)" },
+                  allow_blank: true
+  validate :nir_unique_within_organization, if: -> { nir.present? && nir_changed? }
+  validates :part_time_rate, numericality: { greater_than: 0, message: "doit être supérieur à 0" }, allow_nil: true
+  validates :part_time_rate, numericality: { less_than_or_equal_to: 1, message: "ne peut pas dépasser 1.0 (temps plein)" }, allow_nil: true
+  # end_date is the CDD contract end date
+  validates :end_date, presence: { message: "est obligatoire pour un CDD" }, if: -> { contract_type == 'CDD' }
+
+  TERMINATION_REASONS = %w[resignation layoff_economic layoff_personal mutual_agreement
+                            cdd_end trial_period_end retirement death].freeze
+  validates :termination_reason,
+            inclusion: { in: TERMINATION_REASONS, message: "n'est pas une valeur valide" },
+            allow_blank: true
+
+  # Format officiel INSEE : 01–95, 2A, 2B, 971–976
+  validates :birth_department,
+            format: { with: /\A(\d{2}|2[AB]|97[1-6])\z/, message: "format invalide (ex: 75, 2A, 971)" },
+            allow_blank: true
 
   scope :active, -> { where("(settings->>'active') IS NULL OR (settings->>'active') = 'true'") }
   scope :managers, -> { where(role: %w[manager hr admin]) }
@@ -98,6 +122,7 @@ class Employee < ApplicationRecord
     'upcoming_one_on_ones' => ->(e) { e.manager? },
     'absences_today'       => ->(e) { e.hr_or_admin? },
     'active_onboardings'   => ->(e) { e.hr_or_admin? },
+    'trial_period_alerts'  => ->(e) { e.manager? },
     'leave_balances'       => ->(_e) { true },
     'upcoming_leaves'      => ->(_e) { true },
     'my_performance'       => ->(_e) { true },
@@ -105,48 +130,81 @@ class Employee < ApplicationRecord
     'quick_links'          => ->(_e) { true }
   }.freeze
 
+  # GridStack layout: each card has x, y, w, h in grid units (12-column grid).
+  # w: 1-12 columns, h: height units (~100px each). Cards snap to the grid on drag/resize.
   DASHBOARD_DEFAULT_LAYOUTS = {
     'employee' => {
-      'order'  => %w[leave_balances personal_planning upcoming_leaves pending_requests my_performance quick_links],
-      'hidden' => [],
-      'sizes'  => { 'leave_balances' => 'normal', 'personal_planning' => 'normal',
-                    'upcoming_leaves' => 'normal', 'pending_requests' => 'normal',
-                    'my_performance' => 'normal', 'quick_links' => 'normal' }
+      'grid' => [
+        { 'id' => 'leave_balances',   'x' => 0, 'y' => 0, 'w' => 6, 'h' => 3 },
+        { 'id' => 'upcoming_leaves',  'x' => 6, 'y' => 0, 'w' => 6, 'h' => 3 },
+        { 'id' => 'personal_planning','x' => 0, 'y' => 3, 'w' => 12,'h' => 5 },
+        { 'id' => 'pending_requests', 'x' => 0, 'y' => 8, 'w' => 6, 'h' => 3 },
+        { 'id' => 'my_performance',   'x' => 6, 'y' => 8, 'w' => 6, 'h' => 3 },
+        { 'id' => 'quick_links',      'x' => 0, 'y' => 11,'w' => 6, 'h' => 5 }
+      ],
+      'hidden' => []
     },
     'manager' => {
-      'order'  => %w[pending_approvals team_planning leave_balances upcoming_one_on_ones team_performance my_performance pending_requests quick_links],
-      'hidden' => [],
-      'sizes'  => { 'pending_approvals' => 'normal', 'team_planning' => 'normal',
-                    'leave_balances' => 'normal', 'upcoming_one_on_ones' => 'normal',
-                    'team_performance' => 'normal', 'my_performance' => 'normal',
-                    'pending_requests' => 'normal', 'quick_links' => 'normal' }
+      'grid' => [
+        { 'id' => 'trial_period_alerts',  'x' => 0, 'y' => 0, 'w' => 6, 'h' => 3 },
+        { 'id' => 'pending_approvals',    'x' => 6, 'y' => 0, 'w' => 6, 'h' => 3 },
+        { 'id' => 'team_planning',        'x' => 0, 'y' => 3, 'w' => 12,'h' => 5 },
+        { 'id' => 'leave_balances',       'x' => 0, 'y' => 8, 'w' => 4, 'h' => 3 },
+        { 'id' => 'upcoming_one_on_ones', 'x' => 4, 'y' => 8, 'w' => 4, 'h' => 3 },
+        { 'id' => 'team_performance',     'x' => 8, 'y' => 8, 'w' => 4, 'h' => 3 },
+        { 'id' => 'my_performance',       'x' => 0, 'y' => 11,'w' => 6, 'h' => 3 },
+        { 'id' => 'pending_requests',     'x' => 6, 'y' => 11,'w' => 6, 'h' => 3 },
+        { 'id' => 'quick_links',          'x' => 0, 'y' => 14,'w' => 6, 'h' => 5 }
+      ],
+      'hidden' => []
     },
     'hr' => {
-      'order'  => %w[absences_today active_onboardings leave_balances pending_requests my_performance quick_links],
-      'hidden' => [],
-      'sizes'  => { 'absences_today' => 'normal', 'active_onboardings' => 'normal',
-                    'leave_balances' => 'normal', 'pending_requests' => 'normal',
-                    'my_performance' => 'normal', 'quick_links' => 'normal' }
+      'grid' => [
+        { 'id' => 'trial_period_alerts', 'x' => 0, 'y' => 0, 'w' => 6, 'h' => 3 },
+        { 'id' => 'absences_today',      'x' => 6, 'y' => 0, 'w' => 6, 'h' => 3 },
+        { 'id' => 'active_onboardings',  'x' => 0, 'y' => 3, 'w' => 12,'h' => 5 },
+        { 'id' => 'leave_balances',      'x' => 0, 'y' => 8, 'w' => 6, 'h' => 3 },
+        { 'id' => 'pending_requests',    'x' => 6, 'y' => 8, 'w' => 6, 'h' => 3 },
+        { 'id' => 'my_performance',      'x' => 0, 'y' => 11,'w' => 6, 'h' => 3 },
+        { 'id' => 'quick_links',         'x' => 6, 'y' => 11,'w' => 6, 'h' => 3 }
+      ],
+      'hidden' => []
     },
     'admin' => {
-      'order'  => %w[absences_today active_onboardings leave_balances pending_requests my_performance quick_links],
-      'hidden' => [],
-      'sizes'  => { 'absences_today' => 'normal', 'active_onboardings' => 'normal',
-                    'leave_balances' => 'normal', 'pending_requests' => 'normal',
-                    'my_performance' => 'normal', 'quick_links' => 'normal' }
+      'grid' => [
+        { 'id' => 'trial_period_alerts', 'x' => 0, 'y' => 0, 'w' => 6, 'h' => 3 },
+        { 'id' => 'absences_today',      'x' => 6, 'y' => 0, 'w' => 6, 'h' => 3 },
+        { 'id' => 'active_onboardings',  'x' => 0, 'y' => 3, 'w' => 12,'h' => 5 },
+        { 'id' => 'leave_balances',      'x' => 0, 'y' => 8, 'w' => 6, 'h' => 3 },
+        { 'id' => 'pending_requests',    'x' => 6, 'y' => 8, 'w' => 6, 'h' => 3 },
+        { 'id' => 'my_performance',      'x' => 0, 'y' => 11,'w' => 6, 'h' => 3 },
+        { 'id' => 'quick_links',         'x' => 6, 'y' => 11,'w' => 6, 'h' => 3 }
+      ],
+      'hidden' => []
     }
   }.freeze
 
   def dashboard_layout
     stored = settings.fetch('dashboard_layout', nil)
     return default_dashboard_layout if stored.blank?
-    default = default_dashboard_layout
-    merged_sizes = default['sizes'].merge(stored['sizes'] || {})
-    # Normalize removed 'compact' size to 'normal'
-    merged_sizes.transform_values! { |v| v == 'compact' ? 'normal' : v }
-    { 'order'  => stored['order'] || default['order'],
-      'hidden' => stored['hidden'] || [],
-      'sizes'  => merged_sizes }
+
+    # New GridStack format: has 'grid' key
+    if stored['grid'].present?
+      default_ids = default_dashboard_layout['grid'].map { |c| c['id'] }
+      stored_ids  = stored['grid'].map { |c| c['id'] }
+
+      # Merge: add new permitted cards not yet in stored layout (new role cards, new features)
+      missing = (default_ids - stored_ids).filter_map do |id|
+        next unless dashboard_card_permitted?(id)
+        default_dashboard_layout['grid'].find { |c| c['id'] == id }
+      end
+
+      grid = stored['grid'].select { |c| dashboard_card_permitted?(c['id']) } + missing
+      { 'grid' => grid, 'hidden' => stored['hidden'] || [] }
+    else
+      # Legacy format (order/sizes) — fall back to default GridStack layout
+      default_dashboard_layout
+    end
   end
 
   def dashboard_layout=(layout_hash)
@@ -197,9 +255,19 @@ class Employee < ApplicationRecord
 
   private
 
+  # AR Encryption uses non-deterministic mode — DB-level unique index is not possible.
+  # Uniqueness is enforced by decrypting and comparing all org NIRs in Ruby.
+  # Acceptable at current scale (org employees << 10k); revisit if perf becomes an issue.
+  def nir_unique_within_organization
+    conflict = organization.employees
+                           .where.not(id: id.to_i)
+                           .find { |e| e.nir == nir }
+    errors.add(:nir, "est déjà utilisé par un autre employé") if conflict
+  end
+
   def default_dashboard_layout
     base = DASHBOARD_DEFAULT_LAYOUTS.fetch(role, DASHBOARD_DEFAULT_LAYOUTS['employee']).deep_dup
-    base['order'].select! { |card| dashboard_card_permitted?(card) }
+    base['grid'].select! { |card| dashboard_card_permitted?(card['id']) }
     base
   end
 end

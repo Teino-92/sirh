@@ -14,6 +14,13 @@ class EmployeePolicy < ApplicationPolicy
     update?
   end
 
+  # Droit du travail français : confidentialité salariale stricte.
+  # Seuls HR/admin et l'employé lui-même peuvent consulter un salaire.
+  # Un manager n'a aucun droit sur le salaire de ses subordonnés.
+  def see_salary?
+    user.hr_or_admin? || user == record
+  end
+
   class Scope < Scope
     def resolve
       # Employees can only see themselves

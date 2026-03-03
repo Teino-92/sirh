@@ -1,8 +1,7 @@
 <%
-  layout  = @employee.dashboard_layout
-  order   = layout['order']
-  hidden  = layout['hidden']
-  sizes   = layout['sizes']
+  layout = @employee.dashboard_layout
+  grid   = layout['grid']
+  hidden = layout['hidden']
 %>
 
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6"
@@ -44,6 +43,14 @@
         </svg>
         Sauvegarder
       </button>
+
+      <button type="button"
+              style="display:none"
+              class="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 text-sm font-medium text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+              data-dashboard-customizer-target="cancelBtn"
+              data-action="click->dashboard-customizer#exitEditMode">
+        Annuler
+      </button>
     </div>
   </div>
 
@@ -51,74 +58,202 @@
   <div class="hidden fixed bottom-4 right-4 z-50 px-4 py-2 rounded-lg shadow-lg text-sm font-medium text-white"
        data-dashboard-customizer-target="feedback"></div>
 
-  <!-- Dashboard grid — flex-wrap, same layout in both view and edit mode -->
-  <div class="flex flex-wrap" data-dashboard-customizer-target="grid">
+  <!-- Hidden cards panel — inline, below header, right-aligned, only in edit mode -->
+  <div class="hidden mb-4 flex justify-end"
+       data-dashboard-customizer-target="hiddenPanel">
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow border border-dashed border-indigo-300 dark:border-indigo-700 overflow-hidden w-64">
+      <div class="px-3 py-2 border-b border-indigo-100 dark:border-indigo-800 bg-indigo-50 dark:bg-indigo-900/30 flex items-center gap-1.5">
+        <svg class="w-3.5 h-3.5 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"/>
+        </svg>
+        <p class="text-xs font-semibold text-indigo-600 dark:text-indigo-300">Cartes masquées</p>
+        <span class="text-xs text-indigo-400 dark:text-indigo-500 ml-auto">cliquer pour restaurer</span>
+      </div>
+      <div class="p-2 flex flex-wrap gap-1.5"
+           data-dashboard-customizer-target="hiddenList">
+        <p class="text-xs text-gray-400 dark:text-gray-500 w-full text-center py-1 italic"
+           data-dashboard-customizer-target="emptyHint">
+          Aucune carte masquée
+        </p>
+      </div>
+    </div>
+  </div>
 
-    <% order.each do |card_id| %>
+  <!-- GridStack container — full width, no flex wrapper -->
+  <div class="grid-stack"
+       data-dashboard-customizer-target="grid"
+       gs-column="12"
+       gs-animate="true">
+
+    <%# Only VISIBLE cards go inside the grid-stack %>
+    <% grid.each do |card| %>
+      <% card_id = card['id'] %>
       <% next unless @employee.dashboard_card_permitted?(card_id) %>
-      <%
-        size      = sizes.fetch(card_id, 'normal')
-        is_hidden = hidden.include?(card_id)
-        wide      = size == 'wide'
-      %>
-      <div class="dashboard-card <%= is_hidden ? 'dashboard-card--hidden' : '' %>"
-           style="width:<%= wide ? '66.666%' : '33.333%' %>; padding:0 12px 24px;"
-           data-dashboard-customizer-target="card"
+      <% next if hidden.include?(card_id) %>
+
+      <div class="grid-stack-item"
+           gs-x="<%= card['x'] %>"
+           gs-y="<%= card['y'] %>"
+           gs-w="<%= card['w'] %>"
+           gs-h="<%= card['h'] %>"
+           gs-min-w="2"
+           gs-min-h="2"
            data-card-id="<%= card_id %>"
-           data-card-size="<%= size %>"
-           data-card-hidden="<%= is_hidden %>">
+           data-card-hidden="false"
+           data-card-label="<%= card_id.humanize %>"
+           data-card-x="<%= card['x'] %>"
+           data-card-y="<%= card['y'] %>"
+           data-card-w="<%= card['w'] %>"
+           data-card-h="<%= card['h'] %>"
+           data-dashboard-customizer-target="card">
 
-        <!-- Wrapper gives position:relative context for the edit chrome -->
-        <div class="relative pt-5">
-
-          <!-- Edit chrome: hidden until edit mode -->
-          <div class="dashboard-edit-chrome" style="display:none; position:absolute; top:0; left:0; right:0; z-index:10; align-items:center; justify-content:space-between;">
-            <!-- Drag handle -->
-            <div class="cursor-grab active:cursor-grabbing select-none touch-none p-1 bg-white dark:bg-gray-700 rounded shadow border border-gray-200 dark:border-gray-600 text-gray-400 hover:text-indigo-600"
-                 data-drag-handle>
-              <svg class="w-4 h-4 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div class="grid-stack-item-content">
+          <div class="dashboard-edit-chrome hidden absolute top-0 left-0 right-0 z-10 flex items-center justify-between px-2 py-1 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm border-b border-gray-200 dark:border-gray-700 rounded-t-lg">
+            <div class="flex items-center gap-1 text-gray-400 cursor-grab active:cursor-grabbing select-none"
+                 title="Glisser pour déplacer">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8h16M4 16h16"/>
               </svg>
+              <span class="text-xs text-gray-400"><%= card_id.humanize %></span>
             </div>
-
-            <!-- Normal / Large + eye -->
-            <div class="flex items-center gap-1">
-              <div class="flex rounded overflow-hidden border border-gray-200 dark:border-gray-600 text-xs select-none">
-                <button type="button"
-                        class="px-2 py-1 font-medium transition-colors <%= !wide ? 'bg-indigo-600 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600' %>"
-                        data-size-btn="normal"
-                        data-action="click->dashboard-customizer#setSize"
-                        data-dashboard-customizer-size-param="normal">Normal</button>
-                <button type="button"
-                        class="px-2 py-1 font-medium border-l border-gray-200 dark:border-gray-600 transition-colors <%= wide ? 'bg-indigo-600 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600' %>"
-                        data-size-btn="wide"
-                        data-action="click->dashboard-customizer#setSize"
-                        data-dashboard-customizer-size-param="wide">Large</button>
-              </div>
-
-              <button type="button"
-                      class="p-1 bg-white dark:bg-gray-700 rounded shadow border border-gray-200 dark:border-gray-600 text-gray-400 hover:text-indigo-600"
-                      data-action="click->dashboard-customizer#toggleHide"
-                      title="Afficher / masquer">
-                <svg class="w-4 h-4 <%= is_hidden ? 'hidden' : '' %>" fill="none" stroke="currentColor" viewBox="0 0 24 24" data-eye-open>
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
-                </svg>
-                <svg class="w-4 h-4 <%= is_hidden ? '' : 'hidden' %>" fill="none" stroke="currentColor" viewBox="0 0 24 24" data-eye-closed>
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"/>
-                </svg>
-              </button>
-            </div>
+            <button type="button"
+                    class="p-1 rounded text-gray-400 hover:text-red-500 transition-colors"
+                    data-action="click->dashboard-customizer#toggleHide"
+                    title="Masquer">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"/>
+              </svg>
+            </button>
           </div>
 
-          <!-- Card content -->
-          <div class="card-content">
-            <%= render "dashboard/cards/#{card_id}", size: size, employee: @employee %>
+          <div class="card-content h-full overflow-auto">
+            <%
+              card_size = if card['h'].to_i <= 2
+                           'compact'
+                         elsif card['w'].to_i >= 8
+                           'wide'
+                         else
+                           'normal'
+                         end
+            %>
+            <%= render "dashboard/cards/#{card_id}", size: card_size, employee: @employee %>
           </div>
-
         </div>
+
       </div>
     <% end %>
 
   </div>
+
+  <%# Stash: hidden card nodes rendered server-side, invisible, outside the grid %>
+  <div id="dashboard-card-stash" style="display:none!important">
+    <% grid.each do |card| %>
+      <% card_id = card['id'] %>
+      <% next unless @employee.dashboard_card_permitted?(card_id) %>
+      <% next unless hidden.include?(card_id) %>
+
+      <div class="grid-stack-item"
+           data-card-id="<%= card_id %>"
+           data-card-hidden="true"
+           data-card-label="<%= card_id.humanize %>"
+           data-card-x="<%= card['x'] %>"
+           data-card-y="<%= card['y'] %>"
+           data-card-w="<%= card['w'] %>"
+           data-card-h="<%= card['h'] %>"
+           data-dashboard-customizer-target="card">
+
+        <div class="grid-stack-item-content">
+          <div class="dashboard-edit-chrome hidden absolute top-0 left-0 right-0 z-10 flex items-center justify-between px-2 py-1 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm border-b border-gray-200 dark:border-gray-700 rounded-t-lg">
+            <div class="flex items-center gap-1 text-gray-400 select-none">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8h16M4 16h16"/>
+              </svg>
+              <span class="text-xs text-gray-400"><%= card_id.humanize %></span>
+            </div>
+            <button type="button"
+                    class="p-1 rounded text-gray-400 hover:text-red-500 transition-colors"
+                    data-action="click->dashboard-customizer#toggleHide"
+                    title="Masquer">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"/>
+              </svg>
+            </button>
+          </div>
+          <div class="card-content h-full overflow-auto">
+            <%
+              card_size = if card['h'].to_i <= 2
+                           'compact'
+                         elsif card['w'].to_i >= 8
+                           'wide'
+                         else
+                           'normal'
+                         end
+            %>
+            <%= render "dashboard/cards/#{card_id}", size: card_size, employee: @employee %>
+          </div>
+        </div>
+
+      </div>
+    <% end %>
+  </div>
+
 </div>
+
+<style>
+  .grid-stack { background: transparent; }
+
+  .grid-stack-item-content {
+    border-radius: 0.5rem;
+    overflow: hidden;
+    background: transparent;
+    position: relative;
+  }
+
+  .grid-stack:not(.edit-mode) .ui-resizable-handle { display: none !important; }
+
+  .grid-stack.edit-mode {
+    background-image: repeating-linear-gradient(
+      to right,
+      rgba(99, 102, 241, 0.08) 0px,
+      rgba(99, 102, 241, 0.08) calc(8.333% - 8px),
+      transparent calc(8.333% - 8px),
+      transparent 8.333%
+    );
+    border-radius: 0.5rem;
+    padding: 4px;
+  }
+
+  .grid-stack-placeholder > .placeholder-content {
+    background: rgba(99, 102, 241, 0.15);
+    border: 2px dashed rgba(99, 102, 241, 0.4);
+    border-radius: 0.5rem;
+  }
+
+  .grid-stack.edit-mode .grid-stack-item > .grid-stack-item-content {
+    box-shadow: 0 0 0 1px rgba(99, 102, 241, 0.2);
+    cursor: grab;
+  }
+  .grid-stack.edit-mode .grid-stack-item:active > .grid-stack-item-content {
+    cursor: grabbing;
+  }
+
+  .hidden-card-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.25rem 0.625rem;
+    border-radius: 9999px;
+    border: 1px solid rgba(99, 102, 241, 0.4);
+    background: rgba(99, 102, 241, 0.07);
+    color: #6366f1;
+    font-size: 0.7rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s;
+    white-space: nowrap;
+  }
+  .hidden-card-pill:hover {
+    background: rgba(99, 102, 241, 0.16);
+    border-color: rgba(99, 102, 241, 0.7);
+  }
+</style>

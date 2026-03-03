@@ -20,8 +20,7 @@ class WeeklyTimeValidationReminderJob < ApplicationJob
       # Only send email if there are pending entries
       next if pending_count.zero?
 
-      # TODO: Implement TimeEntryMailer in Sprint 2.x
-      Rails.logger.info "[EMAIL] Validation reminder: #{manager.email} has #{pending_count} pending time entries"
+      TimeEntryMailer.weekly_validation_reminder(manager).deliver_later
     end
   end
 end

@@ -5,16 +5,16 @@ class OnboardingTaskPolicy < ApplicationPolicy
     hr_admin? || manager_of_onboarding?
   end
 
-  alias complete? update?
-
   class Scope < Scope
     def resolve
       if user.hr_or_admin?
         scope.all
       elsif user.manager?
-        scope.joins(:onboarding).where(onboardings: { manager_id: user.id })
+        scope.joins(:employee_onboarding)
+             .where(employee_onboardings: { manager_id: user.id })
       else
-        scope.none
+        scope.joins(:employee_onboarding)
+             .where(employee_onboardings: { employee_id: user.id })
       end
     end
   end
@@ -26,6 +26,6 @@ class OnboardingTaskPolicy < ApplicationPolicy
   end
 
   def manager_of_onboarding?
-    user.manager? && record.onboarding.manager_id == user.id
+    user.manager? && record.employee_onboarding.manager_id == user.id
   end
 end

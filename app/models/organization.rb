@@ -1,13 +1,29 @@
 # frozen_string_literal: true
 
 class Organization < ApplicationRecord
+  include JsonbValidatable
+
+  # Settings is an open-ended hash (extensible by design).
+  # We only type-check the well-known keys; unknown keys are tolerated.
+  validates_jsonb_keys :settings,
+    types: {
+      work_week_hours: Numeric, cp_acquisition_rate: Numeric,
+      cp_expiry_month: Integer, cp_expiry_day: Integer
+    }
+
   has_many :employees, dependent: :destroy
+  has_many :payroll_periods, dependent: :destroy
   has_many :evaluations, dependent: :destroy
   has_many :onboarding_templates, dependent: :destroy
-  has_many :onboardings, dependent: :destroy
+  has_many :employee_onboardings, dependent: :destroy, foreign_key: :organization_id
+  has_many :objectives, dependent: :destroy
+  has_many :one_on_ones, dependent: :destroy
+  has_many :trainings, dependent: :destroy
+  has_many :training_assignments, through: :trainings
 
   validates :name, presence: true
   validate :safe_calendar_webhook_url
+  validate :safe_payroll_webhook_url
 
   # Initialize settings if nil
   after_initialize :ensure_settings
@@ -32,6 +48,14 @@ class Organization < ApplicationRecord
 
   def rtt_enabled?
     settings.fetch('rtt_enabled', default_settings[:rtt_enabled])
+  end
+
+  def payroll_webhook_url
+    settings['payroll_webhook_url'].presence
+  end
+
+  def payroll_webhook_secret
+    settings['payroll_webhook_secret'].presence
   end
 
   def group_policies
@@ -88,6 +112,37 @@ class Organization < ApplicationRecord
     rescue Resolv::ResolvError, IPAddr::InvalidAddressError
       # Unknown host or unresolvable — block it to be safe
       errors.add(:base, 'Hôte du webhook inaccessible ou invalide')
+    end
+  end
+
+  def safe_payroll_webhook_url
+    url = settings&.dig('payroll_webhook_url')
+    return if url.blank?
+
+    begin
+      uri = URI.parse(url)
+    rescue URI::InvalidURIError
+      errors.add(:base, 'URL du webhook Silae invalide')
+      return
+    end
+
+    unless %w[http https].include?(uri.scheme)
+      errors.add(:base, 'Le webhook Silae doit utiliser HTTP ou HTTPS')
+      return
+    end
+
+    if uri.host.blank?
+      errors.add(:base, 'URL du webhook Silae invalide (hôte manquant)')
+      return
+    end
+
+    begin
+      resolved = IPAddr.new(Resolv.getaddress(uri.host))
+      if BLOCKED_IP_RANGES.any? { |range| range.include?(resolved) }
+        errors.add(:base, 'URL du webhook Silae non autorisée')
+      end
+    rescue Resolv::ResolvError, IPAddr::InvalidAddressError
+      errors.add(:base, 'Hôte du webhook Silae inaccessible ou invalide')
     end
   end
 end

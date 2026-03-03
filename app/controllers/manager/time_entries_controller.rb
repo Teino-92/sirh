@@ -27,14 +27,19 @@ module Manager
                             .for_date_range(week_start, week_end)
 
       validated_count = 0
+      locked_count    = 0
       entries.each do |entry|
         authorize entry, :validate?
-        if entry.validate!(validator: current_employee)
+        begin
+          entry.validate!(validator: current_employee)
           validated_count += 1
+        rescue ActiveRecord::RecordInvalid => e
+          if e.record.errors[:base].any? { |msg| msg.include?('clôturée') }
+            locked_count += 1
+          end
         end
       end
 
-      # Create notification for the employee
       if validated_count > 0
         @team_member.notifications.create!(
           title: 'Heures validées',
@@ -43,46 +48,47 @@ module Manager
         )
       end
 
-      redirect_to manager_team_member_time_entries_path(@team_member),
-                  notice: "#{validated_count} pointage#{'s' if validated_count > 1} validé#{'s' if validated_count > 1}"
+      if locked_count > 0
+        redirect_to manager_team_member_time_entries_path(@team_member),
+                    alert: "#{locked_count} pointage#{'s' if locked_count > 1} ignoré#{'s' if locked_count > 1} : période clôturée."
+      else
+        redirect_to manager_team_member_time_entries_path(@team_member),
+                    notice: "#{validated_count} pointage#{'s' if validated_count > 1} validé#{'s' if validated_count > 1}"
+      end
     end
 
     def validate_entry
       @time_entry = TimeEntry.find(params[:id])
       authorize @time_entry, :validate?
 
-      if @time_entry.validate!(validator: current_employee)
-        @time_entry.employee.notifications.create!(
-          title: 'Pointage validé',
-          message: "Votre pointage du #{I18n.l(@time_entry.worked_date, format: :long)} a été validé.",
-          notification_type: 'hours_validated'
-        )
-
-        redirect_to manager_team_member_time_entries_path(@time_entry.employee),
-                    notice: 'Pointage validé avec succès'
-      else
-        redirect_to manager_team_member_time_entries_path(@time_entry.employee),
-                    alert: 'Impossible de valider ce pointage'
-      end
+      @time_entry.validate!(validator: current_employee)
+      @time_entry.employee.notifications.create!(
+        title: 'Pointage validé',
+        message: "Votre pointage du #{I18n.l(@time_entry.worked_date, format: :long)} a été validé.",
+        notification_type: 'hours_validated'
+      )
+      redirect_to manager_team_member_time_entries_path(@time_entry.employee),
+                  notice: 'Pointage validé avec succès'
+    rescue ActiveRecord::RecordInvalid => e
+      redirect_to manager_team_member_time_entries_path(@time_entry.employee),
+                  alert: e.record.errors.full_messages.first || 'Impossible de valider ce pointage'
     end
 
     def reject_entry
       @time_entry = TimeEntry.find(params[:id])
       authorize @time_entry, :validate?
 
-      if @time_entry.reject!(rejector: current_employee, reason: params[:rejection_reason])
-        @time_entry.employee.notifications.create!(
-          title: 'Pointage refusé',
-          message: "Votre pointage du #{I18n.l(@time_entry.worked_date, format: :long)} a été refusé par votre manager. Raison: #{params[:rejection_reason]}",
-          notification_type: 'hours_rejected'
-        )
-
-        redirect_to manager_team_member_time_entries_path(@time_entry.employee),
-                    notice: 'Pointage refusé'
-      else
-        redirect_to manager_team_member_time_entries_path(@time_entry.employee),
-                    alert: 'Impossible de refuser ce pointage'
-      end
+      @time_entry.reject!(rejector: current_employee, reason: params[:rejection_reason])
+      @time_entry.employee.notifications.create!(
+        title: 'Pointage refusé',
+        message: "Votre pointage du #{I18n.l(@time_entry.worked_date, format: :long)} a été refusé par votre manager. Raison: #{params[:rejection_reason]}",
+        notification_type: 'hours_rejected'
+      )
+      redirect_to manager_team_member_time_entries_path(@time_entry.employee),
+                  notice: 'Pointage refusé'
+    rescue ActiveRecord::RecordInvalid => e
+      redirect_to manager_team_member_time_entries_path(@time_entry.employee),
+                  alert: e.record.errors.full_messages.first || 'Impossible de refuser ce pointage'
     end
 
     private

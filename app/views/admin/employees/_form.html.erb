@@ -120,7 +120,8 @@
           class: "mt-1 block w-full text-sm text-gray-500 dark:text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 dark:file:bg-indigo-900 file:text-indigo-700 dark:file:text-indigo-300 hover:file:bg-indigo-100 dark:hover:file:bg-indigo-800" %>
     </div>
 
-    <!-- Rémunération -->
+    <!-- Rémunération (HR/admin only — droit du travail français) -->
+    <% if policy(employee).see_salary? %>
     <div class="sm:col-span-2">
       <fieldset class="border border-gray-200 dark:border-gray-600 rounded-md p-4">
         <legend class="text-sm font-medium text-gray-700 dark:text-gray-300 px-1">Rémunération</legend>
@@ -152,6 +153,7 @@
         </div>
       </fieldset>
     </div>
+    <% end %>
 
     <div class="sm:col-span-2">
       <fieldset class="border border-gray-200 dark:border-gray-600 rounded-md p-4">
@@ -172,6 +174,161 @@
       </fieldset>
     </div>
   </div>
+
+  <% if policy(employee).see_salary? %>
+  <!-- Section Informations paie (DSN) -->
+  <div class="sm:col-span-2 pt-2">
+    <details class="group">
+      <summary class="flex items-center gap-2 cursor-pointer list-none">
+        <span class="text-sm font-semibold text-gray-700 dark:text-gray-300">Informations paie (DSN)</span>
+        <svg class="h-4 w-4 text-gray-400 group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+        </svg>
+        <span class="ml-auto text-xs text-amber-600 dark:text-amber-400 font-medium">Données sensibles — accès tracé</span>
+      </summary>
+
+      <div class="mt-4 space-y-6 border border-gray-200 dark:border-gray-600 rounded-lg p-5">
+
+        <!-- Identité légale -->
+        <fieldset>
+          <legend class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-3">Identité légale</legend>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <%= form.label :birth_date, "Date de naissance", class: "block text-sm font-medium text-gray-700 dark:text-gray-300" %>
+              <%= form.date_field :birth_date, class: "mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" %>
+            </div>
+            <div>
+              <%= form.label :birth_city, "Ville de naissance", class: "block text-sm font-medium text-gray-700 dark:text-gray-300" %>
+              <%= form.text_field :birth_city, class: "mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" %>
+            </div>
+            <div>
+              <%= form.label :birth_department, "Département de naissance", class: "block text-sm font-medium text-gray-700 dark:text-gray-300" %>
+              <%= form.text_field :birth_department, placeholder: "ex: 75, 2A", class: "mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" %>
+            </div>
+            <div>
+              <%= form.label :birth_country, "Pays de naissance", class: "block text-sm font-medium text-gray-700 dark:text-gray-300" %>
+              <%= form.text_field :birth_country, class: "mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" %>
+            </div>
+            <div>
+              <%= form.label :nationality, "Nationalité", class: "block text-sm font-medium text-gray-700 dark:text-gray-300" %>
+              <%= form.text_field :nationality, class: "mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" %>
+            </div>
+            <div>
+              <%= form.label :nir, "N° Sécurité Sociale (NIR)", class: "block text-sm font-medium text-gray-700 dark:text-gray-300" %>
+              <%= form.text_field :nir,
+                  placeholder: "13 chiffres",
+                  autocomplete: "off",
+                  class: "mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm font-mono" %>
+              <p class="text-xs text-gray-400 dark:text-gray-500 mt-1">Chiffré en base · 13 chiffres, commence par 1 (homme) ou 2 (femme)</p>
+            </div>
+            <div>
+              <%= form.label :nir_key, "Clé NIR", class: "block text-sm font-medium text-gray-700 dark:text-gray-300" %>
+              <%= form.text_field :nir_key,
+                  placeholder: "2 chiffres",
+                  maxlength: 2,
+                  autocomplete: "off",
+                  class: "mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm font-mono" %>
+            </div>
+          </div>
+        </fieldset>
+
+        <!-- Coordonnées bancaires -->
+        <fieldset>
+          <legend class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-3">Coordonnées bancaires</legend>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div class="sm:col-span-2">
+              <%= form.label :iban, "IBAN", class: "block text-sm font-medium text-gray-700 dark:text-gray-300" %>
+              <%= form.text_field :iban,
+                  placeholder: "FR76...",
+                  autocomplete: "off",
+                  class: "mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm font-mono" %>
+              <p class="text-xs text-gray-400 dark:text-gray-500 mt-1">Chiffré en base</p>
+            </div>
+            <div>
+              <%= form.label :bic, "BIC / SWIFT", class: "block text-sm font-medium text-gray-700 dark:text-gray-300" %>
+              <%= form.text_field :bic, placeholder: "ex: BNPAFRPP", class: "mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm font-mono" %>
+            </div>
+          </div>
+        </fieldset>
+
+        <!-- Contrat -->
+        <fieldset>
+          <legend class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-3">Détails du contrat</legend>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div class="sm:col-span-2">
+              <%= form.label :convention_collective, "Convention collective (IDCC)", class: "block text-sm font-medium text-gray-700 dark:text-gray-300" %>
+              <%= form.text_field :convention_collective,
+                  placeholder: "ex: 1486 — Bureaux d'études",
+                  list: "idcc_list",
+                  class: "mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" %>
+              <datalist id="idcc_list">
+                <option value="1486 — Bureaux d'études techniques (Syntec)">
+                <option value="3218 — Métallurgie">
+                <option value="1090 — Commerces de détail alimentaires">
+                <option value="1979 — Hôtels, cafés, restaurants">
+                <option value="2264 — Banque">
+                <option value="0573 — Manutention ferroviaire">
+                <option value="1596 — Coiffure">
+                <option value="2120 — Immobilier">
+                <option value="1527 — Bâtiment (ETAM)">
+                <option value="0016 — Transports routiers">
+              </datalist>
+            </div>
+            <div>
+              <%= form.label :qualification, "Qualification", class: "block text-sm font-medium text-gray-700 dark:text-gray-300" %>
+              <%= form.text_field :qualification, placeholder: "ex: Cadre niveau 2", class: "mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" %>
+            </div>
+            <div>
+              <%= form.label :coefficient, "Coefficient", class: "block text-sm font-medium text-gray-700 dark:text-gray-300" %>
+              <%= form.text_field :coefficient, placeholder: "ex: 360", class: "mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" %>
+            </div>
+            <div>
+              <%= form.label :part_time_rate, "Taux temps partiel", class: "block text-sm font-medium text-gray-700 dark:text-gray-300" %>
+              <%= form.number_field :part_time_rate,
+                  step: 0.05, min: 0.1, max: 1.0,
+                  placeholder: "1.0 = temps plein",
+                  class: "mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" %>
+              <p class="text-xs text-gray-400 dark:text-gray-500 mt-1">1.0 = temps plein · 0.8 = 80%</p>
+            </div>
+            <div>
+              <%= form.label :trial_period_end, "Fin de période d'essai", class: "block text-sm font-medium text-gray-700 dark:text-gray-300" %>
+              <%= form.date_field :trial_period_end, class: "mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" %>
+            </div>
+          </div>
+        </fieldset>
+
+        <!-- Fin de contrat -->
+        <fieldset>
+          <legend class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-3">Fin de contrat</legend>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <%= form.label :termination_date, "Date de résiliation", class: "block text-sm font-medium text-gray-700 dark:text-gray-300" %>
+              <%= form.date_field :termination_date, class: "mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" %>
+            </div>
+            <div>
+              <%= form.label :termination_reason, "Motif", class: "block text-sm font-medium text-gray-700 dark:text-gray-300" %>
+              <%= form.select :termination_reason,
+                  options_for_select([
+                    ['', ''],
+                    ['Démission', 'resignation'],
+                    ['Licenciement économique', 'layoff_economic'],
+                    ['Licenciement personnel', 'layoff_personal'],
+                    ['Rupture conventionnelle', 'mutual_agreement'],
+                    ['Fin de CDD', 'cdd_end'],
+                    ['Fin de période d\'essai', 'trial_period_end'],
+                    ['Retraite', 'retirement'],
+                    ['Décès', 'death']
+                  ], employee.termination_reason),
+                  {},
+                  class: "mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" %>
+            </div>
+          </div>
+        </fieldset>
+
+      </div>
+    </details>
+  </div>
+  <% end %>
 
   <div class="flex justify-end gap-3 pt-4">
     <%= link_to "Annuler", admin_employees_path,

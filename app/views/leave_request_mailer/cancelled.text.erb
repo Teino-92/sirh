@@ -1,3 +1,15 @@
-LeaveRequest#cancelled
+Bonjour,
 
-<%= @greeting %>, find me in app/views/leave_request_mailer/cancelled.text.erb
+La demande de congé de <%= @employee.full_name %> a été ANNULÉE.
+
+Détails :
+- Employé : <%= @employee.full_name %>
+- Type : <%= @leave_request.leave_type_label %>
+- Du : <%= @leave_request.start_date.strftime('%d/%m/%Y') %>
+- Au : <%= @leave_request.end_date.strftime('%d/%m/%Y') %>
+- Durée : <%= @leave_request.business_days %> jour(s)
+
+Les jours de congé ont été recrédités au compteur de l'employé.
+
+Cordialement,
+L'équipe Easy-RH

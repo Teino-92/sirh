@@ -1,0 +1,744 @@
+<%# Landing page Easy-RH — layout: marketing %>
+
+<%# ─── NAVBAR ─────────────────────────────────────────────────────────────── %>
+<%# P0 UX: menu hamburger responsive avec Alpine.js %>
+<nav class="sticky top-0 z-50 bg-white/95 dark:bg-gray-950/95 backdrop-blur border-b border-gray-100 dark:border-gray-800"
+     x-data="{ mobileOpen: false }">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex items-center justify-between h-16">
+
+      <span class="text-xl font-extrabold text-indigo-600 tracking-tight">Easy-RH</span>
+
+      <!-- Desktop nav -->
+      <div class="hidden md:flex items-center gap-8">
+        <a href="#fonctionnalites" class="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-indigo-600 transition-colors">Fonctionnalités</a>
+        <a href="#migration"       class="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-indigo-600 transition-colors">Migration</a>
+        <a href="#tarifs"          class="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-indigo-600 transition-colors">Tarifs</a>
+        <a href="#faq"             class="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-indigo-600 transition-colors">FAQ</a>
+      </div>
+
+      <div class="flex items-center gap-3">
+        <%= link_to new_employee_session_path, class: "hidden sm:block text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-indigo-600 transition-colors" do %>
+          Connexion
+        <% end %>
+        <a href="#essai" class="inline-flex items-center gap-1.5 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold rounded-lg transition-colors shadow-sm">
+          Essai gratuit
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
+          </svg>
+        </a>
+        <!-- Hamburger button (mobile only) -->
+        <button @click="mobileOpen = !mobileOpen"
+                :aria-expanded="mobileOpen.toString()"
+                aria-controls="mobile-menu"
+                aria-label="Menu de navigation"
+                class="md:hidden p-2 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+          <svg x-show="!mobileOpen" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+          </svg>
+          <svg x-show="mobileOpen" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="display:none">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mobile menu -->
+  <div id="mobile-menu"
+       x-show="mobileOpen"
+       @click.outside="mobileOpen = false"
+       x-transition:enter="transition ease-out duration-150"
+       x-transition:enter-start="opacity-0 -translate-y-2"
+       x-transition:enter-end="opacity-100 translate-y-0"
+       x-transition:leave="transition ease-in duration-100"
+       x-transition:leave-start="opacity-100 translate-y-0"
+       x-transition:leave-end="opacity-0 -translate-y-2"
+       class="md:hidden border-t border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-950"
+       style="display:none">
+    <div class="px-4 py-3 space-y-1">
+      <a href="#fonctionnalites" @click="mobileOpen = false" class="block px-3 py-2.5 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800">Fonctionnalités</a>
+      <a href="#migration"       @click="mobileOpen = false" class="block px-3 py-2.5 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800">Migration</a>
+      <a href="#tarifs"          @click="mobileOpen = false" class="block px-3 py-2.5 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800">Tarifs</a>
+      <a href="#faq"             @click="mobileOpen = false" class="block px-3 py-2.5 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800">FAQ</a>
+      <div class="pt-2 border-t border-gray-100 dark:border-gray-800">
+        <%= link_to new_employee_session_path, class: "block px-3 py-2.5 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800" do %>
+          Connexion
+        <% end %>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<%# ─── HERO ───────────────────────────────────────────────────────────────── %>
+<main id="main-content">
+<section class="relative overflow-visible bg-gradient-to-br from-indigo-50 via-white to-violet-50 dark:from-gray-900 dark:via-gray-950 dark:to-indigo-950 pt-20 pb-0">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center max-w-4xl mx-auto">
+
+      <!-- Badge -->
+      <div data-hero="badge" class="inline-flex items-center gap-2 px-3 py-1.5 bg-indigo-100 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300 text-xs font-semibold rounded-full mb-6">
+        <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
+          <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+        </svg>
+        Conforme droit du travail français
+      </div>
+
+      <!-- P3 HTML: H1 sans whitespace parasite, P2 UX: taille responsive avec clamp -->
+      <h1 data-hero="title" class="font-extrabold text-gray-900 dark:text-white leading-tight tracking-tight mb-6"
+          style="font-size: clamp(1.875rem, 5vw, 3.75rem)">Le SIRH moderne pour <span class="text-indigo-600">les managers français.es</span></h1>
+
+      <p data-hero="subtitle" class="text-lg sm:text-xl text-gray-600 dark:text-gray-300 mb-8 max-w-2xl mx-auto leading-relaxed">
+        Gestion du temps, congés, performance et onboarding — tout-en-un,
+        pensé pour les managers et conforme au Code du Travail.
+      </p>
+
+      <!-- Trust badges -->
+      <div data-hero="badges" class="flex flex-wrap justify-center gap-3 mb-10">
+        <span class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-full text-xs font-medium text-gray-600 dark:text-gray-300 shadow-sm">
+          <svg class="w-3.5 h-3.5 text-green-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+          Calcul RTT & CP automatique
+        </span>
+        <span class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-full text-xs font-medium text-gray-600 dark:text-gray-300 shadow-sm">
+          <svg class="w-3.5 h-3.5 text-green-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+          RGPD · Données en Europe
+        </span>
+        <span class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-full text-xs font-medium text-gray-600 dark:text-gray-300 shadow-sm">
+          <svg class="w-3.5 h-3.5 text-green-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+          Application mobile (PWA)
+        </span>
+        <span class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-full text-xs font-medium text-gray-600 dark:text-gray-300 shadow-sm">
+          <svg class="w-3.5 h-3.5 text-green-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+          IA RH en langage naturel
+        </span>
+      </div>
+
+      <!-- CTAs -->
+      <div data-hero="ctas" class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+        <a href="#essai" class="mt-4 mb-4 w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-xl transition-colors shadow-lg shadow-indigo-200 dark:shadow-indigo-900/40 text-lg">
+          Démarrer l'essai gratuit
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
+          </svg>
+        </a>
+        <a href="#fonctionnalites" class="mt-4 mb-4 w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 font-semibold rounded-xl transition-colors hover:bg-gray-50 dark:hover:bg-gray-700 text-lg">
+          Voir les fonctionnalités
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+          </svg>
+        </a>
+      </div>
+
+      <!-- Hero screenshots — éventail 3D -->
+      <div data-hero="screenshot" class="mt-16 mb-12" style="overflow:visible; position:relative;">
+        <div style="display:flex; align-items:flex-end; justify-content:center; gap:24px; perspective:1000px; perspective-origin:50% 0%;">
+
+          <!-- Gauche — Baptiste -->
+          <div style="flex:0 0 36%; transform:rotateY(30deg); transform-origin:right center; border-radius:12px; overflow:hidden; box-shadow:-8px 24px 56px rgba(0,0,0,0.45); z-index:2;">
+            <img src="/screenshots/dashboard-baptiste.png" alt="Dashboard employé Easy-RH" style="width:100%; max-height:260px; object-fit:cover; object-position:top left; display:block;">
+          </div>
+
+          <!-- Centre — Thomas -->
+          <div style="flex:0 0 40%; border-radius:12px; overflow:hidden; box-shadow:0 20px 60px rgba(0,0,0,0.45); z-index:3; position:relative;">
+            <img src="/screenshots/dashboard-thomas.png" alt="Dashboard manager Easy-RH" style="width:100%; max-height:260px; object-fit:cover; object-position:top left; display:block;">
+          </div>
+
+          <!-- Droite — Nathalie -->
+          <div style="flex:0 0 36%; transform:rotateY(-30deg); transform-origin:left center; border-radius:12px; overflow:hidden; box-shadow:8px 24px 56px rgba(0,0,0,0.45); z-index:2;">
+            <img src="/screenshots/dashboard-nathalie.png" alt="Dashboard RH Easy-RH" style="width:100%; max-height:260px; object-fit:cover; object-position:top left; display:block;">
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<%# ─── SOCIAL PROOF ────────────────────────────────────────────────────────── %>
+<%# P1 UX: section témoignages %>
+<section class="py-16 bg-white dark:bg-gray-950 border-b border-gray-100 dark:border-gray-800">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+
+    <!-- Stats rapides -->
+    <div data-animate="stats" class="grid grid-cols-3 gap-8 text-center mb-14">
+      <div data-stat>
+        <div class="text-3xl font-extrabold text-indigo-600 mb-1">2 min</div>
+        <div class="mb-4 text-sm text-gray-500 dark:text-gray-400">pour migrer vos équipes</div>
+      </div>
+      <div data-stat>
+        <div class="text-3xl font-extrabold text-indigo-600 mb-1">100%</div>
+        <div class="text-sm text-gray-500 dark:text-gray-400">conforme Code du Travail</div>
+      </div>
+      <div data-stat>
+        <div class="text-3xl font-extrabold text-indigo-600 mb-1">30j</div>
+        <div class="text-sm text-gray-500 dark:text-gray-400">d'essai gratuit sans CB</div>
+      </div>
+    </div>
+
+    <!-- Témoignages -->
+    <div id="testimonials-grid" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+      <figure class="bg-gray-50 dark:bg-gray-900 rounded-2xl p-6 border border-gray-100 dark:border-gray-800">
+        <div class="flex gap-0.5 mb-3">
+          <% 5.times do %>
+            <svg class="w-4 h-4 text-amber-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+          <% end %>
+        </div>
+        <blockquote class="text-sm text-gray-600 dark:text-gray-300 leading-relaxed mb-4">
+          "On a migré nos 45 collaborateurs depuis Sage en moins de 10 minutes. Le calcul automatique des RTT nous a économisé des heures par mois."
+        </blockquote>
+        <figcaption class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-full bg-indigo-100 dark:bg-indigo-900/40 flex items-center justify-center text-sm font-bold text-indigo-600 dark:text-indigo-400">SC</div>
+          <div>
+            <div class="text-sm font-semibold text-gray-800 dark:text-gray-200">Sophie C.</div>
+            <div class="text-xs text-gray-400">DRH · Startup SaaS, 45 personnes</div>
+          </div>
+        </figcaption>
+      </figure>
+
+      <figure class="bg-gray-50 dark:bg-gray-900 rounded-2xl p-6 border border-gray-100 dark:border-gray-800">
+        <div class="flex gap-0.5 mb-3">
+          <% 5.times do %>
+            <svg class="w-4 h-4 text-amber-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+          <% end %>
+        </div>
+        <blockquote class="text-sm text-gray-600 dark:text-gray-300 leading-relaxed mb-4">
+          "Enfin un outil RH pensé pour les managers, pas seulement pour les RH. Les 1:1 et OKR intégrés changent vraiment notre façon de piloter les équipes."
+        </blockquote>
+        <figcaption class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-full bg-violet-100 dark:bg-violet-900/40 flex items-center justify-center text-sm font-bold text-violet-600 dark:text-violet-400">TM</div>
+          <div>
+            <div class="text-sm font-semibold text-gray-800 dark:text-gray-200">Thomas M.</div>
+            <div class="text-xs text-gray-400">CTO · Agence digitale, 28 personnes</div>
+          </div>
+        </figcaption>
+      </figure>
+
+      <figure class="bg-gray-50 dark:bg-gray-900 rounded-2xl p-6 border border-gray-100 dark:border-gray-800">
+        <div class="flex gap-0.5 mb-3">
+          <% 5.times do %>
+            <svg class="w-4 h-4 text-amber-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+          <% end %>
+        </div>
+        <blockquote class="text-sm text-gray-600 dark:text-gray-300 leading-relaxed mb-4">
+          "La conformité au Code du Travail était notre critère n°1. Easy-RH est le seul outil qu'on a trouvé qui gère correctement les 35h, les RTT et les congés conventionnels."
+        </blockquote>
+        <figcaption class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-full bg-emerald-100 dark:bg-emerald-900/40 flex items-center justify-center text-sm font-bold text-emerald-600 dark:text-emerald-400">AL</div>
+          <div>
+            <div class="text-sm font-semibold text-gray-800 dark:text-gray-200">Aurélie L.</div>
+            <div class="text-xs text-gray-400">Responsable RH · PME industrielle, 80 personnes</div>
+          </div>
+        </figcaption>
+      </figure>
+
+    </div>
+  </div>
+</section>
+
+<%# ─── FEATURES ───────────────────────────────────────────────────────────── %>
+<section id="fonctionnalites" class="py-24 bg-white dark:bg-gray-950 border-t border-gray-100 dark:border-gray-800 overflow-hidden">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center mb-16">
+      <h2 data-features-title class="mt-4 text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-white mb-4">Tout ce dont votre équipe RH a besoin</h2>
+      <p class="mb-4 text-lg text-gray-500 dark:text-gray-400 max-w-2xl mx-auto">Une plateforme complète, pensée pour les PME et startups françaises.</p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+
+      <div data-feature class="group p-6 rounded-2xl border border-gray-100 dark:border-gray-800 hover:border-indigo-200 dark:hover:border-indigo-800 hover:shadow-lg transition-all">
+        <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-xl flex items-center justify-center mb-4">
+          <svg class="w-6 h-6 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+        </div>
+        <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2">Pointage & Temps</h3>
+        <p class="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">Pointage web et mobile avec géolocalisation. Calcul RTT automatique, validation manager, alertes retard. Conforme limite légale 10h/j et 48h/semaine.</p>
+      </div>
+
+      <div data-feature class="group p-6 rounded-2xl border border-gray-100 dark:border-gray-800 hover:border-indigo-200 dark:hover:border-indigo-800 hover:shadow-lg transition-all">
+        <div class="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-xl flex items-center justify-center mb-4">
+          <svg class="w-6 h-6 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+          </svg>
+        </div>
+        <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2">Gestion des Congés</h3>
+        <p class="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">CP, RTT, maladie, parental, sans solde. Acquisition automatique 2,5j/mois, soldes en temps réel, approbations manager, calendrier équipe.</p>
+      </div>
+
+      <div data-feature class="group p-6 rounded-2xl border border-gray-100 dark:border-gray-800 hover:border-indigo-200 dark:hover:border-indigo-800 hover:shadow-lg transition-all">
+        <div class="w-12 h-12 rounded-xl flex items-center justify-center mb-4" style="background-color:#ede9fe;">
+          <svg class="w-6 h-6" style="color:#7c3aed;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+        </div>
+        <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2">Objectifs & 1:1</h3>
+        <p class="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">OKR avec priorités et deadlines, entretiens 1:1 planifiés avec agenda et notes, évaluations multi-étapes (auto-éval → éval manager), action items.</p>
+      </div>
+
+      <div data-feature class="group p-6 rounded-2xl border border-gray-100 dark:border-gray-800 hover:border-indigo-200 dark:hover:border-indigo-800 hover:shadow-lg transition-all">
+        <div class="w-12 h-12 bg-orange-100 dark:bg-orange-900/30 rounded-xl flex items-center justify-center mb-4">
+          <svg class="w-6 h-6 text-orange-600 dark:text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
+          </svg>
+        </div>
+        <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2">Onboarding</h3>
+        <p class="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">Templates d'intégration réutilisables, tâches par rôle (employé/manager/RH), suivi de progression, score d'intégration, revues périodiques.</p>
+      </div>
+
+      <div data-feature class="group p-6 rounded-2xl border border-gray-100 dark:border-gray-800 hover:border-indigo-200 dark:hover:border-indigo-800 hover:shadow-lg transition-all">
+        <div class="w-12 h-12 rounded-xl flex items-center justify-center mb-4" style="background-color:#fce7f3;">
+          <svg class="w-6 h-6" style="color:#db2777;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+          </svg>
+        </div>
+        <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2">Paie & Analytics RH</h3>
+        <p class="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">Dashboard masse salariale, projections annuelles, répartition par département et contrat, analyse ancienneté × salaire. Confidentiel RH/Admin uniquement.</p>
+      </div>
+
+      <div data-feature class="group p-6 rounded-2xl border border-gray-100 dark:border-gray-800 bg-gradient-to-br from-amber-50/50 to-yellow-50/50 dark:from-amber-950/30 dark:to-yellow-950/30 hover:border-amber-200 dark:hover:border-amber-800 hover:shadow-lg transition-all">
+        <div class="w-12 h-12 rounded-xl flex items-center justify-center mb-4" style="background-color:#fef3c7;">
+          <svg class="w-6 h-6" style="color:#d97706;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/>
+          </svg>
+        </div>
+        <div class="flex items-center gap-2 mb-2">
+          <h3 class="text-lg font-bold text-gray-900 dark:text-white">IA RH</h3>
+          <span class="text-xs px-2 py-0.5 bg-indigo-100 dark:bg-indigo-900/50 text-indigo-600 dark:text-indigo-300 rounded-full font-medium">Entreprise</span>
+        </div>
+        <p class="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">Requêtes en langage naturel français : <em>"Employés CDI avec plus de 5j RTT en Engineering"</em>. Export CSV des résultats. Sécurisé, données jamais envoyées à l'IA.</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<%# ─── MIGRATION CSV ───────────────────────────────────────────────────────── %>
+<section id="migration" class="mt-6 py-24 bg-gradient-to-br from-slate-50 to-indigo-50/30 dark:from-gray-900 dark:to-indigo-950/20 border-t border-gray-100 dark:border-gray-800">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+
+      <div>
+        <div class="inline-flex items-center gap-2 px-3 py-1.5 bg-indigo-100 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300 text-xs font-semibold rounded-full mb-6">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10"/>
+          </svg>
+          Migration sans douleur
+        </div>
+        <h2 class="text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-white mb-4">Migrez en <span class="text-indigo-600">2 minutes chrono</span></h2>
+        <p class="text-lg text-gray-500 dark:text-gray-400 mb-8 leading-relaxed">Changer de SIRH ne devrait pas prendre des semaines. Exportez votre liste depuis Excel ou votre ancien outil — Easy-RH importe tout automatiquement.</p>
+
+        <div class="space-y-4 mb-8">
+          <% [
+            ["1", "Exportez depuis votre outil actuel", "Excel, Sage, Lucca, Factorial, PayFit, BambooHR… tout outil avec export CSV fonctionne."],
+            ["2", "Glissez le fichier dans Easy-RH", "Détection automatique du séparateur et du format de date. Colonnes reconnues en français et en anglais."],
+            ["3", "Tous vos collaborateurs sont importés", "Rapport détaillé ligne par ligne. Les erreurs sont expliquées clairement, pas de perte de données."]
+          ].each do |num, title, desc| %>
+            <div class="flex items-start gap-3">
+              <div class="w-7 h-7 bg-indigo-100 dark:bg-indigo-900/40 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                <span class="text-xs font-bold text-indigo-600 dark:text-indigo-300"><%= num %></span>
+              </div>
+              <div>
+                <p class="text-sm font-semibold text-gray-800 dark:text-gray-200"><%= title %></p>
+                <p class="text-sm text-gray-500 dark:text-gray-400"><%= desc %></p>
+              </div>
+            </div>
+          <% end %>
+        </div>
+
+        <div class="mb-4 flex flex-wrap gap-3">
+          <% ["Séparateur , ou ; (Excel FR/EN)", "Dates JJ/MM/AAAA ou ISO", "Hiérarchie manager auto-résolue", "Rapport d'erreurs ligne par ligne"].each do |item| %>
+            <div class="flex items-center gap-1.5 text-xs text-gray-500 dark:text-gray-400">
+              <svg class="w-4 h-4 text-green-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+              <%= item %>
+            </div>
+          <% end %>
+        </div>
+      </div>
+
+      <!-- Preview import UI (mock) -->
+      <div>
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
+          <div class="px-5 py-4 border-b border-gray-100 dark:border-gray-700 flex items-center gap-3">
+            <div class="w-8 h-8 bg-indigo-100 dark:bg-indigo-900/40 rounded-lg flex items-center justify-center">
+              <svg class="w-4 h-4 text-indigo-600 dark:text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
+              </svg>
+            </div>
+            <span class="text-sm font-semibold text-gray-800 dark:text-gray-200">Importer des collaborateurs</span>
+          </div>
+          <div class="p-5">
+            <div class="border-2 border-dashed border-indigo-200 dark:border-indigo-800 rounded-xl p-8 text-center bg-indigo-50/50 dark:bg-indigo-950/20 mb-4">
+              <svg class="w-10 h-10 text-indigo-400 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
+              </svg>
+              <p class="text-sm font-medium text-gray-600 dark:text-gray-300 mb-1">Glissez votre fichier CSV ici</p>
+              <p class="text-xs text-gray-400">ou cliquez pour sélectionner</p>
+            </div>
+            <div class="space-y-2">
+              <div class="flex items-center gap-2 p-2.5 bg-green-50 dark:bg-green-900/20 rounded-lg">
+                <svg class="w-4 h-4 text-green-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+                <span class="text-xs font-medium text-green-700 dark:text-green-300">47 collaborateurs importés avec succès</span>
+              </div>
+              <div class="flex items-center gap-2 p-2.5 bg-orange-50 dark:bg-orange-900/20 rounded-lg">
+                <svg class="w-4 h-4 text-orange-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                <span class="text-xs font-medium text-orange-600 dark:text-orange-300">Ligne 12 : date d'entrée invalide</span>
+              </div>
+            </div>
+            <a href="/templates/collaborateurs_template.csv" download
+               class="mt-4 w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-indigo-600 text-white text-sm font-semibold rounded-lg hover:bg-indigo-700 transition-colors">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+              </svg>
+              Télécharger le modèle CSV →
+            </a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<%# ─── PRICING ─────────────────────────────────────────────────────────────── %>
+<%# P3 UX: différenciation visuelle Essentiel et Entreprise %>
+<section id="tarifs" class="py-24 bg-white dark:bg-gray-950 border-t border-gray-100 dark:border-gray-800">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center mb-16">
+      <h2 class="mt-4 text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-white mb-4">Tarifs transparents, sans surprise</h2>
+      <p class="mb-4 text-lg text-gray-500 dark:text-gray-400">Commencez gratuitement. Évoluez à votre rythme.</p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 items-start">
+
+      <!-- Essentiel — fond légèrement coloré pour différencier -->
+      <div class=" mb-2 p-8 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-gray-900">
+        <div class="mb-6">
+          <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-1">Essentiel</h3>
+          <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">PME &lt; 25 employés</p>
+          <div class="flex items-baseline gap-1">
+            <span class="text-4xl font-extrabold text-gray-900 dark:text-white">49 €</span>
+            <span class="text-sm text-gray-400">/mois</span>
+          </div>
+          <p class="text-xs text-gray-400 mt-1">+4 €/employé au-delà de 10</p>
+        </div>
+        <a href="#essai" class="block w-full text-center px-4 py-2.5 border-2 border-indigo-300 dark:border-indigo-700 text-indigo-600 dark:text-indigo-300 font-semibold rounded-xl hover:bg-indigo-50 dark:hover:bg-indigo-950 transition-colors text-sm mb-6">
+          Démarrer l'essai
+        </a>
+        <ul class="space-y-3 text-sm">
+          <li class="flex items-center gap-2 text-gray-600 dark:text-gray-300"><svg class="w-4 h-4 text-green-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>Pointage & temps</li>
+          <li class="flex items-center gap-2 text-gray-600 dark:text-gray-300"><svg class="w-4 h-4 text-green-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>Congés (CP, RTT, maladie)</li>
+          <li class="flex items-center gap-2 text-gray-600 dark:text-gray-300"><svg class="w-4 h-4 text-green-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>Planning équipe</li>
+          <li class="flex items-center gap-2 text-gray-600 dark:text-gray-300"><svg class="w-4 h-4 text-green-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>Exports CSV</li>
+          <li class="flex items-center gap-2 text-gray-400"><svg class="w-4 h-4 text-gray-300 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>Performance & 1:1</li>
+          <li class="flex items-center gap-2 text-gray-400"><svg class="w-4 h-4 text-gray-300 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>Onboarding</li>
+          <li class="flex items-center gap-2 text-gray-400"><svg class="w-4 h-4 text-gray-300 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>IA RH</li>
+        </ul>
+        <p class="mt-6 text-xs text-gray-400">Support email 48h</p>
+      </div>
+
+      <!-- Pro -->
+      <div class="mb-2 p-8 rounded-2xl border-2 border-indigo-500 dark:border-indigo-500 bg-white dark:bg-gray-900 relative shadow-xl shadow-indigo-100 dark:shadow-indigo-900/20">
+        <div class="absolute -top-3.5 left-1/2 -translate-x-1/2">
+          <span class="inline-flex items-center gap-1 px-3 py-1 bg-indigo-600 text-white text-xs font-bold rounded-full shadow whitespace-nowrap">⭐ Plus populaire</span>
+        </div>
+        <div class="mb-6">
+          <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-1">Pro</h3>
+          <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">PME & ETI jusqu'à 100 employés</p>
+          <div class="flex items-baseline gap-1">
+            <span class="text-4xl font-extrabold text-indigo-600">149 €</span>
+            <span class="text-sm text-gray-400">/mois</span>
+          </div>
+          <p class="text-xs text-gray-400 mt-1">+6 €/employé au-delà de 20</p>
+        </div>
+        <a href="#essai" class="block w-full text-center px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-xl transition-colors text-sm shadow mb-6">Démarrer l'essai</a>
+        <ul class="space-y-3 text-sm">
+          <li class="flex items-center gap-2 text-gray-600 dark:text-gray-300"><svg class="w-4 h-4 text-indigo-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>Tout ce qui est dans Essentiel</li>
+          <li class="flex items-center gap-2 text-gray-600 dark:text-gray-300"><svg class="w-4 h-4 text-indigo-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>Objectifs (OKR) & 1:1</li>
+          <li class="flex items-center gap-2 text-gray-600 dark:text-gray-300"><svg class="w-4 h-4 text-indigo-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>Évaluations multi-étapes</li>
+          <li class="flex items-center gap-2 text-gray-600 dark:text-gray-300"><svg class="w-4 h-4 text-indigo-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>Formations & Onboarding</li>
+          <li class="flex items-center gap-2 text-gray-600 dark:text-gray-300"><svg class="w-4 h-4 text-indigo-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>API mobile (JWT)</li>
+          <li class="flex items-center gap-2 text-gray-600 dark:text-gray-300"><svg class="w-4 h-4 text-indigo-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>Journal d'audit</li>
+          <li class="flex items-center gap-2 text-gray-400"><svg class="w-4 h-4 text-gray-300 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>IA RH (plan Entreprise)</li>
+        </ul>
+        <p class="mt-6 text-xs text-gray-400">Support email 24h + chat</p>
+      </div>
+
+      <!-- Entreprise — fond légèrement différent pour différencier -->
+      <div class="p-8 rounded-2xl border border-gray-800 dark:border-gray-600 bg-gray-900 dark:bg-gray-900 text-white relative">
+        <div class="absolute -top-3.5 left-1/2 -translate-x-1/2">
+        </div>
+        <div class="mb-6">
+          <h3 class="text-lg font-bold text-white mb-1">Entreprise</h3>
+          <p class="text-sm text-gray-400 mb-4">ETI jusqu'à 500 employés</p>
+          <div class="flex items-baseline gap-1">
+            <span class="text-4xl font-extrabold text-white">499 €</span>
+            <span class="text-sm text-gray-400">/mois</span>
+          </div>
+          <p class="text-xs text-gray-500 mt-1">+8 €/employé au-delà de 100</p>
+        </div>
+        <a href="#essai" class="block w-full text-center px-4 py-2.5 border-2 border-gray-600 text-gray-300 font-semibold rounded-xl hover:bg-gray-700 hover:border-gray-500 hover:text-white transition-colors text-sm mb-6">Démarrer l'essai</a>
+        <ul class="space-y-3 text-sm">
+          <li class="flex items-center gap-2 text-gray-300"><svg class="w-4 h-4 text-green-400 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>Tout ce qui est dans Pro</li>
+          <li class="flex items-center gap-2 text-gray-300"><svg class="w-4 h-4 text-green-400 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>Paie & Analytics RH</li>
+          <li class="flex items-center gap-2 text-gray-300"><svg class="w-4 h-4 text-green-400 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>IA RH (50 requêtes/mois)</li>
+          <li class="flex items-center gap-2 text-gray-300"><svg class="w-4 h-4 text-green-400 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>Géolocalisation pointage</li>
+          <li class="flex items-center gap-2 text-gray-300"><svg class="w-4 h-4 text-green-400 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>Intégration calendrier</li>
+        </ul>
+        <p class="mt-6 text-xs text-gray-500">Support email 4h + chat + onboarding dédié</p>
+      </div>
+
+    </div>
+
+    <p class="text-center mt-8 text-sm text-gray-400">
+      Plus de 500 employés ?
+      <a href="mailto:contact@easy-rh.fr" class="text-indigo-600 hover:underline font-medium">Contactez-nous pour un devis Grand Compte →</a>
+    </p>
+  </div>
+</section>
+
+<%# ─── FORMULAIRE TRIAL ────────────────────────────────────────────────────── %>
+<section id="essai" class="py-24 bg-gradient-to-br from-indigo-600 to-violet-600 dark:from-indigo-800 dark:to-violet-800 border-t-4 border-indigo-700/30">
+  <div class="max-w-xl mx-auto px-4 sm:px-6 text-center">
+    <h2 class="text-3xl sm:text-4xl font-extrabold text-white mb-3">Démarrer votre essai gratuit</h2>
+    <p class="text-indigo-400 mb-8">Aucune carte bancaire requise. Votre espace est prêt en 30 secondes.</p>
+
+    <% if @errors.present? %>
+      <div class="mb-6 p-4 bg-red-100 border border-red-300 rounded-xl text-left">
+        <p class="text-sm font-semibold text-red-700 mb-1">Impossible de créer votre compte :</p>
+        <ul class="list-disc list-inside text-sm text-red-600">
+          <% @errors.each do |error| %><li><%= error %></li><% end %>
+        </ul>
+      </div>
+    <% end %>
+
+    <%# P1 Accessibilité: labels liés aux inputs via for/id %>
+    <form action="<%= trial_registration_path %>" method="POST" class="bg-white dark:bg-gray-900 rounded-2xl shadow-2xl p-8 text-left space-y-4">
+      <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+
+      <div>
+        <label for="trial_organization_name" class="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1 uppercase tracking-wide">Nom de votre entreprise</label>
+        <input type="text"
+               id="trial_organization_name"
+               name="trial[organization_name]"
+               value="<%= @form_values&.dig(:organization_name) || @form_values&.dig('organization_name') %>"
+               placeholder="TechCorp France"
+               required
+               autocomplete="organization"
+               class="w-full px-4 py-3 border border-gray-200 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm">
+      </div>
+
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label for="trial_first_name" class="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1 uppercase tracking-wide">Prénom</label>
+          <input type="text"
+                 id="trial_first_name"
+                 name="trial[first_name]"
+                 value="<%= @form_values&.dig(:first_name) || @form_values&.dig('first_name') %>"
+                 placeholder="Marie"
+                 required
+                 autocomplete="given-name"
+                 class="w-full px-4 py-3 border border-gray-200 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm">
+        </div>
+        <div>
+          <label for="trial_last_name" class="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1 uppercase tracking-wide">Nom</label>
+          <input type="text"
+                 id="trial_last_name"
+                 name="trial[last_name]"
+                 value="<%= @form_values&.dig(:last_name) || @form_values&.dig('last_name') %>"
+                 placeholder="Dupont"
+                 required
+                 autocomplete="family-name"
+                 class="w-full px-4 py-3 border border-gray-200 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm">
+        </div>
+      </div>
+
+      <div>
+        <label for="trial_email" class="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1 uppercase tracking-wide">Email professionnel</label>
+        <input type="email"
+               id="trial_email"
+               name="trial[email]"
+               value="<%= @form_values&.dig(:email) || @form_values&.dig('email') %>"
+               placeholder="marie.dupont@techcorp.fr"
+               required
+               autocomplete="email"
+               class="w-full px-4 py-3 border border-gray-200 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm">
+      </div>
+
+      <div class="flex justify-center">
+      <button type="submit"
+              class="inline-flex items-center justify-center gap-2 px-10 py-3.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl transition-colors shadow text-base">
+        Créer mon espace Easy-RH
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
+        </svg>
+      </button>
+      </div>
+
+      <%# P0 Légal: liens vers pages à créer %>
+      <p class="text-xs text-gray-400 text-center pt-1">
+        En créant un compte, vous acceptez nos
+        <a href="/cgu" class="underline hover:text-gray-600">CGU</a>
+        et notre
+        <a href="/politique-de-confidentialite" class="underline hover:text-gray-600">politique de confidentialité</a>.
+      </p>
+    </form>
+  </div>
+</section>
+
+<%# ─── FAQ ────────────────────────────────────────────────────────────────── %>
+<%# P1 Accessibilité: aria-expanded sur les boutons accordion %>
+<section id="faq" class="py-24 bg-white dark:bg-gray-950 border-t border-gray-100 dark:border-gray-800">
+  <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center mb-12">
+      <h2 class="mt-4 text-3xl font-extrabold text-gray-900 dark:text-white">Questions fréquentes</h2>
+    </div>
+
+    <div class="mt-4 space-y-3" x-data>
+      <% [
+        { q: "Easy-RH est-il conforme au droit du travail français ?",
+          a: "Oui. Easy-RH applique automatiquement les règles légales françaises : acquisition CP à 2,5 jours par mois, plafond de 10h de travail par jour, 48h par semaine, calcul RTT pour les contrats 39h+. Les règles sont configurables selon votre convention collective." },
+        { q: "Où sont hébergées nos données ?",
+          a: "Toutes vos données sont hébergées en Europe, sur des serveurs conformes RGPD. Les données sont chiffrées au repos et en transit. Les informations sensibles (NIR, IBAN) sont chiffrées avec ActiveRecord Encryption. Vos données n'appartiennent qu'à vous." },
+        { q: "L'application fonctionne-t-elle sur mobile ?",
+          a: "Easy-RH est une PWA (Progressive Web App) installable sur iOS et Android, optimisée mobile-first. Le plan Pro inclut également une API mobile complète (JWT) pour les intégrations natives : pointage GPS, consultation des congés, approbations manager." },
+        { q: "Comment fonctionne l'essai gratuit ?",
+          a: "Votre espace est créé instantanément sans carte bancaire. Vous avez accès à toutes les fonctionnalités pendant 30 jours. À la fin de l'essai, vous choisissez un plan ou vos données sont conservées 30 jours supplémentaires avant suppression." },
+        { q: "Puis-je importer mes collaborateurs depuis mon ancien SIRH ?",
+          a: "Oui, c'est l'une de nos forces. Easy-RH accepte n'importe quel fichier CSV — qu'il vienne d'Excel, Sage, Lucca, Factorial, PayFit, BambooHR ou d'un export maison. Détection automatique du format, rapport d'erreurs ligne par ligne. La migration prend généralement moins de 5 minutes." }
+      ].each_with_index do |item, i| %>
+        <div x-data="{ open: <%= i == 0 %> }"
+             class="border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden">
+          <button @click="open = !open"
+                  :aria-expanded="open.toString()"
+                  aria-controls="faq-answer-<%= i %>"
+                  class="w-full flex items-center justify-between px-6 py-4 text-left bg-white dark:bg-gray-900 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+            <span class="text-sm font-semibold text-gray-800 dark:text-gray-200"><%= item[:q] %></span>
+            <svg class="w-5 h-5 text-gray-400 flex-shrink-0 transition-transform duration-200" :class="open ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+            </svg>
+          </button>
+          <div id="faq-answer-<%= i %>"
+               x-show="open"
+               x-collapse
+               class="px-6 pb-4 bg-white dark:bg-gray-900">
+            <p class="text-sm text-gray-500 dark:text-gray-400 leading-relaxed"><%= item[:a] %></p>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</section>
+
+<script>
+function initGsap() {
+  if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
+  gsap.registerPlugin(ScrollTrigger);
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  // Hero
+  var heroTl = gsap.timeline({ defaults: { ease: 'power2.out' } });
+  heroTl
+    .from('[data-hero="badge"]',      { opacity: 0, y: -16, duration: 0.5 })
+    .from('[data-hero="title"]',      { opacity: 0, y: 24,  duration: 0.6 }, '-=0.2')
+    .from('[data-hero="subtitle"]',   { opacity: 0, y: 20,  duration: 0.5 }, '-=0.3')
+    .from('[data-hero="badges"] span',{ opacity: 0, y: 12,  duration: 0.4, stagger: 0.08 }, '-=0.2')
+    .from('[data-hero="ctas"] a',     { opacity: 0, y: 16,  duration: 0.4, stagger: 0.1  }, '-=0.2')
+    .from('[data-hero="screenshot"]', { opacity: 0, y: 40,  scale: 0.97, duration: 0.9, ease: 'power2.out' }, '-=0.2');
+
+  // Stats — cacher puis fade in
+  var statEls = document.querySelectorAll('[data-animate="stats"] [data-stat]');
+  gsap.set(statEls, { opacity: 0 });
+  ScrollTrigger.create({
+    trigger: '[data-animate="stats"]',
+    start: 'top 85%',
+    once: true,
+    onEnter: function() {
+      gsap.to(statEls, { opacity: 1, duration: 0.6, stagger: 0.15, ease: 'power2.out' });
+    }
+  });
+
+  // Témoignages — cacher puis fade in
+  var figureEls = document.querySelectorAll('#testimonials-grid figure');
+  gsap.set(figureEls, { opacity: 0 });
+  ScrollTrigger.create({
+    trigger: '#testimonials-grid',
+    start: 'top 85%',
+    once: true,
+    onEnter: function() {
+      gsap.to(figureEls, { opacity: 1, duration: 0.5, stagger: 0.15, ease: 'power2.out' });
+    }
+  });
+
+  // Features — glissades depuis l'extérieur de l'écran
+  // Grille 3x2 : [0]gauche [1]haut [2]droite / [3]gauche [4]bas [5]droite
+  var allCards = document.querySelectorAll('[data-feature]');
+  if (allCards.length === 6) {
+    // Directions de départ (depuis hors-écran)
+    var startPos = [
+      { x: '-120vw', y: 0 },   // 0 : haut-gauche → vient de gauche
+      { x: 0, y: '-120vh' },   // 1 : haut-milieu → vient du haut
+      { x: '120vw',  y: 0 },   // 2 : haut-droite → vient de droite
+      { x: '-120vw', y: 0 },   // 3 : bas-gauche  → vient de gauche
+      { x: 0, y: '120vh' },    // 4 : bas-milieu  → vient du bas
+      { x: '120vw',  y: 0 },   // 5 : bas-droite  → vient de droite
+    ];
+    allCards.forEach(function(c, i) {
+      gsap.set(c, { x: startPos[i].x, y: startPos[i].y, opacity: 1 });
+    });
+
+    // Ordre d'arrivée : 0, 2, 3, 5, puis 1+4 simultanés
+    var order = [0, 2, 3, 5, 1, 4];
+    var featureTl = gsap.timeline({ paused: true });
+    order.forEach(function(cardIdx, step) {
+      var t = step < 4 ? step * 0.35 : 4 * 0.35;
+      featureTl.to(allCards[cardIdx], {
+        x: 0, y: 0, duration: 0.5, ease: 'power3.out'
+      }, t);
+    });
+
+    ScrollTrigger.create({
+      trigger: '[data-features-title]',
+      start: 'top 8px',
+      once: true,
+      onEnter: function() {
+        document.documentElement.style.overflow = 'hidden';
+        featureTl.eventCallback('onComplete', function() {
+          document.documentElement.style.overflow = '';
+        });
+        featureTl.play();
+      }
+    });
+  }
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initGsap);
+} else {
+  initGsap();
+}
+</script>
+
+</main>
+
+<%# ─── FOOTER ──────────────────────────────────────────────────────────────── %>
+<footer class="mt-4 bg-gray-900 dark:bg-gray-950 text-gray-400 py-12 border-t-4 border-gray-800">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+      <div>
+        <span class="text-xl font-extrabold text-white tracking-tight">Easy-RH</span>
+        <p class="text-sm mt-1 text-gray-500">Le compagnon RH des managers. Fait avec le 🧠 !</p>
+      </div>
+      <div class="flex flex-wrap gap-6 text-sm">
+        <a href="/cgu" class="hover:text-white transition-colors">CGU</a>
+        <a href="/politique-de-confidentialite" class="hover:text-white transition-colors">Politique de confidentialité</a>
+        <a href="/mentions-legales" class="hover:text-white transition-colors">Mentions légales</a>
+        <a href="mailto:contact@easy-rh.fr" class="hover:text-white transition-colors">Contact</a>
+        <%= link_to new_employee_session_path, class: "hover:text-white transition-colors" do %>Connexion<% end %>
+      </div>
+    </div>
+    <div class="border-t border-gray-800 mt-8 pt-6 text-center text-xs text-gray-600">
+      © <%= Date.current.year %> Easy-RH — Tous droits réservés
+    </div>
+  </div>
+</footer>

@@ -3,6 +3,8 @@
 module Api
   module V1
     class BaseController < ApplicationController
+    include Concerns::Serializable
+
     skip_before_action :verify_authenticity_token
     before_action :authenticate_employee!
     before_action :set_default_format

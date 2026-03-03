@@ -18,15 +18,7 @@ module Api
       today_schedule = schedule&.schedule_pattern&.dig(today.strftime('%A').downcase)
 
       # Leave balances
-      balances = employee.leave_balances.map do |balance|
-        {
-          type: balance.leave_type,
-          type_name: LeaveBalance.leave_type_name(balance.leave_type),
-          balance: balance.balance,
-          expiring_soon: balance.expiring_soon?,
-          expires_at: balance.expires_at
-        }
-      end
+      balances = employee.leave_balances.map { |b| serialize_leave_balance(b) }
 
       # Pending actions (if manager)
       pending_approvals = if employee.manager?
@@ -55,7 +47,7 @@ module Api
           role: employee.role,
           department: employee.department
         },
-        current_shift: current_shift ? time_entry_json(current_shift) : nil,
+        current_shift: current_shift ? serialize_time_entry(current_shift) : nil,
         today_schedule: today_schedule,
         leave_balances: balances,
         pending_approvals: pending_approvals,
@@ -76,16 +68,6 @@ module Api
         on_leave_today: team.joins(:leave_requests)
                             .merge(LeaveRequest.approved.for_date_range(Date.current, Date.current))
                             .count
-      }
-    end
-
-    def time_entry_json(entry)
-      {
-        id: entry.id,
-        clock_in: entry.clock_in,
-        clock_out: entry.clock_out,
-        duration_minutes: entry.duration_minutes,
-        active: entry.active?
       }
     end
 

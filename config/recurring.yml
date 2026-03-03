@@ -18,3 +18,8 @@ production:
     class: WeeklyTimeValidationReminderJob
     queue: default
     schedule: every monday at 9am
+
+  trial_period_reminder:
+    class: TrialPeriodReminderJob
+    queue: default
+    schedule: every day at 8am

@@ -2,7 +2,71 @@
 
 module Admin
   class PayrollController < BaseController
+    def export
+      authorize :payroll, policy_class: PayrollPolicy
+      exporter = Exports::PayrollCsvExporter.new(current_employee)
+      result   = exporter.export
+
+      send_data result[:content],
+                filename: result[:filename],
+                type: 'text/csv; charset=utf-8',
+                disposition: 'attachment'
+    rescue StandardError => e
+      Rails.logger.error "Payroll CSV export error: #{e.message}"
+      redirect_to admin_payroll_path, alert: "Une erreur est survenue lors de l'export. Contactez l'administrateur."
+    end
+
+    def push_silae
+      authorize :payroll, :push_silae?
+
+      period = Date.strptime(params[:period], '%Y-%m').beginning_of_month
+
+      unless current_employee.organization.payroll_periods
+                             .exists?(period: period)
+        return redirect_to admin_payroll_path,
+                           alert: "La période #{l(period, format: '%B %Y')} n'est pas clôturée. Clôturez-la avant d'envoyer."
+      end
+
+      unless current_employee.organization.payroll_webhook_url.present?
+        return redirect_to admin_payroll_path,
+                           alert: "Aucun webhook Silae configuré. Configurez-le dans les paramètres de l'organisation."
+      end
+
+      PayrollWebhookJob.perform_later(
+        current_employee.organization_id,
+        period.to_s
+      )
+
+      redirect_to admin_payroll_path,
+                  notice: "Envoi vers Silae planifié pour #{l(period, format: '%B %Y')}."
+    rescue ArgumentError
+      redirect_to admin_payroll_path, alert: "Période invalide."
+    end
+
+    def export_silae
+      authorize :payroll, :export_silae?
+      period = params[:period].present? ? Date.strptime(params[:period], '%Y-%m') : Date.current.beginning_of_month
+
+      if period > Date.current.end_of_month
+        return redirect_to admin_payroll_path, alert: "La période ne peut pas être dans le futur."
+      end
+
+      log_silae_export(period)
+
+      result = Exports::PayrollSilaeCsvExporter.new(current_employee, period).export
+      send_data result[:content],
+                filename: result[:filename],
+                type: 'text/csv; charset=utf-8',
+                disposition: 'attachment'
+    rescue ArgumentError
+      redirect_to admin_payroll_path, alert: "Période invalide."
+    rescue StandardError => e
+      Rails.logger.error "Silae CSV export error: #{e.message}"
+      redirect_to admin_payroll_path, alert: "Une erreur est survenue lors de l'export Silae. Contactez l'administrateur."
+    end
+
     def show
+      authorize :payroll, policy_class: PayrollPolicy
       org = current_employee.organization
       @employees = org.employees.active
 
@@ -39,12 +103,11 @@ module Admin
       @salary_bands = build_salary_bands(@employees)
 
       # ── Cadres vs non-cadres ────────────────────────────────────────────────
-      cadre_ids = @employees.select { |e| e.cadre? }.map(&:id)
-      @cadre_count     = cadre_ids.size
+      # cadre est stocké dans settings JSONB, pas une colonne SQL
+      cadre_emps       = @employees.where("settings->>'cadre' = 'true'")
+      @cadre_count     = cadre_emps.count
       @non_cadre_count = @headcount - @cadre_count
-
-      cadre_emps = @employees.where(id: cadre_ids)
-      @cadre_avg_gross = cadre_emps.any? ? cadre_emps.sum('gross_salary_cents') / cadre_emps.count / 100.0 : 0
+      @cadre_avg_gross = @cadre_count > 0 ? cadre_emps.sum('gross_salary_cents') / @cadre_count / 100.0 : 0
 
       # ── Ancienneté × salaire ────────────────────────────────────────────────
       # Group by tenure bracket (< 1 an, 1-3 ans, 3-5 ans, 5+ ans)
@@ -64,9 +127,38 @@ module Admin
 
       # ── Top 10 rémunérations (anonymisé possible) ──────────────────────────
       @top_earners = @employees.order(gross_salary_cents: :desc).limit(10)
+
+      # ── Clôture de paie ─────────────────────────────────────────────────────
+      # Last 12 months + current month for lock/unlock UI
+      @payroll_periods_locked = org.payroll_periods.recent.limit(24).includes(:locked_by)
+      @lockable_months = (0..11).map { |n| Date.current.beginning_of_month - n.months }.reverse
+
+      # Last webhook push per period (keyed by 'YYYY-MM' string)
+      @last_push_by_period = PaperTrail::Version
+        .where(item_type: 'Organization', item_id: org.id, event: 'payroll_webhook_push')
+        .order(created_at: :desc)
+        .limit(48)
+        .each_with_object({}) do |v, h|
+          meta = JSON.parse(v.object_changes.to_s) rescue {}
+          period_key = meta['period']
+          h[period_key] ||= { status: meta['status'], at: v.created_at } if period_key
+        end
     end
 
     private
+
+    def log_silae_export(period)
+      PaperTrail::Version.create!(
+        item_type:       'Organization',
+        item_id:         current_organization.id,
+        event:           'silae_export',
+        whodunnit:       current_employee.id.to_s,
+        organization_id: current_organization.id,
+        object_changes:  { period: period.strftime('%Y-%m'), ip: request.remote_ip }.to_json
+      )
+    rescue StandardError => e
+      Rails.logger.error("[AuditLog] silae_export log failed: #{e.message}")
+    end
 
     SALARY_BANDS = [
       { label: '< 2 000 €',       min: 0,      max: 200_000 },

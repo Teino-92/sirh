@@ -91,9 +91,14 @@ module HrQuery
       return scope unless any_present?(lf, :leave_type, :days_used_min, :days_used_max, :period_year, :status)
 
       # Build subquery: employee IDs matching leave criteria
+      # Exclude rejected requests unless a specific status filter is requested
       leave_scope = LeaveRequest.all
       leave_scope = leave_scope.where(leave_type: lf[:leave_type]) if lf[:leave_type].present?
-      leave_scope = leave_scope.where(status: lf[:status])         if lf[:status].present?
+      if lf[:status].present?
+        leave_scope = leave_scope.where(status: lf[:status])
+      else
+        leave_scope = leave_scope.where.not(status: 'rejected')
+      end
 
       if lf[:period_year].present?
         year = lf[:period_year].to_i
@@ -206,7 +211,7 @@ module HrQuery
       when "start_date"       then emp.start_date&.strftime('%d/%m/%Y')
       when "tenure_months"    then emp.tenure_in_months
       when "leave_days_used"  then leave_days_used(emp)
-      when "leave_type"       then leave_filters[:leave_type]
+      when "leave_type"       then leave_type_for(emp)
       when "evaluation_score" then latest_evaluation_score(emp)
       when "evaluation_status" then latest_evaluation_status(emp)
       when "onboarding_status"  then emp.employee_onboardings.active.first&.status
@@ -223,7 +228,10 @@ module HrQuery
 
       scope = emp.leave_requests
       scope = scope.where(leave_type: ltype) if ltype.present?
-      scope = scope.where(status: %w[approved auto_approved])
+      # Apply status filter only when explicitly requested; otherwise count all statuses
+      if lf[:status].present?
+        scope = scope.where(status: lf[:status])
+      end
       if year
         scope = scope.where(
           "EXTRACT(YEAR FROM start_date) = ? OR EXTRACT(YEAR FROM end_date) = ?",
@@ -231,6 +239,18 @@ module HrQuery
         )
       end
       scope.sum(:days_count).to_f
+    end
+
+    def leave_type_for(emp)
+      lf    = leave_filters
+      ltype = lf[:leave_type]
+      # If a specific type was requested, return it directly (no need to query)
+      return ltype if ltype.present?
+
+      year  = lf[:period_year]&.to_i
+      scope = emp.leave_requests.where.not(status: 'rejected')
+      scope = scope.where("EXTRACT(YEAR FROM start_date) = ? OR EXTRACT(YEAR FROM end_date) = ?", year, year) if year
+      scope.distinct.pluck(:leave_type).join(', ').presence || "—"
     end
 
     def latest_evaluation_score(emp)

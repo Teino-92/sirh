@@ -20,6 +20,8 @@ class Notification < ApplicationRecord
     hours_validated
     hours_rejected
     system
+    trial_period_ending
+    trial_period_decision
   ].freeze
 
   validates :notification_type, inclusion: { in: TYPES }

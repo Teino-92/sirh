@@ -5,6 +5,9 @@ ruby "3.3.5"
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
 gem "rails", "~> 7.1.6"
 
+# CSV parsing (will be extracted from stdlib in Ruby 3.4+)
+gem "csv"
+
 # The original asset pipeline for Rails [https://github.com/rails/sprockets-rails]
 gem "sprockets-rails"
 
@@ -62,6 +65,9 @@ group :development, :test do
 
   # Code coverage
   gem "simplecov", "~> 0.22", require: false
+
+  # HTTP request stubbing
+  gem "webmock", "~> 3.23"
 end
 
 group :development do
@@ -86,6 +92,8 @@ gem "devise", "~> 4.9"
 gem "devise-jwt", "~> 0.12.1" # JWT authentication for API
 gem "pundit", "~> 2.5"
 gem "solid_queue"
+gem "solid_cache"
+gem "aws-sdk-s3", require: false  # Active Storage S3 backend (avatars)
 gem "rack-attack" # Rate limiting and request throttling
 
 # Multi-tenancy [https://github.com/ErwinM/acts_as_tenant]

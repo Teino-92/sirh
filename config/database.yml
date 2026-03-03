@@ -79,6 +79,7 @@ test:
 #
 production:
   <<: *default
-  database: easy_rh_production
-  username: easy_rh
-  password: <%= ENV["EASY_RH_DATABASE_PASSWORD"] %>
+  url: <%= ENV["DATABASE_URL"] %>
+  # DATABASE_URL is automatically set by Heroku Postgres add-on.
+  # Format: postgres://user:pass@host:5432/dbname
+  # pool size is driven by RAILS_MAX_THREADS (default 5)

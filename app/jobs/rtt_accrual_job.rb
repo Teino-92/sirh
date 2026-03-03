@@ -128,11 +128,8 @@ class RttAccrualJob < ApplicationJob
 
   # Notification optionnelle quand l'employé gagne au moins 0.5 jour RTT
   def notify_employee_rtt_accrual(employee, rtt_days, overtime_hours)
-    # TODO: Implémenter notification (email, in-app notification, etc.)
-    # Exemple:
-    # RttAccrualMailer.notify_accrual(employee, rtt_days, overtime_hours).deliver_later
-    Rails.logger.info "[RttAccrualJob] Notification RTT envoyée à #{employee.email}"
+    Rails.logger.info "[RttAccrualJob] RTT accrual for #{employee.email}: +#{rtt_days}j (#{overtime_hours.round(2)}h overtime)"
   rescue => e
-    Rails.logger.error "[RttAccrualJob] Erreur envoi notification: #{e.message}"
+    Rails.logger.error "[RttAccrualJob] Erreur notification: #{e.message}"
   end
 end

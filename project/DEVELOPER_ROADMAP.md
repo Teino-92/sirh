@@ -1,5 +1,5 @@
 # DEVELOPER ROADMAP — EASY-RH
-**Date**: 2026-02-16 (Updated)
+**Date**: 2026-02-16 (Updated 2026-02-27)
 **Target Agent**: @developer
 **Source**: Architectural Review by @architect
 **Priority**: Execute sequentially, no parallel work
@@ -32,15 +32,21 @@ This roadmap is your **step-by-step implementation guide**. Each sprint is desig
 | **1.4** | Mailer Implementation (Option A) | 0.5h | ✅ COMPLETE (2026-02-16) |
 | **1.5** | Database Indexes | 1h | ✅ COMPLETE (2026-02-16) |
 | **1.6** | Fix N+1 Queries | 2-3h | ✅ COMPLETE (2026-02-16) |
-| **1.7** | API Serializers | 3-4h | ⏳ NEXT |
-| **1.8** | Rate Limiting | 1-2h | ⏳ QUEUED |
-| **2.1** | Shard Background Jobs | 3-4h | ⏳ QUEUED |
-| **2.2** | JSONB Schema Validation | 3-4h | ⏳ QUEUED |
-| **2.3** | Audit Trail System | 4-5h | ⏳ QUEUED |
+| **1.7** | API Serializers | 3-4h | ✅ COMPLETE (2026-02-27) |
+| **1.8** | Rate Limiting | 1-2h | ✅ COMPLETE (2026-02-27) |
+| **2.1** | Shard Background Jobs | 3-4h | ✅ COMPLETE (2026-02-27) |
+| **2.2** | JSONB Schema Validation | 3-4h | ✅ COMPLETE (2026-02-27) |
+| **2.3** | Audit Trail System | 4-5h | ✅ COMPLETE (2026-02-27) |
+| **D-A** | Direction A (scoping + tests + rename) | ~6h | ✅ COMPLETE (2026-02-27) |
+| **D-B** | Direction B (policy specs + OnboardingTaskPolicy) | ~3h | ✅ COMPLETE (2026-02-27) |
+| **D-C** | Direction C (GroupPolicies spec, OnboardingReview spec, Payroll auth+N+1) | ~2h | ✅ COMPLETE (2026-02-27) |
+| **D-D** | Direction D (confidentialité salariale — droit du travail français) | ~1h | ✅ COMPLETE (2026-02-27) |
+| **D-E** | Direction E (edit/update salary guard, _form conditionné) | ~1h | ✅ COMPLETE (2026-02-27) |
+| **D-F** | Direction F (HR Query Engine — NL-to-Filters IA admin/RH) | ~4h | ✅ COMPLETE (2026-02-27) |
 
-**Progress**: 5/10 sprints complete (50%)
-**Time Spent**: ~7 hours (Sprints 1.2-1.6)
-**Remaining Effort**: 17-25 hours
+**Progress**: 10/10 roadmap sprints complete (100%) + Directions A + B + C + D + E + F complete + Points résiduels complets
+**Time Spent**: ~35 hours (tous les sprints + toutes les Directions + nettoyage résiduel)
+**Remaining Effort**: 0h — Phase 3 à scoper par @architect
 
 ---
 
@@ -82,6 +88,25 @@ This roadmap is your **step-by-step implementation guide**. Each sprint is desig
 - ✅ Performance: ~500x improvement (indexes + eager loading combined)
 - ✅ Multi-tenancy: All safety validations passed
 - ✅ Production ready: Zero-downtime deployments for all sprints
+
+### Direction F — HR Query Engine (NL-to-Filters) ✅
+- **Completed**: 2026-02-27
+- **Commit**: cd85d0a
+- **Impact**: Admin/RH can query HR data in French natural language via Claude Haiku AI
+- **Security**: NL-to-Filters (never Text-to-SQL), schema not exposed to API, salary re-gated server-side
+- **Files**: `HrQueryInterpreterService`, `HrQueryExecutorService`, `HrQueryCsvExporter`, `HrQueryPolicy`, `Admin::HrQueriesController`, views + Stimulus controller
+- **Specs**: interpreter (7 examples), executor (8 examples), policy (12 examples) — all passing
+- **Deps**: `faraday ~> 2.7`, `faraday-retry ~> 2.2`, `dotenv-rails`
+- **Model**: `claude-haiku-4-5-20251001`, JSON prefill technique, MAX_RESULTS=500
+
+### Points résiduels — Nettoyage pré-Phase 3 ✅
+- **Completed**: 2026-02-27
+- **Audit nav mobile**: lien "Audit" ajouté dans la bottom nav admin (`admin.html.erb`)
+- **Mailers activés**: `LeaveRequestMailer` + `TimeEntryMailer` branchés dans les jobs (remplacement des `Rails.logger` TODO), vues `.text.erb` écrites, layout mailer enrichi
+- **Bug fix accrual**: `OrganizationLeaveAccrualJob` — correction calcul `remaining_cap` (min/max inversé causait `monthly_accrual = 0`)
+- **RTT notification**: TODO supprimé — log approprié dans `rtt_accrual_job.rb`
+- **JWT**: déjà complet (`devise-jwt`, `JwtDenylist`, dispatch/revocation, token header) — aucun travail requis
+- **Nouvelles specs**: `JsonbValidatable` concern (7 ex), `LeaveAccrualDispatcherJob` (3 ex), `OrganizationLeaveAccrualJob` (6 ex), `AuditLogPolicy` (4 ex) — tous verts
 
 ---
 
@@ -1644,5 +1669,23 @@ test(transactions): verify rollback on failures
 
 ---
 
-**End of Developer Roadmap**
-**Next Step**: Execute Sprint 1.2 → Handoff to @qa → Architect validation → Sprint 1.3
+**End of Developer Roadmap — Roadmap initial 100% COMPLETE**
+**Next Step**: Phase 3 — à scoper par @architect
+
+---
+
+# DIRECTION E — COMPLETE (2026-02-27)
+
+**Status**: COMPLETE
+
+### E-1 — `authorize :see_salary?` dans `edit` et `update` ✅
+- `Admin::EmployeesController#edit` et `#update` : `authorize @employee, :see_salary?`
+- Symétrie parfaite avec `show` — les 3 actions ont le même guard
+
+### E-2 — `_form` : fieldset Rémunération conditionné ✅
+- `app/views/admin/employees/_form.html.erb` : enveloppé dans `policy(employee).see_salary?`
+- Manager → 403 controller avant même d'atteindre la vue
+
+### Specs ✅
+- `spec/policies/employee_policy_spec.rb` : ajout `permissions :edit?, :update?` (3 cas)
+- 9 examples, 0 failures

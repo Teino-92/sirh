@@ -42,7 +42,7 @@ class LeaveRequestPolicy < ApplicationPolicy
   end
 
   def cancel?
-    owner? && !record.rejected? # Can cancel unless rejected
+    owner? && record.status != 'rejected' # Can cancel unless rejected
   end
 
   class Scope

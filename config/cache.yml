@@ -1,0 +1,18 @@
+default: &default
+  store_options:
+    # Maximum cache size: 256 MB (adjust based on Postgres plan)
+    max_size: <%= 256.megabytes %>
+    # Expire entries after 7 days by default
+    expires_in: 604800
+
+development:
+  <<: *default
+
+test:
+  <<: *default
+
+production:
+  <<: *default
+  store_options:
+    max_size: <%= 512.megabytes %>
+    expires_in: 604800
