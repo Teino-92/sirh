@@ -953,22 +953,22 @@ ob1 = EmployeeOnboarding.create!(
 )
 
 # Tâches : les 2 premières complétées (J1), les suivantes pending
-OnboardingTask.create!(onboarding: ob1, organization: org, title: "Accès GitHub, Jira, Confluence",
+OnboardingTask.create!(employee_onboarding: ob1, organization: org, title: "Accès GitHub, Jira, Confluence",
   assigned_to_role: 'hr', task_type: 'manual', due_date: ob1_start + 1.day,
   status: 'completed', completed_at: ob1_start + 1.day, completed_by: hr_generalist, assigned_to: hr_generalist)
-OnboardingTask.create!(onboarding: ob1, organization: org, title: "Setup poste de travail",
+OnboardingTask.create!(employee_onboarding: ob1, organization: org, title: "Setup poste de travail",
   assigned_to_role: 'hr', task_type: 'manual', due_date: ob1_start + 1.day,
   status: 'completed', completed_at: ob1_start + 1.day, completed_by: hr_generalist, assigned_to: hr_generalist)
-OnboardingTask.create!(onboarding: ob1, organization: org, title: "Présentation de l'équipe",
+OnboardingTask.create!(employee_onboarding: ob1, organization: org, title: "Présentation de l'équipe",
   assigned_to_role: 'manager', task_type: 'one_on_one', due_date: ob1_start + 2.days,
   status: 'completed', completed_at: ob1_start + 2.days, completed_by: mgr_backend, assigned_to: mgr_backend)
-OnboardingTask.create!(onboarding: ob1, organization: org, title: "Lecture architecture technique",
+OnboardingTask.create!(employee_onboarding: ob1, organization: org, title: "Lecture architecture technique",
   assigned_to_role: 'employee', task_type: 'training', due_date: ob1_start + 3.days,
   status: 'pending', assigned_to: be_employees[4])
-OnboardingTask.create!(onboarding: ob1, organization: org, title: "Premier ticket Jira en binôme",
+OnboardingTask.create!(employee_onboarding: ob1, organization: org, title: "Premier ticket Jira en binôme",
   assigned_to_role: 'manager', task_type: 'manual', due_date: ob1_start + 5.days,
   status: 'pending', assigned_to: mgr_backend)
-OnboardingTask.create!(onboarding: ob1, organization: org, title: "Formation sécurité applicative",
+OnboardingTask.create!(employee_onboarding: ob1, organization: org, title: "Formation sécurité applicative",
   assigned_to_role: 'employee', task_type: 'training', due_date: ob1_start + 10.days,
   status: 'pending', assigned_to: be_employees[4])
 
@@ -1008,12 +1008,12 @@ tasks_ob2 = [
 tasks_ob2.each do |t|
   due = ob2_start + t[:offset].days
   if t[:done]
-    OnboardingTask.create!(onboarding: ob2, organization: org, title: t[:title],
+    OnboardingTask.create!(employee_onboarding: ob2, organization: org, title: t[:title],
       assigned_to_role: t[:role], task_type: t[:type], due_date: due,
       status: 'completed', completed_at: due, completed_by: t[:by], assigned_to: t[:by])
   else
     assignee = t[:role] == 'manager' ? mgr_frontend : fe_employees[3]
-    OnboardingTask.create!(onboarding: ob2, organization: org, title: t[:title],
+    OnboardingTask.create!(employee_onboarding: ob2, organization: org, title: t[:title],
       assigned_to_role: t[:role], task_type: t[:type], due_date: due,
       status: 'pending', assigned_to: assignee)
   end
@@ -1051,11 +1051,11 @@ tasks_ob3 = [
 tasks_ob3.each do |t|
   due = ob3_start + t[:offset].days
   if t[:done]
-    OnboardingTask.create!(onboarding: ob3, organization: org, title: t[:title],
+    OnboardingTask.create!(employee_onboarding: ob3, organization: org, title: t[:title],
       assigned_to_role: t[:role], task_type: t[:type], due_date: due,
       status: 'completed', completed_at: due, completed_by: t[:by], assigned_to: t[:by])
   else
-    OnboardingTask.create!(onboarding: ob3, organization: org, title: t[:title],
+    OnboardingTask.create!(employee_onboarding: ob3, organization: org, title: t[:title],
       assigned_to_role: t[:role], task_type: t[:type], due_date: due,
       status: 'pending', assigned_to: mgr_sales)
   end
@@ -1063,13 +1063,14 @@ end
 
 EmployeeOnboardingScoreRefreshJob.perform_now(ob3.id)
 
-puts "  Created #{Onboarding.where(organization: org).count} onboardings, #{OnboardingTask.where(organization: org).count} tasks"
+puts "  Created #{EmployeeOnboarding.where(organization: org).count} onboardings, #{OnboardingTask.where(organization: org).count} tasks"
 
 # ─── Organisation 2 — StartupCo Paris ────────────────────────────────────────
 
-puts "\n🏢 Creating second organization: StartupCo Paris..."
+puts "\n🏢 Creating second organization: StartupCo Paris (Manager OS only)..."
 org2 = Organization.create!(
   name: "StartupCo Paris",
+  plan: "manager_os",
   settings: { work_week_hours: 39, cp_acquisition_rate: 2.5, rtt_enabled: true, overtime_threshold: 35 }
 )
 
@@ -1112,7 +1113,106 @@ mgr_startup = org2.employees.create!(
     balance: 0, accrued_this_year: 0, used_this_year: 0)
 end
 
-puts "  StartupCo created with #{org2.employees.count} employees"
+# ── Manager OS data pour StartupCo (pas de SIRH) ──────────────────────────
+
+# Objectifs
+Objective.create!(organization: org2, manager: admin2, created_by: mgr_startup,
+  owner: mgr_startup, title: "Lancer la v1 du produit en juin",
+  description: "MVP validé par les early adopters. Objectif Q2.",
+  status: 'in_progress', priority: 'critical', deadline: 3.months.from_now)
+
+Objective.create!(organization: org2, manager: mgr_startup, created_by: mgr_startup,
+  owner: org2.employees.find_by(email: "antoine.mercier@startupco.fr"),
+  title: "Écrire les specs des 5 user stories prioritaires",
+  description: "Backlog Q2 — specs validées avec le CTO avant sprint.",
+  status: 'in_progress', priority: 'high', deadline: 3.weeks.from_now)
+
+Objective.create!(organization: org2, manager: mgr_startup, created_by: mgr_startup,
+  owner: org2.employees.find_by(email: "lea.blanc@startupco.fr"),
+  title: "Refaire les maquettes du onboarding utilisateur",
+  description: "Figma — 3 écrans clés. Présentation aux fondateurs en semaine 4.",
+  status: 'draft', priority: 'medium', deadline: 6.weeks.from_now)
+
+# 1:1
+OneOnOne.create!(organization: org2, manager: mgr_startup,
+  employee: org2.employees.find_by(email: "antoine.mercier@startupco.fr"),
+  scheduled_at: 1.week.ago, completed_at: 1.week.ago + 1.hour,
+  status: 'completed',
+  agenda: "Point avancement specs + blockers backlog",
+  notes: "Antoine avance bien. Besoin de clarification sur le scope auth. Prévoir atelier avec Thomas.")
+
+OneOnOne.create!(organization: org2, manager: mgr_startup,
+  employee: org2.employees.find_by(email: "lea.blanc@startupco.fr"),
+  scheduled_at: 4.days.from_now, status: 'scheduled',
+  agenda: "Review maquettes onboarding + feedback itération 1")
+
+OneOnOne.create!(organization: org2, manager: mgr_startup,
+  employee: org2.employees.find_by(email: "antoine.mercier@startupco.fr"),
+  scheduled_at: 5.days.from_now, status: 'scheduled',
+  agenda: "Priorisation backlog Q2 + démo interne")
+
+# Onboarding template StartupCo
+tpl_startup = OnboardingTemplate.create!(
+  organization: org2,
+  name: "Onboarding Startup",
+  description: "Intégration rapide en 30 jours — focus autonomie.",
+  duration_days: 30, active: true
+)
+
+[
+  { title: "Accès outils (Notion, Slack, GitHub)",  role: 'hr',       type: 'manual',     day: 1  },
+  { title: "Présentation de la vision produit",     role: 'manager',  type: 'one_on_one', day: 2  },
+  { title: "Lecture du wiki technique",             role: 'employee', type: 'training',   day: 3  },
+  { title: "Premier livrable en autonomie",         role: 'employee', type: 'manual',     day: 7  },
+  { title: "Bilan J14 avec manager",                role: 'manager',  type: 'one_on_one', day: 14 },
+  { title: "Évaluation fin de période d'essai",     role: 'manager',  type: 'one_on_one', day: 30 },
+].each_with_index do |t, i|
+  OnboardingTemplateTask.create!(
+    onboarding_template: tpl_startup, organization: org2,
+    title: t[:title], assigned_to_role: t[:role], task_type: t[:type],
+    due_day_offset: t[:day], position: i + 1
+  )
+end
+
+# Onboarding actif — Léa (arrivée il y a 4 jours)
+lea = org2.employees.find_by(email: "lea.blanc@startupco.fr")
+ob_lea_start = lea.start_date
+ob_lea = EmployeeOnboarding.create!(
+  organization: org2, employee: lea, manager: mgr_startup,
+  onboarding_template: tpl_startup,
+  start_date: ob_lea_start, end_date: ob_lea_start + 30.days,
+  status: 'active', notes: "UX designer — intégration en cours."
+)
+
+OnboardingTask.create!(employee_onboarding: ob_lea, organization: org2,
+  title: "Accès outils (Notion, Slack, GitHub)",
+  assigned_to_role: 'hr', task_type: 'manual',
+  due_date: ob_lea_start + 1.day,
+  status: 'completed', completed_at: ob_lea_start + 1.day,
+  completed_by: admin2, assigned_to: admin2)
+
+OnboardingTask.create!(employee_onboarding: ob_lea, organization: org2,
+  title: "Présentation de la vision produit",
+  assigned_to_role: 'manager', task_type: 'one_on_one',
+  due_date: ob_lea_start + 2.days,
+  status: 'completed', completed_at: ob_lea_start + 2.days,
+  completed_by: mgr_startup, assigned_to: mgr_startup)
+
+OnboardingTask.create!(employee_onboarding: ob_lea, organization: org2,
+  title: "Lecture du wiki technique",
+  assigned_to_role: 'employee', task_type: 'training',
+  due_date: ob_lea_start + 3.days,
+  status: 'pending', assigned_to: lea)
+
+OnboardingTask.create!(employee_onboarding: ob_lea, organization: org2,
+  title: "Premier livrable en autonomie",
+  assigned_to_role: 'employee', task_type: 'manual',
+  due_date: ob_lea_start + 7.days,
+  status: 'pending', assigned_to: lea)
+
+EmployeeOnboardingScoreRefreshJob.perform_now(ob_lea.id)
+
+puts "  StartupCo created with #{org2.employees.count} employees (Manager OS plan)"
 
 # ─── Résumé ───────────────────────────────────────────────────────────────────
 
@@ -1133,7 +1233,7 @@ puts "  Leave requests:   #{LeaveRequest.where(organization: org).count}"
 puts "  Objectives:       #{Objective.where(organization: org).count}"
 puts "  1:1 meetings:     #{OneOnOne.where(organization: org).count}"
 puts "  Trainings:        #{Training.where(organization: org).count} (#{TrainingAssignment.joins(:training).where(trainings: { organization: org }).count} assignments)"
-puts "  Onboardings:      #{Onboarding.where(organization: org).count} active"
+puts "  Onboardings:      #{EmployeeOnboarding.where(organization: org).count} active"
 puts "    Approved:  #{LeaveRequest.where(organization: org, status: 'approved').count}"
 puts "    Pending:   #{LeaveRequest.where(organization: org, status: 'pending').count}"
 puts "    Rejected:  #{LeaveRequest.where(organization: org, status: 'rejected').count}"
@@ -1156,9 +1256,10 @@ puts "    Frontend dev:        emma.morel@techcorp.fr"
 puts "    Sales AE:            alice.dumont@techcorp.fr"
 puts "    Alternant frontend:  yanis.benali@techcorp.fr"
 puts "    Stagiaire backend:   ana.ferreira@techcorp.fr"
-puts "\n  🏢 StartupCo Paris"
-puts "    Admin: admin@startupco.fr"
-puts "    Manager: claire.rousseau@startupco.fr"
-puts "    Employee: antoine.mercier@startupco.fr"
+puts "\n  🏢 StartupCo Paris (Manager OS — pas de SIRH)"
+puts "    Admin:   admin@startupco.fr"
+puts "    Manager: claire.rousseau@startupco.fr  ← démo Manager OS"
+puts "    Employé: antoine.mercier@startupco.fr"
+puts "    Employé: lea.blanc@startupco.fr"
 
 end # ActsAsTenant.without_tenant
