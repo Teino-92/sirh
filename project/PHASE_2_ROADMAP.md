@@ -412,7 +412,7 @@ rails db:migrate
 
 **Verify**:
 ```bash
-psql -d easy_rh_development -c "\d objectives"
+psql -d izi_rh_development -c "\d objectives"
 # Should show table with all columns and indexes
 ```
 
@@ -588,9 +588,9 @@ rails db:migrate
 
 **Verify**:
 ```bash
-psql -d easy_rh_development -c "\d one_on_ones"
-psql -d easy_rh_development -c "\d action_items"
-psql -d easy_rh_development -c "\d one_on_one_objectives"
+psql -d izi_rh_development -c "\d one_on_ones"
+psql -d izi_rh_development -c "\d action_items"
+psql -d izi_rh_development -c "\d one_on_one_objectives"
 ```
 
 **Commit**:
@@ -1168,8 +1168,8 @@ rails s
 
 **Database Verification**:
 ```bash
-psql -d easy_rh_development -c "SELECT COUNT(*) FROM objectives;"
-psql -d easy_rh_development -c "\d+ objectives" | grep Index
+psql -d izi_rh_development -c "SELECT COUNT(*) FROM objectives;"
+psql -d izi_rh_development -c "\d+ objectives" | grep Index
 # Verify all indexes exist
 ```
 

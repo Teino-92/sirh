@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class LeaveRequestMailer < ApplicationMailer
-  default from: 'noreply@easy-rh.com'
+  default from: 'noreply@izi-rh.com'
 
   # Notification envoyée à l'employé après soumission de sa demande
   def submitted(leave_request)

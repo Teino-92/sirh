@@ -1,4 +1,14 @@
 module ApplicationHelper
+  # Returns true if the current organization is on the full SIRH plan.
+  def sirh_plan?
+    current_employee&.organization&.sirh?
+  end
+
+  # Returns true for both manager_os and sirh plans.
+  def manager_os_plan?
+    current_employee&.organization&.plan&.in?(%w[manager_os sirh])
+  end
+
   def status_badge_class(status)
     case status
     when 'pending'

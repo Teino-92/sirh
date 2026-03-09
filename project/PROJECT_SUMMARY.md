@@ -8,7 +8,7 @@
 
 ## EXECUTIVE SUMMARY
 
-Easy-RH is a **manager-first SaaS HRIS** built for French companies, following strict Domain-Driven Design and production-grade multi-tenancy patterns. The system has successfully completed Phase 1 production readiness sprints (1.2-1.6) with **100% test pass rate**, **ACID transaction safety**, and **~500x performance improvement** through database optimization.
+Izi-RH is a **manager-first SaaS HRIS** built for French companies, following strict Domain-Driven Design and production-grade multi-tenancy patterns. The system has successfully completed Phase 1 production readiness sprints (1.2-1.6) with **100% test pass rate**, **ACID transaction safety**, and **~500x performance improvement** through database optimization.
 
 **Production Status**: ✅ **PRODUCTION READY** - Zero critical blockers, validated by multi-agent workflow
 **Test Coverage**: 20.1% (619/619 passing, 100% on critical French legal compliance engine)
@@ -773,7 +773,7 @@ CREATE INDEX idx_time_entries_validation
 ## CONTACT & OWNERSHIP
 
 **Maintainer**: Matteo Garbugli
-**Repository**: Teino-92/easy-rh
+**Repository**: Teino-92/izi-rh
 **Architecture Agent**: Claude Code (Sonnet 4.5)
 **Documentation**: CLAUDE.md, ROADMAP.md, REFACTORING_PLAN.md, CURRENT_WORKFLOW.md
 

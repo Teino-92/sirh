@@ -3,7 +3,7 @@
 # Usage: bin/rails runner test_background_jobs.rb
 
 puts "="*80
-puts "Test des Background Jobs - Easy-RH"
+puts "Test des Background Jobs - Izi-RH"
 puts "Date: #{Date.current}"
 puts "="*80
 puts ""

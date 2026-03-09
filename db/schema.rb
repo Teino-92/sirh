@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2026_02_28_230653) do
+ActiveRecord::Schema[7.1].define(version: 2026_03_09_130717) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -383,7 +383,11 @@ ActiveRecord::Schema[7.1].define(version: 2026_02_28_230653) do
     t.datetime "updated_at", null: false
     t.string "siret"
     t.text "address"
+    t.string "plan", default: "sirh", null: false
+    t.datetime "plan_started_at"
+    t.string "billing_model", default: "per_employee", null: false
     t.index ["name"], name: "index_organizations_on_name"
+    t.index ["plan"], name: "index_organizations_on_plan"
   end
 
   create_table "payroll_periods", force: :cascade do |t|

@@ -11,4 +11,4 @@ Disallow: /time_entries
 Disallow: /leave_requests
 Disallow: /leave_balances
 
-Sitemap: https://app.easy-rh.fr/sitemap.xml
+Sitemap: https://app.izi-rh.fr/sitemap.xml

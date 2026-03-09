@@ -3,6 +3,8 @@
 module Api
   module V1
   class TimeEntriesController < BaseController
+    before_action :require_sirh_plan!
+
     # POST /api/v1/time_entries/clock_in
     def clock_in
       # Check if already clocked in

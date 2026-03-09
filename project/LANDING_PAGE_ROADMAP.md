@@ -61,7 +61,7 @@ avec un formulaire d'inscription trial qui crée automatiquement une organisatio
 ### Pourquoi c'est un avantage compétitif
 
 **Le pain point #1 lors d'un changement d'outil SIRH** : "Comment je transfère mes 80 employés ?"
-C'est souvent ce qui bloque la migration. Easy-RH doit résoudre ce problème en 3 clics.
+C'est souvent ce qui bloque la migration. Izi-RH doit résoudre ce problème en 3 clics.
 
 **Proposition de valeur** :
 > "Importez tous vos collaborateurs en 2 minutes — copiez-collez depuis Excel ou exportez votre ancien SIRH."
@@ -317,10 +317,10 @@ Ligne 23 () : Email obligatoire manquant
 │  🚀 Migrez en 2 minutes chrono                          │
 │                                                          │
 │  "Changer de SIRH, c'est compliqué ?"                   │
-│  Pas avec Easy-RH.                                       │
+│  Pas avec Izi-RH.                                       │
 │                                                          │
 │  1. Exportez votre liste depuis Excel ou votre SIRH     │
-│  2. Glissez le fichier dans Easy-RH                     │
+│  2. Glissez le fichier dans Izi-RH                     │
 │  3. Tous vos collaborateurs sont importés               │
 │                                                          │
 │  Compatible avec : Excel · Sage · Lucca · Factorial ·   │
@@ -384,7 +384,7 @@ Disallow: /employees/sign_in
 Disallow: /profile
 Disallow: /dashboard
 
-Sitemap: https://app.easy-rh.fr/sitemap.xml
+Sitemap: https://app.izi-rh.fr/sitemap.xml
 ```
 
 ### Mots-clés ciblés

@@ -1,12 +1,14 @@
 # frozen_string_literal: true
 
 class WorkSchedulePolicy < ApplicationPolicy
+  include PlanGated
+
   def show?
-    owner? || manager_of_owner? || hr_admin?
+    sirh_plan? && (owner? || manager_of_owner? || hr_admin?)
   end
 
   def create?
-    manager_of_owner? || hr_admin?
+    sirh_plan? && (manager_of_owner? || hr_admin?)
   end
 
   def new?
@@ -14,7 +16,7 @@ class WorkSchedulePolicy < ApplicationPolicy
   end
 
   def update?
-    manager_of_owner? || hr_admin?
+    sirh_plan? && (manager_of_owner? || hr_admin?)
   end
 
   def edit?

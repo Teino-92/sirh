@@ -1,11 +1,19 @@
 fr:
   activerecord:
     errors:
+      models:
+        organization:
+          attributes:
+            plan:
+              inclusion: "n'est pas un plan valide (manager_os ou sirh)"
+            billing_model:
+              inclusion: "n'est pas un modèle de facturation valide"
       messages:
         record_invalid: "La validation a échoué : %{errors}"
         blank: "doit être rempli(e)"
         taken: "n'est pas disponible"
         invalid: "n'est pas valide"
+        inclusion: "n'est pas inclus dans la liste"
 
   date:
     formats:

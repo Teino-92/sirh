@@ -1,4 +1,4 @@
-This file defines how Claude Code must operate inside the Easy-RH repository.
+This file defines how Claude Code must operate inside the Izi-RH repository.
 
 This project uses a strict multi-agent architecture and production-oriented discipline.
 
@@ -173,7 +173,7 @@ Any violation of skill boundaries must stop the workflow and return control to @
 
 PROJECT OVERVIEW
 
-Easy-RH is a modern SaaS SIRH (HRIS) platform for French companies.
+Izi-RH is a modern SaaS SIRH (HRIS) platform for French companies.
 
 Philosophy: Manager-first HR system.
 

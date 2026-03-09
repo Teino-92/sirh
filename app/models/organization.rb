@@ -21,7 +21,12 @@ class Organization < ApplicationRecord
   has_many :trainings, dependent: :destroy
   has_many :training_assignments, through: :trainings
 
+  PLANS = %w[manager_os sirh].freeze
+  BILLING_MODELS = %w[per_team per_employee].freeze
+
   validates :name, presence: true
+  validates :plan, inclusion: { in: PLANS }
+  validates :billing_model, inclusion: { in: BILLING_MODELS }
   validate :safe_calendar_webhook_url
   validate :safe_payroll_webhook_url
 
@@ -56,6 +61,22 @@ class Organization < ApplicationRecord
 
   def payroll_webhook_secret
     settings['payroll_webhook_secret'].presence
+  end
+
+  # Plan helpers
+  def manager_os?
+    plan == "manager_os"
+  end
+
+  def sirh?
+    plan == "sirh"
+  end
+
+  def upgrade_to_sirh!
+    with_lock do
+      return true if sirh?
+      update!(plan: "sirh", billing_model: "per_employee", plan_started_at: Time.current)
+    end
   end
 
   def group_policies

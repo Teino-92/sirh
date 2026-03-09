@@ -1,10 +1,10 @@
-# Revue d'Architecture - Easy-RH
+# Revue d'Architecture - Izi-RH
 **Date:** 7 janvier 2026
 **Status:** MVP Production-Ready (70%)
 
 ## 🎯 Résumé Exécutif
 
-Easy-RH est un **système de gestion RH production-ready** avec une architecture exceptionnelle en Domain-Driven Design. Le projet est fonctionnel et bien documenté, mais nécessite **3 éléments critiques** avant le premier déploiement client.
+Izi-RH est un **système de gestion RH production-ready** avec une architecture exceptionnelle en Domain-Driven Design. Le projet est fonctionnel et bien documenté, mais nécessite **3 éléments critiques** avant le premier déploiement client.
 
 **Score Global: 7.9/10** - Prêt avec réserves
 
@@ -315,7 +315,7 @@ Semaine du 13 jan:   LANCEMENT PRODUCTION
 
 ## 🔍 Conclusion
 
-**Easy-RH dispose d'une base architecturale exceptionnelle** avec un moteur de conformité française qui constitue un véritable avantage compétitif.
+**Izi-RH dispose d'une base architecturale exceptionnelle** avec un moteur de conformité française qui constitue un véritable avantage compétitif.
 
 **Les 3 blockers identifiés sont tous solvables en 3-5 jours:**
 - Background jobs (CRITICAL - 1-2 jours)

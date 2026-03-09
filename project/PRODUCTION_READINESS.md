@@ -97,7 +97,7 @@ authorize @one_on_one
 - [ ] Décommenter et configurer avec le(s) domaine(s) réel(s)
 - [ ] Exclure `/up` (health check) du host check
 ```ruby
-config.hosts = ["app.easy-rh.com", /.*\.easy-rh\.com/]
+config.hosts = ["app.izi-rh.com", /.*\.izi-rh\.com/]
 config.host_authorization = { exclude: ->(request) { request.path == "/up" } }
 ```
 
@@ -152,7 +152,7 @@ end
 **Fichier** : `config/initializers/devise.rb` ligne 27
 **Problème** : Les emails Devise (reset mot de passe, confirmation) partent avec `please-change-me-at-config-initializers-devise@example.com` comme expéditeur.
 **Actions** :
-- [ ] `config.mailer_sender = ENV.fetch('DEVISE_MAILER_SENDER', 'noreply@easy-rh.com')`
+- [ ] `config.mailer_sender = ENV.fetch('DEVISE_MAILER_SENDER', 'noreply@izi-rh.com')`
 
 ---
 

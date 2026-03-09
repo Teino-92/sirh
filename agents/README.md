@@ -1,6 +1,6 @@
-# Agents Spécialisés Easy-RH
+# Agents Spécialisés Izi-RH
 
-Ce dossier contient 4 agents spécialisés pour le développement du projet Easy-RH. Chaque agent a un rôle spécifique et des responsabilités bien définies.
+Ce dossier contient 4 agents spécialisés pour le développement du projet Izi-RH. Chaque agent a un rôle spécifique et des responsabilités bien définies.
 
 ## 🏗️ Les Agents
 

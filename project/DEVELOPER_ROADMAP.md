@@ -957,7 +957,7 @@ rails generate mailer LeaveRequest submitted approved rejected cancelled
 **Implementation**:
 ```ruby
 class LeaveRequestMailer < ApplicationMailer
-  default from: 'noreply@easy-rh.com'
+  default from: 'noreply@izi-rh.com'
 
   def submitted(leave_request)
     @leave_request = leave_request
@@ -1016,10 +1016,10 @@ end
    Durée : <%= @leave_request.days_count %> jour(s)
    Raison : <%= @leave_request.reason %>
 
-   Pour approuver ou rejeter cette demande, connectez-vous à Easy-RH.
+   Pour approuver ou rejeter cette demande, connectez-vous à Izi-RH.
 
    Cordialement,
-   L'équipe Easy-RH
+   L'équipe Izi-RH
    ```
 
 2. Repeat for `approved.text.erb`, `rejected.text.erb`, `cancelled.text.erb`
@@ -1047,7 +1047,7 @@ rails generate mailer TimeEntry weekly_validation_reminder
 **Implementation**:
 ```ruby
 class TimeEntryMailer < ApplicationMailer
-  default from: 'noreply@easy-rh.com'
+  default from: 'noreply@izi-rh.com'
 
   def weekly_validation_reminder(manager, pending_count)
     @manager = manager
@@ -1067,10 +1067,10 @@ Bonjour <%= @manager.first_name %>,
 
 Vous avez <%= @pending_count %> pointage(s) en attente de validation pour votre équipe.
 
-Merci de vous connecter à Easy-RH pour valider ces pointages.
+Merci de vous connecter à Izi-RH pour valider ces pointages.
 
 Cordialement,
-L'équipe Easy-RH
+L'équipe Izi-RH
 ```
 
 ---
@@ -1099,7 +1099,7 @@ SMTP_ADDRESS=smtp.sendgrid.net
 SMTP_PORT=587
 SMTP_USERNAME=apikey
 SMTP_PASSWORD=<sendgrid_api_key>
-APP_HOST=easy-rh.com
+APP_HOST=izi-rh.com
 ```
 
 ---

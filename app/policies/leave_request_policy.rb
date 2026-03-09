@@ -1,16 +1,18 @@
 # frozen_string_literal: true
 
 class LeaveRequestPolicy < ApplicationPolicy
+  include PlanGated
+
   def index?
-    true # Everyone can see leave requests
+    sirh_plan?
   end
 
   def show?
-    owner? || manager_of_owner? || hr_admin?
+    sirh_plan? && (owner? || manager_of_owner? || hr_admin?)
   end
 
   def create?
-    true # Any employee can request leave
+    sirh_plan?
   end
 
   def new?
@@ -18,7 +20,7 @@ class LeaveRequestPolicy < ApplicationPolicy
   end
 
   def update?
-    owner? && record.pending? # Can only update pending requests
+    sirh_plan? && owner? && record.pending?
   end
 
   def edit?
@@ -30,19 +32,19 @@ class LeaveRequestPolicy < ApplicationPolicy
   end
 
   def approve?
-    hr_admin? || (manager_of_owner? && managers_can_approve?)
+    sirh_plan? && (hr_admin? || (manager_of_owner? && managers_can_approve?))
   end
 
   def reject?
-    hr_admin? || (manager_of_owner? && managers_can_approve?)
+    sirh_plan? && (hr_admin? || (manager_of_owner? && managers_can_approve?))
   end
 
   def reject_form?
-    reject? # Same permissions as reject
+    reject?
   end
 
   def cancel?
-    owner? && record.status != 'rejected' # Can cancel unless rejected
+    sirh_plan? && owner? && record.status != "rejected"
   end
 
   class Scope
@@ -54,13 +56,13 @@ class LeaveRequestPolicy < ApplicationPolicy
     end
 
     def resolve
+      return scope.none unless user.organization.sirh?
+
       if user.hr_or_admin?
         scope.all
       elsif user.manager?
-        # Managers see their team's requests + their own
         scope.where(employee_id: [user.id] + user.team_members.pluck(:id))
       else
-        # Employees see only their own
         scope.where(employee_id: user.id)
       end
     end

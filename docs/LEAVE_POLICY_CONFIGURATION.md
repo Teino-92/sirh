@@ -2,7 +2,7 @@
 
 ## Architecture de Résolution en Cascade
 
-Le système Easy-RH implémente une architecture flexible de gestion des congés basée sur **4 niveaux hiérarchiques** :
+Le système Izi-RH implémente une architecture flexible de gestion des congés basée sur **4 niveaux hiérarchiques** :
 
 ```
 Code du travail (base légale - constantes par défaut)
@@ -317,4 +317,4 @@ end
 
 **Documentation générée le** : 2026-01-04
 **Version** : 1.0.0
-**Maintenu par** : Équipe Easy-RH
+**Maintenu par** : Équipe Izi-RH

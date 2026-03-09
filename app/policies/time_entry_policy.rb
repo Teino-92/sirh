@@ -1,16 +1,18 @@
 # frozen_string_literal: true
 
 class TimeEntryPolicy < ApplicationPolicy
+  include PlanGated
+
   def index?
-    true # Everyone can see their own time entries
+    sirh_plan? # Time tracking is SIRH only
   end
 
   def show?
-    owner? || manager_of_owner? || hr_admin?
+    sirh_plan? && (owner? || manager_of_owner? || hr_admin?)
   end
 
   def create?
-    owner? # Only the employee can create their own entries
+    sirh_plan? && owner?
   end
 
   def update?
@@ -22,19 +24,19 @@ class TimeEntryPolicy < ApplicationPolicy
   end
 
   def clock_in?
-    user.present? # Any authenticated user can clock in
+    sirh_plan?
   end
 
   def clock_out?
-    user.present? && record.employee_id == user.id
+    sirh_plan? && record.employee_id == user.id
   end
 
   def validate?
-    manager_of_owner? || hr_admin?
+    sirh_plan? && (manager_of_owner? || hr_admin?)
   end
 
   def edit_as_admin?
-    hr_admin?
+    sirh_plan? && hr_admin?
   end
 
   class Scope
@@ -46,13 +48,13 @@ class TimeEntryPolicy < ApplicationPolicy
     end
 
     def resolve
+      return scope.none unless user.organization.sirh?
+
       if user.hr_or_admin?
         scope.all
       elsif user.manager?
-        # Managers can see their team's entries + their own
         scope.where(employee_id: [user.id] + user.team_members.pluck(:id))
       else
-        # Employees can only see their own
         scope.where(employee_id: user.id)
       end
     end

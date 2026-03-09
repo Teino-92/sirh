@@ -10,7 +10,7 @@ class TrialRegistrationsController < ApplicationController
     if result.success?
       sign_in(:employee, result.employee)
       redirect_to authenticated_root_path,
-        notice: "Bienvenue sur Easy-RH ! Votre espace est prêt. 🎉"
+        notice: "Bienvenue sur Izi-RH ! Votre espace est prêt. 🎉"
     else
       @errors      = result.errors
       @form_values = trial_params.to_h

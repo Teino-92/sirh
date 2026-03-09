@@ -1,4 +1,4 @@
-# Plan de Refactorisation - Easy-RH
+# Plan de Refactorisation - Izi-RH
 
 **Date**: 2026-01-13
 **Status**: En cours - Phases 1 & 2 terminées

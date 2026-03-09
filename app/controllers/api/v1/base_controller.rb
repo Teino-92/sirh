@@ -34,6 +34,12 @@ module Api
       end
     end
 
+    def require_sirh_plan!
+      unless current_employee.organization.sirh?
+        render json: { error: 'Forbidden - SIRH plan required' }, status: :forbidden
+      end
+    end
+
     def not_found(exception)
       render json: { error: exception.message }, status: :not_found
     end

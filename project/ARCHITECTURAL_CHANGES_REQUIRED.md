@@ -8,7 +8,7 @@
 
 ## EXECUTIVE SUMMARY
 
-This document catalogs all architectural changes required to bring Easy-RH from MVP (2-3 pilot clients) to production-ready SaaS scale (200 organizations, 10k+ employees). Changes are classified by **severity**, **impact**, and **implementation priority**.
+This document catalogs all architectural changes required to bring Izi-RH from MVP (2-3 pilot clients) to production-ready SaaS scale (200 organizations, 10k+ employees). Changes are classified by **severity**, **impact**, and **implementation priority**.
 
 **Total Issues Identified**: 31
 - **CRITICAL** (Production Blockers): 8
@@ -1193,7 +1193,7 @@ Default Rails database pool (5 connections) insufficient for production.
 # config/database.yml
 production:
   <<: *default
-  database: easy_rh_production
+  database: izi_rh_production
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>  # ❌ Default
   # Should be:
   pool: <%= ENV.fetch("DB_POOL") { 15 } %>  # ✅ Workers × Threads + buffer

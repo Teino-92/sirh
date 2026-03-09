@@ -5,15 +5,15 @@
     <meta name="viewport" content="width=device-width,initial-scale=1">
 
     <!-- SEO — P2: title enrichi + meta description avec CTA -->
-    <title><%= content_for?(:title) ? yield(:title) : "Easy-RH — Logiciel RH pour PME françaises | Congés, Pointage, Paie" %></title>
+    <title><%= content_for?(:title) ? yield(:title) : "Izi-RH — Logiciel RH pour PME françaises | Congés, Pointage, Paie" %></title>
     <meta name="description" content="<%= content_for?(:description) ? yield(:description) : "Gérez congés, RTT, pointage, performance et onboarding en un seul outil. Conforme Code du Travail. Données en Europe. Essai gratuit 30 jours sans carte bancaire." %>">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="<%= request.base_url + request.path %>">
 
     <!-- Open Graph -->
     <meta property="og:type" content="website">
-    <meta property="og:site_name" content="Easy-RH">
-    <meta property="og:title" content="Easy-RH — Logiciel RH pour PME françaises | Congés, Pointage, Paie">
+    <meta property="og:site_name" content="Izi-RH">
+    <meta property="og:title" content="Izi-RH — Logiciel RH pour PME françaises | Congés, Pointage, Paie">
     <meta property="og:description" content="Gérez congés, pointage, performance et onboarding. Conforme droit du travail français. Essai gratuit 30 jours sans CB.">
     <meta property="og:image" content="<%= request.base_url %>/screenshots/og-image.png">
     <meta property="og:url" content="<%= request.base_url + request.path %>">
@@ -21,7 +21,7 @@
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Easy-RH — Logiciel RH pour PME françaises">
+    <meta name="twitter:title" content="Izi-RH — Logiciel RH pour PME françaises">
     <meta name="twitter:description" content="Congés, pointage, performance, onboarding. Essai gratuit 30 jours.">
     <meta name="twitter:image" content="<%= request.base_url %>/screenshots/og-image.png">
 
@@ -51,19 +51,19 @@
         {
           "@type": "Organization",
           "@id": "<%= request.base_url %>/#organization",
-          "name": "Easy-RH",
+          "name": "Izi-RH",
           "url": "<%= request.base_url %>",
           "logo": "<%= request.base_url %>/screenshots/og-image.png",
           "contactPoint": {
             "@type": "ContactPoint",
-            "email": "contact@easy-rh.fr",
+            "email": "contact@izi-rh.fr",
             "contactType": "customer support",
             "availableLanguage": "French"
           }
         },
         {
           "@type": "SoftwareApplication",
-          "name": "Easy-RH",
+          "name": "Izi-RH",
           "applicationCategory": "BusinessApplication",
           "operatingSystem": "Web, iOS, Android",
           "description": "SIRH moderne pour PME françaises — gestion congés, pointage, performance, onboarding.",
@@ -96,10 +96,10 @@
           "mainEntity": [
             {
               "@type": "Question",
-              "name": "Easy-RH est-il conforme au droit du travail français ?",
+              "name": "Izi-RH est-il conforme au droit du travail français ?",
               "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "Oui. Easy-RH applique automatiquement les règles légales françaises : acquisition CP à 2,5 jours par mois, plafond de 10h de travail par jour, 48h par semaine, calcul RTT pour les contrats 39h+. Les règles sont configurables selon votre convention collective."
+                "text": "Oui. Izi-RH applique automatiquement les règles légales françaises : acquisition CP à 2,5 jours par mois, plafond de 10h de travail par jour, 48h par semaine, calcul RTT pour les contrats 39h+. Les règles sont configurables selon votre convention collective."
               }
             },
             {
@@ -115,7 +115,7 @@
               "name": "L'application fonctionne-t-elle sur mobile ?",
               "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "Easy-RH est une PWA (Progressive Web App) installable sur iOS et Android, optimisée mobile-first. Le plan Pro inclut également une API mobile complète (JWT) pour les intégrations natives."
+                "text": "Izi-RH est une PWA (Progressive Web App) installable sur iOS et Android, optimisée mobile-first. Le plan Pro inclut également une API mobile complète (JWT) pour les intégrations natives."
               }
             },
             {
@@ -131,7 +131,7 @@
               "name": "Puis-je importer mes collaborateurs depuis mon ancien SIRH ?",
               "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "Oui. Easy-RH accepte n'importe quel fichier CSV — qu'il vienne d'Excel, Sage, Lucca, Factorial, PayFit, BambooHR ou d'un export maison. Détection automatique du format, rapport d'erreurs ligne par ligne. La migration prend généralement moins de 5 minutes."
+                "text": "Oui. Izi-RH accepte n'importe quel fichier CSV — qu'il vienne d'Excel, Sage, Lucca, Factorial, PayFit, BambooHR ou d'un export maison. Détection automatique du format, rapport d'erreurs ligne par ligne. La migration prend généralement moins de 5 minutes."
               }
             }
           ]

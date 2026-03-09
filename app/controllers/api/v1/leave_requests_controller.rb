@@ -3,6 +3,8 @@
 module Api
   module V1
   class LeaveRequestsController < BaseController
+    before_action :require_sirh_plan!
+
     # GET /api/v1/leave_requests
     def index
       scope = if params[:filter] == 'team' && current_employee.manager?

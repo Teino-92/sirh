@@ -1,4 +1,4 @@
-# Easy-RH: The Manager's Best Friend
+# Izi-RH: The Manager's Best Friend
 
 A modern SIRH (HRIS) platform built for French companies. Manager-first, mobile-first, with French labor law compliance baked in.
 

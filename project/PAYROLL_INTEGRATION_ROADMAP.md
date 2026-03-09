@@ -1,4 +1,4 @@
-# PAYROLL INTEGRATION ROADMAP — Easy-RH → Silae / ADP
+# PAYROLL INTEGRATION ROADMAP — Izi-RH → Silae / ADP
 
 **Date** : 2026-02-28
 **Objectif** : Porter l'app de 60/100 à 100/100 de readiness pour une intégration paie (Silae, ADP, PayFit, Sage)
@@ -255,7 +255,7 @@ add_column :time_entries, :break_duration_minutes, :integer, default: 0
 ## SPRINT 3 — API webhook sortante (semaines 5-6)
 
 ### Objectif
-Permettre à Silae/ADP de puller les données via API (ou Easy-RH de pusher via webhook) à chaque clôture de paie.
+Permettre à Silae/ADP de puller les données via API (ou Izi-RH de pusher via webhook) à chaque clôture de paie.
 
 ### 3.1 Endpoint API REST `/api/v1/payroll`
 
@@ -399,16 +399,16 @@ Contenu de la page :
 
 ## NOTES IMPORTANTES
 
-### Ce qu'on ne fait PAS (hors périmètre Easy-RH)
+### Ce qu'on ne fait PAS (hors périmètre Izi-RH)
 - Calcul des cotisations sociales (patronales + salariales) → Silae/ADP
 - Génération du bulletin de salaire officiel → Silae/ADP
 - Déclaration DSN → Silae/ADP
 - Calcul du net à payer → Silae/ADP
 
 ### Positionnement
-Easy-RH est le **SIRH source de vérité** pour les données RH.
+Izi-RH est le **SIRH source de vérité** pour les données RH.
 Silae/ADP est le **logiciel de paie** qui consomme ces données.
-L'intégration = Easy-RH expose des données propres → Silae calcule la paie.
+L'intégration = Izi-RH expose des données propres → Silae calcule la paie.
 
 ### Convention collective
 La liste des IDCC est publique (site du ministère du Travail).

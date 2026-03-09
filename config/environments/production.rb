@@ -66,7 +66,7 @@ Rails.application.configure do
   # Use a real queuing backend for Active Job (and separate queues per environment).
   config.active_job.queue_adapter = :solid_queue
   # Solid Queue tables are in the main DB (same DATABASE_URL) — no separate DB connection needed.
-  # config.active_job.queue_name_prefix = "easy_rh_production"
+  # config.active_job.queue_name_prefix = "izi_rh_production"
 
   config.action_mailer.perform_caching = false
 

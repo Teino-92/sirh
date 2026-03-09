@@ -9,7 +9,7 @@ class TrialWelcomeMailer < ApplicationMailer
 
     mail(
       to:      employee.email,
-      subject: "Bienvenue sur Easy-RH — vos accès sont prêts"
+      subject: "Bienvenue sur Izi-RH — vos accès sont prêts"
     )
   end
 end

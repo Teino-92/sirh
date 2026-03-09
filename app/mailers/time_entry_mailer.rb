@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class TimeEntryMailer < ApplicationMailer
-  default from: 'noreply@easy-rh.com'
+  default from: 'noreply@izi-rh.com'
 
   # Rappel hebdomadaire pour valider les pointages de l'équipe
   def weekly_validation_reminder(manager)

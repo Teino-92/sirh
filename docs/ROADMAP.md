@@ -1,4 +1,4 @@
-# Roadmap Easy-RH
+# Roadmap Izi-RH
 
 **Dernière mise à jour**: 2026-01-13
 **Version**: 1.0.0
@@ -335,7 +335,7 @@
 
 **Mainteneur**: Matteo Garbugli
 **Agent Principal**: Claude Code (Sonnet 4.5)
-**Repository**: `Teino-92/easy-rh`
+**Repository**: `Teino-92/izi-rh`
 
 ---
 

@@ -2,7 +2,7 @@
 
 ## Overview
 
-Easy-RH uses JWT (JSON Web Tokens) for API authentication, powered by the `devise-jwt` gem. This allows mobile apps and external clients to authenticate securely.
+Izi-RH uses JWT (JSON Web Tokens) for API authentication, powered by the `devise-jwt` gem. This allows mobile apps and external clients to authenticate securely.
 
 ## Configuration
 
@@ -173,7 +173,7 @@ JWT tokens MUST be transmitted over HTTPS in production to prevent man-in-the-mi
 
 ### Rate Limiting
 
-Easy-RH implements rate limiting via **Rack::Attack** to protect against abuse:
+Izi-RH implements rate limiting via **Rack::Attack** to protect against abuse:
 
 **Login Endpoint Protection:**
 - **Per IP**: 5 login attempts per 20 seconds
@@ -256,7 +256,7 @@ struct LoginRequest: Codable {
 }
 
 func login(email: String, password: String) async throws -> String {
-    let url = URL(string: "https://api.easy-rh.com/api/v1/login")!
+    let url = URL(string: "https://api.izi-rh.com/api/v1/login")!
     var request = URLRequest(url: url)
     request.httpMethod = "POST"
     request.setValue("application/json", forHTTPHeaderField: "Content-Type")
@@ -279,7 +279,7 @@ func login(email: String, password: String) async throws -> String {
 
 // API Call with token
 func fetchDashboard() async throws -> Dashboard {
-    let url = URL(string: "https://api.easy-rh.com/api/v1/me/dashboard")!
+    let url = URL(string: "https://api.izi-rh.com/api/v1/me/dashboard")!
     var request = URLRequest(url: url)
 
     let token = try KeychainHelper.getToken()
@@ -304,7 +304,7 @@ suspend fun login(email: String, password: String): String {
         .toRequestBody("application/json".toMediaType())
 
     val request = Request.Builder()
-        .url("https://api.easy-rh.com/api/v1/login")
+        .url("https://api.izi-rh.com/api/v1/login")
         .post(body)
         .build()
 
@@ -327,7 +327,7 @@ suspend fun fetchDashboard(): Dashboard {
         ?: throw Exception("Not authenticated")
 
     val request = Request.Builder()
-        .url("https://api.easy-rh.com/api/v1/me/dashboard")
+        .url("https://api.izi-rh.com/api/v1/me/dashboard")
         .header("Authorization", "Bearer $token")
         .build()
 
