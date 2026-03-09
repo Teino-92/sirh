@@ -75,20 +75,24 @@ Rails.application.configure do
   config.action_mailer.perform_deliveries = true
   config.action_mailer.delivery_method = :smtp
   config.action_mailer.default_url_options = {
-    host: ENV.fetch('APP_HOST', 'app.easy-rh.com'),
+    host: ENV.fetch('APP_HOST', 'izi-rh.com'),
     protocol: 'https'
   }
 
-  # SMTP settings for production (configure with your provider: SendGrid, Postmark, SES, etc.)
-  config.action_mailer.smtp_settings = {
-    address: ENV.fetch('SMTP_ADDRESS'),
-    port: ENV.fetch('SMTP_PORT', 587),
-    domain: ENV.fetch('SMTP_DOMAIN'),
-    authentication: ENV.fetch('SMTP_AUTHENTICATION', 'plain'),
-    user_name: ENV.fetch('SMTP_USERNAME'),
-    password: ENV.fetch('SMTP_PASSWORD'),
-    enable_starttls_auto: ENV.fetch('SMTP_ENABLE_STARTTLS_AUTO', true)
-  }
+  # SMTP settings — only configure if SMTP_ADDRESS is provided
+  if ENV['SMTP_ADDRESS'].present?
+    config.action_mailer.smtp_settings = {
+      address: ENV['SMTP_ADDRESS'],
+      port: ENV.fetch('SMTP_PORT', 587),
+      domain: ENV.fetch('SMTP_DOMAIN', 'izi-rh.com'),
+      authentication: ENV.fetch('SMTP_AUTHENTICATION', 'plain'),
+      user_name: ENV['SMTP_USERNAME'],
+      password: ENV['SMTP_PASSWORD'],
+      enable_starttls_auto: true
+    }
+  else
+    config.action_mailer.delivery_method = :log
+  end
 
   # Enable locale fallbacks for I18n (makes lookups for any locale fall back to
   # the I18n.default_locale when a translation cannot be found).
@@ -102,7 +106,7 @@ Rails.application.configure do
 
   # Store uploaded files on S3 (Heroku has an ephemeral filesystem — local storage is lost on dyno restart).
   # Set STORAGE_SERVICE=local to fall back to disk (development/staging without S3).
-  config.active_storage.service = ENV.fetch("STORAGE_SERVICE", "amazon").to_sym
+  config.active_storage.service = ENV.fetch("STORAGE_SERVICE", "local").to_sym
 
   # Enable DNS rebinding protection and other `Host` header attacks.
   # config.hosts = [
