@@ -21,6 +21,6 @@ class TrialRegistrationsController < ApplicationController
   private
 
   def trial_params
-    params.require(:trial).permit(:organization_name, :first_name, :last_name, :email)
+    params.require(:trial).permit(:organization_name, :first_name, :last_name, :email, :plan)
   end
 end
