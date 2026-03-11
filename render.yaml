@@ -19,4 +19,12 @@ services:
       - key: RAILS_MASTER_KEY
         sync: false
       - key: DATABASE_URL
-        sync: false
+        fromDatabase:
+          name: izi-rh-db
+          property: connectionString
+
+databases:
+  - name: izi-rh-db
+    plan: free
+    databaseName: izi_rh_production
+    user: izi_rh

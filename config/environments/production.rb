@@ -60,13 +60,11 @@ Rails.application.configure do
   # want to log everything, set the level to "debug".
   config.log_level = ENV.fetch("RAILS_LOG_LEVEL", "info")
 
-  # Use Solid Cache (DB-backed, shared across dynos — no Redis dependency).
-  config.cache_store = :solid_cache_store
+  # Use memory store — no Redis or SolidCache dependency needed on free tier.
+  config.cache_store = :memory_store
 
-  # Use a real queuing backend for Active Job (and separate queues per environment).
-  config.active_job.queue_adapter = :solid_queue
-  # Solid Queue tables are in the main DB (same DATABASE_URL) — no separate DB connection needed.
-  # config.active_job.queue_name_prefix = "izi_rh_production"
+  # Use async adapter — no SolidQueue tables required on free tier.
+  config.active_job.queue_adapter = :async
 
   config.action_mailer.perform_caching = false
 
