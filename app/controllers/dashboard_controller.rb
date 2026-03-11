@@ -58,11 +58,11 @@ class DashboardController < ApplicationController
     # Performance Layer
     load_performance_layer_data
 
-    # HR/Admin: company-wide overview
-    load_hr_overview_data if @employee.hr_or_admin?
+    # HR/Admin: company-wide overview (SIRH only)
+    load_hr_overview_data if @employee.hr_or_admin? && @employee.organization.sirh?
 
     # Manager OS: team-scoped overview (active onboardings)
-    load_manager_os_data if @employee.manager? && @employee.organization.manager_os?
+    load_manager_os_data if @employee.organization.manager_os?
   end
 
   private

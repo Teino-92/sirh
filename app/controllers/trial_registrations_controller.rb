@@ -8,9 +8,8 @@ class TrialRegistrationsController < ApplicationController
     result = TrialRegistrationService.new(trial_params).call
 
     if result.success?
-      sign_in(:employee, result.employee)
-      redirect_to authenticated_root_path,
-        notice: "Bienvenue sur Izi-RH ! Votre espace est prêt. 🎉"
+      redirect_to new_employee_session_path,
+        notice: "Votre espace est créé ! Consultez votre email pour définir votre mot de passe."
     else
       @errors      = result.errors
       @form_values = trial_params.to_h
