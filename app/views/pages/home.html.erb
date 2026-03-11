@@ -6,12 +6,12 @@
   <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
     <div class="flex items-center justify-between h-16">
 
-      <span class="text-xl font-extrabold text-indigo-600 tracking-tight">Izi-RH</span>
+      <img src="/izi_rh_logo.svg" alt="Izi-RH" class="h-7 w-auto">
 
       <!-- Desktop nav -->
       <div class="hidden md:flex items-center gap-8">
         <a href="#manager-os"    class="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-indigo-600 transition-colors">Manager OS</a>
-        <a href="#sirh"          class="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-indigo-600 transition-colors">SIRH complet</a>
+        <a href="#fonctionnalites" class="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-indigo-600 transition-colors">Fonctionnalités</a>
         <a href="#tarifs"        class="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-indigo-600 transition-colors">Tarifs</a>
         <a href="#faq"           class="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-indigo-600 transition-colors">FAQ</a>
       </div>
@@ -26,7 +26,7 @@
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
           </svg>
         </a>
-        <!-- Hamburger button (mobile only) -->
+        <!-- Hamburger -->
         <button @click="mobileOpen = !mobileOpen"
                 :aria-expanded="mobileOpen.toString()"
                 aria-controls="mobile-menu"
@@ -56,10 +56,10 @@
        class="md:hidden border-t border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-950"
        style="display:none">
     <div class="px-4 py-3 space-y-1">
-      <a href="#manager-os"  @click="mobileOpen = false" class="block px-3 py-2.5 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800">Manager OS</a>
-      <a href="#sirh"        @click="mobileOpen = false" class="block px-3 py-2.5 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800">SIRH complet</a>
-      <a href="#tarifs"      @click="mobileOpen = false" class="block px-3 py-2.5 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800">Tarifs</a>
-      <a href="#faq"         @click="mobileOpen = false" class="block px-3 py-2.5 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800">FAQ</a>
+      <a href="#manager-os"    @click="mobileOpen = false" class="block px-3 py-2.5 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800">Manager OS</a>
+      <a href="#fonctionnalites" @click="mobileOpen = false" class="block px-3 py-2.5 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800">Fonctionnalités</a>
+      <a href="#tarifs"        @click="mobileOpen = false" class="block px-3 py-2.5 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800">Tarifs</a>
+      <a href="#faq"           @click="mobileOpen = false" class="block px-3 py-2.5 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800">FAQ</a>
       <div class="pt-2 border-t border-gray-100 dark:border-gray-800">
         <%= link_to new_employee_session_path, class: "block px-3 py-2.5 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800" do %>
           Connexion
@@ -80,49 +80,47 @@
         <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
           <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
         </svg>
-        Fait pour les managers — pas pour les services RH
+        Conçu pour les managers, pas pour les DRH
       </div>
 
       <h1 data-hero="title" class="font-extrabold text-gray-900 dark:text-white leading-tight tracking-tight mb-6"
-          style="font-size: clamp(1.875rem, 5vw, 3.75rem)">Remplacez vos 4 fichiers Excel <span class="text-indigo-600">par un vrai outil manager</span></h1>
+          style="font-size: clamp(1.875rem, 5vw, 3.75rem)">Remplacez vos fichiers Excel<br>par un <span class="text-indigo-600">vrai outil manager</span></h1>
 
       <p data-hero="subtitle" class="text-lg sm:text-xl text-gray-600 dark:text-gray-300 mb-8 max-w-2xl mx-auto leading-relaxed">
-        Onboarding, 1:1, objectifs, formation — tout le cycle manager dans une seule plateforme.
-        Commencez avec le Manager OS. Ajoutez le SIRH complet quand vous en avez besoin.
+        Onboarding, objectifs, 1:1, formation — tout ce qu'un manager fait dans 3 à 4 fichiers bricolés,
+        réuni en un seul endroit. Simple, rapide, pensé pour les équipes françaises.
       </p>
 
       <!-- Trust badges -->
       <div data-hero="badges" class="flex flex-wrap justify-center gap-3 mb-10">
         <span class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-full text-xs font-medium text-gray-600 dark:text-gray-300 shadow-sm">
           <svg class="w-3.5 h-3.5 text-green-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
-          Prêt en 5 minutes
+          Essai 30 jours sans CB
         </span>
         <span class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-full text-xs font-medium text-gray-600 dark:text-gray-300 shadow-sm">
           <svg class="w-3.5 h-3.5 text-green-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
-          RGPD · Données en Europe
+          Données en Europe · RGPD
         </span>
         <span class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-full text-xs font-medium text-gray-600 dark:text-gray-300 shadow-sm">
           <svg class="w-3.5 h-3.5 text-green-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
-          Application mobile (PWA)
+          Conforme Code du Travail
         </span>
         <span class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-full text-xs font-medium text-gray-600 dark:text-gray-300 shadow-sm">
           <svg class="w-3.5 h-3.5 text-green-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
-          30j gratuit, sans CB
+          Prêt en 2 minutes
         </span>
       </div>
 
-      <!-- CTAs — deux produits -->
+      <!-- CTAs -->
       <div data-hero="ctas" class="flex flex-col sm:flex-row gap-4 justify-center items-center">
-        <a href="#essai-manager-os"
-           class="mt-4 mb-4 w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-xl transition-colors shadow-lg shadow-indigo-200 dark:shadow-indigo-900/40 text-lg">
-          Démarrer avec Manager OS
+        <a href="#essai-manager-os" class="mt-4 mb-4 w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-xl transition-colors shadow-lg shadow-indigo-200 dark:shadow-indigo-900/40 text-lg">
+          Démarrer avec Manager OS — gratuit
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
           </svg>
         </a>
-        <a href="#sirh"
-           class="mt-4 mb-4 w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 font-semibold rounded-xl transition-colors hover:bg-gray-50 dark:hover:bg-gray-700 text-lg">
-          Voir le SIRH complet
+        <a href="#tarifs" class="mt-4 mb-4 w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 font-semibold rounded-xl transition-colors hover:bg-gray-50 dark:hover:bg-gray-700 text-lg">
+          Voir tous les plans
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
           </svg>
@@ -133,17 +131,17 @@
       <div data-hero="screenshot" class="mt-16 mb-12" style="overflow:visible; position:relative;">
         <div style="display:flex; align-items:flex-end; justify-content:center; gap:24px; perspective:1000px; perspective-origin:50% 0%;">
 
-          <!-- Gauche — Baptiste -->
+          <!-- Gauche -->
           <div style="flex:0 0 36%; transform:rotateY(30deg); transform-origin:right center; border-radius:12px; overflow:hidden; box-shadow:-8px 24px 56px rgba(0,0,0,0.45); z-index:2;">
             <img src="/screenshots/dashboard-baptiste.png" alt="Dashboard employé Izi-RH" style="width:100%; max-height:260px; object-fit:cover; object-position:top left; display:block;">
           </div>
 
-          <!-- Centre — Thomas -->
+          <!-- Centre -->
           <div style="flex:0 0 40%; border-radius:12px; overflow:hidden; box-shadow:0 20px 60px rgba(0,0,0,0.45); z-index:3; position:relative;">
             <img src="/screenshots/dashboard-thomas.png" alt="Dashboard manager Izi-RH" style="width:100%; max-height:260px; object-fit:cover; object-position:top left; display:block;">
           </div>
 
-          <!-- Droite — Nathalie -->
+          <!-- Droite -->
           <div style="flex:0 0 36%; transform:rotateY(-30deg); transform-origin:left center; border-radius:12px; overflow:hidden; box-shadow:8px 24px 56px rgba(0,0,0,0.45); z-index:2;">
             <img src="/screenshots/dashboard-nathalie.png" alt="Dashboard RH Izi-RH" style="width:100%; max-height:260px; object-fit:cover; object-position:top left; display:block;">
           </div>
@@ -154,23 +152,23 @@
   </div>
 </section>
 
-<%# ─── PROBLEM — les fichiers Excel ────────────────────────────────────────── %>
+<%# ─── PROBLEM SECTION ─────────────────────────────────────────────────────── %>
 <section class="py-16 bg-white dark:bg-gray-950 border-b border-gray-100 dark:border-gray-800">
   <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
 
-    <!-- Stats rapides -->
+    <!-- Stats -->
     <div data-animate="stats" class="grid grid-cols-3 gap-8 text-center mb-14">
       <div data-stat>
-        <div class="text-3xl font-extrabold text-indigo-600 mb-1">4+</div>
-        <div class="text-sm text-gray-500 dark:text-gray-400">outils bricolés pour suivre votre équipe</div>
+        <div class="text-3xl font-extrabold text-indigo-600 mb-1">3–4</div>
+        <div class="text-sm text-gray-500 dark:text-gray-400">fichiers Excel par manager en moyenne</div>
       </div>
       <div data-stat>
-        <div class="text-3xl font-extrabold text-indigo-600 mb-1">0€</div>
-        <div class="text-sm text-gray-500 dark:text-gray-400">pour démarrer avec Manager OS</div>
+        <div class="text-3xl font-extrabold text-indigo-600 mb-1">2 min</div>
+        <div class="text-sm text-gray-500 dark:text-gray-400">pour importer votre équipe</div>
       </div>
       <div data-stat>
-        <div class="text-3xl font-extrabold text-indigo-600 mb-1">5 min</div>
-        <div class="text-sm text-gray-500 dark:text-gray-400">pour embarquer toute votre équipe</div>
+        <div class="text-3xl font-extrabold text-indigo-600 mb-1">30j</div>
+        <div class="text-sm text-gray-500 dark:text-gray-400">d'essai gratuit sans CB</div>
       </div>
     </div>
 
@@ -184,10 +182,10 @@
           <% end %>
         </div>
         <blockquote class="text-sm text-gray-600 dark:text-gray-300 leading-relaxed mb-4">
-          "J'avais un Google Sheet pour les 1:1, un Notion pour les objectifs, un Excel pour l'onboarding et un Trello pour le suivi. Maintenant c'est tout au même endroit."
+          "Enfin un outil RH pensé pour les managers, pas seulement pour les RH. Les 1:1 et objectifs intégrés changent vraiment notre façon de piloter les équipes."
         </blockquote>
         <figcaption class="flex items-center gap-3">
-          <div class="w-9 h-9 rounded-full bg-indigo-100 dark:bg-indigo-900/40 flex items-center justify-center text-sm font-bold text-indigo-600 dark:text-indigo-400">TM</div>
+          <div class="w-9 h-9 rounded-full bg-violet-100 dark:bg-violet-900/40 flex items-center justify-center text-sm font-bold text-violet-600 dark:text-violet-400">TM</div>
           <div>
             <div class="text-sm font-semibold text-gray-800 dark:text-gray-200">Thomas M.</div>
             <div class="text-xs text-gray-400">CTO · Agence digitale, 28 personnes</div>
@@ -202,13 +200,13 @@
           <% end %>
         </div>
         <blockquote class="text-sm text-gray-600 dark:text-gray-300 leading-relaxed mb-4">
-          "L'onboarding de nos nouveaux devs prenait 2 semaines à organiser. Avec Izi-RH, je crée le template une fois, je le réutilise à chaque arrivée. Gain de temps massif."
+          "J'avais un tableau de suivi onboarding, un autre pour les objectifs, un autre pour les 1:1. Izi-RH remplace tout ça. Mon équipe adore."
         </blockquote>
         <figcaption class="flex items-center gap-3">
-          <div class="w-9 h-9 rounded-full bg-violet-100 dark:bg-violet-900/40 flex items-center justify-center text-sm font-bold text-violet-600 dark:text-violet-400">RC</div>
+          <div class="w-9 h-9 rounded-full bg-indigo-100 dark:bg-indigo-900/40 flex items-center justify-center text-sm font-bold text-indigo-600 dark:text-indigo-400">SC</div>
           <div>
-            <div class="text-sm font-semibold text-gray-800 dark:text-gray-200">Romain C.</div>
-            <div class="text-xs text-gray-400">VP Engineering · Scale-up, 55 personnes</div>
+            <div class="text-sm font-semibold text-gray-800 dark:text-gray-200">Sophie C.</div>
+            <div class="text-xs text-gray-400">Head of Engineering · Scale-up B2B, 35 personnes</div>
           </div>
         </figcaption>
       </figure>
@@ -220,13 +218,13 @@
           <% end %>
         </div>
         <blockquote class="text-sm text-gray-600 dark:text-gray-300 leading-relaxed mb-4">
-          "On a migré nos 45 collaborateurs depuis Sage en moins de 10 minutes. Le calcul automatique des RTT nous a économisé des heures par mois."
+          "La conformité au Code du Travail était notre critère n°1. Izi-RH gère correctement les 35h, les RTT et les congés conventionnels — sans paramétrage complexe."
         </blockquote>
         <figcaption class="flex items-center gap-3">
-          <div class="w-9 h-9 rounded-full bg-emerald-100 dark:bg-emerald-900/40 flex items-center justify-center text-sm font-bold text-emerald-600 dark:text-emerald-400">SC</div>
+          <div class="w-9 h-9 rounded-full bg-emerald-100 dark:bg-emerald-900/40 flex items-center justify-center text-sm font-bold text-emerald-600 dark:text-emerald-400">AL</div>
           <div>
-            <div class="text-sm font-semibold text-gray-800 dark:text-gray-200">Sophie C.</div>
-            <div class="text-xs text-gray-400">DRH · Startup SaaS, 45 personnes</div>
+            <div class="text-sm font-semibold text-gray-800 dark:text-gray-200">Aurélie L.</div>
+            <div class="text-xs text-gray-400">DRH · PME industrielle, 80 personnes</div>
           </div>
         </figcaption>
       </figure>
@@ -235,105 +233,165 @@
   </div>
 </section>
 
-<%# ─── MANAGER OS — PRODUIT PRINCIPAL ─────────────────────────────────────── %>
-<section id="manager-os" class="py-24 bg-gradient-to-br from-indigo-50 via-white to-violet-50/30 dark:from-indigo-950/30 dark:via-gray-950 dark:to-gray-950 border-t border-gray-100 dark:border-gray-800 overflow-hidden">
+<%# ─── MANAGER OS SECTION ─────────────────────────────────────────────────── %>
+<section id="manager-os" class="py-24 bg-gradient-to-br from-indigo-50 to-violet-50/40 dark:from-indigo-950/30 dark:to-gray-950 border-t border-gray-100 dark:border-gray-800">
   <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
 
     <div class="text-center mb-16">
       <div class="inline-flex items-center gap-2 px-3 py-1.5 bg-indigo-100 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300 text-xs font-semibold rounded-full mb-4">
-        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
+        <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
+          <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z"/>
         </svg>
-        Manager OS — Offre d'entrée
+        Manager OS — le produit d'entrée
       </div>
-      <h2 data-features-title class="mt-2 text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-white mb-4">
-        Le cycle manager complet,<br class="hidden sm:block"> en un seul outil
+      <h2 class="text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-white mb-4">
+        Le cycle complet du management d'équipe
       </h2>
       <p class="text-lg text-gray-500 dark:text-gray-400 max-w-2xl mx-auto">
-        Fini les 4 fichiers bricolés. Onboarding, 1:1, objectifs, formation — tout est connecté, tout est dans Izi-RH.
+        Quatre modules essentiels. Un seul outil. Zéro tableur.
       </p>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
+    <!-- 4 modules Manager OS -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
 
-      <div data-feature class="group p-6 rounded-2xl border border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-900 hover:border-indigo-200 dark:hover:border-indigo-800 hover:shadow-lg transition-all">
-        <div class="w-12 h-12 bg-orange-100 dark:bg-orange-900/30 rounded-xl flex items-center justify-center mb-4">
-          <svg class="w-6 h-6 text-orange-600 dark:text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
-          </svg>
+      <!-- Onboarding -->
+      <div class="bg-white dark:bg-gray-900 rounded-2xl p-8 border border-indigo-100 dark:border-indigo-900/40 shadow-sm hover:shadow-md transition-shadow">
+        <div class="flex items-start gap-5">
+          <div class="w-14 h-14 bg-orange-100 dark:bg-orange-900/30 rounded-2xl flex items-center justify-center flex-shrink-0">
+            <svg class="w-7 h-7 text-orange-600 dark:text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
+            </svg>
+          </div>
+          <div>
+            <div class="flex items-center gap-2 mb-2">
+              <h3 class="text-xl font-bold text-gray-900 dark:text-white">Onboarding</h3>
+              <span class="text-xs px-2 py-0.5 bg-orange-100 dark:bg-orange-900/40 text-orange-600 dark:text-orange-300 rounded-full font-medium">Manager OS</span>
+            </div>
+            <p class="text-gray-500 dark:text-gray-400 leading-relaxed mb-4">Templates d'intégration réutilisables par rôle. Tâches assignées automatiquement au nouvel arrivant, au manager et aux RH. Suivi de progression en temps réel, score d'intégration, revues à J+30 / J+60 / J+90.</p>
+            <ul class="space-y-1.5">
+              <% ["Templates par rôle (dev, commercial, ops…)", "Check-lists avec responsables assignés", "Rappels automatiques si tâche en retard", "Tableau de bord d'avancement équipe"].each do |item| %>
+                <li class="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-300">
+                  <svg class="w-4 h-4 text-indigo-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+                  <%= item %>
+                </li>
+              <% end %>
+            </ul>
+          </div>
         </div>
-        <h3 class="text-base font-bold text-gray-900 dark:text-white mb-2">Onboarding</h3>
-        <p class="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">Templates réutilisables par rôle, tâches assignées (employé / manager / RH), suivi de progression et score d'intégration.</p>
       </div>
 
-      <div data-feature class="group p-6 rounded-2xl border border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-900 hover:border-indigo-200 dark:hover:border-indigo-800 hover:shadow-lg transition-all">
-        <div class="w-12 h-12 rounded-xl flex items-center justify-center mb-4" style="background-color:#ede9fe;">
-          <svg class="w-6 h-6" style="color:#7c3aed;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
-          </svg>
+      <!-- 1:1 -->
+      <div class="bg-white dark:bg-gray-900 rounded-2xl p-8 border border-indigo-100 dark:border-indigo-900/40 shadow-sm hover:shadow-md transition-shadow">
+        <div class="flex items-start gap-5">
+          <div class="w-14 h-14 bg-violet-100 dark:bg-violet-900/30 rounded-2xl flex items-center justify-center flex-shrink-0">
+            <svg class="w-7 h-7 text-violet-600 dark:text-violet-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+            </svg>
+          </div>
+          <div>
+            <div class="flex items-center gap-2 mb-2">
+              <h3 class="text-xl font-bold text-gray-900 dark:text-white">Entretiens 1:1</h3>
+              <span class="text-xs px-2 py-0.5 bg-violet-100 dark:bg-violet-900/40 text-violet-600 dark:text-violet-300 rounded-full font-medium">Manager OS</span>
+            </div>
+            <p class="text-gray-500 dark:text-gray-400 leading-relaxed mb-4">Planification récurrente des one-on-ones, agenda partagé, prise de notes collaboratives, action items avec suivi. Historique complet par collaborateur. Fini les notes dispersées dans des mails.</p>
+            <ul class="space-y-1.5">
+              <% ["Récurrence hebdo / bi-mensuelle / mensuelle", "Notes et agenda partagés manager–employé", "Action items avec deadline et suivi", "Historique chronologique par collaborateur"].each do |item| %>
+                <li class="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-300">
+                  <svg class="w-4 h-4 text-indigo-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+                  <%= item %>
+                </li>
+              <% end %>
+            </ul>
+          </div>
         </div>
-        <h3 class="text-base font-bold text-gray-900 dark:text-white mb-2">1:1 structurés</h3>
-        <p class="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">Entretiens planifiés avec agenda préparé, notes partagées, action items et historique complet de chaque conversation.</p>
       </div>
 
-      <div data-feature class="group p-6 rounded-2xl border border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-900 hover:border-indigo-200 dark:hover:border-indigo-800 hover:shadow-lg transition-all">
-        <div class="w-12 h-12 rounded-xl flex items-center justify-center mb-4" style="background-color:#d1fae5;">
-          <svg class="w-6 h-6" style="color:#059669;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-          </svg>
+      <!-- Objectifs -->
+      <div class="bg-white dark:bg-gray-900 rounded-2xl p-8 border border-indigo-100 dark:border-indigo-900/40 shadow-sm hover:shadow-md transition-shadow">
+        <div class="flex items-start gap-5">
+          <div class="w-14 h-14 bg-green-100 dark:bg-green-900/30 rounded-2xl flex items-center justify-center flex-shrink-0">
+            <svg class="w-7 h-7 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+          </div>
+          <div>
+            <div class="flex items-center gap-2 mb-2">
+              <h3 class="text-xl font-bold text-gray-900 dark:text-white">Objectifs (OKR)</h3>
+              <span class="text-xs px-2 py-0.5 bg-green-100 dark:bg-green-900/40 text-green-600 dark:text-green-300 rounded-full font-medium">Manager OS</span>
+            </div>
+            <p class="text-gray-500 dark:text-gray-400 leading-relaxed mb-4">Définissez des objectifs avec priorités et deadlines, suivez la progression, évaluez les résultats. Évaluations multi-étapes : auto-évaluation, retour manager, calibration. Alignement équipe visible d'un coup d'œil.</p>
+            <ul class="space-y-1.5">
+              <% ["OKR individuels et collectifs", "Évaluations : auto-éval → éval manager", "Visibilité 360° sur les objectifs d'équipe", "Historique des cycles d'évaluation"].each do |item| %>
+                <li class="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-300">
+                  <svg class="w-4 h-4 text-indigo-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+                  <%= item %>
+                </li>
+              <% end %>
+            </ul>
+          </div>
         </div>
-        <h3 class="text-base font-bold text-gray-900 dark:text-white mb-2">Objectifs (OKR)</h3>
-        <p class="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">OKR avec priorités et deadlines, évaluations multi-étapes (auto-éval → éval manager), alignement équipe visible.</p>
       </div>
 
-      <div data-feature class="group p-6 rounded-2xl border border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-900 hover:border-indigo-200 dark:hover:border-indigo-800 hover:shadow-lg transition-all">
-        <div class="w-12 h-12 rounded-xl flex items-center justify-center mb-4" style="background-color:#fef9c3;">
-          <svg class="w-6 h-6" style="color:#ca8a04;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
-          </svg>
+      <!-- Formation -->
+      <div class="bg-white dark:bg-gray-900 rounded-2xl p-8 border border-indigo-100 dark:border-indigo-900/40 shadow-sm hover:shadow-md transition-shadow">
+        <div class="flex items-start gap-5">
+          <div class="w-14 h-14 bg-blue-100 dark:bg-blue-900/30 rounded-2xl flex items-center justify-center flex-shrink-0">
+            <svg class="w-7 h-7 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+            </svg>
+          </div>
+          <div>
+            <div class="flex items-center gap-2 mb-2">
+              <h3 class="text-xl font-bold text-gray-900 dark:text-white">Formation</h3>
+              <span class="text-xs px-2 py-0.5 bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-300 rounded-full font-medium">Manager OS</span>
+            </div>
+            <p class="text-gray-500 dark:text-gray-400 leading-relaxed mb-4">Centralisez les besoins en formation par collaborateur, liez-les aux objectifs de développement identifiés en 1:1. Planifiez, budgetez, mesurez l'impact. Un plan de formation simple sans les lourdeurs d'un LMS.</p>
+            <ul class="space-y-1.5">
+              <% ["Besoins de formation par employé", "Lien direct avec les objectifs de dev", "Statuts : souhaité → planifié → réalisé", "Vue synthèse plan formation équipe"].each do |item| %>
+                <li class="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-300">
+                  <svg class="w-4 h-4 text-indigo-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+                  <%= item %>
+                </li>
+              <% end %>
+            </ul>
+          </div>
         </div>
-        <h3 class="text-base font-bold text-gray-900 dark:text-white mb-2">Formation</h3>
-        <p class="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">Catalogue de formations, plans de développement individuels, suivi des compétences et certifications par collaborateur.</p>
       </div>
 
     </div>
 
     <!-- CTA Manager OS -->
     <div class="text-center">
-      <a href="#essai-manager-os" class="inline-flex items-center gap-2 px-8 py-4 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl transition-colors shadow-lg shadow-indigo-200 dark:shadow-indigo-900/40 text-base">
-        Essayer Manager OS gratuitement — 30 jours
+      <a href="#essai-manager-os" class="inline-flex items-center gap-2 px-8 py-4 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-xl transition-colors shadow-lg shadow-indigo-200 dark:shadow-indigo-900/40 text-lg">
+        Essayer Manager OS gratuitement
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
         </svg>
       </a>
-      <p class="mt-3 text-sm text-gray-400">Aucune carte bancaire · Espace prêt en 30 secondes</p>
+      <p class="mt-3 text-sm text-gray-400">30 jours gratuits · Aucune carte bancaire · Passez au SIRH quand vous êtes prêts</p>
     </div>
 
   </div>
 </section>
 
-<%# ─── SIRH COMPLET ────────────────────────────────────────────────────────── %>
-<section id="sirh" class="py-24 bg-white dark:bg-gray-950 border-t border-gray-100 dark:border-gray-800 overflow-hidden">
+<%# ─── FEATURES SIRH ───────────────────────────────────────────────────────── %>
+<section id="fonctionnalites" class="py-24 bg-white dark:bg-gray-950 border-t border-gray-100 dark:border-gray-800 overflow-hidden">
   <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-
     <div class="text-center mb-16">
-      <div class="inline-flex items-center gap-2 px-3 py-1.5 bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300 text-xs font-semibold rounded-full mb-4">
-        <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
-          <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+      <div class="inline-flex items-center gap-2 px-3 py-1.5 bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 text-xs font-semibold rounded-full mb-4">
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
         </svg>
-        SIRH complet — Quand vous passez à l'échelle
+        SIRH complet — quand votre équipe grandit
       </div>
-      <h2 class="mt-2 text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-white mb-4">
-        Ajoutez la gestion RH administrative<br class="hidden sm:block"> sans changer d'outil
-      </h2>
-      <p class="text-lg text-gray-500 dark:text-gray-400 max-w-2xl mx-auto">
-        Commencez avec Manager OS. Activez le SIRH complet quand vous avez besoin de pointage, congés, planning et paie — tout reste dans la même plateforme.
-      </p>
+      <h2 data-features-title class="mt-4 text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-white mb-4">Passez au SIRH complet en un clic</h2>
+      <p class="mb-4 text-lg text-gray-500 dark:text-gray-400 max-w-2xl mx-auto">Manager OS + gestion du temps, congés, paie et IA RH. Tout dans la même interface.</p>
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
 
-      <div class="group p-6 rounded-2xl border border-gray-100 dark:border-gray-800 hover:border-emerald-200 dark:hover:border-emerald-800 hover:shadow-lg transition-all">
+      <div data-feature class="group p-6 rounded-2xl border border-gray-100 dark:border-gray-800 hover:border-indigo-200 dark:hover:border-indigo-800 hover:shadow-lg transition-all">
         <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-xl flex items-center justify-center mb-4">
           <svg class="w-6 h-6 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
@@ -341,12 +399,12 @@
         </div>
         <div class="flex items-center gap-2 mb-2">
           <h3 class="text-lg font-bold text-gray-900 dark:text-white">Pointage & Temps</h3>
-          <span class="text-xs px-2 py-0.5 bg-emerald-100 dark:bg-emerald-900/50 text-emerald-700 dark:text-emerald-300 rounded-full font-medium">SIRH</span>
+          <span class="text-xs px-2 py-0.5 bg-gray-100 dark:bg-gray-800 text-gray-500 rounded-full">SIRH</span>
         </div>
-        <p class="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">Pointage web et mobile avec géolocalisation. Calcul RTT automatique, validation manager. Conforme 10h/j et 48h/semaine.</p>
+        <p class="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">Pointage web et mobile avec géolocalisation. Calcul RTT automatique, validation manager, alertes retard. Conforme limite légale 10h/j et 48h/semaine.</p>
       </div>
 
-      <div class="group p-6 rounded-2xl border border-gray-100 dark:border-gray-800 hover:border-emerald-200 dark:hover:border-emerald-800 hover:shadow-lg transition-all">
+      <div data-feature class="group p-6 rounded-2xl border border-gray-100 dark:border-gray-800 hover:border-indigo-200 dark:hover:border-indigo-800 hover:shadow-lg transition-all">
         <div class="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-xl flex items-center justify-center mb-4">
           <svg class="w-6 h-6 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
@@ -354,12 +412,12 @@
         </div>
         <div class="flex items-center gap-2 mb-2">
           <h3 class="text-lg font-bold text-gray-900 dark:text-white">Gestion des Congés</h3>
-          <span class="text-xs px-2 py-0.5 bg-emerald-100 dark:bg-emerald-900/50 text-emerald-700 dark:text-emerald-300 rounded-full font-medium">SIRH</span>
+          <span class="text-xs px-2 py-0.5 bg-gray-100 dark:bg-gray-800 text-gray-500 rounded-full">SIRH</span>
         </div>
-        <p class="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">CP, RTT, maladie, parental, sans solde. Acquisition automatique 2,5j/mois, soldes en temps réel, approbations manager.</p>
+        <p class="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">CP, RTT, maladie, parental, sans solde. Acquisition automatique 2,5j/mois, soldes en temps réel, approbations manager, calendrier équipe.</p>
       </div>
 
-      <div class="group p-6 rounded-2xl border border-gray-100 dark:border-gray-800 hover:border-emerald-200 dark:hover:border-emerald-800 hover:shadow-lg transition-all">
+      <div data-feature class="group p-6 rounded-2xl border border-gray-100 dark:border-gray-800 hover:border-indigo-200 dark:hover:border-indigo-800 hover:shadow-lg transition-all">
         <div class="w-12 h-12 rounded-xl flex items-center justify-center mb-4" style="background-color:#fce7f3;">
           <svg class="w-6 h-6" style="color:#db2777;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
@@ -367,38 +425,38 @@
         </div>
         <div class="flex items-center gap-2 mb-2">
           <h3 class="text-lg font-bold text-gray-900 dark:text-white">Paie & Analytics RH</h3>
-          <span class="text-xs px-2 py-0.5 bg-emerald-100 dark:bg-emerald-900/50 text-emerald-700 dark:text-emerald-300 rounded-full font-medium">SIRH</span>
+          <span class="text-xs px-2 py-0.5 bg-gray-100 dark:bg-gray-800 text-gray-500 rounded-full">SIRH</span>
         </div>
-        <p class="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">Dashboard masse salariale, projections annuelles, répartition par département. Confidentiel RH/Admin uniquement.</p>
+        <p class="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">Dashboard masse salariale, projections annuelles, répartition par département et contrat. Confidentiel RH/Admin uniquement.</p>
       </div>
 
-      <div class="group p-6 rounded-2xl border border-gray-100 dark:border-gray-800 hover:border-emerald-200 dark:hover:border-emerald-800 hover:shadow-lg transition-all">
-        <div class="w-12 h-12 bg-purple-100 dark:bg-purple-900/30 rounded-xl flex items-center justify-center mb-4">
-          <svg class="w-6 h-6 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+      <div data-feature class="group p-6 rounded-2xl border border-gray-100 dark:border-gray-800 hover:border-indigo-200 dark:hover:border-indigo-800 hover:shadow-lg transition-all">
+        <div class="w-12 h-12 bg-indigo-100 dark:bg-indigo-900/30 rounded-xl flex items-center justify-center mb-4">
+          <svg class="w-6 h-6 text-indigo-600 dark:text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
           </svg>
         </div>
         <div class="flex items-center gap-2 mb-2">
           <h3 class="text-lg font-bold text-gray-900 dark:text-white">Planning équipe</h3>
-          <span class="text-xs px-2 py-0.5 bg-emerald-100 dark:bg-emerald-900/50 text-emerald-700 dark:text-emerald-300 rounded-full font-medium">SIRH</span>
+          <span class="text-xs px-2 py-0.5 bg-gray-100 dark:bg-gray-800 text-gray-500 rounded-full">SIRH</span>
         </div>
-        <p class="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">Calendrier équipe centralisé, exports CSV, visibilité des absences en temps réel pour toute l'organisation.</p>
+        <p class="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">Vue calendrier équipe, gestion des horaires et rotations, exports CSV pour la paie. Visibilité totale sur la disponibilité de votre équipe.</p>
       </div>
 
-      <div class="group p-6 rounded-2xl border border-gray-100 dark:border-gray-800 hover:border-emerald-200 dark:hover:border-emerald-800 hover:shadow-lg transition-all">
-        <div class="w-12 h-12 bg-sky-100 dark:bg-sky-900/30 rounded-xl flex items-center justify-center mb-4">
-          <svg class="w-6 h-6 text-sky-600 dark:text-sky-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <div data-feature class="group p-6 rounded-2xl border border-gray-100 dark:border-gray-800 hover:border-indigo-200 dark:hover:border-indigo-800 hover:shadow-lg transition-all">
+        <div class="w-12 h-12 bg-slate-100 dark:bg-slate-900/30 rounded-xl flex items-center justify-center mb-4">
+          <svg class="w-6 h-6 text-slate-600 dark:text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10"/>
           </svg>
         </div>
         <div class="flex items-center gap-2 mb-2">
-          <h3 class="text-lg font-bold text-gray-900 dark:text-white">Migration CSV</h3>
-          <span class="text-xs px-2 py-0.5 bg-emerald-100 dark:bg-emerald-900/50 text-emerald-700 dark:text-emerald-300 rounded-full font-medium">SIRH</span>
+          <h3 class="text-lg font-bold text-gray-900 dark:text-white">Import CSV express</h3>
+          <span class="text-xs px-2 py-0.5 bg-gray-100 dark:bg-gray-800 text-gray-500 rounded-full">SIRH</span>
         </div>
-        <p class="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">Importez depuis Excel, Sage, Lucca, Factorial, PayFit ou BambooHR. Détection auto du format, rapport d'erreurs ligne par ligne.</p>
+        <p class="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">Migrez depuis Excel, Sage, Lucca, Factorial, PayFit ou BambooHR. Détection automatique du format. Rapport d'erreurs ligne par ligne. Migration en moins de 5 minutes.</p>
       </div>
 
-      <div class="group p-6 rounded-2xl border border-gray-100 dark:border-gray-800 bg-gradient-to-br from-amber-50/50 to-yellow-50/50 dark:from-amber-950/30 dark:to-yellow-950/30 hover:border-amber-200 dark:hover:border-amber-800 hover:shadow-lg transition-all">
+      <div data-feature class="group p-6 rounded-2xl border border-gray-100 dark:border-gray-800 bg-gradient-to-br from-amber-50/50 to-yellow-50/50 dark:from-amber-950/30 dark:to-yellow-950/30 hover:border-amber-200 dark:hover:border-amber-800 hover:shadow-lg transition-all">
         <div class="w-12 h-12 rounded-xl flex items-center justify-center mb-4" style="background-color:#fef3c7;">
           <svg class="w-6 h-6" style="color:#d97706;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/>
@@ -406,38 +464,26 @@
         </div>
         <div class="flex items-center gap-2 mb-2">
           <h3 class="text-lg font-bold text-gray-900 dark:text-white">IA RH</h3>
-          <span class="text-xs px-2 py-0.5 bg-indigo-100 dark:bg-indigo-900/50 text-indigo-600 dark:text-indigo-300 rounded-full font-medium">Pro</span>
+          <span class="text-xs px-2 py-0.5 bg-indigo-100 dark:bg-indigo-900/50 text-indigo-600 dark:text-indigo-300 rounded-full font-medium">SIRH Pro</span>
         </div>
-        <p class="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">Requêtes en langage naturel : <em>"Employés CDI avec plus de 5j RTT en Engineering"</em>. Export CSV. Données jamais envoyées à l'IA.</p>
+        <p class="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">Requêtes en langage naturel français : <em>"Employés CDI avec plus de 5j RTT en Engineering"</em>. Export CSV des résultats. Données jamais envoyées à l'IA.</p>
       </div>
 
     </div>
-
-    <!-- CTA SIRH -->
-    <div class="text-center mt-12">
-      <a href="#essai-sirh" class="inline-flex items-center gap-2 px-8 py-4 bg-white dark:bg-gray-900 border-2 border-emerald-500 text-emerald-700 dark:text-emerald-300 font-bold rounded-xl transition-colors hover:bg-emerald-50 dark:hover:bg-emerald-950 text-base shadow">
-        Essayer le SIRH complet — 30 jours gratuits
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
-        </svg>
-      </a>
-      <p class="mt-3 text-sm text-gray-400">Conformité Code du Travail incluse · RGPD · Données en Europe</p>
-    </div>
-
   </div>
 </section>
 
 <%# ─── PRICING ─────────────────────────────────────────────────────────────── %>
-<section id="tarifs" class="py-24 bg-gradient-to-br from-slate-50 to-indigo-50/30 dark:from-gray-900 dark:to-indigo-950/20 border-t border-gray-100 dark:border-gray-800">
+<section id="tarifs" class="py-24 bg-gray-50 dark:bg-gray-900 border-t border-gray-100 dark:border-gray-800">
   <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
     <div class="text-center mb-16">
-      <h2 class="mt-4 text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-white mb-4">Commencez avec Manager OS.<br class="hidden sm:block"> Évoluez vers le SIRH.</h2>
-      <p class="mb-4 text-lg text-gray-500 dark:text-gray-400">30 jours gratuits sur tous les plans, sans carte bancaire.</p>
+      <h2 class="mt-4 text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-white mb-4">Commencez avec Manager OS. Évoluez vers le SIRH.</h2>
+      <p class="mb-4 text-lg text-gray-500 dark:text-gray-400">Aucune carte bancaire requise pour l'essai. Pas de migration de données entre les plans.</p>
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-3 gap-8 items-start">
 
-      <!-- Manager OS — Produit d'entrée -->
+      <!-- Manager OS -->
       <div class="mb-2 p-8 rounded-2xl border-2 border-indigo-500 dark:border-indigo-500 bg-white dark:bg-gray-900 relative shadow-xl shadow-indigo-100 dark:shadow-indigo-900/20">
         <div class="absolute -top-3.5 left-1/2 -translate-x-1/2">
           <span class="inline-flex items-center gap-1 px-3 py-1 bg-indigo-600 text-white text-xs font-bold rounded-full shadow whitespace-nowrap">Commencer ici</span>
@@ -446,49 +492,47 @@
           <div class="flex items-center gap-2 mb-1">
             <h3 class="text-lg font-bold text-gray-900 dark:text-white">Manager OS</h3>
           </div>
-          <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">Pour les managers et les équipes</p>
+          <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">Le cycle complet du management d'équipe</p>
           <div class="flex items-baseline gap-1">
             <span class="text-4xl font-extrabold text-indigo-600">29 €</span>
             <span class="text-sm text-gray-400">/mois</span>
           </div>
-          <p class="text-xs text-gray-400 mt-1">+3 €/collaborateur/mois</p>
+          <p class="text-xs text-gray-400 mt-1">+2 €/employé au-delà de 10</p>
         </div>
-        <a href="#essai-manager-os" class="block w-full text-center px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-xl transition-colors text-sm shadow mb-6">
-          Démarrer gratuitement
-        </a>
+        <a href="#essai-manager-os" class="block w-full text-center px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-xl transition-colors text-sm shadow mb-6">Démarrer l'essai gratuit</a>
         <ul class="space-y-3 text-sm">
-          <li class="flex items-center gap-2 text-gray-600 dark:text-gray-300"><svg class="w-4 h-4 text-indigo-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>Onboarding &amp; templates</li>
-          <li class="flex items-center gap-2 text-gray-600 dark:text-gray-300"><svg class="w-4 h-4 text-indigo-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>Entretiens 1:1 structurés</li>
-          <li class="flex items-center gap-2 text-gray-600 dark:text-gray-300"><svg class="w-4 h-4 text-indigo-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>Objectifs &amp; OKR</li>
-          <li class="flex items-center gap-2 text-gray-600 dark:text-gray-300"><svg class="w-4 h-4 text-indigo-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>Suivi formations</li>
-          <li class="flex items-center gap-2 text-gray-600 dark:text-gray-300"><svg class="w-4 h-4 text-indigo-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>Dashboard manager</li>
-          <li class="flex items-center gap-2 text-gray-400"><svg class="w-4 h-4 text-gray-300 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>Pointage &amp; congés</li>
-          <li class="flex items-center gap-2 text-gray-400"><svg class="w-4 h-4 text-gray-300 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>Paie &amp; analytics</li>
+          <li class="flex items-center gap-2 text-gray-600 dark:text-gray-300"><svg class="w-4 h-4 text-indigo-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>Onboarding avec templates</li>
+          <li class="flex items-center gap-2 text-gray-600 dark:text-gray-300"><svg class="w-4 h-4 text-indigo-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>Entretiens 1:1 & action items</li>
+          <li class="flex items-center gap-2 text-gray-600 dark:text-gray-300"><svg class="w-4 h-4 text-indigo-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>Objectifs & OKR</li>
+          <li class="flex items-center gap-2 text-gray-600 dark:text-gray-300"><svg class="w-4 h-4 text-indigo-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>Plan de formation</li>
+          <li class="flex items-center gap-2 text-gray-600 dark:text-gray-300"><svg class="w-4 h-4 text-indigo-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>Dashboard équipe</li>
+          <li class="flex items-center gap-2 text-gray-400"><svg class="w-4 h-4 text-gray-300 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>Pointage & Congés</li>
+          <li class="flex items-center gap-2 text-gray-400"><svg class="w-4 h-4 text-gray-300 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>Paie & Analytics</li>
         </ul>
-        <p class="mt-6 text-xs text-gray-400">Support email 48h · Upgrade SIRH en 1 clic</p>
+        <p class="mt-6 text-xs text-gray-400">Support email 48h</p>
       </div>
 
       <!-- SIRH Essentiel -->
-      <div class="mb-2 p-8 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-gray-900">
+      <div class="mb-2 p-8 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-gray-900">
         <div class="mb-6">
           <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-1">SIRH Essentiel</h3>
-          <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">Manager OS + gestion RH admin</p>
+          <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">Manager OS + gestion du temps et congés</p>
           <div class="flex items-baseline gap-1">
             <span class="text-4xl font-extrabold text-gray-900 dark:text-white">79 €</span>
             <span class="text-sm text-gray-400">/mois</span>
           </div>
-          <p class="text-xs text-gray-400 mt-1">+4 €/collaborateur/mois</p>
+          <p class="text-xs text-gray-400 mt-1">+4 €/employé au-delà de 10</p>
         </div>
         <a href="#essai-sirh" class="block w-full text-center px-4 py-2.5 border-2 border-indigo-300 dark:border-indigo-700 text-indigo-600 dark:text-indigo-300 font-semibold rounded-xl hover:bg-indigo-50 dark:hover:bg-indigo-950 transition-colors text-sm mb-6">
-          Démarrer gratuitement
+          Démarrer l'essai
         </a>
         <ul class="space-y-3 text-sm">
-          <li class="flex items-center gap-2 text-gray-600 dark:text-gray-300"><svg class="w-4 h-4 text-green-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>Tout Manager OS inclus</li>
-          <li class="flex items-center gap-2 text-gray-600 dark:text-gray-300"><svg class="w-4 h-4 text-green-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>Pointage &amp; temps (RTT auto)</li>
-          <li class="flex items-center gap-2 text-gray-600 dark:text-gray-300"><svg class="w-4 h-4 text-green-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>Gestion congés (CP, RTT, maladie)</li>
-          <li class="flex items-center gap-2 text-gray-600 dark:text-gray-300"><svg class="w-4 h-4 text-green-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>Planning équipe &amp; exports CSV</li>
-          <li class="flex items-center gap-2 text-gray-600 dark:text-gray-300"><svg class="w-4 h-4 text-green-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>Conforme Code du Travail</li>
-          <li class="flex items-center gap-2 text-gray-400"><svg class="w-4 h-4 text-gray-300 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>Paie &amp; analytics</li>
+          <li class="flex items-center gap-2 text-gray-600 dark:text-gray-300"><svg class="w-4 h-4 text-green-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>Tout Manager OS</li>
+          <li class="flex items-center gap-2 text-gray-600 dark:text-gray-300"><svg class="w-4 h-4 text-green-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>Pointage & temps (web + mobile)</li>
+          <li class="flex items-center gap-2 text-gray-600 dark:text-gray-300"><svg class="w-4 h-4 text-green-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>Congés (CP, RTT, maladie…)</li>
+          <li class="flex items-center gap-2 text-gray-600 dark:text-gray-300"><svg class="w-4 h-4 text-green-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>Planning équipe</li>
+          <li class="flex items-center gap-2 text-gray-600 dark:text-gray-300"><svg class="w-4 h-4 text-green-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>Exports CSV paie</li>
+          <li class="flex items-center gap-2 text-gray-400"><svg class="w-4 h-4 text-gray-300 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>Paie & Analytics RH</li>
           <li class="flex items-center gap-2 text-gray-400"><svg class="w-4 h-4 text-gray-300 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>IA RH</li>
         </ul>
         <p class="mt-6 text-xs text-gray-400">Support email 24h</p>
@@ -496,23 +540,24 @@
 
       <!-- SIRH Pro -->
       <div class="p-8 rounded-2xl border border-gray-800 dark:border-gray-600 bg-gray-900 dark:bg-gray-900 text-white relative">
+        <div class="absolute -top-3.5 left-1/2 -translate-x-1/2">
+          <span class="inline-flex items-center gap-1 px-3 py-1 bg-violet-600 text-white text-xs font-bold rounded-full shadow whitespace-nowrap">SIRH complet</span>
+        </div>
         <div class="mb-6">
           <h3 class="text-lg font-bold text-white mb-1">SIRH Pro</h3>
-          <p class="text-sm text-gray-400 mb-4">Pour les ETI et scale-ups</p>
+          <p class="text-sm text-gray-400 mb-4">Pour les équipes RH qui veulent tout</p>
           <div class="flex items-baseline gap-1">
-            <span class="text-4xl font-extrabold text-white">199 €</span>
+            <span class="text-4xl font-extrabold text-white">149 €</span>
             <span class="text-sm text-gray-400">/mois</span>
           </div>
-          <p class="text-xs text-gray-500 mt-1">+6 €/collaborateur/mois</p>
+          <p class="text-xs text-gray-500 mt-1">+6 €/employé au-delà de 20</p>
         </div>
-        <a href="#essai-sirh" class="block w-full text-center px-4 py-2.5 border-2 border-gray-600 text-gray-300 font-semibold rounded-xl hover:bg-gray-700 hover:border-gray-500 hover:text-white transition-colors text-sm mb-6">
-          Démarrer gratuitement
-        </a>
+        <a href="#essai-sirh" class="block w-full text-center px-4 py-2.5 border-2 border-gray-600 text-gray-300 font-semibold rounded-xl hover:bg-gray-700 hover:border-gray-500 hover:text-white transition-colors text-sm mb-6">Démarrer l'essai</a>
         <ul class="space-y-3 text-sm">
-          <li class="flex items-center gap-2 text-gray-300"><svg class="w-4 h-4 text-green-400 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>Tout SIRH Essentiel inclus</li>
-          <li class="flex items-center gap-2 text-gray-300"><svg class="w-4 h-4 text-green-400 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>Paie &amp; Analytics RH</li>
-          <li class="flex items-center gap-2 text-gray-300"><svg class="w-4 h-4 text-green-400 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>IA RH (requêtes langage naturel)</li>
-          <li class="flex items-center gap-2 text-gray-300"><svg class="w-4 h-4 text-green-400 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>API mobile (JWT)</li>
+          <li class="flex items-center gap-2 text-gray-300"><svg class="w-4 h-4 text-green-400 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>Tout SIRH Essentiel</li>
+          <li class="flex items-center gap-2 text-gray-300"><svg class="w-4 h-4 text-green-400 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>Paie & Analytics RH</li>
+          <li class="flex items-center gap-2 text-gray-300"><svg class="w-4 h-4 text-green-400 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>IA RH (50 requêtes/mois)</li>
+          <li class="flex items-center gap-2 text-gray-300"><svg class="w-4 h-4 text-green-400 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>API mobile JWT</li>
           <li class="flex items-center gap-2 text-gray-300"><svg class="w-4 h-4 text-green-400 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>Journal d'audit complet</li>
           <li class="flex items-center gap-2 text-gray-300"><svg class="w-4 h-4 text-green-400 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>Géolocalisation pointage</li>
         </ul>
@@ -522,29 +567,22 @@
     </div>
 
     <p class="text-center mt-8 text-sm text-gray-400">
-      Plus de 200 collaborateurs ?
+      Plus de 500 employés ?
       <a href="mailto:contact@izi-rh.fr" class="text-indigo-600 hover:underline font-medium">Contactez-nous pour un devis Grand Compte →</a>
     </p>
   </div>
 </section>
 
-<%# ─── FORMULAIRES TRIAL ────────────────────────────────────────────────────── %>
-
-<%# Formulaire Manager OS %>
+<%# ─── FORMULAIRE TRIAL — Manager OS ─────────────────────────────────────── %>
 <section id="essai-manager-os" class="py-24 bg-gradient-to-br from-indigo-600 to-violet-600 dark:from-indigo-800 dark:to-violet-800 border-t-4 border-indigo-700/30">
   <div class="max-w-xl mx-auto px-4 sm:px-6 text-center">
-
     <div class="inline-flex items-center gap-2 px-3 py-1.5 bg-white/20 text-white text-xs font-semibold rounded-full mb-4">
-      <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
-      </svg>
-      Manager OS
+      Manager OS — Onboarding · 1:1 · Objectifs · Formation
     </div>
+    <h2 class="text-3xl sm:text-4xl font-extrabold text-white mb-3">Démarrez avec Manager OS</h2>
+    <p class="text-indigo-200 mb-8">30 jours gratuits. Aucune carte bancaire. Passez au SIRH quand vous êtes prêts.</p>
 
-    <h2 class="text-3xl sm:text-4xl font-extrabold text-white mb-3">Démarrer avec Manager OS</h2>
-    <p class="text-indigo-200 mb-8">30 jours gratuits. Aucune carte bancaire. Votre espace est prêt en 30 secondes.</p>
-
-    <% if @errors.present? && @form_values&.dig('plan') == 'manager_os' %>
+    <% if @errors.present? && @form_values&.dig(:plan) == 'manager_os' %>
       <div class="mb-6 p-4 bg-red-100 border border-red-300 rounded-xl text-left">
         <p class="text-sm font-semibold text-red-700 mb-1">Impossible de créer votre compte :</p>
         <ul class="list-disc list-inside text-sm text-red-600">
@@ -559,34 +597,50 @@
 
       <div>
         <label for="mos_organization_name" class="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1 uppercase tracking-wide">Nom de votre entreprise</label>
-        <input type="text" id="mos_organization_name" name="trial[organization_name]"
+        <input type="text"
+               id="mos_organization_name"
+               name="trial[organization_name]"
                value="<%= @form_values&.dig(:organization_name) || @form_values&.dig('organization_name') %>"
-               placeholder="TechCorp France" required autocomplete="organization"
+               placeholder="TechCorp France"
+               required
+               autocomplete="organization"
                class="w-full px-4 py-3 border border-gray-200 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm">
       </div>
 
       <div class="grid grid-cols-2 gap-4">
         <div>
           <label for="mos_first_name" class="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1 uppercase tracking-wide">Prénom</label>
-          <input type="text" id="mos_first_name" name="trial[first_name]"
+          <input type="text"
+                 id="mos_first_name"
+                 name="trial[first_name]"
                  value="<%= @form_values&.dig(:first_name) || @form_values&.dig('first_name') %>"
-                 placeholder="Marie" required autocomplete="given-name"
+                 placeholder="Marie"
+                 required
+                 autocomplete="given-name"
                  class="w-full px-4 py-3 border border-gray-200 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm">
         </div>
         <div>
           <label for="mos_last_name" class="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1 uppercase tracking-wide">Nom</label>
-          <input type="text" id="mos_last_name" name="trial[last_name]"
+          <input type="text"
+                 id="mos_last_name"
+                 name="trial[last_name]"
                  value="<%= @form_values&.dig(:last_name) || @form_values&.dig('last_name') %>"
-                 placeholder="Dupont" required autocomplete="family-name"
+                 placeholder="Dupont"
+                 required
+                 autocomplete="family-name"
                  class="w-full px-4 py-3 border border-gray-200 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm">
         </div>
       </div>
 
       <div>
         <label for="mos_email" class="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1 uppercase tracking-wide">Email professionnel</label>
-        <input type="email" id="mos_email" name="trial[email]"
+        <input type="email"
+               id="mos_email"
+               name="trial[email]"
                value="<%= @form_values&.dig(:email) || @form_values&.dig('email') %>"
-               placeholder="marie.dupont@techcorp.fr" required autocomplete="email"
+               placeholder="marie.dupont@techcorp.fr"
+               required
+               autocomplete="email"
                class="w-full px-4 py-3 border border-gray-200 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm">
       </div>
 
@@ -608,77 +662,84 @@
       </p>
     </form>
 
+    <!-- Lien vers SIRH -->
     <p class="mt-6 text-indigo-200 text-sm">
-      Vous avez besoin du SIRH complet ?
-      <a href="#essai-sirh" class="text-white font-semibold underline hover:no-underline">Créer un compte SIRH →</a>
+      Vous voulez directement le SIRH complet ?
+      <a href="#essai-sirh" class="text-white font-semibold underline underline-offset-2">Démarrer avec SIRH →</a>
     </p>
-
   </div>
 </section>
 
-<%# Formulaire SIRH %>
-<section id="essai-sirh" class="py-24 bg-gradient-to-br from-emerald-700 to-teal-700 dark:from-emerald-900 dark:to-teal-900 border-t-4 border-emerald-800/30">
+<%# ─── FORMULAIRE TRIAL — SIRH ────────────────────────────────────────────── %>
+<section id="essai-sirh" class="py-20 bg-gray-900 dark:bg-gray-950 border-t border-gray-800">
   <div class="max-w-xl mx-auto px-4 sm:px-6 text-center">
-
-    <div class="inline-flex items-center gap-2 px-3 py-1.5 bg-white/20 text-white text-xs font-semibold rounded-full mb-4">
-      <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
-        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-      </svg>
-      SIRH complet
+    <div class="inline-flex items-center gap-2 px-3 py-1.5 bg-white/10 text-gray-300 text-xs font-semibold rounded-full mb-4">
+      SIRH complet — Temps, Congés, Paie &amp; IA RH
     </div>
+    <h2 class="text-2xl sm:text-3xl font-extrabold text-white mb-3">Démarrez avec le SIRH complet</h2>
+    <p class="text-gray-400 mb-8">Les mêmes 30 jours gratuits, avec toutes les fonctionnalités SIRH activées.</p>
 
-    <h2 class="text-3xl sm:text-4xl font-extrabold text-white mb-3">Démarrer avec le SIRH complet</h2>
-    <p class="text-emerald-200 mb-8">30 jours gratuits. Aucune carte bancaire. Conforme Code du Travail.</p>
-
-    <% if @errors.present? && @form_values&.dig('plan') != 'manager_os' %>
-      <div class="mb-6 p-4 bg-red-100 border border-red-300 rounded-xl text-left">
-        <p class="text-sm font-semibold text-red-700 mb-1">Impossible de créer votre compte :</p>
-        <ul class="list-disc list-inside text-sm text-red-600">
+    <% if @errors.present? && @form_values&.dig(:plan) != 'manager_os' %>
+      <div class="mb-6 p-4 bg-red-900/40 border border-red-700 rounded-xl text-left">
+        <p class="text-sm font-semibold text-red-300 mb-1">Impossible de créer votre compte :</p>
+        <ul class="list-disc list-inside text-sm text-red-400">
           <% @errors.each do |error| %><li><%= error %></li><% end %>
         </ul>
       </div>
     <% end %>
 
-    <form action="<%= trial_registration_path %>" method="POST" class="bg-white dark:bg-gray-900 rounded-2xl shadow-2xl p-8 text-left space-y-4">
+    <form action="<%= trial_registration_path %>" method="POST" class="bg-gray-800 dark:bg-gray-900 rounded-2xl shadow-2xl p-8 text-left space-y-4">
       <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
       <input type="hidden" name="trial[plan]" value="sirh">
 
       <div>
-        <label for="sirh_organization_name" class="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1 uppercase tracking-wide">Nom de votre entreprise</label>
-        <input type="text" id="sirh_organization_name" name="trial[organization_name]"
-               value="<%= @form_values&.dig(:organization_name) || @form_values&.dig('organization_name') %>"
-               placeholder="TechCorp France" required autocomplete="organization"
-               class="w-full px-4 py-3 border border-gray-200 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-sm">
+        <label for="sirh_organization_name" class="block text-xs font-semibold text-gray-400 mb-1 uppercase tracking-wide">Nom de votre entreprise</label>
+        <input type="text"
+               id="sirh_organization_name"
+               name="trial[organization_name]"
+               placeholder="TechCorp France"
+               required
+               autocomplete="organization"
+               class="w-full px-4 py-3 border border-gray-600 rounded-xl bg-gray-700 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm">
       </div>
 
       <div class="grid grid-cols-2 gap-4">
         <div>
-          <label for="sirh_first_name" class="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1 uppercase tracking-wide">Prénom</label>
-          <input type="text" id="sirh_first_name" name="trial[first_name]"
-                 value="<%= @form_values&.dig(:first_name) || @form_values&.dig('first_name') %>"
-                 placeholder="Marie" required autocomplete="given-name"
-                 class="w-full px-4 py-3 border border-gray-200 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-sm">
+          <label for="sirh_first_name" class="block text-xs font-semibold text-gray-400 mb-1 uppercase tracking-wide">Prénom</label>
+          <input type="text"
+                 id="sirh_first_name"
+                 name="trial[first_name]"
+                 placeholder="Marie"
+                 required
+                 autocomplete="given-name"
+                 class="w-full px-4 py-3 border border-gray-600 rounded-xl bg-gray-700 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm">
         </div>
         <div>
-          <label for="sirh_last_name" class="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1 uppercase tracking-wide">Nom</label>
-          <input type="text" id="sirh_last_name" name="trial[last_name]"
-                 value="<%= @form_values&.dig(:last_name) || @form_values&.dig('last_name') %>"
-                 placeholder="Dupont" required autocomplete="family-name"
-                 class="w-full px-4 py-3 border border-gray-200 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-sm">
+          <label for="sirh_last_name" class="block text-xs font-semibold text-gray-400 mb-1 uppercase tracking-wide">Nom</label>
+          <input type="text"
+                 id="sirh_last_name"
+                 name="trial[last_name]"
+                 placeholder="Dupont"
+                 required
+                 autocomplete="family-name"
+                 class="w-full px-4 py-3 border border-gray-600 rounded-xl bg-gray-700 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm">
         </div>
       </div>
 
       <div>
-        <label for="sirh_email" class="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1 uppercase tracking-wide">Email professionnel</label>
-        <input type="email" id="sirh_email" name="trial[email]"
-               value="<%= @form_values&.dig(:email) || @form_values&.dig('email') %>"
-               placeholder="marie.dupont@techcorp.fr" required autocomplete="email"
-               class="w-full px-4 py-3 border border-gray-200 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-sm">
+        <label for="sirh_email" class="block text-xs font-semibold text-gray-400 mb-1 uppercase tracking-wide">Email professionnel</label>
+        <input type="email"
+               id="sirh_email"
+               name="trial[email]"
+               placeholder="marie.dupont@techcorp.fr"
+               required
+               autocomplete="email"
+               class="w-full px-4 py-3 border border-gray-600 rounded-xl bg-gray-700 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm">
       </div>
 
       <div class="flex justify-center">
         <button type="submit"
-                class="inline-flex items-center justify-center gap-2 px-10 py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl transition-colors shadow text-base">
+                class="inline-flex items-center justify-center gap-2 px-10 py-3.5 bg-white hover:bg-gray-100 text-gray-900 font-bold rounded-xl transition-colors shadow text-base">
           Créer mon espace SIRH
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
@@ -686,19 +747,13 @@
         </button>
       </div>
 
-      <p class="text-xs text-gray-400 text-center pt-1">
+      <p class="text-xs text-gray-500 text-center pt-1">
         En créant un compte, vous acceptez nos
-        <a href="/cgu" class="underline hover:text-gray-600">CGU</a>
+        <a href="/cgu" class="underline hover:text-gray-300">CGU</a>
         et notre
-        <a href="/politique-de-confidentialite" class="underline hover:text-gray-600">politique de confidentialité</a>.
+        <a href="/politique-de-confidentialite" class="underline hover:text-gray-300">politique de confidentialité</a>.
       </p>
     </form>
-
-    <p class="mt-6 text-emerald-200 text-sm">
-      Vous voulez commencer simplement ?
-      <a href="#essai-manager-os" class="text-white font-semibold underline hover:no-underline">Démarrer avec Manager OS →</a>
-    </p>
-
   </div>
 </section>
 
@@ -712,17 +767,17 @@
     <div class="mt-4 space-y-3" x-data>
       <% [
         { q: "Quelle est la différence entre Manager OS et SIRH ?",
-          a: "Manager OS couvre le cycle manager : onboarding, entretiens 1:1, objectifs OKR, suivi formations. C'est conçu pour les managers qui pilotent leurs équipes avec des fichiers bricolés aujourd'hui. Le SIRH ajoute la gestion administrative RH : pointage, congés, planning, paie, analytics. Les deux plans vivent dans la même application — vous passez de l'un à l'autre en un clic." },
+          a: "Manager OS couvre le cycle de management d'équipe : onboarding, entretiens 1:1, objectifs (OKR) et formation. C'est l'outil du manager terrain. Le SIRH ajoute la gestion administrative : pointage, congés (CP/RTT), planning, paie et analytics RH. Les deux partagent la même interface — vous pouvez passer de l'un à l'autre en un clic, sans migration de données." },
         { q: "Puis-je commencer avec Manager OS et passer au SIRH plus tard ?",
-          a: "Oui, c'est exactement la trajectoire prévue. Vous créez votre espace Manager OS, embarquez votre équipe, et activez le SIRH complet quand vous en avez besoin. Aucune migration de données, aucun changement d'outil — c'est juste un upgrade dans votre tableau de bord." },
+          a: "Oui, c'est exactement le parcours prévu. Manager OS est votre point d'entrée. Quand votre équipe RH a besoin de gérer les congés et le pointage, vous activez le SIRH en un clic. Pas de migration, pas de réimport — même compte, mêmes données, fonctionnalités supplémentaires." },
         { q: "Izi-RH est-il conforme au droit du travail français ?",
           a: "Oui. Izi-RH applique automatiquement les règles légales françaises : acquisition CP à 2,5 jours par mois, plafond de 10h de travail par jour, 48h par semaine, calcul RTT pour les contrats 39h+. Les règles sont configurables selon votre convention collective." },
-        { q: "Comment fonctionne l'essai gratuit ?",
-          a: "Votre espace est créé instantanément sans carte bancaire. Vous avez accès à toutes les fonctionnalités de votre plan pendant 30 jours. À la fin de l'essai, vous choisissez un plan ou vos données sont conservées 30 jours supplémentaires avant suppression." },
-        { q: "Puis-je importer mes collaborateurs depuis mon ancien outil ?",
-          a: "Oui. Izi-RH accepte n'importe quel fichier CSV — qu'il vienne d'Excel, Sage, Lucca, Factorial, PayFit, BambooHR ou d'un export maison. Détection automatique du format, rapport d'erreurs ligne par ligne. La migration prend généralement moins de 5 minutes." },
         { q: "Où sont hébergées nos données ?",
-          a: "Toutes vos données sont hébergées en Europe, sur des serveurs conformes RGPD. Les données sont chiffrées au repos et en transit. Les informations sensibles sont chiffrées avec ActiveRecord Encryption. Vos données n'appartiennent qu'à vous." }
+          a: "Toutes vos données sont hébergées en Europe, sur des serveurs conformes RGPD. Les données sont chiffrées au repos et en transit. Les informations sensibles (NIR, IBAN) sont chiffrées avec ActiveRecord Encryption. Vos données n'appartiennent qu'à vous." },
+        { q: "Comment fonctionne l'essai gratuit ?",
+          a: "Votre espace est créé instantanément sans carte bancaire. Vous avez accès à toutes les fonctionnalités du plan choisi pendant 30 jours. À la fin de l'essai, vous choisissez un plan ou vos données sont conservées 30 jours supplémentaires avant suppression." },
+        { q: "Puis-je importer mes collaborateurs depuis un tableur ?",
+          a: "Oui. Izi-RH accepte n'importe quel fichier CSV — qu'il vienne d'Excel, Sage, Lucca, Factorial, PayFit, BambooHR ou d'un export maison. Détection automatique du format, rapport d'erreurs ligne par ligne. La migration prend généralement moins de 5 minutes." }
       ].each_with_index do |item, i| %>
         <div x-data="{ open: <%= i == 0 %> }"
              class="border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden">
@@ -763,7 +818,7 @@ function initGsap() {
     .from('[data-hero="ctas"] a',     { opacity: 0, y: 16,  duration: 0.4, stagger: 0.1  }, '-=0.2')
     .from('[data-hero="screenshot"]', { opacity: 0, y: 40,  scale: 0.97, duration: 0.9, ease: 'power2.out' }, '-=0.2');
 
-  // Stats — cacher puis fade in
+  // Stats — fade in
   var statEls = document.querySelectorAll('[data-animate="stats"] [data-stat]');
   gsap.set(statEls, { opacity: 0 });
   ScrollTrigger.create({
@@ -775,7 +830,7 @@ function initGsap() {
     }
   });
 
-  // Témoignages — cacher puis fade in
+  // Témoignages
   var figureEls = document.querySelectorAll('#testimonials-grid figure');
   gsap.set(figureEls, { opacity: 0 });
   ScrollTrigger.create({
@@ -787,17 +842,41 @@ function initGsap() {
     }
   });
 
-  // Features Manager OS — fade in en stagger
-  var featureEls = document.querySelectorAll('[data-feature]');
-  gsap.set(featureEls, { opacity: 0, y: 30 });
-  ScrollTrigger.create({
-    trigger: '[data-features-title]',
-    start: 'top 80%',
-    once: true,
-    onEnter: function() {
-      gsap.to(featureEls, { opacity: 1, y: 0, duration: 0.5, stagger: 0.12, ease: 'power2.out' });
-    }
-  });
+  // Features SIRH — glissades
+  var allCards = document.querySelectorAll('[data-feature]');
+  if (allCards.length === 6) {
+    var startPos = [
+      { x: '-120vw', y: 0 },
+      { x: 0, y: '-120vh' },
+      { x: '120vw',  y: 0 },
+      { x: '-120vw', y: 0 },
+      { x: 0, y: '120vh' },
+      { x: '120vw',  y: 0 },
+    ];
+    allCards.forEach(function(c, i) {
+      gsap.set(c, { x: startPos[i].x, y: startPos[i].y, opacity: 1 });
+    });
+    var order = [0, 2, 3, 5, 1, 4];
+    var featureTl = gsap.timeline({ paused: true });
+    order.forEach(function(cardIdx, step) {
+      var t = step < 4 ? step * 0.35 : 4 * 0.35;
+      featureTl.to(allCards[cardIdx], {
+        x: 0, y: 0, duration: 0.5, ease: 'power3.out'
+      }, t);
+    });
+    ScrollTrigger.create({
+      trigger: '[data-features-title]',
+      start: 'top 8px',
+      once: true,
+      onEnter: function() {
+        document.documentElement.style.overflow = 'hidden';
+        featureTl.eventCallback('onComplete', function() {
+          document.documentElement.style.overflow = '';
+        });
+        featureTl.play();
+      }
+    });
+  }
 }
 
 if (document.readyState === 'loading') {
@@ -814,15 +893,14 @@ if (document.readyState === 'loading') {
   <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
     <div class="flex flex-col md:flex-row items-center justify-between gap-6">
       <div>
-        <span class="text-xl font-extrabold text-white tracking-tight">Izi-RH</span>
-        <p class="text-sm mt-1 text-gray-500">Le compagnon RH des managers. Fait avec le 🧠 !</p>
+        <img src="/izi_rh_logo.svg" alt="Izi-RH" class="h-7 w-auto invert">
+        <p class="text-sm mt-1 text-gray-500">Manager OS + SIRH complet pour les équipes françaises.</p>
       </div>
       <div class="flex flex-wrap gap-6 text-sm">
         <a href="#manager-os" class="hover:text-white transition-colors">Manager OS</a>
-        <a href="#sirh"       class="hover:text-white transition-colors">SIRH complet</a>
-        <a href="#tarifs"     class="hover:text-white transition-colors">Tarifs</a>
+        <a href="#tarifs" class="hover:text-white transition-colors">Tarifs</a>
         <a href="/cgu" class="hover:text-white transition-colors">CGU</a>
-        <a href="/politique-de-confidentialite" class="hover:text-white transition-colors">Politique de confidentialité</a>
+        <a href="/politique-de-confidentialite" class="hover:text-white transition-colors">Confidentialité</a>
         <a href="/mentions-legales" class="hover:text-white transition-colors">Mentions légales</a>
         <a href="mailto:contact@izi-rh.fr" class="hover:text-white transition-colors">Contact</a>
         <%= link_to new_employee_session_path, class: "hover:text-white transition-colors" do %>Connexion<% end %>

@@ -60,6 +60,9 @@ class DashboardController < ApplicationController
 
     # HR/Admin: company-wide overview
     load_hr_overview_data if @employee.hr_or_admin?
+
+    # Manager OS: team-scoped overview (active onboardings)
+    load_manager_os_data if @employee.manager? && @employee.organization.manager_os?
   end
 
   private
@@ -149,6 +152,15 @@ class DashboardController < ApplicationController
     else
       base.where(manager_id: @employee.id)
     end
+  end
+
+  def load_manager_os_data
+    @active_onboardings = EmployeeOnboarding
+      .where(organization: @employee.organization)
+      .where(manager_id: @employee.id)
+      .active
+      .includes(:employee, :onboarding_tasks)
+      .order(:start_date)
   end
 
   def load_hr_overview_data

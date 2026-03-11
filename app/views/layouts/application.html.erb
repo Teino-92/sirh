@@ -46,7 +46,7 @@
             <div class="flex">
               <div class="flex-shrink-0 flex items-center">
                 <div class="flex items-center gap-2">
-                  <span class="text-xl font-bold text-indigo-600 dark:text-indigo-400">Izi-RH</span>
+                  <img src="/izi_rh_logo.svg" alt="Izi-RH" class="h-6 w-auto dark:invert">
                   <span class="text-gray-300 dark:text-gray-600 select-none">·</span>
                   <span class="text-sm font-medium text-gray-600 dark:text-gray-400 truncate max-w-[160px]"><%= current_employee.organization.name %></span>
                 </div>
@@ -72,6 +72,10 @@
                   <% team_active = current_page?(pending_approvals_leave_requests_path) ||
                                    current_page?(manager_team_schedules_path) ||
                                    (controller_name == 'employee_onboardings' && controller.class.name.start_with?('Manager::')) ||
+                                   (controller_name == 'team_members' && controller.class.name.start_with?('Manager::')) ||
+                                   (controller_name == 'one_on_ones' && controller.class.name.start_with?('Manager::')) ||
+                                   (controller_name == 'objectives' && controller.class.name.start_with?('Manager::')) ||
+                                   (controller_name == 'trainings' && controller.class.name.start_with?('Manager::')) ||
                                    current_page?(manager_exports_path) %>
                   <div class="relative" x-data="{ open: false }" x-on:click.outside="open = false">
                     <button type="button"
@@ -92,15 +96,27 @@
                          class="absolute top-full left-0 mt-1 w-48 rounded-md shadow-lg bg-white dark:bg-gray-800 ring-1 ring-black ring-opacity-5 z-50"
                          style="display: none;">
                       <div class="py-1">
+                        <%= link_to manager_team_schedules_path, class: "flex items-center gap-2 px-4 py-2 text-sm #{current_page?(manager_team_schedules_path) ? 'text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/30' : 'text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700'}", "x-on:click": "open = false" do %>
+                          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                          Mon équipe
+                        <% end %>
                         <% if sirh_plan? %>
                           <%= link_to pending_approvals_leave_requests_path, class: "flex items-center gap-2 px-4 py-2 text-sm #{current_page?(pending_approvals_leave_requests_path) ? 'text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/30' : 'text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700'}", "x-on:click": "open = false" do %>
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                             Approbations
                           <% end %>
-                          <%= link_to manager_team_schedules_path, class: "flex items-center gap-2 px-4 py-2 text-sm #{current_page?(manager_team_schedules_path) ? 'text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/30' : 'text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700'}", "x-on:click": "open = false" do %>
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-                            Planning
-                          <% end %>
+                        <% end %>
+                        <%= link_to manager_one_on_ones_path, class: "flex items-center gap-2 px-4 py-2 text-sm #{controller_name == 'one_on_ones' && controller.class.name.start_with?('Manager::') ? 'text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/30' : 'text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700'}", "x-on:click": "open = false" do %>
+                          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z"/></svg>
+                          1:1
+                        <% end %>
+                        <%= link_to manager_objectives_path, class: "flex items-center gap-2 px-4 py-2 text-sm #{controller_name == 'objectives' && controller.class.name.start_with?('Manager::') ? 'text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/30' : 'text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700'}", "x-on:click": "open = false" do %>
+                          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                          Objectifs
+                        <% end %>
+                        <%= link_to manager_trainings_path, class: "flex items-center gap-2 px-4 py-2 text-sm #{controller_name == 'trainings' && controller.class.name.start_with?('Manager::') ? 'text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/30' : 'text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700'}", "x-on:click": "open = false" do %>
+                          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+                          Formations
                         <% end %>
                         <%= link_to manager_employee_onboardings_path, class: "flex items-center gap-2 px-4 py-2 text-sm #{controller_name == 'employee_onboardings' && controller.class.name.start_with?('Manager::') ? 'text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/30' : 'text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700'}", "x-on:click": "open = false" do %>
                           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/></svg>

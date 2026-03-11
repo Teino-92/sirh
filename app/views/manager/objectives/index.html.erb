@@ -37,6 +37,31 @@
   <div class="space-y-4">
     <% if @objectives.any? %>
       <% @objectives.each do |objective| %>
+        <%
+          status_classes = case objective.status
+          when 'in_progress' then 'bg-blue-100 dark:bg-blue-800 text-blue-800 dark:text-blue-200'
+          when 'completed' then 'bg-green-100 dark:bg-green-800 text-green-800 dark:text-green-200'
+          when 'cancelled' then 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'
+          else 'bg-yellow-100 dark:bg-yellow-800 text-yellow-800 dark:text-yellow-200'
+          end
+          status_label = case objective.status
+          when 'in_progress' then 'En cours'
+          when 'completed' then 'Complété'
+          when 'cancelled' then 'Annulé'
+          else objective.status.humanize
+          end
+          # Deadline urgency for progress bar
+          deadline_pct = if objective.deadline && objective.created_at
+            total = (objective.deadline - objective.created_at.to_date).to_f
+            elapsed = (Date.current - objective.created_at.to_date).to_f
+            total > 0 ? [[elapsed / total * 100, 0].max, 100].min.round : 0
+          end
+          deadline_bar_color = if objective.overdue? then 'bg-red-500'
+          elsif deadline_pct && deadline_pct > 80 then 'bg-orange-400'
+          elsif deadline_pct && deadline_pct > 50 then 'bg-yellow-400'
+          else 'bg-blue-500'
+          end
+        %>
         <div class="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden border border-gray-200 dark:border-gray-700">
           <div class="p-4 sm:p-6">
             <div class="flex items-start justify-between">
@@ -46,44 +71,44 @@
                 </h3>
                 <div class="flex flex-wrap items-center gap-3 text-sm text-gray-600 dark:text-gray-400">
                   <span class="flex items-center">
-                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="w-4 h-4 mr-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                     </svg>
                     <%= objective.owner.full_name %>
                   </span>
                   <% if objective.deadline %>
-                    <span class="flex items-center <%= objective.overdue? ? 'text-red-600 font-medium' : '' %>">
-                      <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <span class="flex items-center <%= objective.overdue? ? 'text-red-600 dark:text-red-400 font-medium' : '' %>">
+                      <svg class="w-4 h-4 mr-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                       </svg>
                       <%= l(objective.deadline, format: :short) %>
+                      <% if objective.overdue? %>
+                        <span class="ml-1 text-xs">(en retard de <%= distance_of_time_in_words(objective.deadline, Date.current) %>)</span>
+                      <% elsif !objective.completed? %>
+                        <span class="ml-1 text-xs text-gray-400">(<%= distance_of_time_in_words(Date.current, objective.deadline) %> restant<%= 's' %>)</span>
+                      <% end %>
+                    </span>
+                  <% end %>
+                  <% if objective.completed_at.present? %>
+                    <span class="flex items-center text-green-600 dark:text-green-400 text-xs">
+                      Complété le <%= l(objective.completed_at.to_date, format: :short) %>
                     </span>
                   <% end %>
                 </div>
-                <% if objective.overdue? %>
-                  <p class="mt-2 text-sm text-red-600 font-medium flex items-center">
-                    <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                      <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
-                    </svg>
-                    En retard de <%= distance_of_time_in_words(objective.deadline, Date.current) %>
-                  </p>
+                <!-- Progress bar for in_progress with deadline -->
+                <% if objective.status == 'in_progress' && deadline_pct %>
+                  <div class="mt-3">
+                    <div class="flex justify-between text-xs text-gray-500 dark:text-gray-400 mb-1">
+                      <span>Progression temporelle</span>
+                      <span><%= deadline_pct %>%</span>
+                    </div>
+                    <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-1.5">
+                      <div class="<%= deadline_bar_color %> h-1.5 rounded-full transition-all" style="width: <%= deadline_pct %>%"></div>
+                    </div>
+                  </div>
                 <% end %>
               </div>
               <div class="ml-4 flex-shrink-0 flex items-center gap-2">
-                <%
-                  status_classes = case objective.status
-                  when 'in_progress' then 'bg-blue-100 dark:bg-blue-800 text-blue-800 dark:text-blue-200'
-                  when 'completed' then 'bg-green-100 dark:bg-green-800 text-green-800 dark:text-green-200'
-                  when 'cancelled' then 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'
-                  else 'bg-yellow-100 dark:bg-yellow-800 text-yellow-800 dark:text-yellow-200'
-                  end
-                  status_label = case objective.status
-                  when 'in_progress' then 'En cours'
-                  when 'completed' then 'Complété'
-                  when 'cancelled' then 'Annulé'
-                  else objective.status.humanize
-                  end
-                %>
                 <span class="px-2 py-1 text-xs font-semibold rounded-full <%= status_classes %>">
                   <%= status_label %>
                 </span>

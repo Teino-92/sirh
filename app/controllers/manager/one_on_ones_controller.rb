@@ -3,10 +3,17 @@ module Manager
     before_action :set_one_on_one, only: [:show, :edit, :update, :destroy, :complete]
 
     def index
-      @one_on_ones = policy_scope(OneOnOne)
-                       .for_manager(current_employee)
-                       .includes(:employee, :manager)
-                       .order(scheduled_at: :desc)
+      base = policy_scope(OneOnOne)
+               .for_manager(current_employee)
+               .includes(:employee, :manager)
+
+      @tab = params[:tab].presence_in(%w[upcoming past]) || 'upcoming'
+
+      if @tab == 'past'
+        @one_on_ones = base.where('scheduled_at < ?', Time.current).order(scheduled_at: :desc)
+      else
+        @one_on_ones = base.where('scheduled_at >= ?', Time.current).order(scheduled_at: :asc)
+      end
     end
 
     def show; end

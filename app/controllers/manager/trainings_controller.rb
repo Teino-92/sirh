@@ -16,6 +16,22 @@ module Manager
       else
         @trainings = @trainings.active
       end
+
+      # Team assignments grouped by status
+      team_ids = current_employee.team_members.pluck(:id)
+      @team_assignments_tab = params[:assignments_tab].presence_in(%w[active completed]) || 'active'
+      base_assignments = TrainingAssignment
+        .joins(:training)
+        .where(trainings: { organization_id: current_organization.id })
+        .where(employee_id: team_ids)
+        .includes(:employee, :training)
+        .order(assigned_at: :desc)
+
+      if @team_assignments_tab == 'completed'
+        @team_assignments = base_assignments.where(status: 'completed')
+      else
+        @team_assignments = base_assignments.where(status: %w[assigned in_progress])
+      end
     end
 
     def show

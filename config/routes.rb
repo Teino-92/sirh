@@ -115,7 +115,7 @@ Rails.application.routes.draw do
       end
     end
 
-    resources :team_members, only: [:index, :show] do
+    resources :team_members do
       resource :work_schedule, only: [:new, :create, :edit, :update]
       resources :weekly_schedule_plans
       resources :time_entries, only: [:index] do

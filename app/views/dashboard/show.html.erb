@@ -4,6 +4,10 @@
   hidden = layout['hidden']
 %>
 
+<% if @employee.organization.manager_os? %>
+  <%= render 'dashboard/manager_os_static' %>
+<% else %>
+
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6"
      data-controller="dashboard-customizer"
      data-dashboard-customizer-save-url-value="<%= dashboard_layout_profile_path %>">
@@ -257,3 +261,5 @@
     border-color: rgba(99, 102, 241, 0.7);
   }
 </style>
+
+<% end %>
