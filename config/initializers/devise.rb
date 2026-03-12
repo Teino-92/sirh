@@ -315,7 +315,7 @@ Devise.setup do |config|
   # Configure JWT authentication for API endpoints
   config.jwt do |jwt|
     # JWT secret key - use environment variable in production
-    jwt.secret = ENV.fetch('JWT_SECRET_KEY', 'a7f472e60ae68e5eb449bc24e91959073c326019d272aba9364585481303fe041df28724b35606b16f7d2ecafdce08f2b824fa937a6691899c7a10d8c35cc75d')
+    jwt.secret = Rails.env.production? ? ENV.fetch('JWT_SECRET_KEY') : ENV.fetch('JWT_SECRET_KEY', 'dev-jwt-secret-not-for-production')
 
     # Endpoints that dispatch JWT tokens (login and refresh)
     jwt.dispatch_requests = [

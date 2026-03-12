@@ -1,6 +1,6 @@
 Rails.application.routes.draw do
   # Devise authentication
-  devise_for :employees, skip: [:registrations]
+  devise_for :employees, skip: [:registrations], controllers: { passwords: 'devise/passwords' }
 
   # Health check
   get "up" => "rails/health#show", as: :rails_health_check

@@ -62,8 +62,8 @@ class TrialRegistrationService
   rescue ActiveRecord::RecordInvalid => e
     Result.new(false, nil, e.record.errors.full_messages)
   rescue StandardError => e
-    Rails.logger.error "[TrialRegistration] Failed: #{e.message}"
-    Result.new(true, employee, [])
+    Rails.logger.error "[TrialRegistration] Failed: #{e.class} — #{e.message}"
+    Result.new(false, nil, ["Une erreur est survenue lors de la création de votre espace. Veuillez réessayer."])
   end
 
   private
@@ -94,6 +94,7 @@ class TrialRegistrationService
 
     unless response.success?
       Rails.logger.error "[TrialRegistration] Resend API error: #{response.status} #{response.body}"
+      raise "Resend delivery failed (#{response.status}): #{response.body}"
     end
   end
 end
