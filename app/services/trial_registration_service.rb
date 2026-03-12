@@ -43,18 +43,21 @@ class TrialRegistrationService
       end
     end
 
-    # Send email outside the transaction — delivered synchronously, errors are non-fatal
-    raw_token, hashed_token = Devise.token_generator.generate(Employee, :reset_password_token)
-    employee.update_columns(
-      reset_password_token:   hashed_token,
-      reset_password_sent_at: Time.current
-    )
-    Devise::Mailer.reset_password_instructions(employee, raw_token).deliver_now
-  rescue StandardError => e
-    Rails.logger.error "[TrialRegistration] Email delivery failed: #{e.message}"
+    # Send reset password email — with tenant context to avoid validation issues
+    ActsAsTenant.with_tenant(employee.organization) do
+      raw_token, hashed_token = Devise.token_generator.generate(Employee, :reset_password_token)
+      employee.update_columns(
+        reset_password_token:   hashed_token,
+        reset_password_sent_at: Time.current
+      )
+      Devise::Mailer.reset_password_instructions(employee, raw_token).deliver_now
+    end
 
     Result.new(true, employee, [])
   rescue ActiveRecord::RecordInvalid => e
     Result.new(false, nil, e.record.errors.full_messages)
+  rescue StandardError => e
+    Rails.logger.error "[TrialRegistration] Email delivery failed: #{e.message}"
+    Result.new(true, employee, [])
   end
 end
