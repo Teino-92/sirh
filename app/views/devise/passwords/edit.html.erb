@@ -1,25 +1,43 @@
-<h2>Change your password</h2>
+<div class="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 py-12 px-4 sm:px-6 lg:px-8">
+  <div class="max-w-md w-full space-y-8">
+    <div class="text-center">
+      <img src="/izi_rh_logo.svg" alt="Izi-RH" class="h-8 w-auto mx-auto mb-4">
+      <h2 class="text-2xl font-semibold text-gray-900 dark:text-gray-100">Définir mon mot de passe</h2>
+      <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">Choisissez un mot de passe sécurisé pour accéder à votre espace.</p>
+    </div>
 
-<%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :put }) do |f| %>
-  <%= render "devise/shared/error_messages", resource: resource %>
-  <%= f.hidden_field :reset_password_token %>
+    <div class="bg-white dark:bg-gray-800 py-8 px-4 shadow-lg rounded-lg sm:px-10">
+      <%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :put, class: "space-y-6" }) do |f| %>
+        <%= render "devise/shared/error_messages", resource: resource %>
+        <%= f.hidden_field :reset_password_token %>
 
-  <div class="field">
-    <%= f.label :password, "New password" %><br />
-    <% if @minimum_password_length %>
-      <em>(<%= @minimum_password_length %> characters minimum)</em><br />
-    <% end %>
-    <%= f.password_field :password, autofocus: true, autocomplete: "new-password" %>
+        <div>
+          <%= f.label :password, "Nouveau mot de passe", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" %>
+          <% if @minimum_password_length %>
+            <p class="text-xs text-gray-500 dark:text-gray-400 mb-1"><%= @minimum_password_length %> caractères minimum</p>
+          <% end %>
+          <%= f.password_field :password,
+              autofocus: true,
+              autocomplete: "new-password",
+              class: "appearance-none block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" %>
+        </div>
+
+        <div>
+          <%= f.label :password_confirmation, "Confirmer le mot de passe", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" %>
+          <%= f.password_field :password_confirmation,
+              autocomplete: "new-password",
+              class: "appearance-none block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" %>
+        </div>
+
+        <div>
+          <%= f.submit "Définir mon mot de passe",
+              class: "w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors cursor-pointer" %>
+        </div>
+      <% end %>
+
+      <div class="mt-6 text-center text-sm">
+        <%= render "devise/shared/links" %>
+      </div>
+    </div>
   </div>
-
-  <div class="field">
-    <%= f.label :password_confirmation, "Confirm new password" %><br />
-    <%= f.password_field :password_confirmation, autocomplete: "new-password" %>
-  </div>
-
-  <div class="actions">
-    <%= f.submit "Change my password" %>
-  </div>
-<% end %>
-
-<%= render "devise/shared/links" %>
+</div>
