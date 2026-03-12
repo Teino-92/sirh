@@ -26,7 +26,8 @@ class TrialRegistrationService
         name:          @org_name,
         plan:          @plan,
         billing_model: BILLING_MODEL_FOR_PLAN[@plan],
-        settings:      Organization.new.default_settings
+        settings:      Organization.new.default_settings,
+        trial_ends_at: 30.days.from_now
       )
 
       employee = ActsAsTenant.with_tenant(org) do

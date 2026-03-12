@@ -6,6 +6,7 @@ class ApplicationController < ActionController::Base
 
   # Set tenant for multi-tenancy
   before_action :set_tenant
+  before_action :check_trial_expired!, if: :employee_signed_in?
 
   # Pundit will use current_employee instead of current_user
   def pundit_user
@@ -29,6 +30,15 @@ class ApplicationController < ActionController::Base
       # No tenant scoping on public/Devise pages — Devise must find employees across all orgs
       ActsAsTenant.current_tenant = nil
     end
+  end
+
+  def check_trial_expired!
+    org = current_employee.organization
+    return unless org.trial_expired?
+    return if devise_controller?
+    return if controller_path == 'trial_expired'
+
+    redirect_to trial_expired_path
   end
 
   def user_not_authorized

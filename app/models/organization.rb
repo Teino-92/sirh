@@ -68,6 +68,25 @@ class Organization < ApplicationRecord
     plan == "manager_os"
   end
 
+  # Trial helpers
+  def trial_expired?
+    trial_ends_at.present? && trial_ends_at < Time.current
+  end
+
+  def trial_active?
+    trial_ends_at.present? && trial_ends_at >= Time.current
+  end
+
+  def trial_days_remaining
+    return nil if trial_ends_at.blank?
+    return 0   if trial_expired?
+    (trial_ends_at.to_date - Date.current).to_i
+  end
+
+  def trial_ends_in_days?(days)
+    trial_ends_at.present? && trial_ends_at.to_date == Date.current + days.days
+  end
+
   def sirh?
     plan == "sirh"
   end

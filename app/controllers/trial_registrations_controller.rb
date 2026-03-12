@@ -9,7 +9,7 @@ class TrialRegistrationsController < ApplicationController
 
     if result.success?
       redirect_to new_employee_session_path,
-        notice: "Votre espace est créé ! Consultez votre email pour définir votre mot de passe."
+        notice: "Votre espace est créé ! Un email vous a été envoyé à #{result.employee.email} pour définir votre mot de passe."
     else
       @errors      = result.errors
       @form_values = trial_params.to_h

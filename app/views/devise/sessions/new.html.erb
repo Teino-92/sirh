@@ -9,6 +9,21 @@
       </p>
     </div>
 
+    <!-- Flash notice (ex: après inscription trial) -->
+    <% if notice.present? %>
+      <div class="bg-green-50 dark:bg-green-900/30 border border-green-300 dark:border-green-700 rounded-lg p-4 text-center">
+        <div class="flex items-start gap-3">
+          <svg class="w-5 h-5 text-green-600 dark:text-green-400 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+          </svg>
+          <div class="text-left">
+            <p class="text-sm font-semibold text-green-800 dark:text-green-200"><%= notice %></p>
+            <p class="text-xs text-green-700 dark:text-green-300 mt-1">Pensez à vérifier vos <strong>spams</strong> si vous ne le voyez pas dans les 2 minutes.</p>
+          </div>
+        </div>
+      </div>
+    <% end %>
+
     <!-- Sign In Form -->
     <div class="bg-white dark:bg-gray-800 py-8 px-4 shadow-lg rounded-lg sm:px-10">
       <%= form_for(resource, as: resource_name, url: session_path(resource_name), html: { class: "space-y-6" }) do |f| %>

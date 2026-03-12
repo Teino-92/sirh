@@ -8,6 +8,9 @@ Rails.application.routes.draw do
   # Root path — Landing for guests, Dashboard for authenticated
   root to: 'pages#home'
 
+  # Trial expired (accessible even after trial expiry)
+  get '/trial-expire', to: 'trial_expired#show', as: :trial_expired
+
   authenticated :employee do
     root to: 'dashboard#show', as: :authenticated_root
   end
