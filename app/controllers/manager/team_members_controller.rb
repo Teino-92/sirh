@@ -13,28 +13,31 @@ module Manager
     def show; end
 
     def new
-      @team_member = current_organization.employees.build(
-        manager: current_employee,
-        role: 'employee',
-        contract_type: 'CDI'
+      @team_member = Employee.new(
+        organization: current_organization,
+        manager:      current_employee,
+        role:         'employee',
+        contract_type: 'CDI',
+        start_date:   Date.current
       )
       authorize @team_member, policy_class: Manager::TeamMemberPolicy
     end
 
     def create
-      @team_member = current_organization.employees.build(team_member_params.merge(
-        manager: current_employee,
-        role: 'employee'
+      @team_member = Employee.new(team_member_params.merge(
+        organization: current_organization,
+        manager:      current_employee,
+        role:         'employee'
       ))
       authorize @team_member, policy_class: Manager::TeamMemberPolicy
 
-      # Generate a temporary password for the new member
-      temp_password = SecureRandom.hex(12)
-      @team_member.password = temp_password
-      @team_member.password_confirmation = temp_password
+      @team_member.password = SecureRandom.hex(12)
+      @team_member.password_confirmation = @team_member.password
 
       if @team_member.save
-        redirect_to manager_team_schedules_path, notice: "#{@team_member.full_name} a été ajouté à votre équipe."
+        send_invitation_email(@team_member)
+        redirect_to manager_team_schedules_path,
+          notice: "#{@team_member.full_name} a été ajouté. Un email d'invitation lui a été envoyé."
       else
         render :new, status: :unprocessable_entity
       end
@@ -51,7 +54,6 @@ module Manager
     end
 
     def destroy
-      # Block deletion if employee has active linked data
       if has_active_linked_data?(@team_member)
         redirect_to manager_team_schedules_path,
           alert: "Impossible de supprimer #{@team_member.full_name} : il/elle a des données actives liées (onboarding, congés en cours, ou pointages récents)."
@@ -71,12 +73,52 @@ module Manager
       authorize @team_member, policy_class: Manager::TeamMemberPolicy
     end
 
-    def has_active_linked_data?(member)
-      active_onboardings = member.employee_onboardings.where(status: 'active').exists?
-      active_leave_requests = member.leave_requests.where(status: %w[pending approved auto_approved]).exists?
-      recent_time_entries = member.time_entries.where('clock_in >= ?', 30.days.ago).exists?
+    def send_invitation_email(member)
+      raw_token, hashed_token = Devise.token_generator.generate(Employee, :reset_password_token)
+      member.update_columns(
+        reset_password_token:   hashed_token,
+        reset_password_sent_at: Time.current
+      )
 
-      active_onboardings || active_leave_requests || recent_time_entries
+      reset_url = Rails.application.routes.url_helpers.edit_employee_password_url(
+        reset_password_token: raw_token,
+        host:                 ENV.fetch('APP_HOST', 'izi-rh.com'),
+        protocol:             'https'
+      )
+
+      conn = Faraday.new('https://api.resend.com') do |f|
+        f.request :json
+        f.response :json
+        f.adapter Faraday.default_adapter
+      end
+
+      response = conn.post('/emails') do |req|
+        req.headers['Authorization'] = "Bearer #{ENV['SMTP_PASSWORD']}"
+        req.headers['Content-Type']  = 'application/json'
+        req.body = {
+          from:    "Izi-RH <noreply@#{ENV.fetch('SMTP_DOMAIN', 'izi-rh.com')}>",
+          to:      [member.email],
+          subject: "#{current_employee.full_name} vous invite sur Izi-RH",
+          html:    <<~HTML
+            <p>Bonjour #{member.first_name},</p>
+            <p>#{current_employee.full_name} vous a ajouté à son équipe sur Izi-RH.</p>
+            <p>Cliquez sur le lien ci-dessous pour créer votre mot de passe et accéder à votre espace :</p>
+            <p><a href="#{reset_url}" style="background:#4F46E5;color:white;padding:12px 24px;border-radius:6px;text-decoration:none;display:inline-block;">Rejoindre l'équipe</a></p>
+            <p>Ce lien est valable 6 heures.</p>
+            <p>— L'équipe Izi-RH</p>
+          HTML
+        }
+      end
+
+      unless response.success?
+        Rails.logger.error "[TeamMembers] Invitation email failed for #{member.email}: #{response.status} #{response.body}"
+      end
+    end
+
+    def has_active_linked_data?(member)
+      member.employee_onboardings.where(status: 'active').exists? ||
+        member.leave_requests.where(status: %w[pending approved auto_approved]).exists? ||
+        member.time_entries.where('clock_in >= ?', 30.days.ago).exists?
     end
 
     def team_member_params
