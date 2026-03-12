@@ -10,7 +10,13 @@ class EmployeeOnboardingPolicy < ApplicationPolicy
   end
 
   def create?
-    hr_admin? || user.manager?
+    # Manager OS: manager can create onboardings for their team
+    # SIRH: only HR/admin creates onboardings (manager supervises)
+    if user.organization.manager_os?
+      hr_admin? || user.manager?
+    else
+      hr_admin?
+    end
   end
 
   def new?

@@ -5,11 +5,13 @@
       <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100">Onboarding équipe</h1>
       <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">Suivez l'intégration des nouveaux collaborateurs</p>
     </div>
-    <%= link_to new_manager_employee_onboarding_path, class: "mt-4 sm:mt-0 inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 transition-colors" do %>
-      <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-      </svg>
-      Démarrer un onboarding
+    <% if policy(EmployeeOnboarding.new(organization: current_employee.organization)).create? %>
+      <%= link_to new_manager_employee_onboarding_path, class: "mt-4 sm:mt-0 inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 transition-colors" do %>
+        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+        </svg>
+        Démarrer un onboarding
+      <% end %>
     <% end %>
   </div>
 
@@ -112,14 +114,20 @@
         <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
           Démarrez l'onboarding d'un nouveau collaborateur.
         </p>
-        <div class="mt-6">
-          <%= link_to new_manager_employee_onboarding_path, class: "inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700" do %>
-            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-            </svg>
-            Démarrer un onboarding
-          <% end %>
-        </div>
+        <% if policy(EmployeeOnboarding.new(organization: current_employee.organization)).create? %>
+          <div class="mt-6">
+            <%= link_to new_manager_employee_onboarding_path, class: "inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700" do %>
+              <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+              </svg>
+              Démarrer un onboarding
+            <% end %>
+          </div>
+        <% else %>
+          <div class="mt-4">
+            <p class="text-sm text-gray-500 dark:text-gray-400">Contactez l'équipe RH pour démarrer un onboarding.</p>
+          </div>
+        <% end %>
       </div>
     <% end %>
   </div>
