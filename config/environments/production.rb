@@ -78,14 +78,16 @@ Rails.application.configure do
   }
 
   # SMTP settings (Resend or any SMTP provider)
+  smtp_port = ENV.fetch('SMTP_PORT', 465).to_i
   config.action_mailer.smtp_settings = {
     address:              ENV.fetch('SMTP_ADDRESS', 'smtp.resend.com'),
-    port:                 ENV.fetch('SMTP_PORT', 587).to_i,
+    port:                 smtp_port,
     domain:               ENV.fetch('SMTP_DOMAIN', 'izi-rh.com'),
     authentication:       ENV.fetch('SMTP_AUTHENTICATION', 'plain'),
     user_name:            ENV.fetch('SMTP_USERNAME', 'resend'),
     password:             ENV['SMTP_PASSWORD'],
-    enable_starttls_auto: true
+    tls:                  smtp_port == 465,
+    enable_starttls_auto: smtp_port != 465
   }
 
   # Enable locale fallbacks for I18n (makes lookups for any locale fall back to
