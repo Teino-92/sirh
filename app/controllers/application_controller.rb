@@ -24,10 +24,9 @@ class ApplicationController < ActionController::Base
 
   def set_tenant
     if current_employee
-      # Set the current tenant for ActsAsTenant automatic query scoping
       ActsAsTenant.current_tenant = current_employee.organization
     else
-      # Allow public pages without tenant (login, etc.)
+      # No tenant scoping on public/Devise pages — Devise must find employees across all orgs
       ActsAsTenant.current_tenant = nil
     end
   end
