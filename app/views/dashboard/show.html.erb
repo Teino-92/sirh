@@ -9,8 +9,10 @@
 <% else %>
 
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6"
-     data-controller="dashboard-customizer"
-     data-dashboard-customizer-save-url-value="<%= dashboard_layout_profile_path %>">
+     data-controller="dashboard-customizer tour"
+     data-dashboard-customizer-save-url-value="<%= dashboard_layout_profile_path %>"
+     data-tour-name-value="sirh-dashboard"
+     data-tour-autostart-value="true">
 
   <!-- Header row -->
   <div class="flex items-baseline justify-between gap-4 mb-6">
@@ -30,7 +32,10 @@
       <button type="button"
               class="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
               data-dashboard-customizer-target="customizeBtn"
-              data-action="click->dashboard-customizer#enterEditMode">
+              data-action="click->dashboard-customizer#enterEditMode"
+              data-tour-step="1"
+              data-tour-title="Personnalisez votre dashboard"
+              data-tour-description="Réorganisez et masquez les cartes selon vos besoins.">
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
         </svg>

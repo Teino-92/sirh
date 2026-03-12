@@ -1,11 +1,16 @@
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6"
+     data-controller="tour"
+     data-tour-name-value="manager-objectives"
+     data-tour-autostart-value="true">
   <!-- Header -->
   <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6">
     <div>
       <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100">Objectifs équipe</h1>
       <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">Suivez et gérez les objectifs de votre équipe</p>
     </div>
-    <%= link_to new_manager_objective_path, class: "mt-4 sm:mt-0 inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 transition-colors" do %>
+    <%= link_to new_manager_objective_path,
+          class: "mt-4 sm:mt-0 inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 transition-colors",
+          data: { "tour-step": "1", "tour-title": "Créer un objectif", "tour-description": "Définissez un objectif pour un membre avec une deadline et des critères." } do %>
       <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
       </svg>
@@ -14,7 +19,10 @@
   </div>
 
   <!-- Status Filter Tabs -->
-  <div class="mb-6">
+  <div class="mb-6"
+       data-tour-step="2"
+       data-tour-title="Filtrer les objectifs"
+       data-tour-description="Affichez tous les objectifs ou filtrez par statut : en cours, complétés.">
     <div class="border-b border-gray-200 dark:border-gray-700">
       <nav class="-mb-px flex space-x-8 overflow-x-auto" aria-label="Filtres">
         <%= link_to manager_objectives_path,
