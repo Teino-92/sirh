@@ -26,7 +26,7 @@ class WorkSchedulePolicy < ApplicationPolicy
   private
 
   def owner?
-    record.employee_id == user.id
+    record.employee_id == user.id || record.employee == user
   end
 
   def manager_of_owner?
