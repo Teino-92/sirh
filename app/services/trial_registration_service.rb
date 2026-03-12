@@ -19,6 +19,8 @@ class TrialRegistrationService
   end
 
   def call
+    employee = nil
+
     ActiveRecord::Base.transaction do
       org = Organization.create!(
         name:          @org_name,
@@ -39,12 +41,12 @@ class TrialRegistrationService
           start_date:    Date.current
         )
       end
-
-      # Send Devise reset password email — user sets their own password on first login
-      token = employee.send_reset_password_instructions
-
-      Result.new(true, employee, [])
     end
+
+    # Send email outside the transaction — SMTP errors don't rollback the account
+    employee.send_reset_password_instructions
+
+    Result.new(true, employee, [])
   rescue ActiveRecord::RecordInvalid => e
     Result.new(false, nil, e.record.errors.full_messages)
   end
