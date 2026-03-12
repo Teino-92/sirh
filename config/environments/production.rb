@@ -77,20 +77,16 @@ Rails.application.configure do
     protocol: 'https'
   }
 
-  # SMTP settings — only configure if SMTP_ADDRESS is provided
-  if ENV['SMTP_ADDRESS'].present?
-    config.action_mailer.smtp_settings = {
-      address: ENV['SMTP_ADDRESS'],
-      port: ENV.fetch('SMTP_PORT', 587),
-      domain: ENV.fetch('SMTP_DOMAIN', 'izi-rh.com'),
-      authentication: ENV.fetch('SMTP_AUTHENTICATION', 'plain'),
-      user_name: ENV['SMTP_USERNAME'],
-      password: ENV['SMTP_PASSWORD'],
-      enable_starttls_auto: true
-    }
-  else
-    config.action_mailer.delivery_method = :log
-  end
+  # SMTP settings (Resend or any SMTP provider)
+  config.action_mailer.smtp_settings = {
+    address:              ENV.fetch('SMTP_ADDRESS', 'smtp.resend.com'),
+    port:                 ENV.fetch('SMTP_PORT', 587).to_i,
+    domain:               ENV.fetch('SMTP_DOMAIN', 'izi-rh.com'),
+    authentication:       ENV.fetch('SMTP_AUTHENTICATION', 'plain'),
+    user_name:            ENV.fetch('SMTP_USERNAME', 'resend'),
+    password:             ENV['SMTP_PASSWORD'],
+    enable_starttls_auto: true
+  }
 
   # Enable locale fallbacks for I18n (makes lookups for any locale fall back to
   # the I18n.default_locale when a translation cannot be found).

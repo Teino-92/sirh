@@ -134,7 +134,8 @@
                 <% end %>
 
                 <% if current_employee.hr_or_admin? && sirh_plan? %>
-                  <%= link_to(current_employee.admin? ? "Admin" : "RH"), admin_root_path,
+                  <% admin_label = current_employee.admin? ? "Admin" : "RH" %>
+                  <%= link_to admin_label, admin_root_path,
                       class: "inline-flex items-center px-4 py-2 text-base font-medium #{controller.class.name.start_with?('Admin::') ? 'text-indigo-600 dark:text-indigo-400 border-b-2 border-indigo-600 dark:border-indigo-400' : 'text-gray-700 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400'}" %>
                 <% end %>
               </div>
