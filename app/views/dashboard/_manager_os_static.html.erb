@@ -57,9 +57,8 @@
           Voir tout
         <% end %>
       </div>
-      <% team_active_objectives = Objective.for_manager(@employee).where(status: :in_progress).count %>
-      <p class="text-3xl font-bold text-gray-900 dark:text-gray-100"><%= team_active_objectives %></p>
-      <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">Objectif<%= 's' if team_active_objectives != 1 %> en cours</p>
+      <p class="text-3xl font-bold text-gray-900 dark:text-gray-100"><%= @team_active_objectives_count %></p>
+      <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">Objectif<%= 's' if @team_active_objectives_count != 1 %> en cours</p>
     </div>
 
     <!-- Formations en cours -->
@@ -74,10 +73,8 @@
           Voir tout
         <% end %>
       </div>
-      <% team_member_ids = @employee.team_members.pluck(:id)
-         team_pending_trainings = team_member_ids.any? ? TrainingAssignment.joins(:training).where(trainings: { organization_id: @employee.organization_id }).where(status: %w[assigned in_progress]).where(employee_id: team_member_ids).count : 0 %>
-      <p class="text-3xl font-bold text-gray-900 dark:text-gray-100"><%= team_pending_trainings %></p>
-      <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">Formation<%= 's' if team_pending_trainings != 1 %> en cours</p>
+      <p class="text-3xl font-bold text-gray-900 dark:text-gray-100"><%= @team_pending_training_count %></p>
+      <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">Formation<%= 's' if @team_pending_training_count != 1 %> en cours</p>
     </div>
 
   </div>
@@ -106,8 +103,9 @@
                   </div>
                   <div class="ml-3 min-w-0">
                     <p class="text-sm font-medium text-gray-900 dark:text-gray-100 truncate"><%= onboarding.employee.full_name %></p>
+                    <% tasks = onboarding.onboarding_tasks.to_a %>
                     <p class="text-xs text-gray-500 dark:text-gray-400">
-                      <%= onboarding.onboarding_tasks.where.not(completed_at: nil).count %> / <%= onboarding.onboarding_tasks.count %> tâches
+                      <%= tasks.count { |t| t.completed_at.present? } %> / <%= tasks.size %> tâches
                     </p>
                   </div>
                 </div>

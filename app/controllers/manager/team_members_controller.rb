@@ -35,9 +35,14 @@ module Manager
       @team_member.password_confirmation = @team_member.password
 
       if @team_member.save
-        send_invitation_email(@team_member)
-        redirect_to manager_team_schedules_path,
-          notice: "#{@team_member.full_name} a été ajouté. Un email d'invitation lui a été envoyé."
+        begin
+          send_invitation_email(@team_member)
+          notice_msg = "#{@team_member.full_name} a été ajouté. Un email d'invitation lui a été envoyé."
+        rescue => e
+          Rails.logger.warn "[TeamMembers] Invitation email failed for #{@team_member.email}: #{e.message}"
+          notice_msg = "#{@team_member.full_name} a été ajouté. L'email d'invitation n'a pas pu être envoyé — réessayez plus tard."
+        end
+        redirect_to manager_team_schedules_path, notice: notice_msg
       else
         render :new, status: :unprocessable_entity
       end

@@ -20,7 +20,8 @@ module Manager
     def new
       @employee_onboarding = EmployeeOnboarding.new(manager: current_employee,
                                                     organization: current_organization)
-      @templates = policy_scope(OnboardingTemplate)
+      @templates    = policy_scope(OnboardingTemplate)
+      @team_members = current_employee.team_members.order(:last_name, :first_name)
       authorize @employee_onboarding
     end
 
@@ -42,7 +43,8 @@ module Manager
     end
 
     def edit
-      @templates = policy_scope(OnboardingTemplate)
+      @templates      = policy_scope(OnboardingTemplate)
+      @team_members   = current_employee.team_members.order(:last_name, :first_name)
     end
 
     def update

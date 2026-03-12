@@ -29,7 +29,9 @@ module Manager
     private
 
     def manager_owns_record?
-      user.manager? && record.manager_id == user.id
+      user.manager? &&
+        record.manager_id == user.id &&
+        record.organization_id == user.organization_id
     end
   end
 end

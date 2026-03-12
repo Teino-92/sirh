@@ -155,12 +155,25 @@ class DashboardController < ApplicationController
   end
 
   def load_manager_os_data
-    @active_onboardings = EmployeeOnboarding
-      .where(organization: @employee.organization)
-      .where(manager_id: @employee.id)
+    @active_onboardings = policy_scope(EmployeeOnboarding)
+      .where(manager: @employee)
       .active
       .includes(:employee, :onboarding_tasks)
       .order(:start_date)
+
+    team_member_ids = @employee.team_members.pluck(:id)
+
+    @team_active_objectives_count = Objective
+      .for_manager(@employee)
+      .where(status: :in_progress)
+      .count
+
+    @team_pending_training_count = team_member_ids.any? ? TrainingAssignment
+      .joins(:training)
+      .where(trainings: { organization_id: @employee.organization_id })
+      .where(status: %w[assigned in_progress])
+      .where(employee_id: team_member_ids)
+      .count : 0
   end
 
   def load_hr_overview_data
