@@ -113,12 +113,6 @@
 
       <!-- CTAs -->
       <div data-hero="ctas" class="flex flex-col sm:flex-row gap-4 justify-center items-center">
-        <a href="#essai-manager-os" class="mt-4 mb-4 w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-xl transition-colors shadow-lg shadow-indigo-200 dark:shadow-indigo-900/40 text-lg">
-          Démarrer avec Manager OS — gratuit
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
-          </svg>
-        </a>
         <a href="#tarifs" class="mt-4 mb-4 w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 font-semibold rounded-xl transition-colors hover:bg-gray-50 dark:hover:bg-gray-700 text-lg">
           Voir tous les plans
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -139,21 +133,21 @@
       </div>
     </div>
     <!-- Desktop : éventail 3D pleine largeur -->
-    <div class="hidden sm:flex max-w-6xl mx-auto px-4" style="align-items:center; justify-content:center; gap:16px; perspective:1400px; perspective-origin:50% 0%;">
+    <div class="hidden sm:flex max-w-6xl mx-auto px-4" style="align-items:flex-end; justify-content:center; gap:16px; perspective:1400px; perspective-origin:50% 0%;">
 
       <!-- Gauche -->
-      <div style="flex:0 0 31%; height:340px; transform:rotateY(22deg); transform-origin:right center; border-radius:12px; overflow:hidden; box-shadow:-8px 24px 56px rgba(0,0,0,0.45); z-index:2;">
-        <img src="/screenshots/dashboard-baptiste.png" alt="Dashboard employé Izi-RH" style="width:100%; height:100%; object-fit:cover; object-position:top left; display:block;">
+      <div style="flex:0 0 31%; aspect-ratio:2120/1268; transform:rotateY(22deg); transform-origin:right center; border-radius:12px; overflow:hidden; box-shadow:-8px 24px 56px rgba(0,0,0,0.45); z-index:2;">
+        <img src="/screenshots/dashboard-baptiste.png" alt="Dashboard employé Izi-RH" style="width:100%; height:100%; object-fit:fill; display:block;">
       </div>
 
       <!-- Centre -->
-      <div style="flex:0 0 38%; height:340px; border-radius:12px; overflow:hidden; box-shadow:0 20px 60px rgba(0,0,0,0.45); z-index:3; position:relative;">
-        <img src="/screenshots/dashboard-thomas.png" alt="Dashboard manager Izi-RH" style="width:100%; height:100%; object-fit:cover; object-position:top left; display:block;">
+      <div style="flex:0 0 38%; aspect-ratio:2120/1268; border-radius:12px; overflow:hidden; box-shadow:0 20px 60px rgba(0,0,0,0.45); z-index:3; position:relative;">
+        <img src="/screenshots/dashboard-thomas.png" alt="Dashboard manager Izi-RH" style="width:100%; height:100%; object-fit:fill; display:block;">
       </div>
 
       <!-- Droite -->
-      <div style="flex:0 0 31%; height:340px; transform:rotateY(-22deg); transform-origin:left center; border-radius:12px; overflow:hidden; box-shadow:8px 24px 56px rgba(0,0,0,0.45); z-index:2;">
-        <img src="/screenshots/dashboard-nathalie.png" alt="Dashboard RH Izi-RH" style="width:100%; height:100%; object-fit:cover; object-position:top left; display:block;">
+      <div style="flex:0 0 31%; aspect-ratio:2120/1268; transform:rotateY(-22deg); transform-origin:left center; border-radius:12px; overflow:hidden; box-shadow:8px 24px 56px rgba(0,0,0,0.45); z-index:2;">
+        <img src="/screenshots/dashboard-nathalie.png" alt="Dashboard RH Izi-RH" style="width:100%; height:100%; object-fit:fill; display:block;">
       </div>
 
     </div>
@@ -261,10 +255,11 @@
     </div>
 
     <!-- 4 modules Manager OS -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
+    <!-- Mobile: scroll horizontal | md+: grille 2 colonnes -->
+    <div class="flex overflow-x-auto gap-5 pb-4 mb-16 snap-x snap-mandatory -mx-4 px-4 md:grid md:grid-cols-2 md:gap-8 md:overflow-visible md:pb-0 md:mx-0 md:px-0">
 
       <!-- Onboarding -->
-      <div class="bg-white dark:bg-gray-900 rounded-2xl p-8 border border-indigo-100 dark:border-indigo-900/40 shadow-sm hover:shadow-md transition-shadow">
+      <div class="flex-shrink-0 w-[85vw] md:w-auto snap-start bg-white dark:bg-gray-900 rounded-2xl p-8 border border-indigo-100 dark:border-indigo-900/40 shadow-sm hover:shadow-md transition-shadow">
         <div class="flex items-start gap-5">
           <div class="w-14 h-14 bg-orange-100 dark:bg-orange-900/30 rounded-2xl flex items-center justify-center flex-shrink-0">
             <svg class="w-7 h-7 text-orange-600 dark:text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -290,7 +285,7 @@
       </div>
 
       <!-- 1:1 -->
-      <div class="bg-white dark:bg-gray-900 rounded-2xl p-8 border border-indigo-100 dark:border-indigo-900/40 shadow-sm hover:shadow-md transition-shadow">
+      <div class="flex-shrink-0 w-[85vw] md:w-auto snap-start bg-white dark:bg-gray-900 rounded-2xl p-8 border border-indigo-100 dark:border-indigo-900/40 shadow-sm hover:shadow-md transition-shadow">
         <div class="flex items-start gap-5">
           <div class="w-14 h-14 bg-violet-100 dark:bg-violet-900/30 rounded-2xl flex items-center justify-center flex-shrink-0">
             <svg class="w-7 h-7 text-violet-600 dark:text-violet-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -316,7 +311,7 @@
       </div>
 
       <!-- Objectifs -->
-      <div class="bg-white dark:bg-gray-900 rounded-2xl p-8 border border-indigo-100 dark:border-indigo-900/40 shadow-sm hover:shadow-md transition-shadow">
+      <div class="flex-shrink-0 w-[85vw] md:w-auto snap-start bg-white dark:bg-gray-900 rounded-2xl p-8 border border-indigo-100 dark:border-indigo-900/40 shadow-sm hover:shadow-md transition-shadow">
         <div class="flex items-start gap-5">
           <div class="w-14 h-14 bg-green-100 dark:bg-green-900/30 rounded-2xl flex items-center justify-center flex-shrink-0">
             <svg class="w-7 h-7 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -342,7 +337,7 @@
       </div>
 
       <!-- Formation -->
-      <div class="bg-white dark:bg-gray-900 rounded-2xl p-8 border border-indigo-100 dark:border-indigo-900/40 shadow-sm hover:shadow-md transition-shadow">
+      <div class="flex-shrink-0 w-[85vw] md:w-auto snap-start bg-white dark:bg-gray-900 rounded-2xl p-8 border border-indigo-100 dark:border-indigo-900/40 shadow-sm hover:shadow-md transition-shadow">
         <div class="flex items-start gap-5">
           <div class="w-14 h-14 bg-blue-100 dark:bg-blue-900/30 rounded-2xl flex items-center justify-center flex-shrink-0">
             <svg class="w-7 h-7 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
