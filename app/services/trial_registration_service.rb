@@ -43,8 +43,13 @@ class TrialRegistrationService
       end
     end
 
-    # Send email outside the transaction — SMTP errors don't rollback the account
-    employee.send_reset_password_instructions
+    # Send email outside the transaction, async — SMTP timeout won't block the response
+    raw_token, hashed_token = Devise.token_generator.generate(Employee, :reset_password_token)
+    employee.update_columns(
+      reset_password_token:   hashed_token,
+      reset_password_sent_at: Time.current
+    )
+    Devise::Mailer.reset_password_instructions(employee, raw_token).deliver_later
 
     Result.new(true, employee, [])
   rescue ActiveRecord::RecordInvalid => e
