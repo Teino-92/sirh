@@ -38,6 +38,10 @@ class OneOnOne < ApplicationRecord
   after_create_commit  :notify_calendar_webhook
   after_update_commit  :notify_calendar_webhook_if_rescheduled
 
+  # Email notifications to employee
+  after_create_commit  :send_scheduled_notification
+  after_update_commit  :send_status_change_notification
+
   # Instance methods
   def complete!(notes:)
     transaction do
@@ -59,6 +63,18 @@ class OneOnOne < ApplicationRecord
   def notify_calendar_webhook_if_rescheduled
     return unless saved_change_to_scheduled_at? || saved_change_to_status?
     fire_calendar_webhook('one_on_one.rescheduled')
+  end
+
+  def send_scheduled_notification
+    OneOnOneMailer.scheduled(self).deliver_later
+  end
+
+  def send_status_change_notification
+    if saved_change_to_scheduled_at?
+      OneOnOneMailer.rescheduled(self).deliver_later
+    elsif saved_change_to_status? && cancelled?
+      OneOnOneMailer.cancelled(self).deliver_later
+    end
   end
 
   def fire_calendar_webhook(event_name)

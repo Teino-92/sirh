@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
+    <style>
+      body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px; }
+      .header { background: linear-gradient(to right, #8b5cf6, #7c3aed); color: white; padding: 30px; border-radius: 8px 8px 0 0; text-align: center; }
+      .header h1 { margin: 0; font-size: 24px; }
+      .content { background: #f9fafb; padding: 30px; border: 1px solid #e5e7eb; border-top: none; }
+      .info-box { background: white; border-left: 4px solid #8b5cf6; padding: 15px; margin: 20px 0; border-radius: 4px; }
+      .info-row { display: flex; margin-bottom: 10px; }
+      .info-label { font-weight: bold; width: 150px; color: #6b7280; }
+      .info-value { color: #111827; }
+      .footer { text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid #e5e7eb; color: #6b7280; font-size: 14px; }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <h1>📚 Formation assignée</h1>
+    </div>
+
+    <div class="content">
+      <p>Bonjour <%= @employee.first_name %>,</p>
+
+      <p>Une formation vous a été assignée par <strong><%= @assigned_by.full_name %></strong>.</p>
+
+      <div class="info-box">
+        <div class="info-row">
+          <span class="info-label">Formation :</span>
+          <span class="info-value"><strong><%= @training.title %></strong></span>
+        </div>
+        <% if @training.description.present? %>
+        <div class="info-row">
+          <span class="info-label">Description :</span>
+          <span class="info-value"><%= @training.description %></span>
+        </div>
+        <% end %>
+
+        <div class="info-row">
+          <span class="info-label">Assigné par :</span>
+          <span class="info-value"><%= @assigned_by.full_name %></span>
+        </div>
+      </div>
+
+      <p>Cordialement,<br><strong>L'équipe Izi-RH</strong></p>
+    </div>
+
+    <div class="footer">
+      <p>Cet email a été envoyé automatiquement, merci de ne pas y répondre.</p>
+      <p>&copy; <%= Date.current.year %> Izi-RH. Tous droits réservés.</p>
+    </div>
+  </body>
+</html>

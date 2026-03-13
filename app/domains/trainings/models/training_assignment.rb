@@ -13,6 +13,9 @@ class TrainingAssignment < ApplicationRecord
   # Calendar integration — fire webhook after assignment is persisted
   after_create_commit :notify_calendar_webhook
 
+  # Email notification to employee
+  after_create_commit :send_assigned_notification
+
   # Enums
   enum status: {
     assigned: 'assigned',
@@ -62,6 +65,10 @@ class TrainingAssignment < ApplicationRecord
     return if employee.organization_id == training.organization_id
 
     errors.add(:employee, 'must belong to the same organization as the training')
+  end
+
+  def send_assigned_notification
+    TrainingAssignmentMailer.assigned(self).deliver_later
   end
 
   def notify_calendar_webhook

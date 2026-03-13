@@ -40,6 +40,9 @@ class Objective < ApplicationRecord
   validate :manager_in_same_organization
   validate :owner_in_same_organization
 
+  # Email notification to owner when assigned
+  after_create_commit :send_assigned_notification
+
   # Scopes
   scope :active, -> { where(status: [:draft, :in_progress, :blocked]) }
   scope :overdue, -> { active.where('deadline < ?', Date.current) }
@@ -62,6 +65,12 @@ class Objective < ApplicationRecord
   end
 
   private
+
+  def send_assigned_notification
+    # Only notify when the owner is an Employee (not a team) and is different from the creator
+    return unless owner.is_a?(Employee) && owner != created_by
+    ObjectiveMailer.assigned(self).deliver_later
+  end
 
   def deadline_in_future
     return unless deadline.present? && deadline < Date.current
