@@ -131,9 +131,9 @@
       <% end %>
     </div>
 
-  <% elsif @org.trial_active? || @org.trial_expired? || @subscription.nil? || @subscription.canceled? %>
-    <!-- Tunnel de souscription (trial actif ou expiré, ou pas d'abonnement) -->
-    <% unless @org.trial_active? %>
+  <% elsif @org.trial_expired? || @subscription.nil? || @subscription.canceled? %>
+    <!-- Tunnel de souscription (trial expiré, ou pas d'abonnement) -->
+    <% if @org.trial_expired? %>
       <div class="mb-6 p-4 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-700 rounded-xl">
         <p class="text-sm text-amber-800 dark:text-amber-300 font-semibold mb-1">Votre période d'essai est terminée.</p>
         <p class="text-sm text-amber-700 dark:text-amber-400">Choisissez un plan pour continuer à utiliser Izi-RH. Engagement 1 an, puis sans engagement.</p>
@@ -164,7 +164,7 @@
       </div>
 
       <!-- SIRH Pro -->
-      <div class="p-6 bg-gray-900 dark:bg-gray-900 rounded-2xl border border-gray-700 text-white relative">
+      <div class="pt-6 px-6 pb-6 bg-gray-900 dark:bg-gray-900 rounded-2xl border border-gray-700 text-white relative">
         <span class="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-0.5 bg-violet-600 text-white text-xs font-bold rounded-full">Complet</span>
         <h3 class="text-base font-bold text-white mb-1">SIRH Pro</h3>
         <p class="text-xs text-gray-400 mb-4">Tout SIRH + IA RH & audit</p>
@@ -176,7 +176,7 @@
       </div>
     </div>
 
-    <p class="mt-4 text-xs text-center text-gray-400">Engagement 1 an · puis mensuel sans engagement · TVA non applicable, art. 293 B du CGI</p>
+    <p class="mt-4 text-xs text-center text-gray-400">Engagement 1 an · puis mensuel sans engagement</p>
   <% end %>
 
 </div>
