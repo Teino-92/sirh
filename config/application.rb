@@ -41,9 +41,13 @@ module EasyRh
     # Add domain paths so models are in root namespace (Employee not Employees::Models::Employee)
     # But services are namespaced (TimeTracking::Services::RttAccrualService)
     config.autoload_paths += Dir[Rails.root.join('app', 'domains', '*', 'models')]
+    config.autoload_paths += Dir[Rails.root.join('app', 'domains', '*', 'services')]
+    config.autoload_paths += Dir[Rails.root.join('app', 'domains', '*', 'webhooks')]
     config.autoload_paths += Dir[Rails.root.join('app', 'domains')]
 
     config.eager_load_paths += Dir[Rails.root.join('app', 'domains', '*', 'models')]
+    config.eager_load_paths += Dir[Rails.root.join('app', 'domains', '*', 'services')]
+    config.eager_load_paths += Dir[Rails.root.join('app', 'domains', '*', 'webhooks')]
     config.eager_load_paths += Dir[Rails.root.join('app', 'domains')]
 
 

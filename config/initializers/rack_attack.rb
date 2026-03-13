@@ -85,6 +85,11 @@ class Rack::Attack
     req.ip == '127.0.0.1' || req.ip == '::1'
   end
 
+  # Stripe webhooks : pas de throttle (IPs Stripe variables, signature vérifiée dans le controller)
+  Rack::Attack.safelist('allow-stripe-webhooks') do |req|
+    req.path == '/webhooks/stripe' && req.post?
+  end
+
   # Block suspicious IPs
   # Add IPs to blocklist dynamically in production:
   # Rack::Attack::Allow2Ban.filter("logins/ip-#{req.ip}", maxretry: 20, findtime: 1.hour, bantime: 24.hours) do

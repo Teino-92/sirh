@@ -33,12 +33,18 @@ class ApplicationController < ActionController::Base
   end
 
   def check_trial_expired!
-    org = current_employee.organization
+    # Eager-load subscription pour éviter le N+1 (appelé sur chaque action authentifiée)
+    org = Organization.includes(:subscription).find(current_employee.organization_id)
     return unless org.trial_expired?
     return if devise_controller?
-    return if controller_path == 'trial_expired'
+    return if controller_path.in?(%w[trial_expired billings stripe_webhooks])
 
-    redirect_to trial_expired_path
+    billing = BillingService.new(org)
+    if billing.needs_subscription?
+      redirect_to billing_path
+    else
+      redirect_to trial_expired_path
+    end
   end
 
   def user_not_authorized

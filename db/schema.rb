@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2026_03_12_000001) do
+ActiveRecord::Schema[7.1].define(version: 2026_03_13_115021) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -535,6 +535,26 @@ ActiveRecord::Schema[7.1].define(version: 2026_03_12_000001) do
     t.index ["key"], name: "index_solid_queue_semaphores_on_key", unique: true
   end
 
+  create_table "subscriptions", force: :cascade do |t|
+    t.bigint "organization_id", null: false
+    t.string "stripe_customer_id", null: false
+    t.string "stripe_subscription_id"
+    t.string "plan", null: false
+    t.string "status", default: "incomplete", null: false
+    t.datetime "current_period_end"
+    t.datetime "commitment_end_at"
+    t.boolean "cancel_at_period_end", default: false, null: false
+    t.string "stripe_checkout_session_id"
+    t.datetime "last_webhook_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["commitment_end_at"], name: "index_subscriptions_on_commitment_end_at", where: "(commitment_end_at IS NOT NULL)"
+    t.index ["organization_id"], name: "index_subscriptions_on_organization_id", unique: true
+    t.index ["status"], name: "index_subscriptions_on_status"
+    t.index ["stripe_customer_id"], name: "index_subscriptions_on_stripe_customer_id", unique: true
+    t.index ["stripe_subscription_id"], name: "index_subscriptions_on_stripe_subscription_id", unique: true, where: "(stripe_subscription_id IS NOT NULL)"
+  end
+
   create_table "time_entries", force: :cascade do |t|
     t.bigint "employee_id", null: false
     t.datetime "clock_in", null: false
@@ -700,6 +720,7 @@ ActiveRecord::Schema[7.1].define(version: 2026_03_12_000001) do
   add_foreign_key "solid_queue_ready_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_recurring_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_scheduled_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
+  add_foreign_key "subscriptions", "organizations"
   add_foreign_key "time_entries", "employees"
   add_foreign_key "time_entries", "employees", column: "rejected_by_id"
   add_foreign_key "time_entries", "employees", column: "validated_by_id"

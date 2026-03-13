@@ -108,3 +108,6 @@ gem "kaminari"
 # HTTP client for external APIs (Anthropic)
 gem "faraday", "~> 2.7"
 gem "faraday-retry", "~> 2.2"
+
+# Stripe billing
+gem "stripe", "~> 13.0"

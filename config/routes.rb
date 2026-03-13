@@ -11,6 +11,18 @@ Rails.application.routes.draw do
   # Trial expired (accessible even after trial expiry)
   get '/trial-expire', to: 'trial_expired#show', as: :trial_expired
 
+  # Stripe webhooks (no auth, raw body required)
+  post '/webhooks/stripe', to: 'stripe_webhooks#create', as: :stripe_webhooks
+
+  # Billing & subscription management
+  resource :billing, only: [:show] do
+    post   :create_checkout
+    get    :success
+    post   :upgrade
+    post   :request_upgrade
+    delete :cancel
+  end
+
   authenticated :employee do
     root to: 'dashboard#show', as: :authenticated_root
   end

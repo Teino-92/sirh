@@ -1,0 +1,6 @@
+<p>Demande d'upgrade SIRH reçue.</p>
+<p><strong>Organisation :</strong> <%= @org.name %> (ID: <%= @org.id %>)</p>
+<p><strong>Plan actuel :</strong> Manager OS</p>
+<p><strong>Plan demandé :</strong> SIRH Essentiel</p>
+<p>Action requise : créer un nouvel abonnement SIRH pour cette organisation depuis le dashboard Stripe ou le panel admin.</p>
+<p><a href="<%= admin_organization_url(host: ENV.fetch('APP_HOST', 'izi-rh.com'), protocol: 'https') %>">Ouvrir le panel admin →</a></p>

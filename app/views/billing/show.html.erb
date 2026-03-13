@@ -1,0 +1,141 @@
+<% content_for :title, "Abonnement — Izi-RH" %>
+
+<div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+
+  <% if @org.trial_active? %>
+    <!-- Trial encore actif : aperçu billing -->
+    <div class="mb-8 p-4 bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-200 dark:border-indigo-700 rounded-xl flex items-center gap-3">
+      <svg class="w-5 h-5 text-indigo-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+      <p class="text-sm text-indigo-700 dark:text-indigo-300">
+        Essai gratuit — <strong><%= @org.trial_days_remaining %> jour<%= "s" if @org.trial_days_remaining > 1 %> restant<%= "s" if @org.trial_days_remaining > 1 %></strong>.
+        Souscrivez avant la fin pour ne pas perdre vos données.
+      </p>
+    </div>
+  <% end %>
+
+  <h1 class="text-2xl font-extrabold text-gray-900 dark:text-white mb-2">Abonnement</h1>
+  <p class="text-sm text-gray-500 dark:text-gray-400 mb-8">Gérez votre plan et votre facturation.</p>
+
+  <% if @subscription&.active? || @subscription&.past_due? %>
+    <!-- Abonnement actif -->
+    <div class="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-700 p-6 mb-8">
+      <div class="flex items-center justify-between mb-4">
+        <div>
+          <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Plan actuel</p>
+          <p class="text-xl font-bold text-gray-900 dark:text-white"><%= plan_label(@subscription.plan) %></p>
+        </div>
+        <% if @subscription.past_due? %>
+          <span class="px-3 py-1 bg-red-100 text-red-700 text-xs font-semibold rounded-full">Paiement en échec</span>
+        <% elsif @subscription.cancel_at_period_end %>
+          <span class="px-3 py-1 bg-orange-100 text-orange-700 text-xs font-semibold rounded-full">Résiliation prévue</span>
+        <% else %>
+          <span class="px-3 py-1 bg-green-100 text-green-700 text-xs font-semibold rounded-full">Actif</span>
+        <% end %>
+      </div>
+
+      <% if @subscription.current_period_end.present? %>
+        <p class="text-sm text-gray-500 dark:text-gray-400 mb-2">
+          Prochaine facturation : <strong><%= @subscription.current_period_end.strftime("%d/%m/%Y") %></strong>
+        </p>
+      <% end %>
+
+      <% if @subscription.committed? %>
+        <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">
+          Engagement actif jusqu'au <strong><%= @subscription.commitment_end_at.strftime("%d/%m/%Y") %></strong>
+          (<%= @subscription.commitment_months_remaining %> mois restant<%= "s" if @subscription.commitment_months_remaining > 1 %>)
+        </p>
+      <% end %>
+
+      <!-- Upgrade Essentiel → Pro -->
+      <% if @billing.can_self_upgrade? %>
+        <div class="mt-4 p-4 bg-indigo-50 dark:bg-indigo-900/20 rounded-xl">
+          <p class="text-sm font-semibold text-gray-800 dark:text-gray-200 mb-1">Passez à SIRH Pro</p>
+          <p class="text-sm text-gray-500 dark:text-gray-400 mb-3">IA RH, géolocalisation, journal d'audit, API mobile. Facturation au prorata immédiate.</p>
+          <%= button_to "Passer à SIRH Pro →", upgrade_billing_path,
+              method: :post,
+              class: "px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold rounded-xl transition-colors",
+              data: { turbo_confirm: "Passer à SIRH Pro ? La différence de prix sera facturée immédiatement au prorata." } %>
+        </div>
+      <% end %>
+
+      <!-- Demande upgrade OS → SIRH -->
+      <% if @billing.upgrade_requires_contact? && !@subscription.upgrade_pending? %>
+        <div class="mt-4 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-xl">
+          <p class="text-sm font-semibold text-gray-800 dark:text-gray-200 mb-1">Passer au SIRH complet</p>
+          <p class="text-sm text-gray-500 dark:text-gray-400 mb-3">Congés, pointage, paie, analytics. Notre équipe vous contactera pour configurer votre espace SIRH.</p>
+          <%= button_to "Demander le passage au SIRH →", request_upgrade_billing_path,
+              method: :post,
+              class: "px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-xl transition-colors" %>
+        </div>
+      <% end %>
+
+      <% if @subscription.upgrade_pending? %>
+        <div class="mt-4 p-4 bg-yellow-50 dark:bg-yellow-900/20 rounded-xl">
+          <p class="text-sm text-yellow-800 dark:text-yellow-300">
+            ⏳ Demande de passage au SIRH en cours — notre équipe vous contactera sous 24h.
+          </p>
+        </div>
+      <% end %>
+
+      <!-- Résiliation -->
+      <% if @subscription.can_cancel? && !@subscription.cancel_at_period_end %>
+        <div class="mt-6 pt-4 border-t border-gray-100 dark:border-gray-700">
+          <%= button_to "Résilier l'abonnement", cancel_billing_path,
+              method: :delete,
+              class: "text-sm text-red-500 hover:text-red-700 underline",
+              data: { turbo_confirm: "Résilier votre abonnement à la fin de la période en cours ?" } %>
+        </div>
+      <% elsif @subscription.committed? %>
+        <p class="mt-4 text-xs text-gray-400">
+          Résiliation disponible à partir du <%= @subscription.commitment_end_at.strftime("%d/%m/%Y") %>.
+        </p>
+      <% end %>
+    </div>
+
+  <% elsif @org.trial_expired? || @subscription.nil? || @subscription.canceled? %>
+    <!-- Pas d'abonnement : tunnel de souscription -->
+    <div class="mb-6 p-4 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-700 rounded-xl">
+      <p class="text-sm text-amber-800 dark:text-amber-300 font-semibold mb-1">Votre période d'essai est terminée.</p>
+      <p class="text-sm text-amber-700 dark:text-amber-400">Choisissez un plan pour continuer à utiliser Izi-RH. Engagement 1 an, puis sans engagement.</p>
+    </div>
+
+    <div class="grid sm:grid-cols-3 gap-4">
+      <!-- Manager OS -->
+      <div class="p-6 bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-700">
+        <h3 class="text-base font-bold text-gray-900 dark:text-white mb-1">Manager OS</h3>
+        <p class="text-xs text-gray-500 dark:text-gray-400 mb-4">Onboarding, 1:1, OKR, Formation</p>
+        <p class="text-3xl font-extrabold text-indigo-600 mb-1">19 €<span class="text-sm font-normal text-gray-500">/mois</span></p>
+        <p class="text-xs text-gray-400 mb-5">+2 €/employé au-delà de 10</p>
+        <%= button_to "Choisir ce plan", create_checkout_billing_path, params: { plan: "manager_os" },
+            method: :post,
+            class: "w-full text-center py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold rounded-xl transition-colors" %>
+      </div>
+
+      <!-- SIRH Essentiel -->
+      <div class="p-6 bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-700">
+        <h3 class="text-base font-bold text-gray-900 dark:text-white mb-1">SIRH Essentiel</h3>
+        <p class="text-xs text-gray-500 dark:text-gray-400 mb-4">Manager OS + Temps & Congés</p>
+        <p class="text-3xl font-extrabold text-indigo-600 mb-1">59 €<span class="text-sm font-normal text-gray-500">/mois</span></p>
+        <p class="text-xs text-gray-400 mb-5">+4 €/employé au-delà de 10</p>
+        <%= button_to "Choisir ce plan", create_checkout_billing_path, params: { plan: "sirh_essential" },
+            method: :post,
+            class: "w-full text-center py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold rounded-xl transition-colors" %>
+      </div>
+
+      <!-- SIRH Pro -->
+      <div class="p-6 bg-gray-900 dark:bg-gray-900 rounded-2xl border border-gray-700 text-white relative">
+        <span class="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-0.5 bg-violet-600 text-white text-xs font-bold rounded-full">Complet</span>
+        <h3 class="text-base font-bold text-white mb-1">SIRH Pro</h3>
+        <p class="text-xs text-gray-400 mb-4">Tout SIRH + IA RH & audit</p>
+        <p class="text-3xl font-extrabold text-white mb-1">159 €<span class="text-sm font-normal text-gray-400">/mois</span></p>
+        <p class="text-xs text-gray-500 mb-5">+6 €/employé au-delà de 20</p>
+        <%= button_to "Choisir ce plan", create_checkout_billing_path, params: { plan: "sirh_pro" },
+            method: :post,
+            class: "w-full text-center py-2 border border-gray-500 text-gray-200 hover:bg-gray-700 text-sm font-semibold rounded-xl transition-colors" %>
+      </div>
+    </div>
+
+    <p class="mt-4 text-xs text-center text-gray-400">Engagement 1 an · puis mensuel sans engagement · TVA non applicable, art. 293 B du CGI</p>
+  <% end %>
+
+</div>

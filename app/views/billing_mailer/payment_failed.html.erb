@@ -1,0 +1,5 @@
+<p>Bonjour <%= @employee.first_name %>,</p>
+<p>Le paiement de votre abonnement Izi-RH pour l'organisation <strong><%= @org.name %></strong> a échoué.</p>
+<p>Veuillez mettre à jour votre moyen de paiement pour éviter une interruption de service :</p>
+<p><a href="<%= billing_url(host: ENV.fetch('APP_HOST', 'izi-rh.com'), protocol: 'https') %>" style="background:#4F46E5;color:white;padding:12px 24px;border-radius:6px;text-decoration:none;display:inline-block;">Mettre à jour le paiement</a></p>
+<p>— L'équipe Izi-RH</p>
