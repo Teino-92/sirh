@@ -140,6 +140,15 @@
       </div>
     <% end %>
 
+    <% manager_readonly = current_employee.manager? && !current_employee.hr_or_admin? %>
+
+    <% if manager_readonly %>
+      <div class="mb-6 p-4 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-700 rounded-xl flex items-start gap-3">
+        <svg class="w-5 h-5 text-amber-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        <p class="text-sm text-amber-800 dark:text-amber-300">Pour souscrire un abonnement, veuillez contacter votre <strong>Admin RH</strong>.</p>
+      </div>
+    <% end %>
+
     <div class="grid sm:grid-cols-3 gap-4">
       <!-- Manager OS -->
       <div class="p-6 bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-700">
@@ -147,9 +156,11 @@
         <p class="text-xs text-gray-500 dark:text-gray-400 mb-4">Onboarding, 1:1, OKR, Formation</p>
         <p class="text-3xl font-extrabold text-indigo-600 mb-1">19 €<span class="text-sm font-normal text-gray-500">/mois</span></p>
         <p class="text-xs text-gray-400 mb-5">+2 €/employé au-delà de 10</p>
-        <%= button_to "Choisir ce plan", create_checkout_billing_path, params: { plan: "manager_os" },
-            method: :post,
-            class: "w-full text-center py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold rounded-xl transition-colors" %>
+        <% unless manager_readonly %>
+          <%= button_to "Choisir ce plan", create_checkout_billing_path, params: { plan: "manager_os" },
+              method: :post,
+              class: "w-full text-center py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold rounded-xl transition-colors" %>
+        <% end %>
       </div>
 
       <!-- SIRH Essentiel -->
@@ -158,9 +169,11 @@
         <p class="text-xs text-gray-500 dark:text-gray-400 mb-4">Manager OS + Temps & Congés</p>
         <p class="text-3xl font-extrabold text-indigo-600 mb-1">59 €<span class="text-sm font-normal text-gray-500">/mois</span></p>
         <p class="text-xs text-gray-400 mb-5">+4 €/employé au-delà de 10</p>
-        <%= button_to "Choisir ce plan", create_checkout_billing_path, params: { plan: "sirh_essential" },
-            method: :post,
-            class: "w-full text-center py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold rounded-xl transition-colors" %>
+        <% unless manager_readonly %>
+          <%= button_to "Choisir ce plan", create_checkout_billing_path, params: { plan: "sirh_essential" },
+              method: :post,
+              class: "w-full text-center py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold rounded-xl transition-colors" %>
+        <% end %>
       </div>
 
       <!-- SIRH Pro -->
@@ -170,9 +183,11 @@
         <p class="text-xs text-gray-400 mb-4">Tout SIRH + IA RH & audit<br>&nbsp;</p>
         <p class="text-3xl font-extrabold text-white mb-1">159 €<span class="text-sm font-normal text-gray-400">/mois</span></p>
         <p class="text-xs text-gray-500 mb-5">+6 €/employé au-delà de 20</p>
-        <%= button_to "Choisir ce plan", create_checkout_billing_path, params: { plan: "sirh_pro" },
-            method: :post,
-            class: "w-full text-center py-2 border border-gray-500 text-gray-200 hover:bg-gray-700 text-sm font-semibold rounded-xl transition-colors" %>
+        <% unless manager_readonly %>
+          <%= button_to "Choisir ce plan", create_checkout_billing_path, params: { plan: "sirh_pro" },
+              method: :post,
+              class: "w-full text-center py-2 border border-gray-500 text-gray-200 hover:bg-gray-700 text-sm font-semibold rounded-xl transition-colors" %>
+        <% end %>
       </div>
     </div>
 
