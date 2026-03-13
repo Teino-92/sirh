@@ -111,7 +111,7 @@ RSpec.describe 'LeaveRequests locked-period guard', type: :request do
       # Stub: save succeeds (period is open at that moment), but auto_approve! raises
       allow_any_instance_of(LeaveRequest).to receive(:auto_approve!)
         .and_raise(ActiveRecord::RecordInvalid.new(LeaveRequest.new))
-      allow_any_instance_of(LeaveManagement::Services::LeavePolicyEngine)
+      allow_any_instance_of(LeavePolicyEngine)
         .to receive(:can_auto_approve?).and_return(true)
 
       post leave_requests_path, params: {

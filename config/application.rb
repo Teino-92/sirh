@@ -38,8 +38,8 @@ module EasyRh
     config.i18n.available_locales = [:fr, :en]
 
     # Domain-driven design structure
-    # Add domain paths so models are in root namespace (Employee not Employees::Models::Employee)
-    # But services are namespaced (TimeTracking::Services::RttAccrualService)
+    # All domain paths use root namespace — models, services, and webhooks are top-level constants
+    # (e.g. Employee, LeavePolicyEngine, CheckoutCompletedHandler)
     config.autoload_paths += Dir[Rails.root.join('app', 'domains', '*', 'models')]
     config.autoload_paths += Dir[Rails.root.join('app', 'domains', '*', 'services')]
     config.autoload_paths += Dir[Rails.root.join('app', 'domains', '*', 'webhooks')]

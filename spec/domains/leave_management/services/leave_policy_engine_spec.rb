@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe LeaveManagement::Services::LeavePolicyEngine, type: :service do
+RSpec.describe LeavePolicyEngine, type: :service do
   let(:organization) { create(:organization, settings: { 'rtt_enabled' => true }) }
   let(:employee) { create(:employee, organization: organization, start_date: 6.months.ago.to_date) }
   let(:engine) { described_class.new(employee) }

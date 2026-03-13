@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe OneOnOnes::Services::ActionItemTracker do
+RSpec.describe ActionItemTracker do
   let(:organization) { create(:organization) }
   let(:manager) { create(:employee, organization: organization, role: 'manager') }
   let(:employee) { create(:employee, organization: organization, manager: manager) }

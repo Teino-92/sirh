@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Trainings::Services::TrainingTracker do
+RSpec.describe TrainingTracker do
   let(:organization) { create(:organization) }
   let(:manager) { create(:employee, organization: organization, role: 'manager') }
   let(:employee1) { create(:employee, organization: organization, manager: manager) }

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Objectives::Services::ObjectiveTracker do
+RSpec.describe ObjectiveTracker do
   let(:organization) { create(:organization) }
   let(:manager) { create(:employee, organization: organization, role: 'manager') }
   let(:employee) { create(:employee, organization: organization, manager: manager) }

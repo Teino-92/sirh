@@ -453,7 +453,7 @@ RSpec.describe TimeEntry, type: :model do
       it 'triggers RTT accrual calculation when clock_out is set', skip: 'RTT service disabled due to autoload issue' do
         ActsAsTenant.with_tenant(organization) do
           entry = create(:time_entry, :active, employee: employee, organization: organization)
-          expect_any_instance_of(TimeTracking::Services::RttAccrualService).to receive(:calculate_and_accrue_weekly)
+          expect_any_instance_of(RttAccrualService).to receive(:calculate_and_accrue_weekly)
 
           entry.clock_out!(time: Time.current)
         end
