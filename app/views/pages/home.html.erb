@@ -892,6 +892,61 @@ if (document.readyState === 'loading') {
 </main>
 
 <%# ─── FOOTER ──────────────────────────────────────────────────────────────── %>
+<!-- Bandeau cookies -->
+<div x-data="cookieConsent()"
+     x-show="visible"
+     x-transition:enter="transition ease-out duration-300"
+     x-transition:enter-start="opacity-0 translate-y-4"
+     x-transition:enter-end="opacity-100 translate-y-0"
+     x-transition:leave="transition ease-in duration-200"
+     x-transition:leave-start="opacity-100 translate-y-0"
+     x-transition:leave-end="opacity-0 translate-y-4"
+     class="fixed bottom-0 inset-x-0 z-50 p-4 sm:p-6"
+     role="dialog" aria-label="Gestion des cookies" aria-modal="true">
+  <div class="max-w-2xl mx-auto bg-white dark:bg-gray-900 rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700 p-5 sm:p-6">
+    <div class="flex flex-col sm:flex-row sm:items-center gap-4">
+      <div class="flex-1 min-w-0">
+        <p class="text-sm font-semibold text-gray-900 dark:text-white mb-1">🍪 Cookies</p>
+        <p class="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">
+          Izi-RH utilise uniquement des cookies strictement nécessaires au fonctionnement du service (session, sécurité CSRF). Aucun cookie publicitaire ou de tracking tiers n'est déposé.
+          <a href="/politique-de-confidentialite" class="text-indigo-600 dark:text-indigo-400 hover:underline whitespace-nowrap">En savoir plus →</a>
+        </p>
+      </div>
+      <div class="flex flex-shrink-0 gap-3">
+        <button @click="accept()"
+                class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold rounded-xl transition-colors">
+          Accepter
+        </button>
+        <button @click="decline()"
+                class="px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 text-sm font-semibold rounded-xl transition-colors">
+          Refuser
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function cookieConsent() {
+  return {
+    visible: false,
+    init() {
+      if (!localStorage.getItem('cookie_consent')) {
+        setTimeout(() => { this.visible = true; }, 800);
+      }
+    },
+    accept() {
+      localStorage.setItem('cookie_consent', 'accepted');
+      this.visible = false;
+    },
+    decline() {
+      localStorage.setItem('cookie_consent', 'declined');
+      this.visible = false;
+    }
+  }
+}
+</script>
+
 <footer class="mt-4 bg-gray-900 dark:bg-gray-950 text-gray-400 py-12 border-t-4 border-gray-800">
   <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
     <div class="flex flex-col md:flex-row items-center justify-between gap-6">
