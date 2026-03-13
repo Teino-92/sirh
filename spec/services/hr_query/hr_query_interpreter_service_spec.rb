@@ -146,6 +146,7 @@ RSpec.describe HrQuery::HrQueryInterpreterService, type: :service do
 
       before do
         allow(Rails.application.credentials).to receive(:anthropic_api_key).and_return(nil)
+        stub_const('ENV', ENV.to_h.merge('ANTHROPIC_API_KEY' => nil))
       end
 
       it 'returns failure with a configuration error' do

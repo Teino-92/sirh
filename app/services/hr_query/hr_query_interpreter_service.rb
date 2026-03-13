@@ -25,6 +25,7 @@ module HrQuery
     def call
       return Result.new(success: false, filters: nil, error: "Requête vide") if @query.blank?
 
+      api_key # raises HrQueryError if missing, rescued below
       raw_json = fetch_from_api
       filters  = parse_and_validate(raw_json)
 

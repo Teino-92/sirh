@@ -66,4 +66,7 @@ Rails.application.configure do
   config.active_record.encryption.primary_key    = 'test-primary-key-izi-rh-32chars!!'
   config.active_record.encryption.deterministic_key = 'test-deterministic-key-izi-rh-32!'
   config.active_record.encryption.key_derivation_salt = 'test-key-derivation-salt-izi-rh!!'
+
+  # Jobs enqueued but never executed automatically — use have_enqueued_job matcher in specs
+  config.active_job.queue_adapter = :test
 end

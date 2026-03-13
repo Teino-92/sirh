@@ -68,13 +68,37 @@ RSpec.describe EmployeeOnboardingPolicy, type: :policy do
     end
   end
 
-  permissions :index?, :create? do
+  permissions :index? do
     it 'permits HR' do
       expect(subject).to permit(hr, EmployeeOnboarding.new)
     end
 
     it 'permits manager' do
       expect(subject).to permit(manager, EmployeeOnboarding.new)
+    end
+
+    it 'denies plain employee' do
+      expect(subject).not_to permit(employee, EmployeeOnboarding.new)
+    end
+  end
+
+  permissions :create? do
+    it 'permits HR' do
+      expect(subject).to permit(hr, EmployeeOnboarding.new)
+    end
+
+    context 'on Manager OS plan' do
+      let(:organization) { create(:organization, plan: 'manager_os') }
+
+      it 'permits manager' do
+        expect(subject).to permit(manager, EmployeeOnboarding.new)
+      end
+    end
+
+    context 'on SIRH plan' do
+      it 'denies manager' do
+        expect(subject).not_to permit(manager, EmployeeOnboarding.new)
+      end
     end
 
     it 'denies plain employee' do
