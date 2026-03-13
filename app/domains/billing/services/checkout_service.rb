@@ -7,10 +7,11 @@
 class CheckoutService
   Result = Struct.new(:success?, :checkout_url, :error)
 
-  STRIPE_PRICE_IDS = {
-    "manager_os"     => ENV["STRIPE_PRICE_MANAGER_OS"],
-    "sirh_essential" => ENV["STRIPE_PRICE_SIRH_ESSENTIAL"],
-    "sirh_pro"       => ENV["STRIPE_PRICE_SIRH_PRO"]
+  # Lookup keys Stripe — indépendants des price IDs, portables entre test et prod
+  STRIPE_LOOKUP_KEYS = {
+    "manager_os"     => "manager_os_monthly",
+    "sirh_essential" => "sirh_essential_monthly",
+    "sirh_pro"       => "sirh_pro_monthly"
   }.freeze
 
   def initialize(organization:, plan:, success_url:, cancel_url:)
@@ -21,7 +22,7 @@ class CheckoutService
   end
 
   def call
-    price_id = STRIPE_PRICE_IDS[@plan]
+    price_id = resolve_price_id
     return Result.new(false, nil, "Plan inconnu : #{@plan}") if price_id.blank?
 
     customer_id = find_or_create_stripe_customer
@@ -34,6 +35,17 @@ class CheckoutService
   end
 
   private
+
+  def resolve_price_id
+    lookup_key = STRIPE_LOOKUP_KEYS[@plan]
+    return nil if lookup_key.blank?
+
+    prices = Stripe::Price.list(lookup_keys: [lookup_key], expand: ["data.product"])
+    prices.data.first&.id
+  rescue Stripe::StripeError => e
+    Rails.logger.error "[CheckoutService] Cannot resolve price for #{@plan}: #{e.message}"
+    nil
+  end
 
   # Atomique : row lock sur l'org pour éviter la création de plusieurs Stripe customers
   def find_or_create_stripe_customer

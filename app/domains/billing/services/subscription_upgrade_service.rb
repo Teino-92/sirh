@@ -12,9 +12,7 @@
 class SubscriptionUpgradeService
   Result = Struct.new(:success?, :error)
 
-  UPGRADE_PRICE = {
-    "sirh_pro" => ENV["STRIPE_PRICE_SIRH_PRO"]
-  }.freeze
+  SIRH_PRO_LOOKUP_KEY = "sirh_pro_monthly"
 
   def initialize(organization:, target_plan:)
     @org         = organization
@@ -43,8 +41,9 @@ class SubscriptionUpgradeService
       return Result.new(false, "Upgrade Pro uniquement disponible depuis le plan Essentiel")
     end
 
-    price_id = UPGRADE_PRICE["sirh_pro"]
-    return Result.new(false, "Prix Stripe Pro non configuré") if price_id.blank?
+    prices   = Stripe::Price.list(lookup_keys: [SIRH_PRO_LOOKUP_KEY])
+    price_id = prices.data.first&.id
+    return Result.new(false, "Prix SIRH Pro introuvable dans Stripe") if price_id.blank?
 
     unless @sub.stripe_subscription_id.present?
       return Result.new(false, "Abonnement Stripe non lié — contactez le support")
