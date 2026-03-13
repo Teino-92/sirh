@@ -5,9 +5,8 @@
 # user   = current_employee (via pundit_user dans ApplicationController)
 
 class BillingPolicy < ApplicationPolicy
-  # Tout employé de l'org peut consulter l'état de l'abonnement
   def show?
-    user.organization_id == record.id
+    user.organization_id == record.id && user.hr_or_admin?
   end
 
   # Seuls HR et Admin peuvent créer un checkout, upgrader ou résilier
@@ -28,6 +27,6 @@ class BillingPolicy < ApplicationPolicy
   end
 
   def success?
-    user.organization_id == record.id
+    user.organization_id == record.id && user.hr_or_admin?
   end
 end
