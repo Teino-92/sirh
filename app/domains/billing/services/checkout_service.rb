@@ -106,7 +106,7 @@ class CheckoutService
       mode:                 "subscription",
       line_items:           [{ price: price_id, quantity: 1 }],
       subscription_data:    subscription_data,
-      payment_method_types: ["card", "sepa_debit"],
+      payment_method_types: ["card"],
       locale:               "fr",
       success_url:          @success_url + "?session_id={CHECKOUT_SESSION_ID}",
       cancel_url:           @cancel_url,
