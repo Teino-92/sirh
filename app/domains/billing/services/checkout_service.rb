@@ -37,6 +37,11 @@ class CheckoutService
   private
 
   def resolve_price_id
+    # 1. Env var directe (STRIPE_PRICE_MANAGER_OS, etc.) — priorité absolue
+    env_key = "STRIPE_PRICE_#{@plan.upcase}"
+    return ENV[env_key] if ENV[env_key].present?
+
+    # 2. Lookup key Stripe (nécessite que les prix soient créés avec ces lookup keys)
     lookup_key = STRIPE_LOOKUP_KEYS[@plan]
     return nil if lookup_key.blank?
 
