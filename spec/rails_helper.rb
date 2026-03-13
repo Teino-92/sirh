@@ -70,6 +70,7 @@ RSpec.configure do |config|
 
   # Devise test helpers
   config.include Devise::Test::IntegrationHelpers, type: :request
+  config.include Devise::Test::ControllerHelpers, type: :controller
 
   # ActiveSupport::Testing::TimeHelpers for time manipulation in tests
   config.include ActiveSupport::Testing::TimeHelpers

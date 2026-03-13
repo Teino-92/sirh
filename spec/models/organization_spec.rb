@@ -490,6 +490,126 @@ RSpec.describe Organization, type: :model do
     end
   end
 
+  describe 'plan helpers' do
+    describe '#manager_os?' do
+      it 'returns true when plan is manager_os' do
+        org = build(:organization, plan: 'manager_os')
+        expect(org.manager_os?).to be true
+      end
+
+      it 'returns false when plan is sirh' do
+        org = build(:organization, plan: 'sirh')
+        expect(org.manager_os?).to be false
+      end
+    end
+
+    describe '#sirh?' do
+      it 'returns true when plan is sirh' do
+        org = build(:organization, plan: 'sirh')
+        expect(org.sirh?).to be true
+      end
+
+      it 'returns false when plan is manager_os' do
+        org = build(:organization, plan: 'manager_os')
+        expect(org.sirh?).to be false
+      end
+    end
+
+    describe '#upgrade_to_sirh!' do
+      it 'upgrades plan to sirh' do
+        org = create(:organization, plan: 'manager_os')
+        org.upgrade_to_sirh!
+        expect(org.reload.plan).to eq('sirh')
+      end
+
+      it 'is idempotent when already sirh' do
+        org = create(:organization, plan: 'sirh')
+        expect { org.upgrade_to_sirh! }.not_to raise_error
+        expect(org.plan).to eq('sirh')
+      end
+    end
+  end
+
+  describe 'trial helpers' do
+    describe '#trial_active?' do
+      it 'returns true when trial_ends_at is in the future' do
+        org = build(:organization, trial_ends_at: 10.days.from_now)
+        expect(org.trial_active?).to be true
+      end
+
+      it 'returns false when trial_ends_at is in the past' do
+        org = build(:organization, trial_ends_at: 1.day.ago)
+        expect(org.trial_active?).to be false
+      end
+
+      it 'returns false when trial_ends_at is nil' do
+        org = build(:organization, trial_ends_at: nil)
+        expect(org.trial_active?).to be false
+      end
+
+      it 'returns false when trial_ends_at is exactly now' do
+        org = build(:organization, trial_ends_at: Time.current - 1.second)
+        expect(org.trial_active?).to be false
+      end
+    end
+
+    describe '#trial_expired?' do
+      it 'returns true when trial_ends_at is in the past' do
+        org = build(:organization, trial_ends_at: 1.day.ago)
+        expect(org.trial_expired?).to be true
+      end
+
+      it 'returns false when trial_ends_at is in the future' do
+        org = build(:organization, trial_ends_at: 10.days.from_now)
+        expect(org.trial_expired?).to be false
+      end
+
+      it 'returns false when trial_ends_at is nil' do
+        org = build(:organization, trial_ends_at: nil)
+        expect(org.trial_expired?).to be false
+      end
+    end
+
+    describe '#trial_days_remaining' do
+      it 'returns number of days remaining' do
+        org = build(:organization, trial_ends_at: 7.days.from_now)
+        expect(org.trial_days_remaining).to eq(7)
+      end
+
+      it 'returns 0 when trial is expired' do
+        org = build(:organization, trial_ends_at: 1.day.ago)
+        expect(org.trial_days_remaining).to eq(0)
+      end
+
+      it 'returns nil when trial_ends_at is nil' do
+        org = build(:organization, trial_ends_at: nil)
+        expect(org.trial_days_remaining).to be_nil
+      end
+
+      it 'returns 1 on the last day' do
+        org = build(:organization, trial_ends_at: 1.day.from_now)
+        expect(org.trial_days_remaining).to eq(1)
+      end
+    end
+
+    describe '#trial_ends_in_days?' do
+      it 'returns true when trial ends exactly in given days' do
+        org = build(:organization, trial_ends_at: 7.days.from_now)
+        expect(org.trial_ends_in_days?(7)).to be true
+      end
+
+      it 'returns false when trial ends on a different day' do
+        org = build(:organization, trial_ends_at: 5.days.from_now)
+        expect(org.trial_ends_in_days?(7)).to be false
+      end
+
+      it 'returns false when trial_ends_at is nil' do
+        org = build(:organization, trial_ends_at: nil)
+        expect(org.trial_ends_in_days?(7)).to be false
+      end
+    end
+  end
+
   describe 'settings migration and versioning' do
     it 'preserves unknown settings for backward compatibility' do
       org = create(:organization, settings: { 'future_setting' => 'value' })
