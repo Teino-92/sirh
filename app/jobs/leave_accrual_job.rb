@@ -48,7 +48,7 @@ class LeaveAccrualJob < ApplicationJob
   def process_employee(employee, organization)
     ActiveRecord::Base.transaction do
       # Calculer l'acquisition mensuelle via le moteur de conformité
-      engine = LeaveManagement::Services::LeavePolicyEngine.new(employee)
+      engine = LeavePolicyEngine.new(employee)
       monthly_accrual = engine.get_setting(:cp_acquisition_rate)
 
       # Ajuster pour temps partiel si applicable

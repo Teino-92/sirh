@@ -76,7 +76,7 @@ class RttAccrualJob < ApplicationJob
     return 0 if total_hours.zero?
 
     # Utiliser le moteur de conformité pour calculer les RTT
-    engine = LeaveManagement::Services::LeavePolicyEngine.new(employee)
+    engine = LeavePolicyEngine.new(employee)
     rtt_threshold = engine.get_setting(:rtt_calculation_threshold)
 
     # Heures au-delà du seuil (généralement 35h/semaine)

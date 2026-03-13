@@ -24,7 +24,7 @@ module Api
     # POST /api/v1/leave_requests
     def create
       # Calculate working days
-      policy_engine = LeaveManagement::Services::LeavePolicyEngine.new(current_employee)
+      policy_engine = LeavePolicyEngine.new(current_employee)
       working_days = policy_engine.calculate_working_days(
         leave_params[:start_date].to_date,
         leave_params[:end_date].to_date

@@ -38,7 +38,7 @@ class OrganizationRttAccrualJob < ApplicationJob
     total_hours   = total_minutes / 60.0
     return if total_hours.zero?
 
-    engine          = LeaveManagement::Services::LeavePolicyEngine.new(employee)
+    engine          = LeavePolicyEngine.new(employee)
     rtt_threshold   = engine.get_setting(:rtt_calculation_threshold)
     overtime_hours  = [total_hours - rtt_threshold, 0].max
     return if overtime_hours.zero?

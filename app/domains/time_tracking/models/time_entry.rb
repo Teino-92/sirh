@@ -170,7 +170,7 @@ class TimeEntry < ApplicationRecord
     # This will be handled by a background job in production
     return unless saved_change_to_clock_out? && completed?
 
-    TimeTracking::Services::RttAccrualService.new(employee).calculate_and_accrue_weekly
+    RttAccrualService.new(employee).calculate_and_accrue_weekly
   end
 
   def employee_belongs_to_same_organization

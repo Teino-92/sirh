@@ -30,7 +30,7 @@ class OrganizationLeaveAccrualJob < ApplicationJob
 
   def process_employee(employee, organization)
     ActiveRecord::Base.transaction do
-      engine          = LeaveManagement::Services::LeavePolicyEngine.new(employee)
+      engine          = LeavePolicyEngine.new(employee)
       monthly_accrual = engine.get_setting(:cp_acquisition_rate)
 
       if employee.respond_to?(:part_time_ratio) && employee.part_time_ratio.present? && employee.part_time_ratio < 1.0

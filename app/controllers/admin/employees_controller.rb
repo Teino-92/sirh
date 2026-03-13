@@ -38,7 +38,7 @@ module Admin
 
       if @employee.save
         # Initialize leave balances
-        LeaveManagement::Services::LeaveBalanceInitializer.new(@employee).initialize_balances
+        LeaveBalanceInitializer.new(@employee).initialize_balances
 
         respond_to do |format|
           format.html { redirect_to admin_employee_path(@employee), notice: 'Employé créé avec succès.' }

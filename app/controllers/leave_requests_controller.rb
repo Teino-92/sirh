@@ -31,7 +31,7 @@ class LeaveRequestsController < ApplicationController
     end_date = leave_request_params[:end_date].to_date
 
     # Initialize LeavePolicyEngine for the employee
-    policy_engine = LeaveManagement::Services::LeavePolicyEngine.new(current_employee)
+    policy_engine = LeavePolicyEngine.new(current_employee)
 
     # Calculate working days with French legal compliance
     working_days = policy_engine.calculate_working_days(start_date, end_date)

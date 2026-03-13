@@ -1,11 +1,9 @@
 # frozen_string_literal: true
 
-module LeaveManagement
-  module Services
-    # French Legal Compliance Engine for Leave Policies
+# French Legal Compliance Engine for Leave Policies
     # Implements French labor law (Code du travail) for leave management
     # Supports cascading rules: Employee Contract → Organization → Collective Agreement → Legal Defaults
-    class LeavePolicyEngine
+class LeavePolicyEngine
       # French legal defaults (Code du travail)
       # These are BASE minimums that can be overridden by:
       # 1. Convention collective (collective agreement)
@@ -309,6 +307,4 @@ module LeaveManagement
           get_setting(:cp_acquisition_rate)
         end
       end
-    end
-  end
 end
