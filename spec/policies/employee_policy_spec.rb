@@ -12,6 +12,55 @@ RSpec.describe EmployeePolicy, type: :policy do
 
   subject { described_class }
 
+  describe 'Scope' do
+    before { create_list(:employee, 2, organization: organization) }
+
+    context 'as HR' do
+      it 'returns all employees in the organization' do
+        resolved = EmployeePolicy::Scope.new(hr, Employee).resolve
+        expect(resolved).to include(manager, subordinate, peer_employee)
+      end
+    end
+
+    context 'as admin' do
+      it 'returns all employees' do
+        resolved = EmployeePolicy::Scope.new(admin, Employee).resolve
+        expect(resolved).to include(manager, subordinate)
+      end
+    end
+
+    context 'as manager' do
+      it 'returns themselves and their direct reports' do
+        resolved = EmployeePolicy::Scope.new(manager, Employee).resolve
+        expect(resolved).to include(manager, subordinate)
+        expect(resolved).not_to include(peer_employee)
+      end
+    end
+
+    context 'as plain employee' do
+      it 'returns only themselves' do
+        resolved = EmployeePolicy::Scope.new(peer_employee, Employee).resolve
+        expect(resolved).to include(peer_employee)
+        expect(resolved).not_to include(subordinate)
+        expect(resolved).not_to include(manager)
+      end
+    end
+  end
+
+  permissions :show? do
+    it 'permits the employee to view their own profile' do
+      expect(subject).to permit(subordinate, subordinate)
+    end
+
+    it 'denies viewing another employee profile' do
+      expect(subject).not_to permit(subordinate, peer_employee)
+    end
+
+    it 'denies manager from viewing a subordinate directly' do
+      expect(subject).not_to permit(manager, subordinate)
+    end
+  end
+
   # edit? et update? sont limités à soi-même (hors Admin::BaseController qui restreint déjà à hr_or_admin?)
   permissions :edit?, :update? do
     it 'permits the employee on their own record' do
