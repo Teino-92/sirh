@@ -77,6 +77,11 @@ Rails.application.configure do
     protocol: 'https'
   }
 
+  config.action_controller.default_url_options = {
+    host: ENV.fetch('APP_HOST', 'izi-rh.com'),
+    protocol: 'https'
+  }
+
   # SMTP settings (Resend or any SMTP provider)
   smtp_port = ENV.fetch('SMTP_PORT', 465).to_i
   config.action_mailer.smtp_settings = {
