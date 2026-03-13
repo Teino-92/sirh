@@ -21,7 +21,7 @@ class BillingsController < ApplicationController
     result = CheckoutService.new(
       organization: @org,
       plan:         plan,
-      success_url:  billing_success_url,
+      success_url:  success_billing_url,
       cancel_url:   billing_path
     ).call
 
