@@ -131,7 +131,7 @@
       <% end %>
     </div>
 
-  <% elsif @org.trial_expired? || @subscription.nil? || @subscription.canceled? %>
+  <% elsif @org.trial_expired? || @org.trial_ends_at.nil? || @subscription.nil? || @subscription.canceled? || @subscription&.status == "incomplete" %>
     <!-- Tunnel de souscription (trial expiré, ou pas d'abonnement) -->
     <% if @org.trial_expired? %>
       <div class="mb-6 p-4 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-700 rounded-xl">
