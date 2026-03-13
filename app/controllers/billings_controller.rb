@@ -21,8 +21,8 @@ class BillingsController < ApplicationController
     result = CheckoutService.new(
       organization: @org,
       plan:         plan,
-      success_url:  success_billing_url,
-      cancel_url:   billing_path
+      success_url:  success_billing_url(host: ENV.fetch("APP_HOST", "izi-rh.com"), protocol: "https"),
+      cancel_url:   billing_url(host: ENV.fetch("APP_HOST", "izi-rh.com"), protocol: "https")
     ).call
 
     if result.success?
