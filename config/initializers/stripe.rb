@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 Stripe.api_key = ENV["STRIPE_SECRET_KEY"]
-Stripe.api_version = "2024-06-20"
+Stripe.api_version = "2026-02-25.clover"
 
 # Validation au boot du serveur uniquement (pas pendant assets:precompile)
 Rails.application.config.after_initialize do

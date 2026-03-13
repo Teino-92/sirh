@@ -13,7 +13,7 @@ class WebhookProcessor
     invoice.payment_failed
   ].freeze
 
-  Result = Struct.new(:success?, :error)
+  Result = Struct.new(:success?, :error, :signature_failure?)
 
   def initialize(payload:, signature:)
     @payload   = payload
@@ -22,21 +22,21 @@ class WebhookProcessor
 
   def call
     event = verify_signature
-    return Result.new(false, "Signature invalide") unless event
+    return Result.new(false, "Signature invalide", true) unless event
 
-    return Result.new(true, nil) unless HANDLED_EVENTS.include?(event.type)
+    return Result.new(true, nil, false) unless HANDLED_EVENTS.include?(event.type)
 
     handler = handler_for(event)
     handler.call(event)
 
-    Result.new(true, nil)
+    Result.new(true, nil, false)
   rescue Stripe::SignatureVerificationError => e
     Rails.logger.warn "[Webhook] Signature verification failed: #{e.message}"
-    Result.new(false, "Signature invalide")
+    Result.new(false, "Signature invalide", true)
   rescue => e
     Rails.logger.error "[Webhook] Error: #{e.class} — #{e.message}\n#{e.backtrace.first(5).join("\n")}"
-    # Retourner success: false → 400 côté controller → Stripe retry (comportement souhaité)
-    Result.new(false, e.message)
+    # Erreur interne → 500 pour que Stripe retry automatiquement
+    Result.new(false, e.message, false)
   end
 
   private

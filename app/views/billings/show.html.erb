@@ -8,7 +8,7 @@
       <svg class="w-5 h-5 text-indigo-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
       <div>
         <p class="text-sm font-semibold text-indigo-700 dark:text-indigo-300">
-          Essai gratuit — <strong><%= @org.trial_days_remaining %> jour<%= "s" if @org.trial_days_remaining > 1 %> restant<%= "s" if @org.trial_days_remaining > 1 %></strong>
+          Essai gratuit — <strong><%= @org.trial_days_remaining.to_i %> jour<%= "s" if @org.trial_days_remaining.to_i > 1 %> restant<%= "s" if @org.trial_days_remaining.to_i > 1 %></strong>
         </p>
         <p class="text-sm text-indigo-600 dark:text-indigo-400 mt-0.5">
           Souscrivez maintenant pour sécuriser vos données. Votre carte sera enregistrée mais <strong>le paiement ne se déclenchera qu'à la fin de votre essai</strong> (le <%= @org.trial_ends_at.strftime("%d/%m/%Y") %>).

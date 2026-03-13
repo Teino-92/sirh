@@ -3,9 +3,7 @@
 class PaymentSucceededHandler
   def call(event)
     invoice       = event.data.object
-    # Stripe API 2026-02-25+: subscription moved to parent.subscription_details.subscription
-    stripe_sub_id = invoice.respond_to?(:subscription) ? invoice.subscription : nil
-    stripe_sub_id ||= invoice.parent&.subscription_details&.subscription
+    stripe_sub_id = invoice.parent&.subscription_details&.subscription
     return if stripe_sub_id.blank?
 
     sub = Subscription.find_by(stripe_subscription_id: stripe_sub_id)

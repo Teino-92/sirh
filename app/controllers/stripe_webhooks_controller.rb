@@ -23,11 +23,14 @@ class StripeWebhooksController < ActionController::Base
 
     if result.success?
       head :ok
-    else
-      # 400 pour les signatures invalides (Stripe ne retry pas les 400 sur vérif signature)
-      # 500 pour les erreurs internes (Stripe retry automatiquement)
-      Rails.logger.warn "[StripeWebhook] Processing failed: #{result.error}"
+    elsif result.signature_failure?
+      # 400 : signature invalide — Stripe ne retry pas
+      Rails.logger.warn "[StripeWebhook] Signature failure: #{result.error}"
       head :bad_request
+    else
+      # 500 : erreur interne — Stripe retry automatiquement
+      Rails.logger.warn "[StripeWebhook] Internal error: #{result.error}"
+      head :internal_server_error
     end
   end
 end

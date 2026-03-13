@@ -71,6 +71,10 @@ class BillingsController < ApplicationController
       return redirect_to billing_path, alert: "Veuillez renseigner votre nom et votre email."
     end
 
+    unless contact[:contact_email].match?(URI::MailTo::EMAIL_REGEXP)
+      return redirect_to billing_path, alert: "L'adresse email est invalide."
+    end
+
     result = SubscriptionUpgradeService.new(
       organization:    @org,
       target_plan:     "sirh_essential",

@@ -52,7 +52,8 @@ class BillingService
   end
 
   def needs_subscription?
-    @org.trial_expired? && (@subscription.nil? || @subscription.canceled?)
+    @org.trial_expired? &&
+      (@subscription.nil? || @subscription.canceled? || @subscription.incomplete?)
   end
 
   def can_upgrade_to_pro?

@@ -66,8 +66,10 @@ class SubscriptionUpgradeService
       proration_behavior: "always_invoice"
     )
 
-    @sub.update!(plan: "sirh_pro")
-    @org.update!(plan: "sirh")
+    ActiveRecord::Base.transaction do
+      @sub.update!(plan: "sirh_pro")
+      @org.update!(plan: "sirh")
+    end
 
     Result.new(true, nil)
   rescue Stripe::StripeError => e

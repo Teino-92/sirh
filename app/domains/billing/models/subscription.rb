@@ -16,7 +16,6 @@ class Subscription < ApplicationRecord
     active
     past_due
     canceled
-    upgrade_pending
   ].freeze
 
   validates :plan,               inclusion: { in: PLANS }
@@ -41,8 +40,8 @@ class Subscription < ApplicationRecord
     status == "past_due"
   end
 
-  def upgrade_pending?
-    status == "upgrade_pending"
+  def incomplete?
+    status == "incomplete"
   end
 
   def can_cancel?
