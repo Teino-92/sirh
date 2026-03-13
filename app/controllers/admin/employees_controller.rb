@@ -36,10 +36,15 @@ module Admin
       @employee = Employee.new(employee_params)
       @employee.organization = current_employee.organization
 
-      if @employee.save
-        # Initialize leave balances
+      saved = ActiveRecord::Base.transaction do
+        @employee.save!
         LeaveBalanceInitializer.new(@employee).initialize_balances
+        true
+      rescue ActiveRecord::RecordInvalid
+        false
+      end
 
+      if saved
         respond_to do |format|
           format.html { redirect_to admin_employee_path(@employee), notice: 'Employé créé avec succès.' }
           format.turbo_stream
