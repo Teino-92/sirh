@@ -81,6 +81,8 @@ class Employee < ApplicationRecord
   scope :active, -> { where("(settings->>'active') IS NULL OR (settings->>'active') = 'true'") }
   scope :managers, -> { where(role: %w[manager hr admin]) }
   scope :by_department, ->(dept) { where(department: dept) }
+  scope :hr_officers, -> { where(role: 'hr') }
+  scope :covering_department, ->(dept) { where(role: 'hr').where("hr_perimeter @> ARRAY[?]::text[]", dept) }
 
   def full_name
     "#{first_name} #{last_name}"
@@ -100,6 +102,22 @@ class Employee < ApplicationRecord
 
   def hr?
     role == 'hr'
+  end
+
+  # Returns the HR officer(s) covering this employee's department.
+  # Returns nil if no department set or no HR officer covers it.
+  def hr_referent
+    return nil if department.blank?
+    Employee.covering_department(department).first
+  end
+
+  # For HR officers: parsed perimeter as array, settable from a comma-separated string.
+  def hr_perimeter_list
+    (hr_perimeter || []).join(', ')
+  end
+
+  def hr_perimeter_list=(value)
+    self.hr_perimeter = value.to_s.split(',').map(&:strip).reject(&:blank?)
   end
 
   def active?
@@ -127,7 +145,8 @@ class Employee < ApplicationRecord
     'upcoming_leaves'      => ->(_e) { true },
     'my_performance'       => ->(_e) { true },
     'pending_requests'     => ->(_e) { true },
-    'quick_links'          => ->(_e) { true }
+    'quick_links'          => ->(_e) { true },
+    'hr_referent'          => ->(e) { e.department.present? && !e.hr? }
   }.freeze
 
   # GridStack layout: each card has x, y, w, h in grid units (12-column grid).

@@ -48,6 +48,29 @@
             <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Département</dt>
             <dd class="mt-1 text-sm text-gray-900 dark:text-gray-100"><%= @employee.department || '-' %></dd>
           </div>
+          <% if @employee.hr? && @employee.hr_perimeter.any? %>
+          <div>
+            <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Périmètre RH</dt>
+            <dd class="mt-1 flex flex-wrap gap-1">
+              <% @employee.hr_perimeter.each do |dept| %>
+                <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-indigo-100 dark:bg-indigo-900 text-indigo-800 dark:text-indigo-200">
+                  <%= dept %>
+                </span>
+              <% end %>
+            </dd>
+          </div>
+          <% elsif !@employee.hr? && @employee.department.present? %>
+            <% referent = @employee.hr_referent %>
+            <% if referent %>
+            <div>
+              <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Référent RH</dt>
+              <dd class="mt-1 text-sm text-gray-900 dark:text-gray-100">
+                <%= referent.full_name %>
+                <span class="text-gray-400 dark:text-gray-500 text-xs ml-1">— <%= referent.email %></span>
+              </dd>
+            </div>
+            <% end %>
+          <% end %>
         </dl>
       </div>
 

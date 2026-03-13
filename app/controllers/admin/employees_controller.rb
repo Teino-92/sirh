@@ -128,6 +128,7 @@ module Admin
         :start_date,
         :end_date,
         :department,
+        :hr_perimeter_list,
         :job_title,
         :manager_id,
         :avatar,

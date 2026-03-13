@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2026_03_13_115021) do
+ActiveRecord::Schema[7.1].define(version: 2026_03_13_233805) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -31,7 +31,7 @@ ActiveRecord::Schema[7.1].define(version: 2026_03_13_115021) do
     t.index ["objective_id"], name: "index_action_items_on_objective_id"
     t.index ["one_on_one_id"], name: "index_action_items_on_one_on_one_id"
     t.index ["organization_id"], name: "index_action_items_on_organization_id"
-    t.index ["responsible_id", "deadline"], name: "idx_action_items_overdue", where: "((status)::text = ANY ((ARRAY['pending'::character varying, 'in_progress'::character varying])::text[]))"
+    t.index ["responsible_id", "deadline"], name: "idx_action_items_overdue", where: "((status)::text = ANY (ARRAY[('pending'::character varying)::text, ('in_progress'::character varying)::text]))"
     t.index ["responsible_id", "status", "deadline"], name: "idx_action_items_responsible"
     t.index ["responsible_id"], name: "index_action_items_on_responsible_id"
     t.index ["status"], name: "index_action_items_on_status"
@@ -125,9 +125,11 @@ ActiveRecord::Schema[7.1].define(version: 2026_03_13_115021) do
     t.date "trial_period_end"
     t.date "termination_date"
     t.string "termination_reason"
+    t.text "hr_perimeter", default: [], array: true
     t.index ["birth_date"], name: "index_employees_on_birth_date"
     t.index ["department"], name: "index_employees_on_department"
     t.index ["email"], name: "index_employees_on_email", unique: true
+    t.index ["hr_perimeter"], name: "index_employees_on_hr_perimeter", using: :gin
     t.index ["manager_id", "organization_id"], name: "idx_employees_manager_org"
     t.index ["manager_id"], name: "index_employees_on_manager_id"
     t.index ["organization_id", "email"], name: "index_employees_on_organization_id_and_email", unique: true
@@ -272,7 +274,7 @@ ActiveRecord::Schema[7.1].define(version: 2026_03_13_115021) do
     t.datetime "updated_at", null: false
     t.index ["created_by_id"], name: "index_objectives_on_created_by_id"
     t.index ["deadline"], name: "index_objectives_on_deadline"
-    t.index ["manager_id", "deadline"], name: "idx_objectives_overdue", where: "((status)::text = ANY ((ARRAY['draft'::character varying, 'in_progress'::character varying, 'blocked'::character varying])::text[]))"
+    t.index ["manager_id", "deadline"], name: "idx_objectives_overdue", where: "((status)::text = ANY (ARRAY[('draft'::character varying)::text, ('in_progress'::character varying)::text, ('blocked'::character varying)::text]))"
     t.index ["manager_id", "status"], name: "idx_objectives_manager_status"
     t.index ["manager_id"], name: "index_objectives_on_manager_id"
     t.index ["organization_id", "status", "deadline"], name: "idx_objectives_org_status_deadline"
@@ -601,9 +603,9 @@ ActiveRecord::Schema[7.1].define(version: 2026_03_13_115021) do
     t.index ["assigned_by_id", "status"], name: "idx_training_assignments_manager"
     t.index ["assigned_by_id"], name: "index_training_assignments_on_assigned_by_id"
     t.index ["deadline"], name: "index_training_assignments_on_deadline"
-    t.index ["employee_id", "deadline"], name: "idx_training_assignments_overdue", where: "(((status)::text = ANY ((ARRAY['assigned'::character varying, 'in_progress'::character varying])::text[])) AND (deadline IS NOT NULL))"
+    t.index ["employee_id", "deadline"], name: "idx_training_assignments_overdue", where: "(((status)::text = ANY (ARRAY[('assigned'::character varying)::text, ('in_progress'::character varying)::text])) AND (deadline IS NOT NULL))"
     t.index ["employee_id", "status"], name: "idx_training_assignments_employee"
-    t.index ["employee_id", "training_id"], name: "idx_unique_active_assignment", unique: true, where: "((status)::text = ANY ((ARRAY['assigned'::character varying, 'in_progress'::character varying])::text[]))"
+    t.index ["employee_id", "training_id"], name: "idx_unique_active_assignment", unique: true, where: "((status)::text = ANY (ARRAY[('assigned'::character varying)::text, ('in_progress'::character varying)::text]))"
     t.index ["employee_id"], name: "index_training_assignments_on_employee_id"
     t.index ["objective_id"], name: "index_training_assignments_on_objective_id"
     t.index ["status"], name: "index_training_assignments_on_status"
