@@ -37,7 +37,7 @@ class TrialRegistrationService
           last_name:     @last_name,
           email:         @email,
           password:      SecureRandom.hex(16),
-          role:          @plan == 'sirh' ? 'hr' : 'manager',
+          role:          @plan == 'sirh' ? 'hr' : 'admin',
           contract_type: 'CDI',
           start_date:    Date.current
         )
