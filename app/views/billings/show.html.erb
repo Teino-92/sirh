@@ -140,7 +140,7 @@
       </div>
     <% end %>
 
-    <% manager_readonly = current_employee.manager? && !current_employee.hr_or_admin? %>
+    <% manager_readonly = current_employee.manager? && !current_employee.hr_or_admin? && !@org.trial_active? %>
 
     <% if manager_readonly %>
       <div class="mb-6 p-4 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-700 rounded-xl flex items-start gap-3">
