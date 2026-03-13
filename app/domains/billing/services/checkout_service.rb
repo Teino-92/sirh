@@ -81,17 +81,26 @@ class CheckoutService
   end
 
   def create_checkout_session(customer_id, price_id)
+    subscription_data = {
+      metadata: {
+        organization_id:   @org.id,
+        plan:              @plan,
+        commitment_months: 12
+      }
+    }
+
+    # Si l'org est encore en trial avec plus de 60s restantes, ancrer la
+    # facturation à la fin du trial — la CB est enregistrée maintenant,
+    # le premier paiement se déclenche à trial_ends_at.
+    if @org.trial_active? && @org.trial_ends_at.to_i > Time.current.to_i + 60
+      subscription_data[:trial_end] = @org.trial_ends_at.to_i
+    end
+
     Stripe::Checkout::Session.create(
-      customer:   customer_id,
-      mode:       "subscription",
-      line_items: [{ price: price_id, quantity: 1 }],
-      subscription_data: {
-        metadata: {
-          organization_id:   @org.id,
-          plan:              @plan,
-          commitment_months: 12
-        }
-      },
+      customer:             customer_id,
+      mode:                 "subscription",
+      line_items:           [{ price: price_id, quantity: 1 }],
+      subscription_data:    subscription_data,
       payment_method_types: ["card", "sepa_debit"],
       locale:               "fr",
       success_url:          @success_url + "?session_id={CHECKOUT_SESSION_ID}",

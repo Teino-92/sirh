@@ -14,10 +14,13 @@ class SubscriptionUpgradeService
 
   SIRH_PRO_LOOKUP_KEY = "sirh_pro_monthly"
 
-  def initialize(organization:, target_plan:)
-    @org         = organization
-    @sub         = organization.subscription
-    @target_plan = target_plan
+  def initialize(organization:, target_plan:, contact_name: nil, contact_email: nil, contact_message: nil)
+    @org             = organization
+    @sub             = organization.subscription
+    @target_plan     = target_plan
+    @contact_name    = contact_name
+    @contact_email   = contact_email
+    @contact_message = contact_message
   end
 
   def call
@@ -72,19 +75,20 @@ class SubscriptionUpgradeService
     Result.new(false, e.message)
   end
 
-  # Upgrade OS → SIRH : nécessite intervention admin
+  # Upgrade OS → SIRH : envoie un email de contact à l'équipe Izi-RH
+  # Pas de mutation de state en base — un admin Izi-RH configure manuellement.
   def request_admin_upgrade
     unless @sub.manager_os?
       return Result.new(false, "Cette demande ne s'applique qu'au plan Manager OS")
     end
 
-    @sub.update!(status: "upgrade_pending")
-
-    # Notifier les admins via email
-    AdminUpgradeMailer.upgrade_requested(@org).deliver_later
+    AdminUpgradeMailer.upgrade_requested(
+      @org,
+      contact_name:    @contact_name,
+      contact_email:   @contact_email,
+      contact_message: @contact_message
+    ).deliver_later
 
     Result.new(true, nil)
-  rescue ActiveRecord::RecordInvalid => e
-    Result.new(false, e.message)
   end
 end

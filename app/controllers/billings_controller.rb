@@ -57,7 +57,7 @@ class BillingsController < ApplicationController
     end
   end
 
-  # POST /billing/request_upgrade — demande OS → SIRH (contact admin)
+  # POST /billing/request_upgrade — demande OS → SIRH (modal de contact)
   def request_upgrade
     billing = BillingService.new(@org)
 
@@ -65,9 +65,18 @@ class BillingsController < ApplicationController
       return redirect_to billing_path, alert: "Cette action n'est pas disponible."
     end
 
+    contact = params.permit(:contact_name, :contact_email, :contact_message)
+
+    if contact[:contact_name].blank? || contact[:contact_email].blank?
+      return redirect_to billing_path, alert: "Veuillez renseigner votre nom et votre email."
+    end
+
     result = SubscriptionUpgradeService.new(
-      organization: @org,
-      target_plan:  "sirh_essential"
+      organization:    @org,
+      target_plan:     "sirh_essential",
+      contact_name:    contact[:contact_name],
+      contact_email:   contact[:contact_email],
+      contact_message: contact[:contact_message]
     ).call
 
     if result.success?

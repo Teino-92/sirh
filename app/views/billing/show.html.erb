@@ -3,13 +3,17 @@
 <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
 
   <% if @org.trial_active? %>
-    <!-- Trial encore actif : aperçu billing -->
-    <div class="mb-8 p-4 bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-200 dark:border-indigo-700 rounded-xl flex items-center gap-3">
-      <svg class="w-5 h-5 text-indigo-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-      <p class="text-sm text-indigo-700 dark:text-indigo-300">
-        Essai gratuit — <strong><%= @org.trial_days_remaining %> jour<%= "s" if @org.trial_days_remaining > 1 %> restant<%= "s" if @org.trial_days_remaining > 1 %></strong>.
-        Souscrivez avant la fin pour ne pas perdre vos données.
-      </p>
+    <!-- Trial encore actif -->
+    <div class="mb-8 p-4 bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-200 dark:border-indigo-700 rounded-xl flex items-start gap-3">
+      <svg class="w-5 h-5 text-indigo-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+      <div>
+        <p class="text-sm font-semibold text-indigo-700 dark:text-indigo-300">
+          Essai gratuit — <strong><%= @org.trial_days_remaining %> jour<%= "s" if @org.trial_days_remaining > 1 %> restant<%= "s" if @org.trial_days_remaining > 1 %></strong>
+        </p>
+        <p class="text-sm text-indigo-600 dark:text-indigo-400 mt-0.5">
+          Souscrivez maintenant pour sécuriser vos données. Votre carte sera enregistrée mais <strong>le paiement ne se déclenchera qu'à la fin de votre essai</strong> (le <%= @org.trial_ends_at.strftime("%d/%m/%Y") %>).
+        </p>
+      </div>
     </div>
   <% end %>
 
@@ -58,22 +62,57 @@
         </div>
       <% end %>
 
-      <!-- Demande upgrade OS → SIRH -->
-      <% if @billing.upgrade_requires_contact? && !@subscription.upgrade_pending? %>
+      <!-- Demande upgrade OS → SIRH : modal de contact -->
+      <% if @billing.upgrade_requires_contact? %>
         <div class="mt-4 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-xl">
           <p class="text-sm font-semibold text-gray-800 dark:text-gray-200 mb-1">Passer au SIRH complet</p>
           <p class="text-sm text-gray-500 dark:text-gray-400 mb-3">Congés, pointage, paie, analytics. Notre équipe vous contactera pour configurer votre espace SIRH.</p>
-          <%= button_to "Demander le passage au SIRH →", request_upgrade_billing_path,
-              method: :post,
-              class: "px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-xl transition-colors" %>
+          <button type="button"
+                  onclick="document.getElementById('upgrade-modal').classList.remove('hidden')"
+                  class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-xl transition-colors">
+            Nous contacter pour l'upgrade →
+          </button>
         </div>
-      <% end %>
 
-      <% if @subscription.upgrade_pending? %>
-        <div class="mt-4 p-4 bg-yellow-50 dark:bg-yellow-900/20 rounded-xl">
-          <p class="text-sm text-yellow-800 dark:text-yellow-300">
-            ⏳ Demande de passage au SIRH en cours — notre équipe vous contactera sous 24h.
-          </p>
+        <!-- Modal de contact upgrade -->
+        <div id="upgrade-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">
+          <div class="bg-white dark:bg-gray-900 rounded-2xl shadow-xl w-full max-w-md p-6">
+            <div class="flex items-center justify-between mb-4">
+              <h2 class="text-lg font-bold text-gray-900 dark:text-white">Passer au SIRH complet</h2>
+              <button type="button" onclick="document.getElementById('upgrade-modal').classList.add('hidden')" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+              </button>
+            </div>
+            <p class="text-sm text-gray-500 dark:text-gray-400 mb-5">Notre équipe vous contactera sous 24h pour configurer votre premier compte admin RH et migrer votre espace.</p>
+            <%= form_with url: request_upgrade_billing_path, method: :post, class: "space-y-4" do |f| %>
+              <div>
+                <label class="block text-xs font-semibold text-gray-600 dark:text-gray-400 mb-1">Votre nom</label>
+                <%= f.text_field :contact_name, value: current_employee.full_name,
+                    class: "w-full px-3 py-2 text-sm border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500",
+                    required: true %>
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-gray-600 dark:text-gray-400 mb-1">Votre email</label>
+                <%= f.email_field :contact_email, value: current_employee.email,
+                    class: "w-full px-3 py-2 text-sm border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500",
+                    required: true %>
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-gray-600 dark:text-gray-400 mb-1">Message <span class="font-normal text-gray-400">(optionnel)</span></label>
+                <%= f.text_area :contact_message, rows: 3,
+                    placeholder: "Dites-nous en plus sur vos besoins...",
+                    class: "w-full px-3 py-2 text-sm border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none" %>
+              </div>
+              <div class="flex gap-3 pt-2">
+                <button type="button" onclick="document.getElementById('upgrade-modal').classList.add('hidden')"
+                        class="flex-1 py-2 text-sm font-semibold text-gray-600 dark:text-gray-400 border border-gray-200 dark:border-gray-700 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+                  Annuler
+                </button>
+                <%= f.submit "Envoyer la demande →",
+                    class: "flex-1 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-xl transition-colors cursor-pointer" %>
+              </div>
+            <% end %>
+          </div>
         </div>
       <% end %>
 
@@ -92,12 +131,14 @@
       <% end %>
     </div>
 
-  <% elsif @org.trial_expired? || @subscription.nil? || @subscription.canceled? %>
-    <!-- Pas d'abonnement : tunnel de souscription -->
-    <div class="mb-6 p-4 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-700 rounded-xl">
-      <p class="text-sm text-amber-800 dark:text-amber-300 font-semibold mb-1">Votre période d'essai est terminée.</p>
-      <p class="text-sm text-amber-700 dark:text-amber-400">Choisissez un plan pour continuer à utiliser Izi-RH. Engagement 1 an, puis sans engagement.</p>
-    </div>
+  <% elsif @org.trial_active? || @org.trial_expired? || @subscription.nil? || @subscription.canceled? %>
+    <!-- Tunnel de souscription (trial actif ou expiré, ou pas d'abonnement) -->
+    <% unless @org.trial_active? %>
+      <div class="mb-6 p-4 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-700 rounded-xl">
+        <p class="text-sm text-amber-800 dark:text-amber-300 font-semibold mb-1">Votre période d'essai est terminée.</p>
+        <p class="text-sm text-amber-700 dark:text-amber-400">Choisissez un plan pour continuer à utiliser Izi-RH. Engagement 1 an, puis sans engagement.</p>
+      </div>
+    <% end %>
 
     <div class="grid sm:grid-cols-3 gap-4">
       <!-- Manager OS -->

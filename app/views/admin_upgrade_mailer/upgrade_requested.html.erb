@@ -1,6 +1,18 @@
-<p>Demande d'upgrade SIRH reçue.</p>
-<p><strong>Organisation :</strong> <%= @org.name %> (ID: <%= @org.id %>)</p>
-<p><strong>Plan actuel :</strong> Manager OS</p>
-<p><strong>Plan demandé :</strong> SIRH Essentiel</p>
-<p>Action requise : créer un nouvel abonnement SIRH pour cette organisation depuis le dashboard Stripe ou le panel admin.</p>
-<p><a href="<%= admin_organization_url(host: ENV.fetch('APP_HOST', 'izi-rh.com'), protocol: 'https') %>">Ouvrir le panel admin →</a></p>
+<p>Nouvelle demande de passage au SIRH complet.</p>
+
+<table style="border-collapse:collapse;margin-top:16px;">
+  <tr><td style="padding:4px 12px 4px 0;color:#6b7280;font-size:14px;">Organisation</td><td style="font-weight:600;"><%= @org.name %> (ID&nbsp;: <%= @org.id %>)</td></tr>
+  <tr><td style="padding:4px 12px 4px 0;color:#6b7280;font-size:14px;">Contact</td><td><%= @contact_name.presence || "—" %></td></tr>
+  <tr><td style="padding:4px 12px 4px 0;color:#6b7280;font-size:14px;">Email</td><td><%= @contact_email.presence || "—" %></td></tr>
+  <tr><td style="padding:4px 12px 4px 0;color:#6b7280;font-size:14px;">Plan actuel</td><td>Manager OS</td></tr>
+  <tr><td style="padding:4px 12px 4px 0;color:#6b7280;font-size:14px;">Plan demandé</td><td>SIRH Essentiel</td></tr>
+</table>
+
+<% if @contact_message.present? %>
+  <p style="margin-top:16px;font-size:14px;color:#374151;"><strong>Message :</strong></p>
+  <p style="background:#f9fafb;padding:12px;border-radius:6px;font-size:14px;color:#374151;"><%= @contact_message %></p>
+<% end %>
+
+<p style="margin-top:24px;">
+  <a href="<%= admin_organization_url(host: ENV.fetch('APP_HOST', 'izi-rh.com'), protocol: 'https') %>" style="background:#4f46e5;color:white;padding:8px 16px;border-radius:6px;text-decoration:none;font-size:14px;">Ouvrir le panel admin →</a>
+</p>
