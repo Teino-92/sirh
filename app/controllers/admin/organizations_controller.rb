@@ -47,7 +47,8 @@ module Admin
           :calendar_webhook_url,
           :calendar_provider,
           :payroll_webhook_url,
-          :payroll_webhook_secret
+          :payroll_webhook_secret,
+          :convention_collective
         ]
       )
       # Do not overwrite an existing secret with a blank submission

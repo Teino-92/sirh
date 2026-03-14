@@ -132,6 +132,7 @@ module Admin
         :job_title,
         :manager_id,
         :avatar,
+        :address,
         :gross_salary_eur,
         :variable_pay_eur,
         :employer_charges_rate,

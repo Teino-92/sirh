@@ -61,6 +61,9 @@ class DashboardController < ApplicationController
     # HR/Admin: company-wide overview (SIRH only)
     load_hr_overview_data if @employee.hr_or_admin? && @employee.organization.sirh?
 
+    # Manager in SIRH: team-scoped absences today
+    load_manager_absences_today if @employee.manager? && !@employee.hr_or_admin? && @employee.organization.sirh?
+
     # Manager OS: team-scoped overview (active onboardings)
     load_manager_os_data if @employee.organization.manager_os?
   end
@@ -194,5 +197,17 @@ class DashboardController < ApplicationController
       .active
       .includes(:employee, :manager, :onboarding_tasks)
       .order(:start_date)
+  end
+
+  def load_manager_absences_today
+    today           = Date.current
+    team_member_ids = @employee.team_members.pluck(:id)
+    @absences_today = LeaveRequest
+      .where(organization: @employee.organization)
+      .where(employee_id: team_member_ids)
+      .where(status: %w[approved auto_approved])
+      .where('start_date <= ? AND end_date >= ?', today, today)
+      .includes(:employee)
+      .order(:leave_type)
   end
 end

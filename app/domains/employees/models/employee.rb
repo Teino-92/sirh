@@ -138,7 +138,7 @@ class Employee < ApplicationRecord
     'pending_approvals'    => ->(e) { e.manager? },
     'team_performance'     => ->(e) { e.manager? },
     'upcoming_one_on_ones' => ->(e) { e.manager? },
-    'absences_today'       => ->(e) { e.hr_or_admin? },
+    'absences_today'       => ->(e) { e.manager? },
     'active_onboardings'   => ->(e) { e.hr_or_admin? },
     'trial_period_alerts'  => ->(e) { e.manager? },
     'leave_balances'       => ->(_e) { true },
@@ -165,8 +165,9 @@ class Employee < ApplicationRecord
     },
     'manager' => {
       'grid' => [
-        { 'id' => 'trial_period_alerts',  'x' => 0, 'y' => 0, 'w' => 6, 'h' => 3 },
-        { 'id' => 'pending_approvals',    'x' => 6, 'y' => 0, 'w' => 6, 'h' => 3 },
+        { 'id' => 'trial_period_alerts',  'x' => 0, 'y' => 0, 'w' => 4, 'h' => 3 },
+        { 'id' => 'pending_approvals',    'x' => 4, 'y' => 0, 'w' => 4, 'h' => 3 },
+        { 'id' => 'absences_today',       'x' => 8, 'y' => 0, 'w' => 4, 'h' => 3 },
         { 'id' => 'team_planning',        'x' => 0, 'y' => 3, 'w' => 12,'h' => 5 },
         { 'id' => 'leave_balances',       'x' => 0, 'y' => 8, 'w' => 4, 'h' => 3 },
         { 'id' => 'upcoming_one_on_ones', 'x' => 4, 'y' => 8, 'w' => 4, 'h' => 3 },
