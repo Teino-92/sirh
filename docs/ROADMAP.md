@@ -1,7 +1,7 @@
 # Roadmap Izi-RH
 
-**Dernière mise à jour** : 2026-03-13
-**Version** : 1.3.0
+**Dernière mise à jour** : 2026-03-14
+**Version** : 1.5.0
 
 ---
 
@@ -50,60 +50,46 @@
 
 ---
 
-## Phase 3 — Tests & Qualité 🔄 EN COURS
+## Phase 3 — Tests & Qualité ✅ TERMINÉE (2026-03-14)
 
-**Priorité** : CRITIQUE avant toute acquisition client
-
-### 3.1 — Tests module Billing ⏳
-- [ ] `spec/domains/billing/services/checkout_service_spec.rb`
-- [ ] `spec/domains/billing/services/billing_service_spec.rb`
-- [ ] `spec/domains/billing/services/subscription_upgrade_service_spec.rb`
-- [ ] `spec/domains/billing/webhooks/checkout_completed_handler_spec.rb`
-- [ ] `spec/domains/billing/webhooks/subscription_updated_handler_spec.rb`
-- [ ] `spec/domains/billing/webhooks/payment_succeeded_handler_spec.rb`
-- [ ] `spec/domains/billing/webhooks/payment_failed_handler_spec.rb`
-- [ ] `spec/domains/billing/models/subscription_spec.rb`
-- [ ] `spec/policies/billing_policy_spec.rb`
-- **Cible** : 100% logique billing testée
-
-### 3.2 — Tests Trial & Organisation ⏳
-- [ ] `spec/models/organization_spec.rb` — trial_active?, trial_expired?, trial_days_remaining
-- [ ] `spec/services/trial_registration_service_spec.rb`
-- [ ] `spec/controllers/trial_registrations_controller_spec.rb`
-
-### 3.3 — Tests Controllers ⏳
-- [ ] `spec/controllers/billings_controller_spec.rb`
-- [ ] `spec/controllers/stripe_webhooks_controller_spec.rb`
-- [ ] Tests API v1 (dashboard, time_entries, leave_requests)
-
-### 3.4 — Tests Policies ⏳
-- [ ] BillingPolicy (show, create_checkout, upgrade, cancel)
-- [ ] EmployeePolicy, LeaveRequestPolicy, TimeEntryPolicy
-
-### 3.5 — Tests Jobs & Mailers ⏳
-- [ ] LeaveAccrualJob, RttAccrualJob
-- [ ] AdminUpgradeMailer, BillingMailer
+- ✅ 3.1 — Tests module Billing (services, webhooks handlers, subscription model, BillingPolicy)
+- ✅ 3.2 — Tests Trial & Organisation (organization_spec, trial_registration_service, controller)
+- ✅ 3.3 — Tests Controllers (billings_controller, stripe_webhooks_controller)
+- ✅ 3.4 — Tests Policies (BillingPolicy, EmployeePolicy, LeaveRequestPolicy, TimeEntryPolicy, OneOnOnePolicy)
+- ✅ 3.5 — Tests Jobs & Mailers (AdminUpgradeMailer, BillingMailer, OneOnOneMailer, ObjectiveMailer, TrainingAssignmentMailer)
 
 ---
 
-## Phase 4 — Sécurité & Infrastructure ⏳ PLANIFIÉE
+## Phase 4 — Sécurité & Infrastructure ✅ TERMINÉE (2026-03-14)
 
-### Critiques (avant 1er client payant)
-- [ ] C-1 : JWT secret — supprimer fallback hardcodé dans devise.rb
-- [ ] C-3 : `.find()` non scopés → `policy_scope(Model).find()` dans 5 controllers
-- [ ] H-2 : Activer `config.hosts` en production
-- [ ] H-7 : Corriger Devise mailer sender (example.com → noreply@izi-rh.com)
+### Critiques ✅
+- ✅ H-1 : `config.hosts` activé en production (RENDER_EXTERNAL_HOSTNAME + APP_HOST)
+- ✅ H-4 : Devise mailer sender — `DEVISE_MAILER_SENDER` env var (noreply@izi-rh.com)
+- ✅ C-2 : TrainingAssignment.find scoped à l'organisation (seul modèle sans acts_as_tenant)
 
-### Important
+### Important ⏳
 - [ ] H-5 : Sentry error tracking
 - [ ] H-6 : Lograge (logs structurés JSON)
 - [ ] M-1 : Bullet gem → development only
-- [ ] M-2 : ActiveStorage → S3/GCS (vs local disk ephémère)
-- [ ] M-3 : Coverage minimum → 40%
+- [ ] M-2 : ActiveStorage → S3/GCS (vs local disk éphémère)
 
 ---
 
-## Phase 5 — Scalabilité & Code Quality 🔮
+## Phase 5 — Fonctionnalités RH ✅ TERMINÉE (2026-03-14)
+
+- ✅ Notifications email — 1:1 planifié/reprogrammé/annulé (employé notifié)
+- ✅ Notifications email — Objectif assigné (employé notifié)
+- ✅ Notifications email — Formation assignée (employé notifié)
+- ✅ Périmètre RH — HR officer assignable à des départements (hr_perimeter)
+- ✅ Référent RH — widget dashboard + affichage fiche employé
+- ✅ DSN — Adresse postale dans le formulaire employé
+- ✅ DSN — Convention collective depuis les paramètres organisation (pré-rempli)
+- ✅ Dashboard manager SIRH — widget "Absences du jour" (équipe scopée)
+- ✅ Dashboard — fix quick links crop (dernière ligne tronquée)
+
+---
+
+## Phase 6 — Scalabilité & Code Quality 🔮
 
 - [ ] Background job sharding par organisation (LeaveAccrualJob, RttAccrualJob)
 - [ ] Splitter LeavePolicyEngine en 4 services (~70 lignes chacun)
@@ -111,18 +97,19 @@
 - [ ] Partitioning time_entries par org_id + année
 - [ ] CI/CD (GitHub Actions)
 - [ ] Staging environment
+- [ ] Migration Heroku (Redis + Sidekiq) quand scale le justifie
 
 ---
 
 ## Backlog 🔮
 
-- Mailers complets (leave_request, time_entry)
 - Export Excel/PDF rapports
 - Notifications temps réel (WebSocket)
 - Régions Alsace-Moselle (jours fériés)
 - Mobile app native (post-PWA)
 - Dashboard analytics avancé
 - Intégrations paie (Silae, PayFit)
+- Coverage minimum 40%+
 
 ---
 
@@ -135,6 +122,8 @@
 | 2026-02-27 | Render free tier (vs Heroku) | Coût MVP |
 | 2026-03-13 | Stripe Checkout (vs custom) | Time-to-market |
 | 2026-03-13 | async adapter (vs Sidekiq) | Render free tier sans worker |
+| 2026-03-14 | acts_as_tenant sur tous les modèles sauf TrainingAssignment | Pas de organization_id — scoping contrôleur |
+| 2026-03-14 | Convention collective dans org.settings (JSONB) | Saisie unique par org, override possible par employé |
 
 ---
 
