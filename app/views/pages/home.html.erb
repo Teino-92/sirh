@@ -392,66 +392,121 @@
       <p class="mb-4 text-lg text-gray-500 dark:text-gray-400 max-w-2xl mx-auto">Manager OS + gestion du temps, congés, paie et IA RH. Tout dans la même interface.</p>
     </div>
 
-    <div class="grid grid-cols-3 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4" id="sirh-features-grid">
+    <%# Mobile : mini-cards 3 colonnes %>
+    <div class="grid grid-cols-3 gap-3 sm:hidden" id="sirh-features-mobile">
 
-      <div data-feature class="group flex flex-col items-center text-center p-4 rounded-2xl border border-gray-100 dark:border-gray-800 hover:border-indigo-200 dark:hover:border-indigo-700 hover:shadow-md transition-all opacity-0">
-        <div class="w-10 h-10 bg-blue-100 dark:bg-blue-900/30 rounded-xl flex items-center justify-center mb-3 flex-shrink-0">
-          <svg class="w-5 h-5 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-          </svg>
+      <div data-feature class="flex flex-col items-center text-center p-3 rounded-2xl border border-gray-100 dark:border-gray-800 opacity-0">
+        <div class="w-10 h-10 bg-blue-100 dark:bg-blue-900/30 rounded-xl flex items-center justify-center mb-2">
+          <svg class="w-5 h-5 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
         </div>
         <h3 class="text-xs font-bold text-gray-900 dark:text-white leading-tight">Pointage</h3>
-        <p class="text-[10px] text-gray-400 dark:text-gray-500 mt-1 leading-snug hidden sm:block">Géoloc · RTT · alertes</p>
       </div>
 
-      <div data-feature class="group flex flex-col items-center text-center p-4 rounded-2xl border border-gray-100 dark:border-gray-800 hover:border-indigo-200 dark:hover:border-indigo-700 hover:shadow-md transition-all opacity-0">
-        <div class="w-10 h-10 bg-green-100 dark:bg-green-900/30 rounded-xl flex items-center justify-center mb-3 flex-shrink-0">
-          <svg class="w-5 h-5 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-          </svg>
+      <div data-feature class="flex flex-col items-center text-center p-3 rounded-2xl border border-gray-100 dark:border-gray-800 opacity-0">
+        <div class="w-10 h-10 bg-green-100 dark:bg-green-900/30 rounded-xl flex items-center justify-center mb-2">
+          <svg class="w-5 h-5 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
         </div>
         <h3 class="text-xs font-bold text-gray-900 dark:text-white leading-tight">Congés</h3>
-        <p class="text-[10px] text-gray-400 dark:text-gray-500 mt-1 leading-snug hidden sm:block">CP · RTT · soldes</p>
       </div>
 
-      <div data-feature class="group flex flex-col items-center text-center p-4 rounded-2xl border border-gray-100 dark:border-gray-800 hover:border-indigo-200 dark:hover:border-indigo-700 hover:shadow-md transition-all opacity-0">
-        <div class="w-10 h-10 rounded-xl flex items-center justify-center mb-3 flex-shrink-0" style="background-color:#fce7f3;">
-          <svg class="w-5 h-5" style="color:#db2777;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
-          </svg>
+      <div data-feature class="flex flex-col items-center text-center p-3 rounded-2xl border border-gray-100 dark:border-gray-800 opacity-0">
+        <div class="w-10 h-10 rounded-xl flex items-center justify-center mb-2" style="background-color:#fce7f3;">
+          <svg class="w-5 h-5" style="color:#db2777;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
         </div>
         <h3 class="text-xs font-bold text-gray-900 dark:text-white leading-tight">Paie & RH</h3>
-        <p class="text-[10px] text-gray-400 dark:text-gray-500 mt-1 leading-snug hidden sm:block">Masse salariale · analytics</p>
       </div>
 
-      <div data-feature class="group flex flex-col items-center text-center p-4 rounded-2xl border border-gray-100 dark:border-gray-800 hover:border-indigo-200 dark:hover:border-indigo-700 hover:shadow-md transition-all opacity-0">
-        <div class="w-10 h-10 bg-indigo-100 dark:bg-indigo-900/30 rounded-xl flex items-center justify-center mb-3 flex-shrink-0">
-          <svg class="w-5 h-5 text-indigo-600 dark:text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
-          </svg>
+      <div data-feature class="flex flex-col items-center text-center p-3 rounded-2xl border border-gray-100 dark:border-gray-800 opacity-0">
+        <div class="w-10 h-10 bg-indigo-100 dark:bg-indigo-900/30 rounded-xl flex items-center justify-center mb-2">
+          <svg class="w-5 h-5 text-indigo-600 dark:text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
         </div>
         <h3 class="text-xs font-bold text-gray-900 dark:text-white leading-tight">Planning</h3>
-        <p class="text-[10px] text-gray-400 dark:text-gray-500 mt-1 leading-snug hidden sm:block">Calendrier · horaires</p>
       </div>
 
-      <div data-feature class="group flex flex-col items-center text-center p-4 rounded-2xl border border-gray-100 dark:border-gray-800 hover:border-indigo-200 dark:hover:border-indigo-700 hover:shadow-md transition-all opacity-0">
-        <div class="w-10 h-10 bg-slate-100 dark:bg-slate-900/30 rounded-xl flex items-center justify-center mb-3 flex-shrink-0">
-          <svg class="w-5 h-5 text-slate-600 dark:text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10"/>
-          </svg>
+      <div data-feature class="flex flex-col items-center text-center p-3 rounded-2xl border border-gray-100 dark:border-gray-800 opacity-0">
+        <div class="w-10 h-10 bg-slate-100 dark:bg-slate-900/30 rounded-xl flex items-center justify-center mb-2">
+          <svg class="w-5 h-5 text-slate-600 dark:text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10"/></svg>
         </div>
         <h3 class="text-xs font-bold text-gray-900 dark:text-white leading-tight">Import CSV</h3>
-        <p class="text-[10px] text-gray-400 dark:text-gray-500 mt-1 leading-snug hidden sm:block">Sage · Lucca · PayFit</p>
       </div>
 
-      <div data-feature class="group flex flex-col items-center text-center p-4 rounded-2xl border border-amber-100 dark:border-amber-900/30 bg-amber-50/50 dark:bg-amber-950/20 hover:border-amber-300 dark:hover:border-amber-700 hover:shadow-md transition-all opacity-0">
-        <div class="w-10 h-10 rounded-xl flex items-center justify-center mb-3 flex-shrink-0" style="background-color:#fef3c7;">
-          <svg class="w-5 h-5" style="color:#d97706;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/>
-          </svg>
+      <div data-feature class="flex flex-col items-center text-center p-3 rounded-2xl border border-amber-100 dark:border-amber-900/30 bg-amber-50/50 dark:bg-amber-950/20 opacity-0">
+        <div class="w-10 h-10 rounded-xl flex items-center justify-center mb-2" style="background-color:#fef3c7;">
+          <svg class="w-5 h-5" style="color:#d97706;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/></svg>
         </div>
         <h3 class="text-xs font-bold text-gray-900 dark:text-white leading-tight">IA RH</h3>
-        <p class="text-[10px] text-amber-600 dark:text-amber-400 mt-1 leading-snug hidden sm:block font-medium">Pro</p>
+        <p class="text-[10px] text-amber-600 dark:text-amber-400 font-medium">Pro</p>
+      </div>
+
+    </div>
+
+    <%# Desktop : grandes cards originales %>
+    <div class="hidden sm:grid sm:grid-cols-2 lg:grid-cols-3 gap-8" id="sirh-features-desktop">
+
+      <div data-feature class="group p-6 rounded-2xl border border-gray-100 dark:border-gray-800 hover:border-indigo-200 dark:hover:border-indigo-800 hover:shadow-lg transition-all opacity-0">
+        <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-xl flex items-center justify-center mb-4">
+          <svg class="w-6 h-6 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        </div>
+        <div class="flex items-center gap-2 mb-2">
+          <h3 class="text-lg font-bold text-gray-900 dark:text-white">Pointage & Temps</h3>
+          <span class="text-xs px-2 py-0.5 bg-gray-100 dark:bg-gray-800 text-gray-500 rounded-full">SIRH</span>
+        </div>
+        <p class="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">Pointage web et mobile avec géolocalisation. Calcul RTT automatique, validation manager, alertes retard. Conforme limite légale 10h/j et 48h/semaine.</p>
+      </div>
+
+      <div data-feature class="group p-6 rounded-2xl border border-gray-100 dark:border-gray-800 hover:border-indigo-200 dark:hover:border-indigo-800 hover:shadow-lg transition-all opacity-0">
+        <div class="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-xl flex items-center justify-center mb-4">
+          <svg class="w-6 h-6 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+        </div>
+        <div class="flex items-center gap-2 mb-2">
+          <h3 class="text-lg font-bold text-gray-900 dark:text-white">Gestion des Congés</h3>
+          <span class="text-xs px-2 py-0.5 bg-gray-100 dark:bg-gray-800 text-gray-500 rounded-full">SIRH</span>
+        </div>
+        <p class="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">CP, RTT, maladie, parental, sans solde. Acquisition automatique 2,5j/mois, soldes en temps réel, approbations manager, calendrier équipe.</p>
+      </div>
+
+      <div data-feature class="group p-6 rounded-2xl border border-gray-100 dark:border-gray-800 hover:border-indigo-200 dark:hover:border-indigo-800 hover:shadow-lg transition-all opacity-0">
+        <div class="w-12 h-12 rounded-xl flex items-center justify-center mb-4" style="background-color:#fce7f3;">
+          <svg class="w-6 h-6" style="color:#db2777;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+        </div>
+        <div class="flex items-center gap-2 mb-2">
+          <h3 class="text-lg font-bold text-gray-900 dark:text-white">Paie & Analytics RH</h3>
+          <span class="text-xs px-2 py-0.5 bg-gray-100 dark:bg-gray-800 text-gray-500 rounded-full">SIRH</span>
+        </div>
+        <p class="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">Dashboard masse salariale, projections annuelles, répartition par département et contrat. Confidentiel RH/Admin uniquement.</p>
+      </div>
+
+      <div data-feature class="group p-6 rounded-2xl border border-gray-100 dark:border-gray-800 hover:border-indigo-200 dark:hover:border-indigo-800 hover:shadow-lg transition-all opacity-0">
+        <div class="w-12 h-12 bg-indigo-100 dark:bg-indigo-900/30 rounded-xl flex items-center justify-center mb-4">
+          <svg class="w-6 h-6 text-indigo-600 dark:text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+        </div>
+        <div class="flex items-center gap-2 mb-2">
+          <h3 class="text-lg font-bold text-gray-900 dark:text-white">Planning équipe</h3>
+          <span class="text-xs px-2 py-0.5 bg-gray-100 dark:bg-gray-800 text-gray-500 rounded-full">SIRH</span>
+        </div>
+        <p class="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">Vue calendrier équipe, gestion des horaires et rotations, exports CSV pour la paie. Visibilité totale sur la disponibilité de votre équipe.</p>
+      </div>
+
+      <div data-feature class="group p-6 rounded-2xl border border-gray-100 dark:border-gray-800 hover:border-indigo-200 dark:hover:border-indigo-800 hover:shadow-lg transition-all opacity-0">
+        <div class="w-12 h-12 bg-slate-100 dark:bg-slate-900/30 rounded-xl flex items-center justify-center mb-4">
+          <svg class="w-6 h-6 text-slate-600 dark:text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10"/></svg>
+        </div>
+        <div class="flex items-center gap-2 mb-2">
+          <h3 class="text-lg font-bold text-gray-900 dark:text-white">Import CSV express</h3>
+          <span class="text-xs px-2 py-0.5 bg-gray-100 dark:bg-gray-800 text-gray-500 rounded-full">SIRH</span>
+        </div>
+        <p class="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">Migrez depuis Excel, Sage, Lucca, Factorial, PayFit ou BambooHR. Détection automatique du format. Rapport d'erreurs ligne par ligne. Migration en moins de 5 minutes.</p>
+      </div>
+
+      <div data-feature class="group p-6 rounded-2xl border border-gray-100 dark:border-gray-800 bg-gradient-to-br from-amber-50/50 to-yellow-50/50 dark:from-amber-950/30 dark:to-yellow-950/30 hover:border-amber-200 dark:hover:border-amber-800 hover:shadow-lg transition-all opacity-0">
+        <div class="w-12 h-12 rounded-xl flex items-center justify-center mb-4" style="background-color:#fef3c7;">
+          <svg class="w-6 h-6" style="color:#d97706;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/></svg>
+        </div>
+        <div class="flex items-center gap-2 mb-2">
+          <h3 class="text-lg font-bold text-gray-900 dark:text-white">IA RH</h3>
+          <span class="text-xs px-2 py-0.5 bg-indigo-100 dark:bg-indigo-900/50 text-indigo-600 dark:text-indigo-300 rounded-full font-medium">SIRH Pro</span>
+        </div>
+        <p class="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">Requêtes en langage naturel français : <em>"Employés CDI avec plus de 5j RTT en Engineering"</em>. Export CSV des résultats. Données jamais envoyées à l'IA.</p>
       </div>
 
     </div>
@@ -462,23 +517,30 @@
 (function() {
   function initSirhFeatures() {
     if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      document.querySelectorAll('#sirh-features-mobile [data-feature], #sirh-features-desktop [data-feature]').forEach(el => el.style.opacity = 1);
+      return;
+    }
 
-    gsap.fromTo('#sirh-features-grid [data-feature]',
-      { opacity: 0, y: 20 },
-      {
-        opacity: 1,
-        y: 0,
-        duration: 0.4,
-        stagger: 0.07,
-        ease: 'power2.out',
-        scrollTrigger: {
-          trigger: '#sirh-features-grid',
-          start: 'top 85%',
-          once: true
+    ['#sirh-features-mobile', '#sirh-features-desktop'].forEach(function(selector) {
+      var grid = document.querySelector(selector);
+      if (!grid) return;
+      gsap.fromTo(grid.querySelectorAll('[data-feature]'),
+        { opacity: 0, y: 20 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.4,
+          stagger: 0.07,
+          ease: 'power2.out',
+          scrollTrigger: {
+            trigger: grid,
+            start: 'top 85%',
+            once: true
+          }
         }
-      }
-    );
+      );
+    });
   }
 
   if (document.readyState === 'loading') {
