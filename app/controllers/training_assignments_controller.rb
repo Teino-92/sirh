@@ -25,7 +25,8 @@ class TrainingAssignmentsController < ApplicationController
   private
 
   def set_assignment
-    @assignment = TrainingAssignment.find(params[:id])
+    org_employee_ids = current_employee.organization.employees.pluck(:id)
+    @assignment = TrainingAssignment.where(employee_id: org_employee_ids).find(params[:id])
     authorize @assignment
   end
 end

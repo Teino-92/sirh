@@ -109,11 +109,12 @@ Rails.application.configure do
   # Set STORAGE_SERVICE=local to fall back to disk (development/staging without S3).
   config.active_storage.service = ENV.fetch("STORAGE_SERVICE", "local").to_sym
 
-  # Enable DNS rebinding protection and other `Host` header attacks.
-  # config.hosts = [
-  #   "example.com",     # Allow requests from example.com
-  #   /.*\.example\.com/ # Allow requests from subdomains like `www.example.com`
-  # ]
-  # Skip DNS rebinding protection for the default health check endpoint.
-  # config.host_authorization = { exclude: ->(request) { request.path == "/up" } }
+  # Enable DNS rebinding protection — only allow requests from known hosts.
+  # RENDER_EXTERNAL_HOSTNAME is injected automatically by Render for web services.
+  # APP_HOST covers custom domain (izi-rh.com or staging subdomain).
+  render_host = ENV['RENDER_EXTERNAL_HOSTNAME']
+  app_host    = ENV.fetch('APP_HOST', 'izi-rh.com')
+  config.hosts = [app_host, render_host].compact.uniq
+  # Always allow the Rails health check endpoint regardless of Host header.
+  config.host_authorization = { exclude: ->(request) { request.path == '/up' } }
 end
