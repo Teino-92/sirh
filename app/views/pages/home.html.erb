@@ -575,7 +575,7 @@
           <div class="flex items-center gap-2 mb-1">
             <h3 class="text-lg font-bold text-gray-900 dark:text-white">Manager OS</h3>
           </div>
-          <p class="text-sm text-gray-500 dark:text-gray-400 mb-4 min-h-[2.5rem]">Le cycle complet du management d'équipe</p>
+          <p class="text-sm text-gray-500 dark:text-gray-400 mb-4 min-h-[3.5rem]">Le cycle complet du management d'équipe</p>
           <div class="flex items-baseline gap-1">
             <span class="text-4xl font-extrabold text-indigo-600">19 €</span>
             <span class="text-sm text-gray-500">/mois</span>
@@ -600,7 +600,7 @@
       <div class="mb-2 p-8 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-gray-900 flex flex-col">
         <div class="mb-6">
           <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-1">SIRH Essentiel</h3>
-          <p class="text-sm text-gray-500 dark:text-gray-400 mb-4 min-h-[2.5rem]">Manager OS + gestion du temps et congés</p>
+          <p class="text-sm text-gray-500 dark:text-gray-400 mb-4 min-h-[3.5rem]">Manager OS + gestion du temps et congés</p>
           <div class="flex items-baseline gap-1">
             <span class="text-4xl font-extrabold text-gray-900 dark:text-white">59 €</span>
             <span class="text-sm text-gray-500">/mois</span>
@@ -632,7 +632,7 @@
         </div>
         <div class="mb-6">
           <h3 class="text-lg font-bold text-white mb-1">SIRH Pro</h3>
-          <p class="text-sm text-gray-400 mb-4 min-h-[2.5rem]">Pour les équipes RH qui veulent tout</p>
+          <p class="text-sm text-gray-400 mb-4 min-h-[3.5rem]">Pour les équipes RH qui veulent tout</p>
           <div class="flex items-baseline gap-1">
             <span class="text-4xl font-extrabold text-white">159 €</span>
             <span class="text-sm text-gray-400">/mois</span>
@@ -667,10 +667,13 @@
 <%# ─── FORMULAIRE TRIAL — toggle Manager OS / SIRH ───────────────────────── %>
 <% default_tab = (@form_values&.dig(:plan) == 'sirh' || @form_values&.dig('plan') == 'sirh') ? 'sirh' : 'manager_os' %>
 <section id="essai-manager-os"
-         class="py-14 sm:py-16 border-t-4 transition-colors duration-500"
-         :class="tab === 'sirh' ? 'bg-gray-950 border-violet-900/40' : 'bg-gradient-to-br from-indigo-600 to-violet-600 dark:from-indigo-800 dark:to-violet-800 border-indigo-700/30'"
+         class="py-14 sm:py-16 border-t-4 bg-gradient-to-br from-indigo-600 to-violet-600 dark:from-indigo-800 dark:to-violet-800 relative overflow-hidden"
+         :class="tab === 'sirh' ? 'border-violet-900/40' : 'border-indigo-700/30'"
          x-data="{ tab: '<%= default_tab %>' }">
-  <div class="max-w-xl mx-auto px-4 sm:px-6 text-center">
+  <%# Dark overlay for SIRH tab — transitions smoothly via opacity %>
+  <div class="absolute inset-0 bg-gray-950 transition-opacity duration-700 pointer-events-none"
+       :style="tab === 'sirh' ? 'opacity:1' : 'opacity:0'"></div>
+  <div class="relative z-10 max-w-xl mx-auto px-4 sm:px-6 text-center">
 
     <h2 class="text-3xl sm:text-4xl font-extrabold text-white mb-2">Essayez gratuitement</h2>
     <p class="mb-6 transition-colors duration-300"
