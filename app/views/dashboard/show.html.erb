@@ -94,6 +94,36 @@
        gs-column="12"
        gs-animate="true">
 
+    <%
+      CARD_LABELS = {
+        'leave_balances'       => 'Soldes de congés',
+        'upcoming_leaves'      => 'Prochains congés',
+        'personal_planning'    => 'Mon planning',
+        'team_planning'        => 'Planning équipe',
+        'pending_requests'     => 'Mes demandes',
+        'pending_approvals'    => 'Approbations en attente',
+        'my_performance'       => 'Ma performance',
+        'team_performance'     => 'Performance équipe',
+        'upcoming_one_on_ones' => 'Prochains 1:1',
+        'absences_today'       => 'Absences du jour',
+        'active_onboardings'   => 'Onboardings en cours',
+        'trial_period_alerts'  => 'Alertes période d\'essai',
+        'clock_inout'          => 'Pointage',
+        'today_schedule'       => 'Horaire du jour',
+        'quick_links'          => 'Accès rapides',
+        'hr_referent'          => 'Référent RH',
+      }.freeze
+
+      CARD_MIN_H = {
+        'personal_planning'    => 4,
+        'team_planning'        => 4,
+        'active_onboardings'   => 4,
+        'upcoming_one_on_ones' => 3,
+        'team_performance'     => 3,
+        'quick_links'          => 3,
+      }.freeze
+    %>
+
     <%# Only VISIBLE cards go inside the grid-stack %>
     <% grid.each do |card| %>
       <% card_id = card['id'] %>
@@ -106,10 +136,10 @@
            gs-w="<%= card['w'] %>"
            gs-h="<%= card['h'] %>"
            gs-min-w="2"
-           gs-min-h="2"
+           gs-min-h="<%= CARD_MIN_H.fetch(card_id, 2) %>"
            data-card-id="<%= card_id %>"
            data-card-hidden="false"
-           data-card-label="<%= card_id.humanize %>"
+           data-card-label="<%= CARD_LABELS.fetch(card_id, card_id.humanize) %>"
            data-card-x="<%= card['x'] %>"
            data-card-y="<%= card['y'] %>"
            data-card-w="<%= card['w'] %>"
@@ -123,7 +153,7 @@
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8h16M4 16h16"/>
               </svg>
-              <span class="text-xs text-gray-400"><%= card_id.humanize %></span>
+              <span class="text-xs text-gray-400"><%= CARD_LABELS.fetch(card_id, card_id.humanize) %></span>
             </div>
             <button type="button"
                     class="p-1 rounded text-gray-400 hover:text-red-500 transition-colors"
@@ -164,7 +194,7 @@
       <div class="grid-stack-item"
            data-card-id="<%= card_id %>"
            data-card-hidden="true"
-           data-card-label="<%= card_id.humanize %>"
+           data-card-label="<%= CARD_LABELS.fetch(card_id, card_id.humanize) %>"
            data-card-x="<%= card['x'] %>"
            data-card-y="<%= card['y'] %>"
            data-card-w="<%= card['w'] %>"
@@ -177,7 +207,7 @@
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8h16M4 16h16"/>
               </svg>
-              <span class="text-xs text-gray-400"><%= card_id.humanize %></span>
+              <span class="text-xs text-gray-400"><%= CARD_LABELS.fetch(card_id, card_id.humanize) %></span>
             </div>
             <button type="button"
                     class="p-1 rounded text-gray-400 hover:text-red-500 transition-colors"
