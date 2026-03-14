@@ -23,7 +23,7 @@ module DashboardHelper
   CARD_MIN_H = {
     'personal_planning'    => 4,
     'team_planning'        => 4,
-    'active_onboardings'   => 4,
+    'active_onboardings'   => 2,
     'upcoming_one_on_ones' => 3,
     'team_performance'     => 3,
     'quick_links'          => 3,
