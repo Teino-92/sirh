@@ -236,7 +236,7 @@
 </section>
 
 <%# ─── MANAGER OS SECTION ─────────────────────────────────────────────────── %>
-<section id="manager-os" class="py-14 sm:py-24 bg-gradient-to-br from-indigo-50 to-violet-50/40 dark:from-indigo-950/30 dark:to-gray-950 border-t border-gray-100 dark:border-gray-800">
+<section id="manager-os" class="py-14 sm:py-16 bg-gradient-to-br from-indigo-50 to-violet-50/40 dark:from-indigo-950/30 dark:to-gray-950 border-t border-gray-100 dark:border-gray-800">
   <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
 
     <div class="text-center mb-16">
@@ -379,7 +379,7 @@
 </section>
 
 <%# ─── FEATURES SIRH ───────────────────────────────────────────────────────── %>
-<section id="fonctionnalites" class="py-14 sm:py-24 bg-white dark:bg-gray-950 border-t border-gray-100 dark:border-gray-800 overflow-hidden">
+<section id="fonctionnalites" class="py-14 sm:py-16 bg-white dark:bg-gray-950 border-t border-gray-100 dark:border-gray-800 overflow-hidden">
   <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
     <div class="text-center mb-16">
       <div class="inline-flex items-center gap-2 px-3 py-1.5 bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 text-xs font-semibold rounded-full mb-4">
@@ -557,7 +557,7 @@
 </script>
 
 <%# ─── PRICING ─────────────────────────────────────────────────────────────── %>
-<section id="tarifs" class="py-14 sm:py-24 bg-gray-50 dark:bg-gray-900 border-t border-gray-100 dark:border-gray-800">
+<section id="tarifs" class="py-14 sm:py-16 bg-gray-50 dark:bg-gray-900 border-t border-gray-100 dark:border-gray-800">
   <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
     <div class="text-center mb-16">
       <h2 class="mt-4 text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-white mb-4">Commencez avec Manager OS. Évoluez vers le SIRH.</h2>
@@ -664,7 +664,7 @@
 <%# ─── FORMULAIRE TRIAL — toggle Manager OS / SIRH ───────────────────────── %>
 <% default_tab = (@form_values&.dig(:plan) == 'sirh' || @form_values&.dig('plan') == 'sirh') ? 'sirh' : 'manager_os' %>
 <section id="essai-manager-os"
-         class="py-14 sm:py-24 border-t-4 transition-colors duration-500"
+         class="py-14 sm:py-16 border-t-4 transition-colors duration-500"
          :class="tab === 'sirh' ? 'bg-gray-950 border-violet-900/40' : 'bg-gradient-to-br from-indigo-600 to-violet-600 dark:from-indigo-800 dark:to-violet-800 border-indigo-700/30'"
          x-data="{ tab: '<%= default_tab %>' }">
   <div class="max-w-xl mx-auto px-4 sm:px-6 text-center">
@@ -804,7 +804,7 @@
 </section>
 
 <%# ─── FAQ ────────────────────────────────────────────────────────────────── %>
-<section id="faq" class="py-14 sm:py-24 bg-white dark:bg-gray-950 border-t border-gray-100 dark:border-gray-800">
+<section id="faq" class="py-14 sm:py-16 bg-white dark:bg-gray-950 border-t border-gray-100 dark:border-gray-800">
   <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
     <div class="text-center mb-12">
       <h2 class="mt-4 text-3xl font-extrabold text-gray-900 dark:text-white">Questions fréquentes</h2>
