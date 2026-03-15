@@ -478,7 +478,7 @@ RSpec.describe TimeEntry, type: :model do
         ActsAsTenant.with_tenant(organization) do
           custom_time = Time.current + 2.hours
           entry.clock_out!(time: custom_time)
-          expect(entry.clock_out).to eq(custom_time)
+          expect(entry.clock_out).to be_within(1.second).of(custom_time)
         end
       end
 

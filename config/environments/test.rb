@@ -62,6 +62,9 @@ Rails.application.configure do
   # Store uploaded files on the local file system in a temporary directory.
   config.active_storage.service = :test
 
+  # Don't raise on missing compiled assets in tests — assets are not precompiled in CI
+  config.assets.raise_runtime_errors = false
+
   # Fixed AR encryption keys for test environment (non-sensitive, test-only)
   config.active_record.encryption.primary_key    = 'test-primary-key-izi-rh-32chars!!'
   config.active_record.encryption.deterministic_key = 'test-deterministic-key-izi-rh-32!'
