@@ -1,15 +1,15 @@
 # PROJECT SUMMARY — IZI-RH
 
-**Dernière mise à jour** : 2026-03-13
-**Version** : 1.3.0
-**Statut** : En production sur izi-rh.com — billing câblé, pas encore de client payant
+**Dernière mise à jour** : 2026-03-15
+**Version** : 1.4.0
+**Statut** : En production sur izi-rh.com — billing câblé, monitoring actif, pas encore de client payant
 **Cible** : 200 organisations, 10 000+ employés
 
 ---
 
 ## RÉSUMÉ
 
-Izi-RH est un SIRH SaaS **manager-first** pour les PME françaises. Architecture Domain-Driven Design, multi-tenancy strict, conformité Code du travail français. Déployé sur Render, billing via Stripe, emails via Resend.
+Izi-RH est un SIRH SaaS **manager-first** pour les PME françaises. Architecture Domain-Driven Design, multi-tenancy strict, conformité Code du travail français. Déployé sur Render, billing via Stripe, emails via Resend, monitoring via Sentry.
 
 ---
 
@@ -25,6 +25,8 @@ Izi-RH est un SIRH SaaS **manager-first** pour les PME françaises. Architecture
 | Frontend | Tailwind CSS v4, Stimulus, Turbo, Importmap |
 | Billing | Stripe Checkout + Webhooks |
 | Emails | Resend (API HTTP + SMTP) |
+| Monitoring | Sentry (errors + profiling) + Lograge (JSON logs) |
+| CI/CD | GitHub Actions (Brakeman + RSpec) |
 | Infra | Render (web service + PostgreSQL free tier) |
 
 ---
@@ -50,7 +52,6 @@ Izi-RH est un SIRH SaaS **manager-first** pour les PME françaises. Architecture
 | SIRH Essentiel | 59 €/mois + 4 €/emp >10 | PME avec RH |
 | SIRH Pro | 159 €/mois + 6 €/emp >20 | PME avancées |
 
-Engagement 12 mois à la souscription, puis mensuel sans engagement.
 Trial gratuit 30 jours sans CB.
 
 ---
@@ -59,7 +60,7 @@ Trial gratuit 30 jours sans CB.
 
 ### ✅ Opérationnel
 - Gestion des congés (CP, RTT, Maladie, Maternité, Paternité, Sans solde)
-- LeavePolicyEngine — conformité Code du travail (153 tests, 100% couverture)
+- LeavePolicyEngine — conformité Code du travail
 - Pointage (clock in/out, validation manager)
 - Plannings hebdomadaires
 - 1:1, OKR, Formations, Évaluations, Onboarding
@@ -69,27 +70,32 @@ Trial gratuit 30 jours sans CB.
 - Trial 30 jours + gate expiry + email J-7
 - Landing page izi-rh.com
 - Panel admin (gestion employés, organisation, politiques congés)
+- Email notif admin sur trial signup + souscription payante
+- Super-admin analytics dashboard (`/super_admin/analytics`)
+- Sentry error tracking + Lograge JSON logs
+- CI/CD GitHub Actions (Brakeman + RSpec)
 
 ### 🔄 Partiel
 - API mobile (JWT partiel, endpoints présents, sécurité à finaliser)
-- Notifications email (infrastructure en place, templates à compléter)
 
-### ⏳ Planifié
-- Tests module billing (Phase 3 ROADMAP)
-- Sentry + Lograge (Phase 4)
-- Job sharding par organisation
+### ⏳ À faire
+- Tests module billing (0% coverage)
+- `.find()` non scopés → C-2 PRODUCTION_READINESS
+- JWT secret hardcodé → C-1 PRODUCTION_READINESS
+- S3 pour ActiveStorage avatars
 
 ---
 
-## MÉTRIQUES TESTS (état 2026-02-16)
+## MÉTRIQUES TESTS (état 2026-03-15)
 
 | Métrique | Valeur |
 |----------|--------|
-| Total tests | 619 |
-| Tests passants | 619 (100%) |
+| Total tests | 619+ |
+| Tests passants | 100% |
 | Coverage global | ~20% |
 | Coverage LeavePolicyEngine | 100% |
 | Coverage billing | 0% (à faire) |
+| CI | GitHub Actions — Brakeman + RSpec |
 
 ---
 
@@ -99,7 +105,7 @@ Trial gratuit 30 jours sans CB.
 - `ApplicationController` set le tenant via `before_action`
 - Background jobs utilisent `ActsAsTenant.with_tenant`
 - Pundit policies sur toutes les ressources
-- ⚠️ 5 controllers avec `.find()` non scopé (voir PRODUCTION_READINESS.md C-2)
+- ⚠️ 5 controllers avec `.find()` non scopé (voir PRODUCTION_READINESS C-2)
 
 ---
 
@@ -108,10 +114,10 @@ Trial gratuit 30 jours sans CB.
 | Date | Décision |
 |------|----------|
 | 2026-01-13 | DDD strict — services top-level (pas de namespaces Zeitwerk) |
-| 2026-01-13 | Tests avant refactoring (Sprint 1 dédié) |
 | 2026-02-27 | Render free tier (async adapter, memory cache) |
 | 2026-03-13 | Stripe Checkout (pas d'intégration custom) |
-| 2026-03-13 | Manager OS founder = rôle admin |
+| 2026-03-15 | Super-admin via HTTP basic auth (indépendant de Devise) |
+| 2026-03-15 | Sentry + Lograge + GitHub Actions CI |
 
 ---
 

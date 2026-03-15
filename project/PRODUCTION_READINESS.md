@@ -1,6 +1,6 @@
 # PRODUCTION READINESS — IZI-RH
 
-**Date audit** : 2026-03-13
+**Date audit** : 2026-03-15
 **Auditeur** : @architect
 **Statut** : 🟡 EN PRODUCTION (Render free tier) — clients payants pas encore actifs
 
@@ -8,7 +8,7 @@
 
 ## RÉSUMÉ EXÉCUTIF
 
-L'app est déployée et fonctionnelle sur izi-rh.com. Le flux billing Stripe est câblé et testé. Les fondations architecturales sont solides. Les gaps restants concernent la sécurité (JWT fallback, .find() non scopés), les tests du module billing, et l'infrastructure (Sentry, logs structurés).
+L'app est déployée et fonctionnelle sur izi-rh.com. Sentry + Lograge sont en place. Le CI/CD GitHub Actions tourne. Les gaps restants concernent la sécurité (JWT fallback, `.find()` non scopés) et la couverture de tests.
 
 ---
 
@@ -18,14 +18,11 @@ L'app est déployée et fonctionnelle sur izi-rh.com. Le flux billing Stripe est
 **Fichier** : `config/initializers/devise.rb`
 **Problème** : Fallback hardcodé — quiconque a accès au repo peut forger des tokens JWT.
 ```ruby
-# CORRECT
 jwt.secret = ENV.fetch('JWT_SECRET_KEY')
 ```
 - [ ] Générer un nouveau secret : `rails secret`
 - [ ] Définir `JWT_SECRET_KEY` dans les variables Render
 - [ ] Supprimer le fallback hardcodé
-
----
 
 ### C-2 · `.find()` non scopés — fuite cross-tenant possible
 **Fichiers** : `one_on_ones_controller.rb`, `objectives_controller.rb`, `training_assignments_controller.rb`, `leave_requests_controller.rb`, `manager/time_entries_controller.rb`
@@ -41,22 +38,13 @@ jwt.secret = ENV.fetch('JWT_SECRET_KEY')
 
 ## ⚠️ HIGH — Requis avant mise à l'échelle
 
-### H-1 · `config.hosts` commenté — Host header injection
-**Fichier** : `config/environments/production.rb`
-- [ ] Activer `config.hosts = ["izi-rh.com", /.*\.izi-rh\.com/]`
+### H-1 · Tests module billing à 0%
+- [ ] Écrire les tests Stripe webhook handlers
+- [ ] Écrire les tests CheckoutService / BillingService
 
-### H-2 · Aucun error tracking (Sentry)
-- [ ] `gem 'sentry-rails'` + `SENTRY_DSN` en env var
-
-### H-3 · Logs non structurés
-- [ ] `gem 'lograge'` avec formatter JSON
-
-### H-4 · Devise mailer sender à `example.com`
-**Fichier** : `config/initializers/devise.rb`
-- [ ] `config.mailer_sender = 'noreply@izi-rh.com'`
-
-### H-5 · Tests module billing à 0%
-- [ ] Voir Phase 3 de la ROADMAP — priorité avant scaling
+### H-2 · Coverage global insuffisant (~20%)
+- [ ] Cible : 40% minimum
+- [ ] Priorité : controllers admin, services critiques
 
 ---
 
@@ -66,17 +54,15 @@ jwt.secret = ENV.fetch('JWT_SECRET_KEY')
 - [ ] Wrapper dans `if Rails.env.development?`
 
 ### M-2 · ActiveStorage en stockage local (disk éphémère sur Render)
-- [ ] Configurer S3/GCS pour les uploads
+- [ ] Configurer S3 pour les uploads avatars
+- [ ] `STORAGE_SERVICE=s3` + credentials AWS
 
-### M-3 · Coverage à ~20% — seuil insuffisant
-- [ ] Cible : 40% minimum (voir ROADMAP Phase 3)
-
-### M-4 · Rack::Attack sur MemoryStore
-- [ ] Passe à Redis quand on upgrade Render (Phase 4)
+### M-3 · Rack::Attack sur MemoryStore
+- [ ] Passer à Redis quand on upgrade Render
 
 ---
 
-## ✅ CE QUI EST EN PLACE
+## ✅ FAIT
 
 - ✅ Architecture DDD solide — domaines isolés, controllers thin
 - ✅ Multi-tenancy via `acts_as_tenant` sur tous les modèles domaine
@@ -84,12 +70,18 @@ jwt.secret = ENV.fetch('JWT_SECRET_KEY')
 - ✅ Stripe Checkout + Webhooks câblés et testés manuellement
 - ✅ Trial 30 jours + expiry gate + email J-7
 - ✅ Indexes DB — composite + partiels, queries critiques optimisées
-- ✅ Transactions ACID sur mutations critiques (congés, accruals)
-- ✅ ACID transactions billing (checkout, upgrade, webhooks)
-- ✅ 619 tests passing (100%) sur logique métier core
+- ✅ Transactions ACID sur mutations critiques (congés, accruals, billing)
+- ✅ 619+ tests passing (100%) sur logique métier core
 - ✅ Zeitwerk fixé — boot propre en production
 - ✅ SMTP Resend configuré et opérationnel
-- ✅ Favicons + PWA basique
+- ✅ **Sentry** error tracking (sentry-ruby + sentry-rails + stackprof)
+- ✅ **Lograge** logs JSON structurés avec user_id/org_id
+- ✅ **CI/CD GitHub Actions** — Brakeman + RSpec sur chaque push
+- ✅ **Email admin** — notif trial signup + souscription payante
+- ✅ **Super-admin analytics** — dashboard `/super_admin/analytics` (HTTP basic auth)
+- ✅ config.hosts activé (Render + APP_HOST)
+- ✅ Devise mailer sender → `noreply@izi-rh.com`
+- ✅ Brakeman 0 warnings (fichier `.brakeman.ignore` pour faux positifs documentés)
 
 ---
 
@@ -98,17 +90,17 @@ jwt.secret = ENV.fetch('JWT_SECRET_KEY')
 | Variable | Statut | Note |
 |----------|--------|------|
 | `SECRET_KEY_BASE` | ✅ | Configuré |
-| `STRIPE_SECRET_KEY` | ✅ | Mode test actif |
+| `STRIPE_SECRET_KEY` | ✅ | Mode live |
 | `STRIPE_WEBHOOK_SECRET` | ✅ | Configuré |
-| `STRIPE_PRICE_MANAGER_OS` | ✅ | Price ID test |
-| `STRIPE_PRICE_SIRH_ESSENTIAL` | ✅ | Price ID test |
-| `STRIPE_PRICE_SIRH_PRO` | ✅ | Price ID test |
 | `APP_HOST` | ✅ | `izi-rh.com` |
 | `SMTP_PASSWORD` | ✅ | Resend API key |
-| `ADMIN_EMAIL` | ✅ | Email notifications admin |
+| `ADMIN_NOTIFICATION_EMAIL` | ✅ | `matteo.garbugli@yahoo.it` |
+| `SENTRY_DSN` | ✅ | Configuré |
+| `SUPER_ADMIN_LOGIN` | ✅ | Configuré |
+| `SUPER_ADMIN_PASSWORD` | ✅ | Configuré |
 | `JWT_SECRET_KEY` | ❌ | À configurer (C-1) |
-| `SENTRY_DSN` | ❌ | Non configuré |
+| `RAILS_MASTER_KEY` | ⚠️ | GitHub Secret pour CI |
 
 ---
 
-*Dernière mise à jour : 2026-03-13 par @architect*
+*Dernière mise à jour : 2026-03-15 par @architect*
