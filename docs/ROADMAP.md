@@ -1,7 +1,7 @@
 # Roadmap Izi-RH
 
-**Dernière mise à jour** : 2026-03-14
-**Version** : 1.5.0
+**Dernière mise à jour** : 2026-03-15
+**Version** : 1.6.0
 
 ---
 
@@ -62,42 +62,63 @@
 
 ## Phase 4 — Sécurité & Infrastructure ✅ TERMINÉE (2026-03-14)
 
-### Critiques ✅
 - ✅ H-1 : `config.hosts` activé en production (RENDER_EXTERNAL_HOSTNAME + APP_HOST)
 - ✅ H-4 : Devise mailer sender — `DEVISE_MAILER_SENDER` env var (noreply@izi-rh.com)
-- ✅ C-2 : TrainingAssignment.find scoped à l'organisation (seul modèle sans acts_as_tenant)
-
-### Important ⏳
-- [ ] H-5 : Sentry error tracking
-- [ ] H-6 : Lograge (logs structurés JSON)
-- [ ] M-1 : Bullet gem → development only
-- [ ] M-2 : ActiveStorage → S3/GCS (vs local disk éphémère)
+- ✅ C-2 : TrainingAssignment.find scoped à l'organisation
 
 ---
 
 ## Phase 5 — Fonctionnalités RH ✅ TERMINÉE (2026-03-14)
 
-- ✅ Notifications email — 1:1 planifié/reprogrammé/annulé (employé notifié)
-- ✅ Notifications email — Objectif assigné (employé notifié)
-- ✅ Notifications email — Formation assignée (employé notifié)
-- ✅ Périmètre RH — HR officer assignable à des départements (hr_perimeter)
+- ✅ Notifications email — 1:1 planifié/reprogrammé/annulé
+- ✅ Notifications email — Objectif assigné, Formation assignée
+- ✅ Périmètre RH — HR officer assignable à des départements
 - ✅ Référent RH — widget dashboard + affichage fiche employé
-- ✅ DSN — Adresse postale dans le formulaire employé
-- ✅ DSN — Convention collective depuis les paramètres organisation (pré-rempli)
-- ✅ Dashboard manager SIRH — widget "Absences du jour" (équipe scopée)
-- ✅ Dashboard — fix quick links crop (dernière ligne tronquée)
+- ✅ DSN — Adresse postale + Convention collective
+- ✅ Dashboard manager SIRH — widget "Absences du jour"
 
 ---
 
-## Phase 6 — Scalabilité & Code Quality 🔮
+## Phase 6 — Monitoring, Observabilité & Sécurité ✅ TERMINÉE (2026-03-15)
+
+### Monitoring & Logs
+- ✅ Sentry error tracking (sentry-ruby + sentry-rails + stackprof, prod only)
+- ✅ Lograge logs JSON structurés avec user_id/org_id par requête
+- ✅ Alertes Slack via Sentry (nouvelles erreurs, répétitions, trial failures)
+
+### CI/CD
+- ✅ GitHub Actions — Brakeman security scan + RSpec sur chaque push
+- ✅ Brakeman 0 warnings (`.brakeman.ignore` pour faux positifs documentés)
+- ✅ SimpleCov seuil relevé à 40% (suite à ~42%)
+
+### Sécurité
+- ✅ JWT_SECRET_KEY — plus de fallback hardcodé, `ENV.fetch` strict en prod
+- ✅ `policy_scope` sur tous les `.find(params[:id])` — double protection tenant + Pundit
+- ✅ Super-admin analytics `/super_admin/analytics` — HTTP basic auth indépendant de Devise
+
+### Notifications admin
+- ✅ Email admin à chaque nouveau trial signup
+- ✅ Email admin à chaque nouvelle souscription payante (webhook Stripe)
+
+### Stockage
+- ✅ Cloudinary free tier pour Active Storage avatars (plus de disk éphémère Render)
+
+### Tests billing complétés
+- ✅ CheckoutService — 11 tests (customer creation, trial_end, Stripe error, tenant isolation)
+- ✅ SubscriptionUpgradeService — 12 tests (self-service, admin upgrade, rollback)
+- ✅ PaymentFailedHandler — 10 tests (status update, email, early returns, tenant isolation)
+
+---
+
+## Phase 7 — Scalabilité & Code Quality 🔮
 
 - [ ] Background job sharding par organisation (LeaveAccrualJob, RttAccrualJob)
 - [ ] Splitter LeavePolicyEngine en 4 services (~70 lignes chacun)
 - [ ] API serializers (EmployeeSerializer, LeaveRequestSerializer, etc.)
 - [ ] Partitioning time_entries par org_id + année
-- [ ] CI/CD (GitHub Actions)
 - [ ] Staging environment
-- [ ] Migration Heroku (Redis + Sidekiq) quand scale le justifie
+- [ ] Migration Heroku/Railway (Redis + Sidekiq) quand scale le justifie
+- [ ] Rack::Attack sur Redis (vs memory_store actuel)
 
 ---
 
@@ -107,9 +128,7 @@
 - Notifications temps réel (WebSocket)
 - Régions Alsace-Moselle (jours fériés)
 - Mobile app native (post-PWA)
-- Dashboard analytics avancé
 - Intégrations paie (Silae, PayFit)
-- Coverage minimum 40%+
 
 ---
 
@@ -122,8 +141,10 @@
 | 2026-02-27 | Render free tier (vs Heroku) | Coût MVP |
 | 2026-03-13 | Stripe Checkout (vs custom) | Time-to-market |
 | 2026-03-13 | async adapter (vs Sidekiq) | Render free tier sans worker |
-| 2026-03-14 | acts_as_tenant sur tous les modèles sauf TrainingAssignment | Pas de organization_id — scoping contrôleur |
-| 2026-03-14 | Convention collective dans org.settings (JSONB) | Saisie unique par org, override possible par employé |
+| 2026-03-14 | acts_as_tenant sur tous les modèles sauf TrainingAssignment | Pas de organization_id |
+| 2026-03-14 | Convention collective dans org.settings (JSONB) | Saisie unique par org |
+| 2026-03-15 | Cloudinary (vs S3) pour Active Storage | Free tier permanent, pas de CB |
+| 2026-03-15 | Super-admin via HTTP basic auth | Indépendant de Devise + DB |
 
 ---
 
