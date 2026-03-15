@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Super Admin — Izi-RH</title>
+    <%= csrf_meta_tags %>
+    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
+    <%= render 'shared/dark_mode_init' %>
+  </head>
+  <body class="bg-gray-50 dark:bg-gray-900 min-h-screen">
+    <nav class="bg-gray-900 border-b border-gray-700 px-6 py-3 flex items-center justify-between">
+      <span class="text-white font-bold text-sm">Izi-RH · Super Admin</span>
+      <span class="text-gray-400 text-xs">accès restreint</span>
+    </nav>
+    <main>
+      <%= yield %>
+    </main>
+  </body>
+</html>

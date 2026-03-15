@@ -8,6 +8,6 @@ module SuperAdmin
       password: ENV.fetch('SUPER_ADMIN_PASSWORD', 'changeme')
     )
 
-    layout 'admin'
+    layout 'super_admin'
   end
 end
