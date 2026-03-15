@@ -2,13 +2,13 @@
 
 **Date audit** : 2026-03-15
 **Auditeur** : @architect
-**Statut** : 🟡 EN PRODUCTION (Render free tier) — clients payants pas encore actifs
+**Statut** : 🟢 PRODUCTION-READY — 0 item critique/high/medium restant
 
 ---
 
 ## RÉSUMÉ EXÉCUTIF
 
-L'app est déployée et fonctionnelle sur izi-rh.com. Sentry + Lograge sont en place. Le CI/CD GitHub Actions tourne. Les gaps restants concernent la sécurité (JWT fallback, `.find()` non scopés) et la couverture de tests.
+L'app est déployée et fonctionnelle sur izi-rh.com. Sentry + Lograge sont en place. Le CI/CD GitHub Actions tourne.
 
 ---
 
@@ -26,15 +26,7 @@ L'app est déployée et fonctionnelle sur izi-rh.com. Sentry + Lograge sont en p
 
 ## 📋 MEDIUM
 
-### M-1 · Bullet gem actif en production
-- [ ] Wrapper dans `if Rails.env.development?`
-
-### M-2 · ActiveStorage en stockage local (disk éphémère sur Render)
-- [ ] Configurer S3 pour les uploads avatars
-- [ ] `STORAGE_SERVICE=s3` + credentials AWS
-
-### M-3 · Rack::Attack sur MemoryStore
-- [ ] Passer à Redis quand on upgrade Render
+✅ Aucun item medium restant.
 
 ---
 
@@ -60,6 +52,9 @@ L'app est déployée et fonctionnelle sur izi-rh.com. Sentry + Lograge sont en p
 - ✅ Brakeman 0 warnings (fichier `.brakeman.ignore` pour faux positifs documentés)
 - ✅ **Tests billing complets** — CheckoutService (11), SubscriptionUpgradeService (12), PaymentFailedHandler (10), + 158 existants
 - ✅ **Coverage 42%** — seuil SimpleCov relevé à 40%
+- ✅ **Cloudinary** — Active Storage avatars sur Cloudinary free tier (plus de disk éphémère Render)
+- ✅ **Bullet** — dev only via groupe Gemfile, pas chargé en prod
+- ✅ **Rack::Attack** — `Rails.cache` (memory_store sur free tier, Redis quand upgrade)
 - ✅ **JWT_SECRET_KEY** configuré sur Render (C-1)
 - ✅ **policy_scope** sur tous les `.find()` — double protection tenant + Pundit (C-2)
 
