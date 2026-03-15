@@ -1,6 +1,6 @@
 # PRODUCTION READINESS — IZI-RH
 
-**Date audit** : 2026-03-15 (mis à jour)
+**Date audit** : 2026-03-15
 **Auditeur** : @architect
 **Statut** : 🟡 EN PRODUCTION (Render free tier) — clients payants pas encore actifs
 
@@ -20,13 +20,16 @@ L'app est déployée et fonctionnelle sur izi-rh.com. Sentry + Lograge sont en p
 
 ## ⚠️ HIGH — Requis avant mise à l'échelle
 
-### H-1 · Tests module billing à 0%
-- [ ] Écrire les tests Stripe webhook handlers
-- [ ] Écrire les tests CheckoutService / BillingService
+### H-1 · Tests module billing
+- ✅ CheckoutService — 11 tests (success, customer reuse, trial_end, Stripe error, tenant isolation)
+- ✅ SubscriptionUpgradeService — 12 tests (self-service, admin upgrade, rollback, edge cases)
+- ✅ BillingService, webhook handlers, controllers — 158 tests existants
+- [ ] `payment_failed_handler_spec.rb` — pas encore de spec dédiée (handler existe)
 
 ### H-2 · Coverage global insuffisant (~20%)
 - [ ] Cible : 40% minimum
 - [ ] Priorité : controllers admin, services critiques
+- [ ] `payment_failed_handler` sans spec
 
 ---
 
