@@ -18,18 +18,9 @@ L'app est déployée et fonctionnelle sur izi-rh.com. Sentry + Lograge sont en p
 
 ---
 
-## ⚠️ HIGH — Requis avant mise à l'échelle
+## ⚠️ HIGH
 
-### H-1 · Tests module billing
-- ✅ CheckoutService — 11 tests (success, customer reuse, trial_end, Stripe error, tenant isolation)
-- ✅ SubscriptionUpgradeService — 12 tests (self-service, admin upgrade, rollback, edge cases)
-- ✅ BillingService, webhook handlers, controllers — 158 tests existants
-- [ ] `payment_failed_handler_spec.rb` — pas encore de spec dédiée (handler existe)
-
-### H-2 · Coverage global insuffisant (~20%)
-- [ ] Cible : 40% minimum
-- [ ] Priorité : controllers admin, services critiques
-- [ ] `payment_failed_handler` sans spec
+✅ Aucun item high restant.
 
 ---
 
@@ -67,6 +58,8 @@ L'app est déployée et fonctionnelle sur izi-rh.com. Sentry + Lograge sont en p
 - ✅ config.hosts activé (Render + APP_HOST)
 - ✅ Devise mailer sender → `noreply@izi-rh.com`
 - ✅ Brakeman 0 warnings (fichier `.brakeman.ignore` pour faux positifs documentés)
+- ✅ **Tests billing complets** — CheckoutService (11), SubscriptionUpgradeService (12), PaymentFailedHandler (10), + 158 existants
+- ✅ **Coverage 42%** — seuil SimpleCov relevé à 40%
 - ✅ **JWT_SECRET_KEY** configuré sur Render (C-1)
 - ✅ **policy_scope** sur tous les `.find()` — double protection tenant + Pundit (C-2)
 
