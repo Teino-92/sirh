@@ -58,6 +58,7 @@ class TrialRegistrationService
     )
 
     send_welcome_email(employee, reset_url)
+    send_admin_notification(employee)
 
     Result.new(true, employee, [])
   rescue ActiveRecord::RecordInvalid => e
@@ -68,6 +69,40 @@ class TrialRegistrationService
   end
 
   private
+
+  def send_admin_notification(employee)
+    admin_email = ENV.fetch('ADMIN_NOTIFICATION_EMAIL', 'matteo@izi-rh.com')
+    plan_label  = employee.organization.plan.humanize
+
+    conn = Faraday.new('https://api.resend.com') do |f|
+      f.request :json
+      f.response :json
+      f.adapter Faraday.default_adapter
+    end
+
+    conn.post('/emails') do |req|
+      req.headers['Authorization'] = "Bearer #{ENV['SMTP_PASSWORD']}"
+      req.headers['Content-Type']  = 'application/json'
+      req.body = {
+        from:    "Izi-RH <noreply@#{ENV.fetch('SMTP_DOMAIN', 'izi-rh.com')}>",
+        to:      [admin_email],
+        subject: "🆕 Nouveau trial — #{employee.organization.name} (#{plan_label})",
+        html:    <<~HTML
+          <h2>Nouvelle inscription trial</h2>
+          <table style="border-collapse:collapse;font-family:sans-serif;font-size:14px">
+            <tr><td style="padding:4px 12px 4px 0;color:#6b7280">Organisation</td><td><strong>#{employee.organization.name}</strong></td></tr>
+            <tr><td style="padding:4px 12px 4px 0;color:#6b7280">Plan</td><td><strong>#{plan_label}</strong></td></tr>
+            <tr><td style="padding:4px 12px 4px 0;color:#6b7280">Contact</td><td>#{employee.full_name} — #{employee.email}</td></tr>
+            <tr><td style="padding:4px 12px 4px 0;color:#6b7280">Fin du trial</td><td>#{employee.organization.trial_ends_at.strftime('%d/%m/%Y')}</td></tr>
+            <tr><td style="padding:4px 12px 4px 0;color:#6b7280">Date</td><td>#{Time.current.strftime('%d/%m/%Y %H:%M')}</td></tr>
+          </table>
+        HTML
+      }
+    end
+  rescue StandardError => e
+    Rails.logger.warn "[TrialRegistration] Admin notification failed: #{e.message}"
+    # Non-blocking — ne pas faire échouer l'inscription si la notif plante
+  end
 
   def send_welcome_email(employee, reset_url)
     conn = Faraday.new('https://api.resend.com') do |f|
