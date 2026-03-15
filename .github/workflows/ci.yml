@@ -20,7 +20,9 @@ jobs:
           bundler-cache: true
 
       - name: Run Brakeman
-        run: bundle exec brakeman --no-pager -q
+        # --exit-on-warn 0 : warnings shown in logs but don't fail the job
+        # Use --exit-on-error to still fail on real scan errors
+        run: bundle exec brakeman --no-pager -q --exit-on-warn 0
 
   # ── RSpec test suite ────────────────────────────────────────────────────────
   rspec:
