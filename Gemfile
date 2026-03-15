@@ -115,7 +115,8 @@ gem "faraday-retry", "~> 2.2"
 # Stripe billing
 gem "stripe", "~> 13.0"
 
-# Error tracking
+# Error tracking + profiling
+gem "stackprof", require: false
 gem "sentry-ruby", "~> 5.21"
 gem "sentry-rails", "~> 5.21"
 
