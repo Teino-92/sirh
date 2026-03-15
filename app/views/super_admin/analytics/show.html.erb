@@ -1,0 +1,117 @@
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+  <div class="mb-8">
+    <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100">Analytics — Vue globale</h1>
+    <p class="text-sm text-gray-500 dark:text-gray-400 mt-1"><%= l(Date.current, format: :long) %></p>
+  </div>
+
+  <%# ── KPIs ─────────────────────────────────────────────────────────────── %>
+  <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
+    <%= render 'super_admin/analytics/kpi_card', label: 'Organisations',      value: @total_orgs,       color: 'indigo' %>
+    <%= render 'super_admin/analytics/kpi_card', label: 'Employés total',     value: @total_employees,  color: 'blue' %>
+    <%= render 'super_admin/analytics/kpi_card', label: 'Trials actifs',      value: @trials_active,    color: 'green' %>
+    <%= render 'super_admin/analytics/kpi_card', label: 'Trials expirés',     value: @trials_expired,   color: 'red' %>
+    <%= render 'super_admin/analytics/kpi_card', label: 'Convertis (payant)', value: @trials_converted, color: 'yellow' %>
+    <% conversion_rate = @total_orgs > 0 ? (@trials_converted.to_f / @total_orgs * 100).round(1) : 0 %>
+    <%= render 'super_admin/analytics/kpi_card', label: 'Taux conversion',    value: "#{conversion_rate}%", color: 'purple' %>
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+
+    <%# ── Répartition par plan ──────────────────────────────────────────── %>
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow p-6">
+      <h2 class="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-4">Répartition par plan</h2>
+      <div class="space-y-3">
+        <% @by_plan.each do |plan, count| %>
+          <% pct = @total_orgs > 0 ? (count.to_f / @total_orgs * 100).round(1) : 0 %>
+          <div>
+            <div class="flex justify-between text-xs mb-1">
+              <span class="font-medium text-gray-700 dark:text-gray-300"><%= plan.humanize %></span>
+              <span class="text-gray-500"><%= count %> (<%= pct %>%)</span>
+            </div>
+            <div class="h-2 bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden">
+              <div class="h-full bg-indigo-500 rounded-full" style="width:<%= pct %>%"></div>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+
+    <%# ── Inscriptions 30 derniers jours ────────────────────────────────── %>
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow p-6">
+      <h2 class="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-4">Nouvelles inscriptions (30j)</h2>
+      <% if @signups_by_day.any? %>
+        <% max_val = @signups_by_day.values.max.to_f %>
+        <div class="flex items-end gap-1 h-24">
+          <% @signups_by_day.each do |date, count| %>
+            <% bar_h = max_val > 0 ? (count / max_val * 100).round : 0 %>
+            <div class="flex-1 flex flex-col items-center gap-1 group relative">
+              <div class="w-full bg-indigo-500 rounded-t hover:bg-indigo-600 transition-colors cursor-default"
+                   style="height:<%= bar_h %>%"
+                   title="<%= date.strftime('%d/%m') %> — <%= count %> inscription<%= count > 1 ? 's' : '' %>">
+              </div>
+              <span class="text-gray-400 dark:text-gray-500 hidden group-hover:block absolute -bottom-5 text-[10px] whitespace-nowrap"><%= date.strftime('%d/%m') %></span>
+            </div>
+          <% end %>
+        </div>
+        <p class="text-xs text-gray-400 mt-2 text-right">Total : <%= @signups_by_day.values.sum %> inscription<%= @signups_by_day.values.sum > 1 ? 's' : '' %></p>
+      <% else %>
+        <p class="text-sm text-gray-400 text-center py-8">Aucune inscription ces 30 derniers jours</p>
+      <% end %>
+    </div>
+
+  </div>
+
+  <%# ── Tableau des organisations ─────────────────────────────────────────── %>
+  <div class="bg-white dark:bg-gray-800 rounded-xl shadow overflow-hidden">
+    <div class="px-6 py-4 border-b border-gray-100 dark:border-gray-700 flex items-center justify-between">
+      <h2 class="text-sm font-semibold text-gray-700 dark:text-gray-300">Toutes les organisations (<%= @total_orgs %>)</h2>
+    </div>
+    <div class="overflow-x-auto">
+      <table class="w-full text-sm">
+        <thead class="bg-gray-50 dark:bg-gray-700/50 text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide">
+          <tr>
+            <th class="px-4 py-3 text-left">Organisation</th>
+            <th class="px-4 py-3 text-left">Plan</th>
+            <th class="px-4 py-3 text-left">Statut</th>
+            <th class="px-4 py-3 text-right">Employés</th>
+            <th class="px-4 py-3 text-left">Trial fin</th>
+            <th class="px-4 py-3 text-left">Inscrit le</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-100 dark:divide-gray-700">
+          <% @organizations.each do |org| %>
+            <%
+              sub    = org.subscription
+              status = if sub&.status == 'active'
+                         { label: 'Payant', css: 'bg-green-100 text-green-700' }
+                       elsif org.trial_active?
+                         { label: "Trial J#{org.trial_days_remaining}", css: 'bg-blue-100 text-blue-700' }
+                       elsif org.trial_expired?
+                         { label: 'Expiré', css: 'bg-red-100 text-red-700' }
+                       else
+                         { label: 'Inconnu', css: 'bg-gray-100 text-gray-500' }
+                       end
+              emp_count = Employee.unscoped.where(organization_id: org.id).count
+            %>
+            <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/30 transition-colors">
+              <td class="px-4 py-3 font-medium text-gray-900 dark:text-gray-100"><%= org.name %></td>
+              <td class="px-4 py-3 text-gray-600 dark:text-gray-400"><%= org.plan.humanize %></td>
+              <td class="px-4 py-3">
+                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium <%= status[:css] %>">
+                  <%= status[:label] %>
+                </span>
+              </td>
+              <td class="px-4 py-3 text-right text-gray-600 dark:text-gray-400"><%= emp_count %></td>
+              <td class="px-4 py-3 text-gray-500 dark:text-gray-400 text-xs">
+                <%= org.trial_ends_at ? org.trial_ends_at.strftime('%d/%m/%Y') : '—' %>
+              </td>
+              <td class="px-4 py-3 text-gray-500 dark:text-gray-400 text-xs"><%= org.created_at.strftime('%d/%m/%Y') %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>

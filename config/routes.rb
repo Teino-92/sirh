@@ -220,6 +220,11 @@ Rails.application.routes.draw do
     end
   end
 
+  # Super-admin analytics (Matteo only — gated by SUPER_ADMIN_EMAIL)
+  namespace :super_admin do
+    get 'analytics', to: 'analytics#show', as: :analytics
+  end
+
   # Admin panel - Hotwire-based
   namespace :admin do
     root to: 'employees#index'
