@@ -10,6 +10,7 @@ RSpec.describe Payroll::WebhookPusher do
   before do
     org.settings['payroll_webhook_url']    = 'https://silae.example.com/webhook'
     org.settings['payroll_webhook_secret'] = 'secret123'
+    allow(Resolv).to receive(:getaddress).with('silae.example.com').and_return('1.2.3.4')
   end
 
   describe '#push' do

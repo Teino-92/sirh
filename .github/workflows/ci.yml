@@ -58,12 +58,4 @@ jobs:
         run: bundle exec rails db:schema:load
 
       - name: Run RSpec
-        run: bundle exec rspec --format progress --format RspecJunitFormatter --out tmp/rspec.xml
-        continue-on-error: false
-
-      - name: Upload test results
-        uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: rspec-results
-          path: tmp/rspec.xml
+        run: bundle exec rspec --format progress

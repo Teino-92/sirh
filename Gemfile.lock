@@ -354,8 +354,6 @@ GEM
       rspec-mocks (~> 3.13)
       rspec-support (~> 3.13)
     rspec-support (3.13.6)
-    rspec_junit_formatter (0.6.0)
-      rspec-core (>= 2, < 4, != 2.12.0)
     securerandom (0.4.1)
     sentry-rails (5.28.1)
       railties (>= 5.0)
@@ -467,7 +465,6 @@ DEPENDENCIES
   rack-attack
   rails (~> 7.1.6)
   rspec-rails (~> 6.1)
-  rspec_junit_formatter (~> 0.6)
   sentry-rails (~> 5.21)
   sentry-ruby (~> 5.21)
   shoulda-matchers (~> 6.0)
