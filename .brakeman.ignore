@@ -1,0 +1,20 @@
+{
+  "ignored_warnings": [
+    {
+      "fingerprint": "38ef1c96ad9d3cbd57d95cd29f69789211cce7c7bf7c04d40d814617c5b86d61",
+      "note": "False positive — :role is intentional. Admin::EmployeesController is gated by authorize_admin! (hr_or_admin? check) before any action."
+    },
+    {
+      "fingerprint": "d84924377155b41e094acae7404ec2e521629d86f97b0ff628e3d1b263f8101c",
+      "note": "Rails 7.1 EOL acknowledged — upgrade to Rails 8 planned but not blocking."
+    },
+    {
+      "fingerprint": "df59486a85a64eb0d334f59a9bca480b98685f3bf15cca30e05325054da74bb2",
+      "note": "False positive — render @onboarding_template from a tenant-scoped find, not from user input."
+    },
+    {
+      "fingerprint": "f4277dd45de3d03f3091b01e80b7a2f7381419a5e1bcfd780dff1fa2fcab99e1",
+      "note": "False positive — Turbo/Pagy partial render, not a dynamic render from params."
+    }
+  ]
+}
