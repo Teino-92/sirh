@@ -57,5 +57,8 @@ jobs:
       - name: Set up database
         run: bundle exec rails db:schema:load
 
+      - name: Precompile assets
+        run: bundle exec rails assets:precompile
+
       - name: Run RSpec
         run: bundle exec rspec --format progress
