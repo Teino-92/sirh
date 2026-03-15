@@ -51,4 +51,11 @@ class ApplicationController < ActionController::Base
     flash[:alert] = "Vous n'êtes pas autorisé à effectuer cette action."
     redirect_back(fallback_location: dashboard_path)
   end
+
+  # Lograge payload — appended to every structured log line
+  def append_info_to_payload(payload)
+    super
+    payload[:current_user_id] = current_employee&.id
+    payload[:current_org_id]  = current_employee&.organization_id
+  end
 end

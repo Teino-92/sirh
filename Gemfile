@@ -68,6 +68,9 @@ group :development, :test do
 
   # HTTP request stubbing
   gem "webmock", "~> 3.23"
+
+  # JUnit XML output for CI
+  gem "rspec_junit_formatter", "~> 0.6"
 end
 
 group :development do
@@ -111,3 +114,10 @@ gem "faraday-retry", "~> 2.2"
 
 # Stripe billing
 gem "stripe", "~> 13.0"
+
+# Error tracking
+gem "sentry-ruby", "~> 5.21"
+gem "sentry-rails", "~> 5.21"
+
+# Structured JSON logging
+gem "lograge", "~> 0.14"

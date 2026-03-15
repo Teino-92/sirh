@@ -209,6 +209,11 @@ GEM
       kaminari-core (= 1.2.2)
     kaminari-core (1.2.2)
     logger (1.7.0)
+    lograge (0.14.0)
+      actionpack (>= 4)
+      activesupport (>= 4)
+      railties (>= 4)
+      request_store (~> 1.0)
     loofah (2.25.0)
       crass (~> 1.0.2)
       nokogiri (>= 1.12.0)
@@ -349,7 +354,15 @@ GEM
       rspec-mocks (~> 3.13)
       rspec-support (~> 3.13)
     rspec-support (3.13.6)
+    rspec_junit_formatter (0.6.0)
+      rspec-core (>= 2, < 4, != 2.12.0)
     securerandom (0.4.1)
+    sentry-rails (5.28.1)
+      railties (>= 5.0)
+      sentry-ruby (~> 5.28.1)
+    sentry-ruby (5.28.1)
+      bigdecimal
+      concurrent-ruby (~> 1.0, >= 1.0.2)
     shoulda-matchers (6.5.0)
       activesupport (>= 5.2.0)
     simplecov (0.22.0)
@@ -444,6 +457,7 @@ DEPENDENCIES
   faraday-retry (~> 2.2)
   importmap-rails
   kaminari
+  lograge (~> 0.14)
   ostruct
   paper_trail
   pg (~> 1.1)
@@ -452,6 +466,9 @@ DEPENDENCIES
   rack-attack
   rails (~> 7.1.6)
   rspec-rails (~> 6.1)
+  rspec_junit_formatter (~> 0.6)
+  sentry-rails (~> 5.21)
+  sentry-ruby (~> 5.21)
   shoulda-matchers (~> 6.0)
   simplecov (~> 0.22)
   solid_cache
