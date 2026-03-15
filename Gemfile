@@ -119,3 +119,5 @@ gem "sentry-rails", "~> 5.21"
 
 # Structured JSON logging
 gem "lograge", "~> 0.14"
+
+gem "cloudinary", "~> 2.4"

@@ -107,7 +107,7 @@ Rails.application.configure do
 
   # Store uploaded files on S3 (Heroku has an ephemeral filesystem — local storage is lost on dyno restart).
   # Set STORAGE_SERVICE=local to fall back to disk (development/staging without S3).
-  config.active_storage.service = ENV.fetch("STORAGE_SERVICE", "local").to_sym
+  config.active_storage.service = ENV.fetch("STORAGE_SERVICE", "cloudinary").to_sym
 
   # Enable DNS rebinding protection — only allow requests from known hosts.
   # RENDER_EXTERNAL_HOSTNAME is injected automatically by Render for web services.
