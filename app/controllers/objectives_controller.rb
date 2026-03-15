@@ -15,7 +15,7 @@ class ObjectivesController < ApplicationController
   end
 
   def show
-    @objective = Objective.find(params[:id])
+    @objective = policy_scope(Objective).find(params[:id])
     authorize @objective
   end
 end

@@ -10,7 +10,7 @@ class OneOnOnesController < ApplicationController
   end
 
   def show
-    @one_on_one = OneOnOne.find(params[:id])
+    @one_on_one = policy_scope(OneOnOne).find(params[:id])
     authorize @one_on_one
   end
 end

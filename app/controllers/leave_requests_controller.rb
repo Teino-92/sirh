@@ -167,7 +167,7 @@ class LeaveRequestsController < ApplicationController
   private
 
   def set_leave_request
-    @leave_request = LeaveRequest.find(params[:id])
+    @leave_request = policy_scope(LeaveRequest).find(params[:id])
   end
 
   def leave_request_params

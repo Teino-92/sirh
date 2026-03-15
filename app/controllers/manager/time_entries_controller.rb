@@ -58,7 +58,7 @@ module Manager
     end
 
     def validate_entry
-      @time_entry = TimeEntry.find(params[:id])
+      @time_entry = policy_scope(TimeEntry).find(params[:id])
       authorize @time_entry, :validate?
 
       @time_entry.validate!(validator: current_employee)
@@ -75,7 +75,7 @@ module Manager
     end
 
     def reject_entry
-      @time_entry = TimeEntry.find(params[:id])
+      @time_entry = policy_scope(TimeEntry).find(params[:id])
       authorize @time_entry, :validate?
 
       @time_entry.reject!(rejector: current_employee, reason: params[:rejection_reason])
