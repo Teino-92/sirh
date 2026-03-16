@@ -79,8 +79,7 @@ RSpec.describe 'Admin::Payroll', type: :request do
       it 'redirects with an authorization alert' do
         get export_silae_admin_payroll_path, params: { period: valid_period }
         expect(response).to be_redirect
-        follow_redirect!
-        expect(response.body).to include("autorisé")
+        expect(flash[:alert]).to include("autorisé")
       end
     end
 
@@ -90,8 +89,7 @@ RSpec.describe 'Admin::Payroll', type: :request do
       it 'redirects with an authorization alert' do
         get export_silae_admin_payroll_path, params: { period: valid_period }
         expect(response).to be_redirect
-        follow_redirect!
-        expect(response.body).to include("autorisé")
+        expect(flash[:alert]).to include("autorisé")
       end
     end
 

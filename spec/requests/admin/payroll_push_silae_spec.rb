@@ -36,8 +36,7 @@ RSpec.describe 'Admin::Payroll#push_silae', type: :request do
       it 'denies access with authorization alert' do
         post push_silae_admin_payroll_path, params: { period: '2026-01' }
         expect(response).to be_redirect
-        follow_redirect!
-        expect(response.body).to include('autorisé')
+        expect(flash[:alert]).to include('autorisé')
       end
     end
 
@@ -47,8 +46,7 @@ RSpec.describe 'Admin::Payroll#push_silae', type: :request do
       it 'denies access' do
         post push_silae_admin_payroll_path, params: { period: '2026-01' }
         expect(response).to be_redirect
-        follow_redirect!
-        expect(response.body).to include('autorisé')
+        expect(flash[:alert]).to include('autorisé')
       end
     end
 

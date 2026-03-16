@@ -30,8 +30,7 @@ RSpec.describe 'Admin::PayrollPeriods', type: :request do
       it 'redirects with authorization alert' do
         post admin_payroll_payroll_periods_path, params: { period: valid_period }
         expect(response).to be_redirect
-        follow_redirect!
-        expect(response.body).to include('autorisé')
+        expect(flash[:alert]).to include('autorisé')
       end
     end
 
@@ -41,8 +40,7 @@ RSpec.describe 'Admin::PayrollPeriods', type: :request do
       it 'redirects with authorization alert' do
         post admin_payroll_payroll_periods_path, params: { period: valid_period }
         expect(response).to be_redirect
-        follow_redirect!
-        expect(response.body).to include('autorisé')
+        expect(flash[:alert]).to include('autorisé')
       end
     end
 
@@ -119,8 +117,7 @@ RSpec.describe 'Admin::PayrollPeriods', type: :request do
       it 'redirects with authorization alert' do
         delete admin_payroll_payroll_period_path(locked_period)
         expect(response).to be_redirect
-        follow_redirect!
-        expect(response.body).to include('autorisé')
+        expect(flash[:alert]).to include('autorisé')
       end
     end
 
