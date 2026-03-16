@@ -15,6 +15,10 @@
     {
       "fingerprint": "f4277dd45de3d03f3091b01e80b7a2f7381419a5e1bcfd780dff1fa2fcab99e1",
       "note": "False positive — Turbo/Pagy partial render, not a dynamic render from params."
+    },
+    {
+      "fingerprint": "1412f6b34ee33ec2f16841afc692660ff5dcaaa09264d6d7dd68bae97cce1b1a",
+      "note": "False positive — :role is intentional. User selects which role to delegate (manager/hr). Delegator is force-set to current_employee server-side, Pundit authorize gates the action, and allowed values are validated at model level."
     }
   ]
 }
