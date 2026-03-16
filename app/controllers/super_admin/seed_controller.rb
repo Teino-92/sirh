@@ -2,6 +2,8 @@
 
 module SuperAdmin
   class SeedController < BaseController
+    skip_before_action :verify_authenticity_token
+
     def test5
       ActsAsTenant.without_tenant do
         org = Organization.find_or_create_by!(name: "test 5") do |o|
