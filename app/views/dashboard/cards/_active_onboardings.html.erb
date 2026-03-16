@@ -21,10 +21,11 @@
       <div class="space-y-3 overflow-auto flex-1">
         <% @active_onboardings.first(limit).each do |ob| %>
           <%
+            tasks     = ob.onboarding_tasks.to_a
             pct       = ob.progress_percentage
-            total     = ob.onboarding_tasks.size
-            done      = ob.onboarding_tasks.count(&:completed?)
-            overdue   = ob.overdue_tasks.count
+            total     = tasks.size
+            done      = tasks.count { |t| t.status == 'completed' }
+            overdue   = tasks.count { |t| t.status == 'pending' && t.due_date&.< Date.current }
             day_num   = ob.day_number
             bar_color = pct >= 75 ? 'bg-green-500' : pct >= 40 ? 'bg-indigo-500' : 'bg-yellow-500'
           %>
