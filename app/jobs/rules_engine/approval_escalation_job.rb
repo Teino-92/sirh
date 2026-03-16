@@ -14,7 +14,7 @@ class RulesEngine::ApprovalEscalationJob < ApplicationJob
   discard_on ActiveRecord::RecordNotUnique
 
   # Whitelist of allowed resource types — prevents unsafe constantize on DB values.
-  ALLOWED_RESOURCE_TYPES = %w[LeaveRequest].freeze
+  ALLOWED_RESOURCE_TYPES = %w[LeaveRequest OneOnOne Objective TrainingAssignment EmployeeOnboarding OnboardingTask].freeze
 
   def perform(approval_step_id)
     # Load outside tenant scope — step_id is globally unique

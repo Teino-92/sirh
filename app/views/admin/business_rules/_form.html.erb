@@ -1,7 +1,8 @@
 <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6"
      data-controller="rule-builder"
      data-rule-builder-conditions-value="<%= (@rule.conditions || []).to_json.html_safe %>"
-     data-rule-builder-actions-value="<%= (@rule.actions || []).to_json.html_safe %>">
+     data-rule-builder-actions-value="<%= (@rule.actions || []).to_json.html_safe %>"
+     data-rule-builder-trigger-value="<%= @rule.trigger.to_s %>">
 
   <%= form_with model: [:admin, @rule], class: "space-y-6" do |f| %>
 
@@ -28,15 +29,39 @@
 
         <div>
           <%= f.label :trigger, "Événement déclencheur", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" %>
-          <%= f.select :trigger,
-              options_for_select([
-                ["Demande de congé soumise",  "leave_request.submitted"],
-                ["Demande de congé approuvée", "leave_request.approved"],
-                ["Demande de congé refusée",   "leave_request.rejected"],
-                ["Demande de congé annulée",   "leave_request.cancelled"],
-              ], @rule.trigger),
-              { include_blank: "— choisir un événement —" },
-              class: "w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" %>
+          <%= f.grouped_collection_select :trigger,
+              [
+                OpenStruct.new(label: "Congés", triggers: [
+                  OpenStruct.new(value: "leave_request.submitted",  name: "Demande soumise"),
+                  OpenStruct.new(value: "leave_request.approved",   name: "Demande approuvée"),
+                  OpenStruct.new(value: "leave_request.rejected",   name: "Demande refusée"),
+                  OpenStruct.new(value: "leave_request.cancelled",  name: "Demande annulée"),
+                ]),
+                OpenStruct.new(label: "1:1", triggers: [
+                  OpenStruct.new(value: "one_on_one.scheduled",  name: "1:1 planifié"),
+                  OpenStruct.new(value: "one_on_one.completed",  name: "1:1 complété"),
+                  OpenStruct.new(value: "one_on_one.cancelled",  name: "1:1 annulé"),
+                ]),
+                OpenStruct.new(label: "Objectifs", triggers: [
+                  OpenStruct.new(value: "objective.assigned",   name: "Objectif assigné"),
+                  OpenStruct.new(value: "objective.completed",  name: "Objectif complété"),
+                ]),
+                OpenStruct.new(label: "Formations", triggers: [
+                  OpenStruct.new(value: "training_assignment.assigned",   name: "Formation assignée"),
+                  OpenStruct.new(value: "training_assignment.completed",  name: "Formation terminée"),
+                ]),
+                OpenStruct.new(label: "Onboarding", triggers: [
+                  OpenStruct.new(value: "onboarding.started",         name: "Onboarding démarré"),
+                  OpenStruct.new(value: "onboarding.task_completed",  name: "Tâche onboarding complétée"),
+                ]),
+                OpenStruct.new(label: "Évaluations", triggers: [
+                  OpenStruct.new(value: "evaluation.completed",  name: "Évaluation complétée"),
+                ]),
+              ],
+              :triggers, :label, :value, :name,
+              { selected: @rule.trigger, include_blank: "— choisir un événement —" },
+              { class: "w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm",
+                data: { action: "change->rule-builder#triggerChanged" } } %>
         </div>
 
         <div>

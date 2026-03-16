@@ -34,6 +34,12 @@ module Manager
 
       if @employee_onboarding.save
         EmployeeOnboardingInitializerService.new(@employee_onboarding).call
+        RulesEngine.new(current_organization).trigger('onboarding.started',
+          resource: @employee_onboarding,
+          context: {
+            'employee_role' => @employee_onboarding.employee&.role.to_s,
+            'duration_days' => @employee_onboarding.end_date && @employee_onboarding.start_date ? (@employee_onboarding.end_date - @employee_onboarding.start_date).to_i : nil
+          }.compact)
         redirect_to manager_employee_onboarding_path(@employee_onboarding),
                     notice: "Onboarding démarré pour #{@employee_onboarding.employee.full_name}."
       else

@@ -37,6 +37,17 @@ class TrainingTracker
         end
       end
 
+      assignments.each do |assignment|
+        RulesEngine.new(@organization).trigger('training_assignment.assigned',
+          resource: assignment,
+          context: {
+            'training_type'  => training.training_type.to_s,
+            'employee_role'  => assignment.employee&.role.to_s,
+            'has_deadline'   => deadline.present?.to_s,
+            'deadline_days'  => deadline ? (deadline - Date.current).to_i : nil
+          }.compact)
+      end
+
       assignments
     end
   end

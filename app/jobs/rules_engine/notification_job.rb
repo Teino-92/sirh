@@ -13,12 +13,15 @@ class RulesEngine::NotificationJob < ApplicationJob
   # @param message       [String]
   # @param resource_type [String, nil]
   # @param resource_id   [Integer, nil]
+  ALLOWED_RESOURCE_TYPES = %w[LeaveRequest OneOnOne Objective TrainingAssignment EmployeeOnboarding OnboardingTask].freeze
+
   def perform(employee_ids, subject, message, resource_type: nil, resource_id: nil)
     employees = Employee.where(id: employee_ids).to_a
     return if employees.empty?
 
     ActsAsTenant.with_tenant(employees.first.organization) do
-      resource = resource_type && resource_id ? resource_type.constantize.find_by(id: resource_id) : nil
+      klass = ALLOWED_RESOURCE_TYPES.include?(resource_type) ? resource_type.constantize : nil
+      resource = klass && resource_id ? klass.find_by(id: resource_id) : nil
 
       # deliver_later enqueues one independent job per recipient — idempotent on retry
       employees.each do |employee|

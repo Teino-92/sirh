@@ -2,6 +2,45 @@ import { Controller } from "@hotwired/stimulus"
 
 // Stimulus controller for the BusinessRule form builder.
 // Manages dynamic condition/action rows and keeps hidden JSON fields in sync.
+// Condition fields are dynamic based on the selected trigger domain.
+
+const TRIGGER_FIELDS = {
+  "leave_request.submitted":  ["days_count", "leave_type", "employee_role", "department", "contract_type"],
+  "leave_request.approved":   ["days_count", "leave_type", "employee_role"],
+  "leave_request.rejected":   ["days_count", "leave_type", "employee_role"],
+  "leave_request.cancelled":  ["days_count", "leave_type", "employee_role"],
+  "one_on_one.scheduled":     ["employee_role", "days_until", "agenda_present"],
+  "one_on_one.completed":     ["employee_role"],
+  "one_on_one.cancelled":     ["employee_role"],
+  "objective.assigned":       ["priority", "employee_role", "deadline_days"],
+  "objective.completed":      ["priority", "employee_role", "status"],
+  "training_assignment.assigned":  ["training_type", "employee_role", "has_deadline", "deadline_days"],
+  "training_assignment.completed": ["training_type", "employee_role"],
+  "onboarding.started":       ["employee_role", "duration_days"],
+  "onboarding.task_completed":["task_type", "assigned_to_role", "onboarding_day"],
+  "evaluation.completed":     ["employee_role", "period_year"],
+}
+
+const ALL_FIELD_LABELS = {
+  days_count:      "Nombre de jours",
+  leave_type:      "Type de congé",
+  employee_role:   "Rôle de l'employé",
+  department:      "Département",
+  contract_type:   "Type de contrat",
+  priority:        "Priorité",
+  status:          "Statut",
+  deadline_days:   "Jours avant deadline",
+  days_until:      "Jours avant le 1:1",
+  agenda_present:  "Ordre du jour renseigné",
+  training_type:   "Type de formation",
+  has_deadline:    "A une échéance",
+  task_type:       "Type de tâche",
+  assigned_to_role:"Rôle assigné",
+  onboarding_day:  "Jour d'onboarding",
+  duration_days:   "Durée (jours)",
+  period_year:     "Année de la période",
+}
+
 export default class extends Controller {
   static targets = [
     "conditionsContainer", "conditionsEmpty", "conditionsJson",
@@ -10,14 +49,21 @@ export default class extends Controller {
 
   static values = {
     conditions: Array,
-    actions:    Array
+    actions:    Array,
+    trigger:    String,
   }
 
   connect() {
     this._conditions = [...(this.conditionsValue || [])]
     this._actions    = [...(this.actionsValue    || [])]
+    this._trigger    = this.triggerValue || ""
     this._renderConditions()
     this._renderActions()
+  }
+
+  triggerChanged(event) {
+    this._trigger = event.currentTarget.value
+    this._renderConditions()
   }
 
   // ── Conditions ──────────────────────────────────────────────────────────────
@@ -50,13 +96,10 @@ export default class extends Controller {
   }
 
   _conditionRowHtml(cond, idx) {
-    const fields = [
-      { value: "days_count",    label: "Nombre de jours" },
-      { value: "leave_type",    label: "Type de congé" },
-      { value: "employee_role", label: "Rôle de l'employé" },
-      { value: "department",    label: "Département" },
-      { value: "contract_type", label: "Type de contrat" },
-    ]
+    // Fields available depend on the currently selected trigger
+    const fieldKeys = TRIGGER_FIELDS[this._trigger] || Object.keys(ALL_FIELD_LABELS)
+    const fields = fieldKeys.map(k => ({ value: k, label: ALL_FIELD_LABELS[k] || k }))
+
     const ops = [
       { value: "eq",      label: "est égal à" },
       { value: "neq",     label: "est différent de" },

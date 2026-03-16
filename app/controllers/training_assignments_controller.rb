@@ -17,7 +17,13 @@ class TrainingAssignmentsController < ApplicationController
   def complete
     authorize @assignment, :complete?
     @assignment.complete!(notes: params[:completion_notes])
-    redirect_to training_assignment_path(@assignment), notice: 'Training marked as complete'
+    RulesEngine.new(current_employee.organization).trigger('training_assignment.completed',
+      resource: @assignment,
+      context: {
+        'training_type' => @assignment.training.training_type.to_s,
+        'employee_role' => @assignment.employee.role.to_s
+      })
+    redirect_to training_assignment_path(@assignment), notice: 'Formation marquée comme terminée'
   rescue ActiveRecord::RecordInvalid
     render :show, status: :unprocessable_entity
   end

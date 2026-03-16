@@ -2,18 +2,52 @@
 
 module BusinessRulesHelper
   TRIGGER_LABELS = {
-    "leave_request.submitted"  => "Demande de congé soumise",
-    "leave_request.approved"   => "Demande de congé approuvée",
-    "leave_request.rejected"   => "Demande de congé refusée",
-    "leave_request.cancelled"  => "Demande de congé annulée",
+    # Congés
+    "leave_request.submitted"         => "Demande de congé soumise",
+    "leave_request.approved"          => "Demande de congé approuvée",
+    "leave_request.rejected"          => "Demande de congé refusée",
+    "leave_request.cancelled"         => "Demande de congé annulée",
+    # 1:1
+    "one_on_one.scheduled"            => "1:1 planifié",
+    "one_on_one.completed"            => "1:1 complété",
+    "one_on_one.cancelled"            => "1:1 annulé",
+    # Objectifs
+    "objective.assigned"              => "Objectif assigné",
+    "objective.completed"             => "Objectif complété",
+    # Formations
+    "training_assignment.assigned"    => "Formation assignée",
+    "training_assignment.completed"   => "Formation terminée",
+    # Onboarding
+    "onboarding.started"              => "Onboarding démarré",
+    "onboarding.task_completed"       => "Tâche onboarding complétée",
+    # Évaluations
+    "evaluation.completed"            => "Évaluation complétée",
   }.freeze
 
   FIELD_LABELS = {
-    "days_count"    => "Nombre de jours",
-    "leave_type"    => "Type de congé",
-    "employee_role" => "Rôle de l'employé",
-    "department"    => "Département",
-    "contract_type" => "Type de contrat",
+    # Congés
+    "days_count"      => "Nombre de jours",
+    "leave_type"      => "Type de congé",
+    "employee_role"   => "Rôle de l'employé",
+    "department"      => "Département",
+    "contract_type"   => "Type de contrat",
+    # Objectifs
+    "priority"        => "Priorité",
+    "status"          => "Statut",
+    "deadline_days"   => "Jours avant deadline",
+    # 1:1
+    "days_until"      => "Jours avant le 1:1",
+    "agenda_present"  => "Ordre du jour renseigné",
+    # Formations
+    "training_type"   => "Type de formation",
+    "has_deadline"    => "A une échéance",
+    # Onboarding
+    "task_type"       => "Type de tâche",
+    "assigned_to_role"=> "Rôle assigné",
+    "onboarding_day"  => "Jour d'onboarding",
+    "duration_days"   => "Durée (jours)",
+    # Évaluations
+    "period_year"     => "Année de la période",
   }.freeze
 
   OPERATOR_LABELS = {

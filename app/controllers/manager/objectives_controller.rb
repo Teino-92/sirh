@@ -29,6 +29,9 @@ module Manager
       authorize @objective
 
       if @objective.save
+        RulesEngine.new(current_organization).trigger('objective.assigned',
+          resource: @objective,
+          context: rules_context_for(@objective))
         redirect_to manager_objectives_path, notice: 'Objectif créé'
       else
         render :new, status: :unprocessable_entity
@@ -47,6 +50,9 @@ module Manager
     def complete
       authorize @objective, :complete?
       @objective.complete!
+      RulesEngine.new(current_organization).trigger('objective.completed',
+        resource: @objective,
+        context: rules_context_for(@objective))
       redirect_to manager_objectives_path, notice: 'Objectif marqué comme complété'
     rescue ActiveRecord::RecordInvalid
       redirect_to manager_objective_path(@objective), alert: 'Impossible de compléter cet objectif.'
@@ -66,6 +72,15 @@ module Manager
 
     def objective_params
       params.require(:objective).permit(:title, :description, :owner_id, :deadline, :priority)
+    end
+
+    def rules_context_for(objective)
+      {
+        'priority'      => objective.priority.to_s,
+        'status'        => objective.status.to_s,
+        'employee_role' => objective.owner&.role.to_s,
+        'deadline_days' => objective.deadline ? (objective.deadline - Date.current).to_i : nil
+      }.compact
     end
 
   end
