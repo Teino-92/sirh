@@ -4,6 +4,14 @@ class ApplicationController < ActionController::Base
   include Pundit::Authorization
   include ActsAsTenant::ControllerExtensions
 
+  # Protect staging from public access and search engine indexing
+  if Rails.env.staging?
+    http_basic_authenticate_with(
+      name:     ENV.fetch('STAGING_LOGIN',    'staging'),
+      password: ENV.fetch('STAGING_PASSWORD', 'staging')
+    )
+  end
+
   # Set tenant for multi-tenancy
   before_action :set_tenant
   before_action :check_trial_expired!, if: :employee_signed_in?
