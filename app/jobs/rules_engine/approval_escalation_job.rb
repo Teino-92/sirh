@@ -47,7 +47,7 @@ class RulesEngine::ApprovalEscalationJob < ApplicationJob
 
       resource_klass = ALLOWED_RESOURCE_TYPES.include?(step.resource_type) ? step.resource_type.constantize : nil
       resource = resource_klass&.find_by(id: step.resource_id)
-      RulesEngine::NotificationDispatcher.new(
+      NotificationDispatcher.new(
         { 'role' => step.escalate_to_role, 'message' => "Une approbation en attente vous a été escaladée.", 'subject' => "Action requise — Escalade d'approbation" },
         resource,
         step.organization

@@ -7,7 +7,7 @@
 #   { "type" => "notify", "employee_id" => 42, "message" => "...", "subject" => "..." }
 #
 # Creates in-app Notification records (insert_all) and enqueues a background email job.
-class RulesEngine::NotificationDispatcher
+class NotificationDispatcher
   DEFAULT_SUBJECT = "Notification Izi-RH"
 
   def initialize(action, resource, organization)

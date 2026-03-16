@@ -64,7 +64,7 @@ class RuleActionExecutor
   end
 
   def dispatch_notification
-    count = RulesEngine::NotificationDispatcher.new(@action, @resource, @organization).dispatch
+    count = NotificationDispatcher.new(@action, @resource, @organization).dispatch
     Result.new(type: :notify, payload: { recipients_count: count, role: @action['role'], message: @action['message'] })
   end
 end
