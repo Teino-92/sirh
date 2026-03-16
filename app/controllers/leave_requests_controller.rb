@@ -164,7 +164,6 @@ class LeaveRequestsController < ApplicationController
                            .where(employees: { manager_id: current_employee.id })
                            .approved
                            .for_date_range(@start_date, @end_date)
-                           .includes(:employee)
   end
 
   private

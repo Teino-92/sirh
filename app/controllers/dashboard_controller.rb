@@ -72,13 +72,15 @@ class DashboardController < ApplicationController
 
   def load_team_week_summary(week_start)
     days = (0..6).map { |i| week_start + i.days }
+    week_end = week_start + 6.days
     team = @employee.team_members.includes(:weekly_schedule_plans, :leave_requests)
 
     team.map do |member|
       plan = member.weekly_schedule_plans.find { |p| p.week_start_date == week_start }
-      leaves_this_week = member.leave_requests
-                               .where(status: %w[approved auto_approved])
-                               .where('start_date <= ? AND end_date >= ?', week_start + 6.days, week_start)
+      leaves_this_week = member.leave_requests.select do |l|
+        l.status.in?(%w[approved auto_approved]) &&
+          l.start_date <= week_end && l.end_date >= week_start
+      end
 
       day_statuses = days.map do |day|
         day_name = day.strftime('%A').downcase

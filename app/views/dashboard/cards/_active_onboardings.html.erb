@@ -22,8 +22,8 @@
         <% @active_onboardings.first(limit).each do |ob| %>
           <%
             pct       = ob.progress_percentage
-            total     = ob.onboarding_tasks.count
-            done      = ob.onboarding_tasks.select(&:completed?).count
+            total     = ob.onboarding_tasks.size
+            done      = ob.onboarding_tasks.count(&:completed?)
             overdue   = ob.overdue_tasks.count
             day_num   = ob.day_number
             bar_color = pct >= 75 ? 'bg-green-500' : pct >= 40 ? 'bg-indigo-500' : 'bg-yellow-500'
