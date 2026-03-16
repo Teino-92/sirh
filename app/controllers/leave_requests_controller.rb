@@ -82,9 +82,12 @@ class LeaveRequestsController < ApplicationController
   end
 
   def pending_approvals
+    delegated_manager_ids = DelegationResolver.delegated_manager_ids(current_employee, role: "manager")
+    all_manager_ids       = [current_employee.id] + delegated_manager_ids
+
     @pending_requests = policy_scope(LeaveRequest)
                         .joins(:employee)
-                        .where(employees: { manager_id: current_employee.id })
+                        .where(employees: { manager_id: all_manager_ids })
                         .pending
                         .order('leave_requests.created_at ASC')
                         .includes(:employee, :approved_by)
@@ -92,7 +95,7 @@ class LeaveRequestsController < ApplicationController
     # Stats for dashboard
     @approved_this_month = LeaveRequest
                            .joins(:employee)
-                           .where(employees: { manager_id: current_employee.id })
+                           .where(employees: { manager_id: all_manager_ids })
                            .approved
                            .where('leave_requests.created_at >= ?', Date.current.beginning_of_month)
                            .count
@@ -175,7 +178,7 @@ class LeaveRequestsController < ApplicationController
   end
 
   def authorize_manager!
-    unless current_employee.manager?
+    unless current_employee.manager? || DelegationResolver.can_act_as?(current_employee, "manager")
       redirect_to dashboard_path, alert: 'Accès réservé aux managers'
     end
   end

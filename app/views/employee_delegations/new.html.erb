@@ -1,0 +1,79 @@
+<% content_for :title, "Nouvelle délégation" %>
+
+<div class="max-w-xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+
+  <nav class="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400 mb-6">
+    <%= link_to "Mes délégations", employee_delegations_path, class: "hover:text-gray-700 dark:hover:text-gray-200" %>
+    <span>›</span>
+    <span class="text-gray-900 dark:text-gray-100 font-medium">Nouvelle délégation</span>
+  </nav>
+
+  <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+    <h1 class="text-lg font-bold text-gray-900 dark:text-gray-100 mb-1">Déléguer mon rôle</h1>
+    <p class="text-sm text-gray-500 dark:text-gray-400 mb-6">
+      Pendant votre absence, un collègue pourra approuver les demandes à votre place.
+      Vous conservez vos propres droits d'approbation.
+    </p>
+
+    <%= form_with model: @delegation, url: employee_delegations_path, local: true do |f| %>
+
+      <% if @delegation.errors.any? %>
+        <div class="mb-4 rounded-lg bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-700 px-4 py-3 text-sm text-red-700 dark:text-red-300">
+          <% @delegation.errors.full_messages.each do |msg| %>
+            <p><%= msg %></p>
+          <% end %>
+        </div>
+      <% end %>
+
+      <div class="space-y-4">
+
+        <div>
+          <%= f.label :delegatee_id, "Collègue remplaçant", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" %>
+          <%= f.select :delegatee_id,
+              options_for_select(@colleagues.map { |e| [e.full_name, e.id] }, @delegation.delegatee_id),
+              { include_blank: "— Choisir un collègue —" },
+              class: "w-full rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 text-sm focus:ring-indigo-500 focus:border-indigo-500" %>
+        </div>
+
+        <div>
+          <%= f.label :role, "Rôle délégué", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" %>
+          <%# Only show roles the delegator actually holds %>
+          <% available_roles = current_employee.admin? ? Employee::ROLES : [current_employee.role] %>
+          <%= f.select :role,
+              options_for_select(available_roles.map { |r| [r.humanize, r] }, @delegation.role || current_employee.role),
+              {},
+              class: "w-full rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 text-sm focus:ring-indigo-500 focus:border-indigo-500" %>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <%= f.label :starts_at, "Date de début", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" %>
+            <%= f.date_field :starts_at, value: @delegation.starts_at&.to_date || Date.current,
+                class: "w-full rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 text-sm focus:ring-indigo-500 focus:border-indigo-500" %>
+          </div>
+          <div>
+            <%= f.label :ends_at, "Date de fin", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" %>
+            <%= f.date_field :ends_at, value: @delegation.ends_at&.to_date || Date.current + 7.days,
+                class: "w-full rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 text-sm focus:ring-indigo-500 focus:border-indigo-500" %>
+          </div>
+        </div>
+
+        <div>
+          <%= f.label :reason, "Motif (optionnel)", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" %>
+          <%= f.text_field :reason, placeholder: "Ex. Congés du 12 au 19 mai…",
+              class: "w-full rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 text-sm focus:ring-indigo-500 focus:border-indigo-500" %>
+        </div>
+
+      </div>
+
+      <div class="flex items-center justify-end gap-3 mt-6 pt-4 border-t border-gray-100 dark:border-gray-700">
+        <%= link_to "Annuler", employee_delegations_path,
+            class: "px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100" %>
+        <%= f.submit "Créer la délégation",
+            class: "px-5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg cursor-pointer" %>
+      </div>
+
+    <% end %>
+  </div>
+
+</div>

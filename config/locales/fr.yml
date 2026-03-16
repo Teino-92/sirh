@@ -1,5 +1,21 @@
 fr:
   activerecord:
+    attributes:
+      leave_balance:
+        organization: "Organisation"
+        employee: "Employé"
+        leave_type: "Type de congé"
+        balance: "Solde"
+        accrued_this_year: "Acquis cette année"
+        used_this_year: "Utilisé cette année"
+      employee_delegation:
+        organization: "Organisation"
+        delegator: "Délégant"
+        delegatee: "Délégué"
+        role: "Rôle"
+        starts_at: "Date de début"
+        ends_at: "Date de fin"
+        reason: "Motif"
     errors:
       models:
         organization:
@@ -8,6 +24,19 @@ fr:
               inclusion: "n'est pas un plan valide (manager_os ou sirh)"
             billing_model:
               inclusion: "n'est pas un modèle de facturation valide"
+        leave_balance:
+          attributes:
+            organization:
+              blank: "doit être présente"
+            employee:
+              other: "doit appartenir à la même organisation"
+        employee_delegation:
+          attributes:
+            ends_at:
+              blank: "doit être remplie"
+            delegatee:
+              blank: "doit être rempli(e)"
+              taken: "a déjà une délégation active sur cette période"
       messages:
         record_invalid: "La validation a échoué : %{errors}"
         blank: "doit être rempli(e)"

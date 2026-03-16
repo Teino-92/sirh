@@ -32,11 +32,11 @@ class LeaveRequestPolicy < ApplicationPolicy
   end
 
   def approve?
-    sirh_plan? && (hr_admin? || (manager_of_owner? && managers_can_approve?))
+    sirh_plan? && (hr_admin? || ((manager_of_owner? || delegated_manager_of_owner?) && managers_can_approve?))
   end
 
   def reject?
-    sirh_plan? && (hr_admin? || (manager_of_owner? && managers_can_approve?))
+    sirh_plan? && (hr_admin? || ((manager_of_owner? || delegated_manager_of_owner?) && managers_can_approve?))
   end
 
   def reject_form?
@@ -63,7 +63,14 @@ class LeaveRequestPolicy < ApplicationPolicy
       elsif user.manager?
         scope.where(employee_id: [user.id] + user.team_members.pluck(:id))
       else
-        scope.where(employee_id: user.id)
+        # Also expose requests the user can approve via delegation
+        delegated_ids = DelegationResolver.delegated_manager_ids(user, role: "manager")
+        if delegated_ids.any?
+          delegated_employee_ids = Employee.where(manager_id: delegated_ids).pluck(:id)
+          scope.where(employee_id: [user.id] + delegated_employee_ids)
+        else
+          scope.where(employee_id: user.id)
+        end
       end
     end
   end
@@ -80,6 +87,13 @@ class LeaveRequestPolicy < ApplicationPolicy
 
   def hr_admin?
     user.hr_or_admin?
+  end
+
+  def delegated_manager_of_owner?
+    return false unless DelegationResolver.can_act_as?(user, "manager")
+
+    delegated_manager_ids = DelegationResolver.delegated_manager_ids(user, role: "manager")
+    record.employee.manager_id.in?(delegated_manager_ids)
   end
 
   def managers_can_approve?

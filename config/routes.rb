@@ -53,6 +53,8 @@ Rails.application.routes.draw do
     end
   end
 
+  resources :employee_delegations, only: [:index, :new, :create, :destroy]
+
   resources :leave_requests do
     member do
       post :approve
