@@ -10,7 +10,6 @@ module BusinessRulesHelper
     # 1:1
     "one_on_one.scheduled"            => "1:1 planifié",
     "one_on_one.completed"            => "1:1 complété",
-    "one_on_one.cancelled"            => "1:1 annulé",
     # Objectifs
     "objective.assigned"              => "Objectif assigné",
     "objective.completed"             => "Objectif complété",

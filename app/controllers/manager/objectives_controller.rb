@@ -29,9 +29,7 @@ module Manager
       authorize @objective
 
       if @objective.save
-        RulesEngine.new(current_organization).trigger('objective.assigned',
-          resource: @objective,
-          context: rules_context_for(@objective))
+        fire_rules_engine('objective.assigned', @objective, rules_context_for(@objective))
         redirect_to manager_objectives_path, notice: 'Objectif créé'
       else
         render :new, status: :unprocessable_entity
@@ -50,9 +48,7 @@ module Manager
     def complete
       authorize @objective, :complete?
       @objective.complete!
-      RulesEngine.new(current_organization).trigger('objective.completed',
-        resource: @objective,
-        context: rules_context_for(@objective))
+      fire_rules_engine('objective.completed', @objective, rules_context_for(@objective))
       redirect_to manager_objectives_path, notice: 'Objectif marqué comme complété'
     rescue ActiveRecord::RecordInvalid
       redirect_to manager_objective_path(@objective), alert: 'Impossible de compléter cet objectif.'

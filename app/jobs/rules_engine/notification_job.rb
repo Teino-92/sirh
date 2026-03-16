@@ -15,11 +15,14 @@ class RulesEngine::NotificationJob < ApplicationJob
   # @param resource_id   [Integer, nil]
   ALLOWED_RESOURCE_TYPES = %w[LeaveRequest OneOnOne Objective TrainingAssignment EmployeeOnboarding OnboardingTask].freeze
 
-  def perform(employee_ids, subject, message, resource_type: nil, resource_id: nil)
-    employees = Employee.where(id: employee_ids).to_a
+  def perform(employee_ids, subject, message, organization_id:, resource_type: nil, resource_id: nil)
+    organization = Organization.find_by(id: organization_id)
+    return unless organization
+
+    employees = Employee.where(id: employee_ids, organization_id: organization.id).to_a
     return if employees.empty?
 
-    ActsAsTenant.with_tenant(employees.first.organization) do
+    ActsAsTenant.with_tenant(organization) do
       klass = ALLOWED_RESOURCE_TYPES.include?(resource_type) ? resource_type.constantize : nil
       resource = klass && resource_id ? klass.find_by(id: resource_id) : nil
 

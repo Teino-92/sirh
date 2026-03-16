@@ -76,12 +76,9 @@ module Manager
         @evaluation.update!(manager_review: params[:manager_review])
         @evaluation.complete!
       end
-      RulesEngine.new(current_organization).trigger('evaluation.completed',
-        resource: @evaluation,
-        context: {
-          'employee_role' => @evaluation.employee&.role.to_s,
-          'period_year'   => @evaluation.period_end&.year.to_s
-        })
+      fire_rules_engine('evaluation.completed', @evaluation,
+        'employee_role' => @evaluation.employee&.role.to_s,
+        'period_year'   => @evaluation.period_end&.year.to_s)
       redirect_to manager_evaluation_path(@evaluation), notice: 'Évaluation complétée'
     rescue ActiveRecord::RecordInvalid
       render :show, status: :unprocessable_entity

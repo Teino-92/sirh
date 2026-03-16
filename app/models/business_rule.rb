@@ -24,12 +24,14 @@ class BusinessRule < ApplicationRecord
   acts_as_tenant :organization
 
   # Documentation only — not used for validation.
-  # Any string matching the format "domain.event" is a valid trigger.
+  # Kept in sync with BusinessRulesHelper::TRIGGER_LABELS.
   KNOWN_TRIGGERS = %w[
-    leave_request.submitted
-    leave_request.approved
-    leave_request.rejected
-    leave_request.cancelled
+    leave_request.submitted leave_request.approved leave_request.rejected leave_request.cancelled
+    one_on_one.scheduled one_on_one.completed one_on_one.cancelled
+    objective.assigned objective.completed
+    training_assignment.assigned training_assignment.completed
+    onboarding.started onboarding.task_completed
+    evaluation.completed
   ].freeze
 
   # Documentation only — not used for validation.

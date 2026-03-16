@@ -30,8 +30,11 @@ class RulesEngine
   def trigger(event, resource:, context: {}, mode: :full)
     return [] unless enabled?
 
-    rules = BusinessRule.for_trigger(event)
-    rules.map { |rule| evaluate(rule, event, resource, context, mode) }
+    # Explicit tenant scope — guards against missing middleware in jobs/scripts
+    ActsAsTenant.with_tenant(@organization) do
+      rules = BusinessRule.for_trigger(event)
+      rules.map { |rule| evaluate(rule, event, resource, context, mode) }
+    end
   end
 
   private

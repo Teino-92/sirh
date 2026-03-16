@@ -65,8 +65,9 @@ class NotificationDispatcher
       employees.map(&:id),
       subject,
       @action['message'].to_s,
-      resource_type: @resource&.class&.name,
-      resource_id:   @resource&.id
+      organization_id: @organization.id,
+      resource_type:   @resource&.class&.name,
+      resource_id:     @resource&.id
     )
   end
 

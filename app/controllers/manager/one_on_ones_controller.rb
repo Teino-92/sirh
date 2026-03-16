@@ -30,9 +30,7 @@ module Manager
       authorize @one_on_one
 
       if @one_on_one.save
-        RulesEngine.new(current_organization).trigger('one_on_one.scheduled',
-          resource: @one_on_one,
-          context: rules_context_for(@one_on_one))
+        fire_rules_engine('one_on_one.scheduled', @one_on_one, rules_context_for(@one_on_one))
         redirect_to manager_one_on_ones_path, notice: '1:1 planifié'
       else
         render :new, status: :unprocessable_entity
@@ -51,9 +49,7 @@ module Manager
     def complete
       authorize @one_on_one, :complete?
       @one_on_one.complete!(notes: params[:notes])
-      RulesEngine.new(current_organization).trigger('one_on_one.completed',
-        resource: @one_on_one,
-        context: rules_context_for(@one_on_one))
+      fire_rules_engine('one_on_one.completed', @one_on_one, rules_context_for(@one_on_one))
       redirect_to manager_one_on_ones_path, notice: '1:1 complété'
     end
 
@@ -77,7 +73,7 @@ module Manager
       {
         'employee_role' => one_on_one.employee&.role.to_s,
         'days_until'    => one_on_one.scheduled_at ? (one_on_one.scheduled_at.to_date - Date.current).to_i : 0,
-        'agenda_present'=> one_on_one.agenda.present?.to_s
+        'agenda_present'=> one_on_one.agenda.present?
       }
     end
 

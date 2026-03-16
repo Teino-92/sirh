@@ -11,7 +11,6 @@ const TRIGGER_FIELDS = {
   "leave_request.cancelled":  ["days_count", "leave_type", "employee_role"],
   "one_on_one.scheduled":     ["employee_role", "days_until", "agenda_present"],
   "one_on_one.completed":     ["employee_role"],
-  "one_on_one.cancelled":     ["employee_role"],
   "objective.assigned":       ["priority", "employee_role", "deadline_days"],
   "objective.completed":      ["priority", "employee_role", "status"],
   "training_assignment.assigned":  ["training_type", "employee_role", "has_deadline", "deadline_days"],
@@ -131,7 +130,7 @@ export default class extends Controller {
                 class="rounded border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 text-xs py-1 focus:ring-indigo-500">
           <option value="">— champ —</option>
           ${fieldOpts}
-          <option value="${cond.field}" ${fields.includes(cond.field) ? "hidden" : ""}>${cond.field}</option>
+          <option value="${this._escapeHtml(cond.field)}" ${fields.some(f => f.value === cond.field) ? "hidden" : ""}>${this._escapeHtml(cond.field)}</option>
         </select>
 
         <select data-action="change->rule-builder#updateCondition"
