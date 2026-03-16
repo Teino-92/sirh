@@ -13,6 +13,10 @@ class Organization < ApplicationRecord
 
   has_many :employees, dependent: :destroy
   has_one  :subscription, dependent: :destroy
+  has_many :business_rules, dependent: :destroy
+  has_many :approval_steps, dependent: :destroy
+  has_many :rule_executions, dependent: :destroy
+  has_many :employee_delegations, dependent: :destroy
   has_many :payroll_periods, dependent: :destroy
   has_many :evaluations, dependent: :destroy
   has_many :onboarding_templates, dependent: :destroy

@@ -27,15 +27,15 @@
         </div>
 
         <div>
-          <%= f.label :trigger, "Trigger", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" %>
+          <%= f.label :trigger, "Événement déclencheur", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" %>
           <%= f.select :trigger,
               options_for_select([
-                ["leave_request.submitted",  "leave_request.submitted"],
-                ["leave_request.approved",   "leave_request.approved"],
-                ["leave_request.rejected",   "leave_request.rejected"],
-                ["leave_request.cancelled",  "leave_request.cancelled"],
+                ["Demande de congé soumise",  "leave_request.submitted"],
+                ["Demande de congé approuvée", "leave_request.approved"],
+                ["Demande de congé refusée",   "leave_request.rejected"],
+                ["Demande de congé annulée",   "leave_request.cancelled"],
               ], @rule.trigger),
-              { include_blank: "— choisir un trigger —" },
+              { include_blank: "— choisir un événement —" },
               class: "w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" %>
         </div>
 

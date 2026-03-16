@@ -223,7 +223,6 @@ Rails.application.routes.draw do
   # Super-admin analytics (Matteo only — gated by SUPER_ADMIN_EMAIL)
   namespace :super_admin do
     get 'analytics', to: 'analytics#show', as: :analytics
-    get 'seed/test5', to: 'seed#test5', as: :seed_test5
   end
 
   # Admin panel - Hotwire-based

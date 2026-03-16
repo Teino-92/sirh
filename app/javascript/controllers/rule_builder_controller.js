@@ -50,15 +50,32 @@ export default class extends Controller {
   }
 
   _conditionRowHtml(cond, idx) {
-    const fields = ["days_count", "leave_type", "employee_role", "department", "contract_type"]
-    const ops    = ["eq", "neq", "gt", "gte", "lt", "lte", "in", "between", "present", "blank"]
+    const fields = [
+      { value: "days_count",    label: "Nombre de jours" },
+      { value: "leave_type",    label: "Type de congé" },
+      { value: "employee_role", label: "Rôle de l'employé" },
+      { value: "department",    label: "Département" },
+      { value: "contract_type", label: "Type de contrat" },
+    ]
+    const ops = [
+      { value: "eq",      label: "est égal à" },
+      { value: "neq",     label: "est différent de" },
+      { value: "gt",      label: "est supérieur à" },
+      { value: "gte",     label: "est supérieur ou égal à" },
+      { value: "lt",      label: "est inférieur à" },
+      { value: "lte",     label: "est inférieur ou égal à" },
+      { value: "in",      label: "est dans la liste" },
+      { value: "between", label: "est entre" },
+      { value: "present", label: "est renseigné" },
+      { value: "blank",   label: "est vide" },
+    ]
 
     const fieldOpts = fields.map(f =>
-      `<option value="${f}" ${cond.field === f ? "selected" : ""}>${f}</option>`
+      `<option value="${f.value}" ${cond.field === f.value ? "selected" : ""}>${f.label}</option>`
     ).join("")
 
     const opOpts = ops.map(o =>
-      `<option value="${o}" ${cond.operator === o ? "selected" : ""}>${o}</option>`
+      `<option value="${o.value}" ${cond.operator === o.value ? "selected" : ""}>${o.label}</option>`
     ).join("")
 
     const valueIsArray = Array.isArray(cond.value)
@@ -82,7 +99,7 @@ export default class extends Controller {
 
         <input type="text"
                value="${this._escapeHtml(String(valueStr))}"
-               placeholder="valeur (virgule pour liste)"
+               placeholder="valeur (séparer par virgule pour une liste)"
                data-action="input->rule-builder#updateConditionValue"
                data-idx="${idx}"
                class="flex-1 min-w-24 rounded border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 text-xs py-1 focus:ring-indigo-500">
@@ -172,15 +189,25 @@ export default class extends Controller {
   }
 
   _actionRowHtml(action, idx) {
-    const types = ["require_approval", "auto_approve", "block", "notify", "escalate_after"]
-    const roles  = ["manager", "hr", "admin"]
+    const types = [
+      { value: "require_approval", label: "Demander une approbation" },
+      { value: "auto_approve",     label: "Approuver automatiquement" },
+      { value: "block",            label: "Bloquer la demande" },
+      { value: "notify",           label: "Envoyer une notification" },
+      { value: "escalate_after",   label: "Escalader si pas de réponse" },
+    ]
+    const roles = [
+      { value: "manager", label: "Manager" },
+      { value: "hr",      label: "Ressources Humaines" },
+      { value: "admin",   label: "Administrateur" },
+    ]
 
     const typeOpts = types.map(t =>
-      `<option value="${t}" ${action.type === t ? "selected" : ""}>${t}</option>`
+      `<option value="${t.value}" ${action.type === t.value ? "selected" : ""}>${t.label}</option>`
     ).join("")
 
     const roleOpts = (val) => roles.map(r =>
-      `<option value="${r}" ${val === r ? "selected" : ""}>${r}</option>`
+      `<option value="${r.value}" ${val === r.value ? "selected" : ""}>${r.label}</option>`
     ).join("")
 
     let extraFields = ""
@@ -189,14 +216,14 @@ export default class extends Controller {
       case "require_approval":
         extraFields = `
           <div class="flex items-center gap-1">
-            <label class="text-xs text-gray-500 dark:text-gray-400">Rôle</label>
+            <label class="text-xs text-gray-500 dark:text-gray-400">Approuvé par</label>
             <select data-action="change->rule-builder#updateActionField" data-idx="${idx}" data-key="role"
                     class="rounded border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 text-xs py-1 focus:ring-indigo-500">
               ${roleOpts(action.role)}
             </select>
           </div>
           <div class="flex items-center gap-1">
-            <label class="text-xs text-gray-500 dark:text-gray-400">Ordre</label>
+            <label class="text-xs text-gray-500 dark:text-gray-400">Étape n°</label>
             <input type="number" min="1" value="${action.order || idx + 1}"
                    data-action="input->rule-builder#updateActionField" data-idx="${idx}" data-key="order"
                    class="w-14 rounded border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 text-xs py-1 focus:ring-indigo-500">
@@ -207,7 +234,7 @@ export default class extends Controller {
       case "block":
         extraFields = `
           <input type="text" value="${this._escapeHtml(action.reason || '')}"
-                 placeholder="Raison du blocage…"
+                 placeholder="Message affiché à l'employé…"
                  data-action="input->rule-builder#updateActionField" data-idx="${idx}" data-key="reason"
                  class="flex-1 rounded border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 text-xs py-1 focus:ring-indigo-500">
         `
@@ -216,18 +243,18 @@ export default class extends Controller {
       case "notify":
         extraFields = `
           <div class="flex items-center gap-1">
-            <label class="text-xs text-gray-500 dark:text-gray-400">Dest.</label>
+            <label class="text-xs text-gray-500 dark:text-gray-400">Destinataire</label>
             <select data-action="change->rule-builder#updateActionField" data-idx="${idx}" data-key="role"
                     class="rounded border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 text-xs py-1 focus:ring-indigo-500">
               ${roleOpts(action.role)}
             </select>
           </div>
           <input type="text" value="${this._escapeHtml(action.subject || '')}"
-                 placeholder="Objet…"
+                 placeholder="Objet de l'email…"
                  data-action="input->rule-builder#updateActionField" data-idx="${idx}" data-key="subject"
                  class="flex-1 rounded border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 text-xs py-1 focus:ring-indigo-500">
           <input type="text" value="${this._escapeHtml(action.message || '')}"
-                 placeholder="Message…"
+                 placeholder="Contenu du message…"
                  data-action="input->rule-builder#updateActionField" data-idx="${idx}" data-key="message"
                  class="flex-1 rounded border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 text-xs py-1 focus:ring-indigo-500">
         `
@@ -236,27 +263,27 @@ export default class extends Controller {
       case "escalate_after":
         extraFields = `
           <div class="flex items-center gap-1">
-            <label class="text-xs text-gray-500 dark:text-gray-400">Rôle init.</label>
+            <label class="text-xs text-gray-500 dark:text-gray-400">Envoyé à</label>
             <select data-action="change->rule-builder#updateActionField" data-idx="${idx}" data-key="role"
                     class="rounded border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 text-xs py-1 focus:ring-indigo-500">
               ${roleOpts(action.role)}
             </select>
           </div>
           <div class="flex items-center gap-1">
-            <label class="text-xs text-gray-500 dark:text-gray-400">Heures</label>
+            <label class="text-xs text-gray-500 dark:text-gray-400">Délai (heures)</label>
             <input type="number" min="1" value="${action.hours || 48}"
                    data-action="input->rule-builder#updateActionField" data-idx="${idx}" data-key="hours"
                    class="w-16 rounded border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 text-xs py-1 focus:ring-indigo-500">
           </div>
           <div class="flex items-center gap-1">
-            <label class="text-xs text-gray-500 dark:text-gray-400">→ escalade vers</label>
+            <label class="text-xs text-gray-500 dark:text-gray-400">Escalader vers</label>
             <select data-action="change->rule-builder#updateActionField" data-idx="${idx}" data-key="escalate_to_role"
                     class="rounded border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 text-xs py-1 focus:ring-indigo-500">
               ${roleOpts(action.escalate_to_role)}
             </select>
           </div>
           <div class="flex items-center gap-1">
-            <label class="text-xs text-gray-500 dark:text-gray-400">Ordre</label>
+            <label class="text-xs text-gray-500 dark:text-gray-400">Étape n°</label>
             <input type="number" min="1" value="${action.order || idx + 1}"
                    data-action="input->rule-builder#updateActionField" data-idx="${idx}" data-key="order"
                    class="w-14 rounded border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 text-xs py-1 focus:ring-indigo-500">
@@ -266,7 +293,7 @@ export default class extends Controller {
 
       case "auto_approve":
       default:
-        extraFields = `<span class="text-xs text-gray-400 dark:text-gray-500 italic">Aucun paramètre</span>`
+        extraFields = `<span class="text-xs text-gray-400 dark:text-gray-500 italic">Aucun paramètre nécessaire</span>`
         break
     }
 

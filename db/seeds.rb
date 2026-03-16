@@ -42,6 +42,7 @@ org = Organization.create!(
     cp_acquisition_rate: 2.5,
     rtt_enabled: true,
     overtime_threshold: 35,
+    rules_engine_enabled: true,
     group_policies: {
       "manager_can_approve_leave" => true,
       "auto_approve_leave_by_role" => { "employee" => false, "manager" => false }
@@ -1240,6 +1241,88 @@ puts "    Rejected:  #{LeaveRequest.where(organization: org, status: 'rejected')
 puts "    Cancelled: #{LeaveRequest.where(organization: org, status: 'cancelled').count}"
 puts "    Auto:      #{LeaveRequest.where(organization: org, status: 'auto_approved').count}"
 puts "  Time entries:     #{TimeEntry.where(organization: org).count}"
+
+# ─── Business Rules ───────────────────────────────────────────────────────────
+
+puts "⚙️  Creating business rules..."
+
+[
+  {
+    name: "Approbation manager pour CP > 5 jours",
+    trigger: "leave_request.submitted",
+    conditions: [
+      { "field" => "days_count", "operator" => "gt", "value" => 5 },
+      { "field" => "leave_type", "operator" => "eq", "value" => "CP" }
+    ],
+    actions: [{ "type" => "require_approval", "role" => "manager", "order" => 1 }],
+    priority: 10,
+    description: "Toute demande CP de plus de 5 jours nécessite l'accord du manager"
+  },
+  {
+    name: "Double validation manager + RH pour CP ≥ 10 jours",
+    trigger: "leave_request.submitted",
+    conditions: [
+      { "field" => "days_count", "operator" => "gte", "value" => 10 },
+      { "field" => "leave_type", "operator" => "eq",  "value" => "CP" }
+    ],
+    actions: [
+      { "type" => "require_approval", "role" => "manager", "order" => 1 },
+      { "type" => "require_approval", "role" => "hr",      "order" => 2 }
+    ],
+    priority: 5,
+    description: "Les congés longs (10j+) requièrent manager puis RH"
+  },
+  {
+    name: "Auto-approbation RTT ≤ 2 jours",
+    trigger: "leave_request.submitted",
+    conditions: [
+      { "field" => "leave_type", "operator" => "eq",  "value" => "RTT" },
+      { "field" => "days_count", "operator" => "lte", "value" => 2 }
+    ],
+    actions: [{ "type" => "auto_approve" }],
+    priority: 1,
+    description: "Les RTT courts sont auto-approuvés sans validation"
+  },
+  {
+    name: "Escalade si manager ne répond pas sous 48h",
+    trigger: "leave_request.submitted",
+    conditions: [{ "field" => "days_count", "operator" => "gte", "value" => 5 }],
+    actions: [{
+      "type" => "escalate_after", "role" => "manager", "order" => 1,
+      "hours" => 48, "escalate_to_role" => "hr"
+    }],
+    priority: 20,
+    description: "Si le manager n'approuve pas dans 48h, escalade vers RH"
+  },
+  {
+    name: "Notification RH sur rejet de congés",
+    trigger: "leave_request.rejected",
+    conditions: [],
+    actions: [{
+      "type" => "notify", "role" => "hr",
+      "subject" => "Congé refusé",
+      "message" => "Une demande de congé a été refusée. Vérifiez si un suivi est nécessaire."
+    }],
+    priority: 1,
+    description: "Informe les RH de chaque refus pour suivi éventuel"
+  },
+  {
+    name: "[TEST] Blocage total — désactivé",
+    trigger: "leave_request.submitted",
+    conditions: [{ "field" => "leave_type", "operator" => "in", "value" => %w[CP RTT] }],
+    actions: [{ "type" => "block", "reason" => "Règle test — active pour tester le blocage" }],
+    priority: 100,
+    active: false,
+    description: "Règle de test désactivée — active pour vérifier l'action block"
+  }
+].each do |attrs|
+  org.business_rules.create!(
+    name: attrs[:name], trigger: attrs[:trigger],
+    conditions: attrs[:conditions], actions: attrs[:actions],
+    priority: attrs[:priority], active: attrs.fetch(:active, true),
+    description: attrs[:description]
+  )
+end
 
 puts "\n👤 Test accounts (all passwords: password123)"
 puts "\n  🏢 TechCorp France"
