@@ -20,6 +20,7 @@ class EmployeeDelegation < ApplicationRecord
   validate :ends_at_after_starts_at
   validate :delegator_has_role
   validate :not_self_delegation
+  validate :not_a_direct_report
 
   scope :active_now,    -> { where(active: true).where('starts_at <= ? AND ends_at >= ?', Time.current, Time.current) }
   scope :for_delegatee, ->(employee) { where(delegatee: employee) }
@@ -41,5 +42,12 @@ class EmployeeDelegation < ApplicationRecord
   def not_self_delegation
     return unless delegator_id && delegatee_id
     errors.add(:delegatee, "ne peut pas être le délégant lui-même") if delegator_id == delegatee_id
+  end
+
+  def not_a_direct_report
+    return unless delegator && delegatee
+    if delegatee.manager_id == delegator.id
+      errors.add(:delegatee, "ne peut pas être un membre de votre équipe — choisissez un pair ou un supérieur")
+    end
   end
 end

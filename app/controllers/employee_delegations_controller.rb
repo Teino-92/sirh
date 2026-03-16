@@ -50,8 +50,9 @@ class EmployeeDelegationsController < ApplicationController
   end
 
   def load_colleagues
+    direct_report_ids = current_employee.direct_reports.pluck(:id)
     @colleagues = current_employee.organization.employees
-                    .where.not(id: current_employee.id)
+                    .where.not(id: [current_employee.id] + direct_report_ids)
                     .order(:last_name, :first_name)
   end
 
