@@ -223,6 +223,7 @@ Rails.application.routes.draw do
   # Super-admin analytics (Matteo only — gated by SUPER_ADMIN_EMAIL)
   namespace :super_admin do
     get 'analytics', to: 'analytics#show', as: :analytics
+    get 'seed/test5', to: 'seed#test5', as: :seed_test5
   end
 
   # Admin panel - Hotwire-based
@@ -230,6 +231,11 @@ Rails.application.routes.draw do
     root to: 'employees#index'
     resources :employees
     resource :organization, only: [:show, :edit, :update]
+    resources :business_rules do
+      member do
+        patch :toggle
+      end
+    end
     resources :onboarding_templates do
       resources :onboarding_template_tasks, only: [:new, :create, :edit, :update, :destroy],
                                             shallow: true

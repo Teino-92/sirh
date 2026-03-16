@@ -1,0 +1,12 @@
+<% type = action["type"] %>
+<% color, label = case type
+   when "require_approval" then ["purple", "✓ Approbation #{action['role']}"]
+   when "auto_approve"     then ["green",  "⚡ Auto-approve"]
+   when "block"            then ["red",    "✗ Blocage"]
+   when "notify"           then ["blue",   "🔔 Notif #{action['role'] || 'emp.'}"]
+   when "escalate_after"   then ["orange", "⬆ Escalade #{action['hours']}h → #{action['escalate_to_role']}"]
+   else                         ["gray",   type]
+   end %>
+<span class="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium bg-<%= color %>-50 text-<%= color %>-700 dark:bg-<%= color %>-900/20 dark:text-<%= color %>-300">
+  <%= label %>
+</span>

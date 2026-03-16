@@ -1,0 +1,138 @@
+<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6"
+     data-controller="rule-builder"
+     data-rule-builder-conditions-value="<%= (@rule.conditions || []).to_json.html_safe %>"
+     data-rule-builder-actions-value="<%= (@rule.actions || []).to_json.html_safe %>">
+
+  <%= form_with model: [:admin, @rule], class: "space-y-6" do |f| %>
+
+    <% if @rule.errors.any? %>
+      <div class="rounded-md bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-700 p-4">
+        <ul class="text-sm text-red-700 dark:text-red-300 list-disc list-inside space-y-1">
+          <% @rule.errors.full_messages.each do |msg| %>
+            <li><%= msg %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+
+    <%# Infos générales %>
+    <div class="bg-white dark:bg-gray-800 shadow rounded-lg border border-gray-200 dark:border-gray-700 p-5 space-y-4">
+      <h2 class="text-base font-semibold text-gray-900 dark:text-gray-100">Informations générales</h2>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <%= f.label :name, "Nom de la règle", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" %>
+          <%= f.text_field :name, placeholder: "ex: Approbation CP > 5 jours",
+              class: "w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" %>
+        </div>
+
+        <div>
+          <%= f.label :trigger, "Trigger", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" %>
+          <%= f.select :trigger,
+              options_for_select([
+                ["leave_request.submitted",  "leave_request.submitted"],
+                ["leave_request.approved",   "leave_request.approved"],
+                ["leave_request.rejected",   "leave_request.rejected"],
+                ["leave_request.cancelled",  "leave_request.cancelled"],
+              ], @rule.trigger),
+              { include_blank: "— choisir un trigger —" },
+              class: "w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" %>
+        </div>
+
+        <div>
+          <%= f.label :priority, "Priorité (0 = plus haute)", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" %>
+          <%= f.number_field :priority, min: 0, max: 9999,
+              class: "w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" %>
+        </div>
+
+        <div class="flex items-center gap-3 pt-6">
+          <%= f.check_box :active, class: "h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500" %>
+          <%= f.label :active, "Règle active", class: "text-sm font-medium text-gray-700 dark:text-gray-300" %>
+        </div>
+      </div>
+
+      <div>
+        <%= f.label :description, "Description (optionnel)", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" %>
+        <%= f.text_area :description, rows: 2, placeholder: "Décrivez l'objectif de cette règle…",
+            class: "w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" %>
+      </div>
+    </div>
+
+    <%# ── CONDITIONS ── %>
+    <div class="bg-white dark:bg-gray-800 shadow rounded-lg border border-gray-200 dark:border-gray-700 p-5">
+      <div class="flex items-center justify-between mb-4">
+        <div>
+          <h2 class="text-base font-semibold text-gray-900 dark:text-gray-100">Conditions</h2>
+          <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Toutes les conditions doivent être vraies (AND). Laissez vide pour que la règle s'applique toujours.</p>
+        </div>
+        <button type="button"
+                data-action="click->rule-builder#addCondition"
+                class="inline-flex items-center px-3 py-1.5 border border-indigo-300 text-xs font-medium rounded text-indigo-700 bg-indigo-50 hover:bg-indigo-100 dark:border-indigo-600 dark:text-indigo-300 dark:bg-indigo-900/20 dark:hover:bg-indigo-900/40">
+          + Ajouter
+        </button>
+      </div>
+
+      <%# Rendu initial des conditions côté serveur %>
+      <div data-rule-builder-target="conditionsContainer" class="space-y-2">
+        <%# Rempli dynamiquement par le Stimulus controller %>
+      </div>
+
+      <% if @rule.conditions.empty? %>
+        <p data-rule-builder-target="conditionsEmpty" class="text-sm text-gray-400 dark:text-gray-500 italic text-center py-4">
+          Aucune condition — la règle s'applique à chaque déclenchement
+        </p>
+      <% else %>
+        <p data-rule-builder-target="conditionsEmpty" class="hidden text-sm text-gray-400 dark:text-gray-500 italic text-center py-4">
+          Aucune condition — la règle s'applique à chaque déclenchement
+        </p>
+      <% end %>
+
+      <%# Hidden field JSON envoyé au serveur %>
+      <input type="hidden" name="business_rule[conditions_json]"
+             data-rule-builder-target="conditionsJson"
+             value="<%= (@rule.conditions || []).to_json.html_safe %>">
+    </div>
+
+    <%# ── ACTIONS ── %>
+    <div class="bg-white dark:bg-gray-800 shadow rounded-lg border border-gray-200 dark:border-gray-700 p-5">
+      <div class="flex items-center justify-between mb-4">
+        <div>
+          <h2 class="text-base font-semibold text-gray-900 dark:text-gray-100">Actions</h2>
+          <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Exécutées dans l'ordre quand les conditions sont remplies.</p>
+        </div>
+        <button type="button"
+                data-action="click->rule-builder#addAction"
+                class="inline-flex items-center px-3 py-1.5 border border-indigo-300 text-xs font-medium rounded text-indigo-700 bg-indigo-50 hover:bg-indigo-100 dark:border-indigo-600 dark:text-indigo-300 dark:bg-indigo-900/20 dark:hover:bg-indigo-900/40">
+          + Ajouter
+        </button>
+      </div>
+
+      <div data-rule-builder-target="actionsContainer" class="space-y-2">
+        <%# Rempli dynamiquement par le Stimulus controller %>
+      </div>
+
+      <% if @rule.actions.empty? %>
+        <p data-rule-builder-target="actionsEmpty" class="text-sm text-gray-400 dark:text-gray-500 italic text-center py-4">
+          Aucune action définie
+        </p>
+      <% else %>
+        <p data-rule-builder-target="actionsEmpty" class="hidden text-sm text-gray-400 dark:text-gray-500 italic text-center py-4">
+          Aucune action définie
+        </p>
+      <% end %>
+
+      <input type="hidden" name="business_rule[actions_json]"
+             data-rule-builder-target="actionsJson"
+             value="<%= (@rule.actions || []).to_json.html_safe %>">
+    </div>
+
+    <%# Boutons %>
+    <div class="flex items-center justify-end gap-3">
+      <%= link_to "Annuler", admin_business_rules_path,
+          class: "px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600" %>
+      <%= f.submit @rule.persisted? ? "Enregistrer" : "Créer la règle",
+          class: "px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 cursor-pointer" %>
+    </div>
+
+  <% end %>
+</div>

@@ -1,0 +1,13 @@
+<% content_for :title, "Modifier — #{@rule.name}" %>
+
+<div class="mb-4 px-4 sm:px-6 lg:px-8 pt-6">
+  <nav class="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
+    <%= link_to "Admin", admin_root_path, class: "hover:text-gray-700 dark:hover:text-gray-200" %>
+    <span>›</span>
+    <%= link_to "Règles métier", admin_business_rules_path, class: "hover:text-gray-700 dark:hover:text-gray-200" %>
+    <span>›</span>
+    <span class="text-gray-900 dark:text-gray-100 font-medium truncate"><%= @rule.name %></span>
+  </nav>
+</div>
+
+<%= render "form" %>

@@ -1,0 +1,180 @@
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+
+  <%# En-tête %>
+  <div class="sm:flex sm:items-center sm:justify-between mb-6">
+    <div>
+      <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100">Règles métier</h1>
+      <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+        Moteur de règles — automatisez les approbations, notifications et blocages
+      </p>
+    </div>
+    <div class="mt-4 sm:mt-0">
+      <%= link_to new_admin_business_rule_path,
+          class: "inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" do %>
+        <svg class="-ml-1 mr-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+        </svg>
+        Nouvelle règle
+      <% end %>
+    </div>
+  </div>
+
+  <%# Feature flag warning %>
+  <% unless current_organization.settings["rules_engine_enabled"] %>
+    <div class="mb-6 rounded-md bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-700 p-4">
+      <div class="flex">
+        <svg class="h-5 w-5 text-yellow-400 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
+        </svg>
+        <p class="text-sm text-yellow-800 dark:text-yellow-200">
+          Le moteur de règles est <strong>désactivé</strong> pour cette organisation.
+          Activez <code>rules_engine_enabled: true</code> dans les paramètres pour que les règles s'appliquent.
+        </p>
+      </div>
+    </div>
+  <% end %>
+
+  <%# Stats rapides %>
+  <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow px-4 py-3 border border-gray-200 dark:border-gray-700">
+      <p class="text-xs text-gray-500 dark:text-gray-400">Total règles</p>
+      <p class="text-2xl font-bold text-gray-900 dark:text-white"><%= @rules.size %></p>
+    </div>
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow px-4 py-3 border border-gray-200 dark:border-gray-700">
+      <p class="text-xs text-gray-500 dark:text-gray-400">Actives</p>
+      <p class="text-2xl font-bold text-green-600"><%= @rules.count(&:active?) %></p>
+    </div>
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow px-4 py-3 border border-gray-200 dark:border-gray-700">
+      <p class="text-xs text-gray-500 dark:text-gray-400">Désactivées</p>
+      <p class="text-2xl font-bold text-gray-400"><%= @rules.count { |r| !r.active? } %></p>
+    </div>
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow px-4 py-3 border border-gray-200 dark:border-gray-700">
+      <p class="text-xs text-gray-500 dark:text-gray-400">Triggers uniques</p>
+      <p class="text-2xl font-bold text-indigo-600"><%= @rules.map(&:trigger).uniq.size %></p>
+    </div>
+  </div>
+
+  <%# Liste des règles %>
+  <% if @rules.empty? %>
+    <div class="text-center py-16 bg-white dark:bg-gray-800 rounded-lg shadow border border-dashed border-gray-300 dark:border-gray-600">
+      <svg class="mx-auto h-12 w-12 text-gray-300 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+      </svg>
+      <h3 class="mt-2 text-sm font-medium text-gray-900 dark:text-gray-100">Aucune règle</h3>
+      <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Créez votre première règle métier.</p>
+      <%= link_to "Créer une règle", new_admin_business_rule_path,
+          class: "mt-4 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700" %>
+    </div>
+  <% else %>
+    <div class="space-y-3">
+      <% @rules.each do |rule| %>
+        <div class="bg-white dark:bg-gray-800 shadow rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
+          <div class="px-5 py-4 flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
+
+            <%# Infos principales %>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-2 flex-wrap">
+                <%# Badge actif/inactif %>
+                <% if rule.active? %>
+                  <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300">
+                    ● Actif
+                  </span>
+                <% else %>
+                  <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-500 dark:bg-gray-700 dark:text-gray-400">
+                    ○ Désactivé
+                  </span>
+                <% end %>
+
+                <%# Priorité %>
+                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-50 text-blue-700 dark:bg-blue-900/20 dark:text-blue-300">
+                  Priorité <%= rule.priority %>
+                </span>
+
+                <h3 class="text-sm font-semibold text-gray-900 dark:text-gray-100 truncate">
+                  <%= rule.name %>
+                </h3>
+              </div>
+
+              <%# Trigger badge %>
+              <div class="mt-1.5 flex items-center gap-2 flex-wrap">
+                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-mono bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300">
+                  <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                  </svg>
+                  <%= rule.trigger %>
+                </span>
+
+                <%# Résumé conditions %>
+                <% if rule.conditions.any? %>
+                  <span class="text-xs text-gray-500 dark:text-gray-400">
+                    <%= rule.conditions.size %> condition<%= rule.conditions.size > 1 ? "s" : "" %>
+                  </span>
+                <% else %>
+                  <span class="text-xs text-gray-400 dark:text-gray-500 italic">Sans conditions (s'applique toujours)</span>
+                <% end %>
+
+                <%# Résumé actions %>
+                <% rule.actions.each do |action| %>
+                  <%= render partial: "admin/business_rules/action_badge", locals: { action: action } %>
+                <% end %>
+              </div>
+
+              <% if rule.description.present? %>
+                <p class="mt-1 text-xs text-gray-500 dark:text-gray-400 line-clamp-1"><%= rule.description %></p>
+              <% end %>
+            </div>
+
+            <%# Actions %>
+            <div class="flex items-center gap-2 flex-shrink-0">
+              <%= link_to admin_business_rule_path(rule),
+                  class: "text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400",
+                  title: "Voir" do %>
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                </svg>
+              <% end %>
+
+              <%= link_to edit_admin_business_rule_path(rule),
+                  class: "text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400",
+                  title: "Modifier" do %>
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                </svg>
+              <% end %>
+
+              <%# Toggle actif/inactif %>
+              <%= button_to toggle_admin_business_rule_path(rule), method: :patch,
+                  class: "text-gray-400 hover:text-#{rule.active? ? 'yellow' : 'green'}-600 dark:hover:text-#{rule.active? ? 'yellow' : 'green'}-400 bg-transparent border-0 cursor-pointer p-0",
+                  title: rule.active? ? "Désactiver" : "Activer",
+                  data: { turbo_confirm: rule.active? ? "Désactiver cette règle ?" : "Activer cette règle ?" } do %>
+                <% if rule.active? %>
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/>
+                  </svg>
+                <% else %>
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                  </svg>
+                <% end %>
+              <% end %>
+
+              <% if policy(rule).destroy? %>
+                <%= button_to admin_business_rule_path(rule), method: :delete,
+                    class: "text-gray-400 hover:text-red-600 dark:hover:text-red-400 bg-transparent border-0 cursor-pointer p-0",
+                    title: "Supprimer",
+                    data: { turbo_confirm: "Supprimer cette règle ? Cette action est irréversible." } do %>
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                  </svg>
+                <% end %>
+              <% end %>
+            </div>
+
+          </div>
+        </div>
+      <% end %>
+    </div>
+  <% end %>
+
+</div>

@@ -13,6 +13,9 @@ class RulesEngine::ApprovalEscalationJob < ApplicationJob
   discard_on ActiveRecord::RecordNotFound
   discard_on ActiveRecord::RecordNotUnique
 
+  # Whitelist of allowed resource types — prevents unsafe constantize on DB values.
+  ALLOWED_RESOURCE_TYPES = %w[LeaveRequest].freeze
+
   def perform(approval_step_id)
     # Load outside tenant scope — step_id is globally unique
     step = ApprovalStep.find(approval_step_id)
@@ -42,7 +45,8 @@ class RulesEngine::ApprovalEscalationJob < ApplicationJob
         step.escalate!(new_step)
       end
 
-      resource = step.resource_type.constantize.find_by(id: step.resource_id)
+      resource_klass = ALLOWED_RESOURCE_TYPES.include?(step.resource_type) ? step.resource_type.constantize : nil
+      resource = resource_klass&.find_by(id: step.resource_id)
       RulesEngine::NotificationDispatcher.new(
         { 'role' => step.escalate_to_role, 'message' => "Une approbation en attente vous a été escaladée.", 'subject' => "Action requise — Escalade d'approbation" },
         resource,
