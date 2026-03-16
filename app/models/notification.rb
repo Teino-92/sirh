@@ -22,6 +22,7 @@ class Notification < ApplicationRecord
     system
     trial_period_ending
     trial_period_decision
+    rule_engine
   ].freeze
 
   validates :notification_type, inclusion: { in: TYPES }

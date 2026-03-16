@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2026_03_13_233805) do
+ActiveRecord::Schema[7.1].define(version: 2026_03_16_200002) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -63,6 +63,66 @@ ActiveRecord::Schema[7.1].define(version: 2026_03_13_233805) do
     t.bigint "blob_id", null: false
     t.string "variation_digest", null: false
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
+  end
+
+  create_table "approval_steps", force: :cascade do |t|
+    t.bigint "organization_id", null: false
+    t.string "resource_type", null: false
+    t.integer "resource_id", null: false
+    t.integer "step_order", null: false
+    t.string "required_role", null: false
+    t.bigint "approved_by_id"
+    t.datetime "approved_at"
+    t.datetime "rejected_at"
+    t.bigint "rejected_by_id"
+    t.string "status", default: "pending", null: false
+    t.text "comment"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "escalate_after_hours"
+    t.string "escalate_to_role"
+    t.datetime "escalate_at"
+    t.boolean "escalated", default: false, null: false
+    t.index ["approved_by_id"], name: "index_approval_steps_on_approved_by_id"
+    t.index ["escalate_at"], name: "index_approval_steps_on_escalate_at"
+    t.index ["organization_id", "status"], name: "index_approval_steps_on_organization_id_and_status"
+    t.index ["organization_id"], name: "index_approval_steps_on_organization_id"
+    t.index ["rejected_by_id"], name: "index_approval_steps_on_rejected_by_id"
+    t.index ["resource_type", "resource_id", "step_order"], name: "idx_approval_steps_resource_order", unique: true
+  end
+
+  create_table "business_rules", force: :cascade do |t|
+    t.bigint "organization_id", null: false
+    t.string "name", null: false
+    t.string "trigger", null: false
+    t.jsonb "conditions", default: [], null: false
+    t.jsonb "actions", default: [], null: false
+    t.integer "priority", default: 0, null: false
+    t.boolean "active", default: true, null: false
+    t.text "description"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["organization_id", "priority"], name: "index_business_rules_on_organization_id_and_priority"
+    t.index ["organization_id", "trigger", "active"], name: "idx_business_rules_org_trigger_active"
+    t.index ["organization_id"], name: "index_business_rules_on_organization_id"
+  end
+
+  create_table "employee_delegations", force: :cascade do |t|
+    t.bigint "organization_id", null: false
+    t.bigint "delegator_id", null: false
+    t.bigint "delegatee_id", null: false
+    t.string "role", null: false
+    t.datetime "starts_at", null: false
+    t.datetime "ends_at", null: false
+    t.text "reason"
+    t.boolean "active", default: true, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["delegatee_id"], name: "index_employee_delegations_on_delegatee_id"
+    t.index ["delegator_id"], name: "index_employee_delegations_on_delegator_id"
+    t.index ["organization_id", "active", "ends_at"], name: "idx_delegations_org_active_ends_at"
+    t.index ["organization_id", "delegatee_id", "starts_at", "ends_at"], name: "idx_delegations_org_delegatee_dates"
+    t.index ["organization_id"], name: "index_employee_delegations_on_organization_id"
   end
 
   create_table "employee_onboardings", force: :cascade do |t|
@@ -228,6 +288,7 @@ ActiveRecord::Schema[7.1].define(version: 2026_03_13_233805) do
     t.string "start_half_day"
     t.string "end_half_day"
     t.bigint "organization_id", null: false
+    t.integer "current_approval_step"
     t.index ["approved_by_id"], name: "index_leave_requests_on_approved_by_id"
     t.index ["employee_id", "status"], name: "idx_leave_requests_employee_status"
     t.index ["employee_id", "status"], name: "index_leave_requests_on_employee_id_and_status"
@@ -403,6 +464,24 @@ ActiveRecord::Schema[7.1].define(version: 2026_03_13_233805) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["organization_id", "period"], name: "index_payroll_periods_on_organization_id_and_period", unique: true
+  end
+
+  create_table "rule_executions", force: :cascade do |t|
+    t.bigint "organization_id", null: false
+    t.bigint "business_rule_id", null: false
+    t.string "trigger", null: false
+    t.string "resource_type", null: false
+    t.integer "resource_id", null: false
+    t.jsonb "context", default: {}, null: false
+    t.jsonb "actions_executed", default: [], null: false
+    t.string "result", default: "executed", null: false
+    t.text "error_message"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["business_rule_id"], name: "index_rule_executions_on_business_rule_id"
+    t.index ["organization_id", "created_at"], name: "index_rule_executions_on_organization_id_and_created_at"
+    t.index ["organization_id"], name: "index_rule_executions_on_organization_id"
+    t.index ["resource_type", "resource_id"], name: "index_rule_executions_on_resource_type_and_resource_id"
   end
 
   create_table "solid_cache_entries", force: :cascade do |t|
@@ -675,6 +754,13 @@ ActiveRecord::Schema[7.1].define(version: 2026_03_13_233805) do
   add_foreign_key "action_items", "organizations"
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "approval_steps", "employees", column: "approved_by_id"
+  add_foreign_key "approval_steps", "employees", column: "rejected_by_id"
+  add_foreign_key "approval_steps", "organizations"
+  add_foreign_key "business_rules", "organizations"
+  add_foreign_key "employee_delegations", "employees", column: "delegatee_id"
+  add_foreign_key "employee_delegations", "employees", column: "delegator_id"
+  add_foreign_key "employee_delegations", "organizations"
   add_foreign_key "employee_onboardings", "employees"
   add_foreign_key "employee_onboardings", "employees", column: "manager_id"
   add_foreign_key "employee_onboardings", "onboarding_templates"
@@ -716,6 +802,8 @@ ActiveRecord::Schema[7.1].define(version: 2026_03_13_233805) do
   add_foreign_key "one_on_ones", "organizations"
   add_foreign_key "payroll_periods", "employees", column: "locked_by_id"
   add_foreign_key "payroll_periods", "organizations"
+  add_foreign_key "rule_executions", "business_rules"
+  add_foreign_key "rule_executions", "organizations"
   add_foreign_key "solid_queue_blocked_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_claimed_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_failed_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade

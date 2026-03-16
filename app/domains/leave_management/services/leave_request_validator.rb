@@ -28,6 +28,9 @@ class LeaveRequestValidator
 
     errors << "Conflit avec les congés d'un autre membre de l'équipe" if leave_request.conflicts_with_team?
 
+    # Rules engine — only runs if enabled for this organisation (feature flag)
+    errors.concat(rules_engine_errors(leave_request))
+
     errors
   end
 
@@ -68,5 +71,31 @@ class LeaveRequestValidator
   def requesting_expired_cp?(leave_request)
     balance = @employee.leave_balances.find_by(leave_type: 'CP')
     balance&.expired?
+  end
+
+  def rules_engine_errors(leave_request)
+    return [] unless @organization.settings.fetch('rules_engine_enabled', false)
+
+    context = {
+      'leave_type'  => leave_request.leave_type,
+      'days_count'  => leave_request.days_count,
+      'employee_id' => @employee.id,
+      'role'        => @employee.role,
+      'start_date'  => leave_request.start_date&.to_s,
+      'end_date'    => leave_request.end_date&.to_s
+    }
+
+    # :validate mode — only evaluates 'block' actions, safe on unpersisted resources.
+    # require_approval / notify / escalate_after are triggered post-save by the caller.
+    results = RulesEngine.new(@organization).trigger(
+      'leave_request.submitted',
+      resource: leave_request,
+      context:  context,
+      mode:     :validate
+    )
+
+    results.select(&:matched).flat_map(&:actions_executed)
+           .select { |r| r.type == :block }
+           .map    { |r| r.payload[:reason] || "Demande bloquée par une règle métier" }
   end
 end
