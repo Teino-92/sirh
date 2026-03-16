@@ -31,7 +31,7 @@ org.update!(settings: org.settings.merge('rules_engine_enabled' => true))
 
 Un trigger est une string au format `"domain.event"`. N'importe quelle valeur est acceptée.
 
-### Congés (intégrés)
+### Congés
 
 | Trigger | Moment |
 |---------|--------|
@@ -39,6 +39,40 @@ Un trigger est une string au format `"domain.event"`. N'importe quelle valeur es
 | `leave_request.approved`  | Demande approuvée |
 | `leave_request.rejected`  | Demande rejetée |
 | `leave_request.cancelled` | Demande annulée |
+
+### 1:1
+
+| Trigger | Moment |
+|---------|--------|
+| `one_on_one.scheduled` | Entretien 1:1 planifié |
+| `one_on_one.completed` | Entretien 1:1 marqué comme complété |
+
+### Objectifs
+
+| Trigger | Moment |
+|---------|--------|
+| `objective.assigned`  | Objectif assigné à un employé |
+| `objective.completed` | Objectif marqué comme atteint |
+
+### Formations
+
+| Trigger | Moment |
+|---------|--------|
+| `training_assignment.assigned`  | Formation assignée (via bulk assign ou individuel) |
+| `training_assignment.completed` | Formation marquée comme terminée par l'employé |
+
+### Onboarding
+
+| Trigger | Moment |
+|---------|--------|
+| `onboarding.started`        | Onboarding démarré pour un employé |
+| `onboarding.task_completed` | Tâche d'onboarding complétée |
+
+### Évaluations
+
+| Trigger | Moment |
+|---------|--------|
+| `evaluation.completed` | Évaluation finalisée |
 
 ### Ajouter un nouveau trigger
 
@@ -71,14 +105,58 @@ Les conditions sont évaluées en **AND** — toutes doivent être vraies pour q
 | `present` | Le champ est présent (non vide) | `{ "field": "comment", "operator": "present" }` |
 | `blank`   | Le champ est vide/absent | `{ "field": "comment", "operator": "blank" }` |
 
-### Champs disponibles pour `leave_request.submitted`
+### Champs disponibles par trigger
+
+#### `leave_request.*`
 
 | Champ | Type | Description |
 |-------|------|-------------|
 | `leave_type` | string | Type de congé (`CP`, `RTT`, `MALADIE`, etc.) |
 | `days_count` | float | Nombre de jours demandés |
-| `start_date` | string (YYYY-MM-DD) | Date de début |
-| `end_date` | string (YYYY-MM-DD) | Date de fin |
+| `employee_role` | string | Rôle de l'employé |
+| `department` | string | Département de l'employé |
+| `contract_type` | string | Type de contrat |
+
+#### `one_on_one.*`
+
+| Champ | Type | Description |
+|-------|------|-------------|
+| `days_until` | integer | Jours avant la date du 1:1 |
+| `agenda_present` | boolean | Ordre du jour renseigné (`true`/`false`) |
+| `employee_role` | string | Rôle de l'employé |
+
+#### `objective.*`
+
+| Champ | Type | Description |
+|-------|------|-------------|
+| `priority` | string | Priorité de l'objectif |
+| `status` | string | Statut courant |
+| `deadline_days` | integer | Jours avant la deadline |
+| `employee_role` | string | Rôle de l'employé |
+
+#### `training_assignment.*`
+
+| Champ | Type | Description |
+|-------|------|-------------|
+| `training_type` | string | Type de formation |
+| `has_deadline` | boolean | La formation a une date limite |
+| `employee_role` | string | Rôle de l'employé |
+
+#### `onboarding.*`
+
+| Champ | Type | Description |
+|-------|------|-------------|
+| `task_type` | string | Type de tâche (pour `onboarding.task_completed`) |
+| `assigned_to_role` | string | Rôle assigné à la tâche |
+| `onboarding_day` | integer | Jour d'onboarding (J+n) |
+| `duration_days` | integer | Durée totale du plan d'onboarding |
+| `employee_role` | string | Rôle de l'employé |
+
+#### `evaluation.completed`
+
+| Champ | Type | Description |
+|-------|------|-------------|
+| `period_year` | integer | Année de la période d'évaluation |
 | `employee_role` | string | Rôle de l'employé |
 
 > Pour un nouveau trigger, le caller définit librement les champs du contexte.
@@ -230,6 +308,55 @@ BusinessRule.create!(
       "subject" => "Demande en attente d'approbation",
       "message" => "Une demande de congé long est en attente d'approbation manager." }
   ],
+  priority:     0,
+  active:       true
+)
+```
+
+### Notification RH quand un objectif prioritaire est assigné
+
+```ruby
+BusinessRule.create!(
+  organization: org,
+  name:         "Notif RH — objectif critique assigné",
+  trigger:      "objective.assigned",
+  conditions:   [{ "field" => "priority", "operator" => "eq", "value" => "high" }],
+  actions:      [{ "type" => "notify", "role" => "hr",
+                   "subject" => "Objectif prioritaire assigné",
+                   "message" => "Un objectif haute priorité vient d'être assigné." }],
+  priority:     0,
+  active:       true
+)
+```
+
+### Blocage des formations sans deadline pour les managers
+
+```ruby
+BusinessRule.create!(
+  organization: org,
+  name:         "Formation manager — deadline obligatoire",
+  trigger:      "training_assignment.assigned",
+  conditions:   [
+    { "field" => "employee_role", "operator" => "eq",  "value" => "manager" },
+    { "field" => "has_deadline",  "operator" => "eq",  "value" => false }
+  ],
+  actions:      [{ "type" => "block", "reason" => "Les formations assignées aux managers doivent avoir une date limite." }],
+  priority:     0,
+  active:       true
+)
+```
+
+### Notification RH à la complétion d'une évaluation
+
+```ruby
+BusinessRule.create!(
+  organization: org,
+  name:         "Notif RH — évaluation complétée",
+  trigger:      "evaluation.completed",
+  conditions:   [],
+  actions:      [{ "type" => "notify", "role" => "hr",
+                   "subject" => "Évaluation finalisée",
+                   "message" => "Une évaluation vient d'être finalisée." }],
   priority:     0,
   active:       true
 )
