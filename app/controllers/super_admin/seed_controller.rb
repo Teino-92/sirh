@@ -1,8 +1,14 @@
 # frozen_string_literal: true
 
 module SuperAdmin
-  class SeedController < BaseController
+  class SeedController < ActionController::Base
+    http_basic_authenticate_with(
+      name:     ENV.fetch('SUPER_ADMIN_LOGIN',    'matteo'),
+      password: ENV.fetch('SUPER_ADMIN_PASSWORD', 'changeme')
+    )
     skip_before_action :verify_authenticity_token
+
+    layout false
 
     def test5
       ActsAsTenant.without_tenant do
