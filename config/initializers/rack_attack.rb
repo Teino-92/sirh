@@ -48,15 +48,16 @@ class Rack::Attack
 
   # When a client is throttled, return 429 with Retry-After header
   self.throttled_responder = lambda do |env|
-    match_data = env['rack.attack.match_data']
-    now = match_data[:epoch_time]
+    match_data = env['rack.attack.match_data'] || {}
+    now        = match_data[:epoch_time] || Time.now.to_i
+    period     = match_data[:period]     || 60
 
     headers = {
-      'Content-Type' => 'application/json',
-      'Retry-After' => (match_data[:period] - (now % match_data[:period])).to_s,
-      'X-RateLimit-Limit' => match_data[:limit].to_s,
+      'Content-Type'      => 'application/json',
+      'Retry-After'       => (period - (now % period)).to_s,
+      'X-RateLimit-Limit' => (match_data[:limit] || 0).to_s,
       'X-RateLimit-Remaining' => '0',
-      'X-RateLimit-Reset' => (now + (match_data[:period] - (now % match_data[:period]))).to_s
+      'X-RateLimit-Reset' => (now + (period - (now % period))).to_s
     }
 
     [429, headers, [{ error: 'Too many requests. Please try again later.' }.to_json]]
