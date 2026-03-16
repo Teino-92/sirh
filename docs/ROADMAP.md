@@ -1,7 +1,7 @@
 # Roadmap Izi-RH
 
-**Dernière mise à jour** : 2026-03-15
-**Version** : 1.6.0
+**Dernière mise à jour** : 2026-03-16
+**Version** : 1.7.0
 
 ---
 
@@ -110,14 +110,22 @@
 
 ---
 
-## Phase 7 — Scalabilité & Code Quality 🔮
+## Phase 7 — Scalabilité & Code Quality ✅ PARTIELLEMENT TERMINÉE (2026-03-16)
 
+### Terminé
+- ✅ LeavePolicyEngine splitté en 4 services (LeavePolicySettings, FrenchCalendar, LeaveAccrualCalculator, LeaveRequestValidator) — façade inchangée
+- ✅ API serializers standalone (EmployeeSerializer, TimeEntrySerializer, LeaveRequestSerializer, LeaveBalanceSerializer, WorkScheduleSerializer) — 19 tests unitaires
+- ✅ Staging environment — config prête, HTTP basic auth, seed auto (déploiement en attente 4 clients payants)
+- ✅ Pricing per-seat documenté (MANAGER_OS_PER_SEAT_BILLING.md, SIRH_PER_SEAT_BILLING.md)
+- ✅ 7 failures payroll specs corrigées (flash[:alert] direct vs follow_redirect!)
+- ✅ CI assets:precompile — fix application.css missing en CI
+- ✅ Rack::Attack nil fix — guard match_data nil dans throttled_responder
+- ✅ 1608 tests, 0 failures — QA validé @architect
+
+### En attente (conditionnel au volume)
 - [ ] Background job sharding par organisation (LeaveAccrualJob, RttAccrualJob)
-- [ ] Splitter LeavePolicyEngine en 4 services (~70 lignes chacun)
-- [ ] API serializers (EmployeeSerializer, LeaveRequestSerializer, etc.)
 - [ ] Partitioning time_entries par org_id + année
-- [ ] Staging environment
-- [ ] Migration Heroku/Railway (Redis + Sidekiq) quand scale le justifie
+- [ ] Migration Render → Heroku/Railway (Redis + Sidekiq) quand scale le justifie
 - [ ] Rack::Attack sur Redis (vs memory_store actuel)
 
 ---
@@ -145,6 +153,10 @@
 | 2026-03-14 | Convention collective dans org.settings (JSONB) | Saisie unique par org |
 | 2026-03-15 | Cloudinary (vs S3) pour Active Storage | Free tier permanent, pas de CB |
 | 2026-03-15 | Super-admin via HTTP basic auth | Indépendant de Devise + DB |
+| 2026-03-16 | LeavePolicyEngine → façade + 4 services | Maintenabilité, testabilité |
+| 2026-03-16 | Serializers standalone (vs concern controller) | Réutilisabilité hors controllers |
+| 2026-03-16 | Pricing per-seat Manager OS (6 inclus) + SIRH (30/50 inclus) | B2C manager + B2B RH |
+| 2026-03-16 | Staging en attente (code prêt, DB coût justifié à 4 clients) | Free tier = 1 DB max |
 
 ---
 
