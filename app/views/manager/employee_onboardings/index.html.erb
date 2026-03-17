@@ -6,12 +6,13 @@
       <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">Suivez l'intégration des nouveaux collaborateurs</p>
     </div>
     <div class="mt-4 sm:mt-0 flex items-center gap-3">
-      <%= link_to new_admin_onboarding_template_path, class: "inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 shadow-sm text-sm font-medium rounded-md text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors" do %>
+      <button onclick="document.getElementById('new-template-modal').showModal()"
+              class="inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 shadow-sm text-sm font-medium rounded-md text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
         <svg class="w-5 h-5 mr-2 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
         </svg>
         Créer un template
-      <% end %>
+      </button>
       <% if policy(EmployeeOnboarding.new(organization: current_employee.organization)).create? %>
         <%= link_to new_manager_employee_onboarding_path, class: "inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 transition-colors" do %>
           <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -120,15 +121,16 @@
         </svg>
         <h3 class="mt-2 text-sm font-medium text-gray-900 dark:text-gray-100">Aucun onboarding en cours</h3>
         <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
-          Démarrez l'onboarding d'un nouveau collaborateur.
+          Commencez par créer un template, puis démarrez l'onboarding d'un collaborateur.
         </p>
         <div class="mt-6 flex flex-col sm:flex-row items-center justify-center gap-3">
-          <%= link_to new_admin_onboarding_template_path, class: "inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 shadow-sm text-sm font-medium rounded-md text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700" do %>
+          <button onclick="document.getElementById('new-template-modal').showModal()"
+                  class="inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 shadow-sm text-sm font-medium rounded-md text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700">
             <svg class="w-5 h-5 mr-2 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
             </svg>
             Créer un template
-          <% end %>
+          </button>
           <% if policy(EmployeeOnboarding.new(organization: current_employee.organization)).create? %>
             <%= link_to new_manager_employee_onboarding_path, class: "inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700" do %>
               <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -142,3 +144,68 @@
     <% end %>
   </div>
 </div>
+
+<!-- Modal : Nouveau template d'onboarding -->
+<dialog id="new-template-modal"
+        class="rounded-xl shadow-2xl p-0 w-full max-w-lg backdrop:bg-black/50"
+        onclick="if(event.target===this)this.close()">
+  <div class="bg-white dark:bg-gray-800 rounded-xl">
+    <div class="flex items-center justify-between px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+      <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100">Nouveau template d'onboarding</h2>
+      <button onclick="document.getElementById('new-template-modal').close()"
+              class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+
+    <%= form_with url: manager_onboarding_templates_path, method: :post, class: "px-6 py-5 space-y-4" do |f| %>
+      <div>
+        <%= f.label :name, "Nom du template", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" %>
+        <%= f.text_field :name,
+              name: "onboarding_template[name]",
+              placeholder: "Ex : Intégration développeur",
+              required: true,
+              class: "block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" %>
+      </div>
+
+      <div>
+        <%= f.label :description, "Description", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" %>
+        <%= f.text_area :description,
+              name: "onboarding_template[description]",
+              rows: 3,
+              placeholder: "Décrivez le contexte et les objectifs de ce parcours...",
+              class: "block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" %>
+      </div>
+
+      <div>
+        <%= f.label :duration_days, "Durée (jours)", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" %>
+        <%= f.number_field :duration_days,
+              name: "onboarding_template[duration_days]",
+              value: 90,
+              min: 1,
+              class: "block w-32 rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" %>
+        <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">La durée détermine la date de fin calculée automatiquement.</p>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <%= f.check_box :active,
+              name: "onboarding_template[active]",
+              checked: true,
+              class: "h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500" %>
+        <%= f.label :active, "Template actif (disponible pour les onboardings)", class: "text-sm text-gray-700 dark:text-gray-300" %>
+      </div>
+
+      <div class="flex justify-end gap-3 pt-2 border-t border-gray-200 dark:border-gray-700">
+        <button type="button"
+                onclick="document.getElementById('new-template-modal').close()"
+                class="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-600">
+          Annuler
+        </button>
+        <%= f.submit "Créer le template",
+              class: "px-4 py-2 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 rounded-md cursor-pointer" %>
+      </div>
+    <% end %>
+  </div>
+</dialog>

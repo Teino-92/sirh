@@ -152,6 +152,9 @@ Rails.application.routes.draw do
     end
     get 'team_schedules', to: 'team_schedules#index'
 
+    # Onboarding templates (quick-create from manager UI)
+    resources :onboarding_templates, only: [:create]
+
     # Employee Onboarding
     resources :employee_onboardings do
       resources :employee_onboarding_tasks,   only: [:update], shallow: true
