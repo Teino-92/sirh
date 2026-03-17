@@ -1,7 +1,7 @@
 # Roadmap Izi-RH
 
-**Dernière mise à jour** : 2026-03-16
-**Version** : 1.7.0
+**Dernière mise à jour** : 2026-03-17
+**Version** : 1.8.0
 
 ---
 
@@ -178,6 +178,26 @@
 
 ---
 
+## Phase 8b — OrgMerge : Fusion organisations Manager OS → SIRH ✅ TERMINÉE (2026-03-17)
+
+### Fusion cross-tenant
+- ✅ `OrgMergeInvitation` — modèle cross-tenant (pas d'`acts_as_tenant`), token sécurisé (32 bytes URL-safe, expiry 7 jours)
+- ✅ Validations métier : target doit être SIRH, source doit être Manager OS, pas d'invitation active en cours
+- ✅ `OrgMergePreviewService` — preview des données à migrer (comptes par modèle) avant acceptation
+- ✅ `OrgMergeService` — transaction ACID + `ActsAsTenant.without_tenant`, 23 modèles migrés, dissolution source
+- ✅ `with_lock` sur l'org source pour éviter double-merge concurrent
+- ✅ Stripe cancel + `sub.update_columns` **hors** transaction (cohérence DB/Stripe préservée)
+- ✅ `OrgMergeJob` — idempotence via `update_all WHERE status='accepted'` atomique
+- ✅ `OrgMergeMailerService` — email invitation (Resend/Faraday) + email completion admin
+- ✅ `CGI.escapeHTML` sur toutes les variables interpolées dans les mailers HTML (XSS)
+- ✅ `OrgMergeInvitationPolicy` — Pundit, `hr_or_admin? && sirh?`
+- ✅ Admin UI — index invitations + formulaire création
+- ✅ Page publique acceptation — `skip_before_action authenticate + check_trial_expired` (lien email sans auth)
+- ✅ Transition `pending→accepted` atomique dans le controller (double-enqueue prevention)
+- ✅ QA complet — 4 CRITICAL + 3 HIGH corrigés avant merge
+
+---
+
 ## Phase 9 — Intégration Calendrier OAuth2 ⏳ PLANIFIÉE
 
 > Sprint architecturalement défini — implémentation non démarrée.
@@ -342,6 +362,9 @@ end
 | 2026-03-16 | omniauth (vs Faraday manuel) pour OAuth2 | Gestion CSRF/state/callback battle-tested, moins de surface d'attaque |
 | 2026-03-16 | Lazy refresh token (vs job proactif) | Suffisant en V1 (actions user-triggered), job proactif en V2 |
 | 2026-03-16 | `EmployeeOauthToken` modèle dédié (vs `employee.settings`) | Chiffrement AR garanti, audit trail, révocation propre, pas de sérialisation JSONB |
+| 2026-03-17 | `OrgMergeInvitation` sans `acts_as_tenant` | Cross-tenant par nature — scoping tenant intentionnellement absent, accès via token public |
+| 2026-03-17 | Stripe cancel hors transaction ACID OrgMerge | Stripe est externe — rollback DB ne peut pas rollback Stripe ; cancel après commit garantit cohérence |
+| 2026-03-17 | `update_all WHERE status=...` pour idempotence job | Atomicité SQL > `update` AR qui lit puis écrit (race condition TOCTOU) |
 
 ---
 
