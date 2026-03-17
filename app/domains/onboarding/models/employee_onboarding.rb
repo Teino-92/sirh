@@ -38,13 +38,13 @@ class EmployeeOnboarding < ApplicationRecord
   def progress_percentage
     return progress_percentage_cache if progress_percentage_cache.positive?
 
-    OnboardingProgressCalculatorService.new(self).call
+    EmployeeOnboardingProgressCalculatorService.new(self).call
   end
 
   def integration_score
     return integration_score_cache if integration_score_cache.positive?
 
-    OnboardingIntegrationScoreService.new(self).call
+    EmployeeOnboardingIntegrationScoreService.new(self).call
   end
 
   def day_number
