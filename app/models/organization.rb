@@ -110,6 +110,14 @@ class Organization < ApplicationRecord
     end
   end
 
+  # Returns :alsace_moselle if the org is registered in depts 57, 67 or 68, nil otherwise.
+  # Configurable via settings['legal_department'] (e.g. "67").
+  def legal_region
+    dept = settings['legal_department'].to_s.strip
+    return :alsace_moselle if FrenchCalendar::ALSACE_MOSELLE_DEPARTMENTS.include?(dept)
+    nil
+  end
+
   def group_policies
     settings.fetch('group_policies', {
       'manager_can_approve_leave' => true,

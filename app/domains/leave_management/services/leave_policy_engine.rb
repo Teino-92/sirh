@@ -20,7 +20,7 @@ class LeavePolicyEngine
     @settings     = LeavePolicySettings.new(employee)
     @accrual      = LeaveAccrualCalculator.new(employee, @settings)
     @validator    = LeaveRequestValidator.new(employee, @settings)
-    @calendar     = FrenchCalendar.new
+    @calendar     = FrenchCalendar.new(region: @organization.legal_region)
   end
 
   # ── Settings ────────────────────────────────────────────────────────────────

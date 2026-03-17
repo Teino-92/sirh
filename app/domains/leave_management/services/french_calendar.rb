@@ -2,7 +2,16 @@
 
 # Computes French public holidays and working days.
 # Handles the Computus algorithm for Easter-based holidays.
+# Supports Alsace-Moselle region (depts 57, 67, 68) which has 2 extra holidays:
+#   - Good Friday (Vendredi Saint)
+#   - St. Stephen's Day (26 décembre)
 class FrenchCalendar
+  ALSACE_MOSELLE_DEPARTMENTS = %w[57 67 68].freeze
+
+  def initialize(region: nil)
+    @alsace_moselle = region == :alsace_moselle
+  end
+
   def working_days_between(start_date, end_date)
     days = 0
     current = start_date
@@ -17,6 +26,10 @@ class FrenchCalendar
     holidays_for_year(date.year).include?(date)
   end
 
+  def alsace_moselle?
+    @alsace_moselle
+  end
+
   private
 
   def weekend?(date)
@@ -24,7 +37,7 @@ class FrenchCalendar
   end
 
   def holidays_for_year(year)
-    [
+    days = [
       Date.new(year, 1, 1),
       easter_monday(year),
       Date.new(year, 5, 1),
@@ -37,6 +50,13 @@ class FrenchCalendar
       Date.new(year, 11, 11),
       Date.new(year, 12, 25)
     ]
+
+    if @alsace_moselle
+      days << good_friday(year)        # Vendredi Saint
+      days << Date.new(year, 12, 26)   # Saint-Étienne
+    end
+
+    days
   end
 
   def easter_sunday(year)
@@ -58,6 +78,7 @@ class FrenchCalendar
   end
 
   def easter_monday(year)  = easter_sunday(year) + 1.day
+  def good_friday(year)    = easter_sunday(year) - 2.days
   def ascension_day(year)  = easter_sunday(year) + 39.days
   def whit_monday(year)    = easter_sunday(year) + 50.days
 end
