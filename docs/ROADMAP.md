@@ -368,9 +368,7 @@ Nécessite un accord partenaire avec chaque éditeur — à initier dès les pre
 
 ## Backlog 🔮
 
-- Export Excel/PDF rapports
-- Notifications temps réel (WebSocket)
-- Régions Alsace-Moselle (jours fériés)
+- Notifications temps réel (WebSocket) — après migration Redis/Sidekiq
 - Mobile app native (post-PWA)
 
 ---
