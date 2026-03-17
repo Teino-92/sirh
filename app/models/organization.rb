@@ -138,7 +138,7 @@ class Organization < ApplicationRecord
   ).freeze
 
   def valid_legal_department
-    dept = settings['legal_department'].to_s.strip
+    dept = settings&.dig('legal_department').to_s.strip
     return if dept.blank?
     unless VALID_DEPARTMENTS.include?(dept)
       errors.add(:base, "Département siège social invalide — utilisez le format 01–95 ou 971–976")
