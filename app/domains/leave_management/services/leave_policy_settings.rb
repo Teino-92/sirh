@@ -3,8 +3,11 @@
 # Resolves leave policy settings using a cascading priority chain:
 #   1. Employee contract overrides (contrat individuel)
 #   2. Organization settings (accord d'entreprise)
-#   3. Collective agreement — TODO when association added
-#   4. French legal defaults (Code du travail)
+#   3. French legal defaults (Code du travail)
+#
+# Note: convention_collective (IDCC) is stored on Employee and Organization for payroll
+# exports only (Silae/PayFit). It does not drive leave policy rules — implementing
+# per-CCN rule tables is out of scope (400+ conventions, specialist data source required).
 class LeavePolicySettings
   LEGAL_DEFAULTS = {
     cp_acquisition_rate: 2.5,
