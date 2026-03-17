@@ -9,7 +9,7 @@ class CheckoutService
 
   # Lookup keys Stripe — indépendants des price IDs, portables entre test et prod
   STRIPE_LOOKUP_KEYS = {
-    "manager_os"     => "manager_os_monthly",
+    "manager_os"     => "managerOS_monthly",
     "sirh_essential" => "sirh_essentiel_monthly",
     "sirh_pro"       => "sirh_pro_monthly"
   }.freeze

@@ -101,9 +101,9 @@ RSpec.describe SubscriptionUpdatedHandler, type: :service do
       expect(sub.reload.plan).to eq("sirh_pro")
     end
 
-    it "updates plan to 'manager_os' when lookup_key is 'manager_os_monthly'" do
+    it "updates plan to 'manager_os' when lookup_key is 'managerOS_monthly'" do
       event = build_event(stripe_sub_id: "sub_update001", status: "active",
-                          lookup_key: "manager_os_monthly")
+                          lookup_key: "managerOS_monthly")
       handler.call(event)
       expect(sub.reload.plan).to eq("manager_os")
     end
