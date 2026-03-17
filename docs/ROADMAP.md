@@ -342,13 +342,27 @@ end
 
 ---
 
-## Phase 10 — Intégration paie : Silae / PayFit ⏳ PLANIFIÉE
+## Phase 10 — Intégration paie : Silae / PayFit 🔮 EN ATTENTE PARTENARIAT
 
-> Sprint architecturalement à définir — implémentation non démarrée.
+> Bloqué sur partenariat commercial — implémentation non démarrée.
 
-### Objectif
+### Décision
 
-Permettre aux organisations SIRH d'exporter leurs données de paie vers Silae ou PayFit automatiquement à chaque clôture de période.
+Intégration via API officielle Silae / PayFit uniquement (pas de scraping ni CSV fragile).
+Nécessite un accord partenaire avec chaque éditeur — à initier dès les premiers clients SIRH actifs.
+
+### Prérequis
+
+- [ ] 1er client SIRH en production utilisant Silae ou PayFit
+- [ ] Contacter Silae (programme partenaires) + PayFit (API partenaires)
+- [ ] Obtenir accès sandbox API + documentation technique
+- [ ] Valider le modèle de données commun (éléments variables, absences, heures)
+
+### Base technique déjà en place
+
+- `PayrollSilaeCsvExporter` — exporteur CSV existant (specs présentes)
+- `payroll_webhook_url` + `payroll_webhook_secret` dans `organization.settings`
+- `PayrollPeriod` model — clôture de période déjà modélisée
 
 ---
 
@@ -392,6 +406,7 @@ Permettre aux organisations SIRH d'exporter leurs données de paie vers Silae ou
 | 2026-03-17 | Per-seat via token session (vs param `seat_confirmed`) | Param forgeable par curl — token session lié à la session Rails, timing-safe via `secure_compare` |
 | 2026-03-17 | `SeatSyncService` re-raise Stripe error | Job doit être retryable — swallow silencieux = billing stale sans alerte |
 | 2026-03-17 | Seat item créé uniquement si quantity > 0 | Évite invoices Stripe €0 qui polluent l'historique client |
+| 2026-03-17 | Silae/PayFit : attendre partenariat (vs CSV custom) | API officielle uniquement — fragile sans partenariat ; base CSV déjà en place pour V1 manuelle |
 
 ---
 
