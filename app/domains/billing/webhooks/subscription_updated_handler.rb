@@ -13,7 +13,7 @@ class SubscriptionUpdatedHandler
   # Lookup key → plan interne
   PRICE_PLAN_MAP = {
     "manager_os_monthly"     => "manager_os",
-    "sirh_essential_monthly" => "sirh_essential",
+    "sirh_essentiel_monthly" => "sirh_essential",
     "sirh_pro_monthly"       => "sirh_pro"
   }.freeze
 

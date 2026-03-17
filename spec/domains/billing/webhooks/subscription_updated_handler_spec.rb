@@ -108,11 +108,11 @@ RSpec.describe SubscriptionUpdatedHandler, type: :service do
       expect(sub.reload.plan).to eq("manager_os")
     end
 
-    it "updates plan to 'sirh_essential' when lookup_key is 'sirh_essential_monthly'" do
+    it "updates plan to 'sirh_essential' when lookup_key is 'sirh_essentiel_monthly'" do
       # sub is already sirh_essential — set it to pro first so the update is visible
       sub.update_columns(plan: "sirh_pro")
       event = build_event(stripe_sub_id: "sub_update001", status: "active",
-                          lookup_key: "sirh_essential_monthly")
+                          lookup_key: "sirh_essentiel_monthly")
       handler.call(event)
       expect(sub.reload.plan).to eq("sirh_essential")
     end
@@ -120,7 +120,7 @@ RSpec.describe SubscriptionUpdatedHandler, type: :service do
     it "does not change plan when lookup_key matches the current plan" do
       expect {
         event = build_event(stripe_sub_id: "sub_update001", status: "active",
-                            lookup_key: "sirh_essential_monthly")
+                            lookup_key: "sirh_essentiel_monthly")
         handler.call(event)
       }.not_to change { sub.reload.plan }
     end
