@@ -97,8 +97,12 @@ class LeaveRequest < ApplicationRecord
   end
 
   def notify_manager
-    # TODO: Send notification to manager
-    # LeaveRequestMailer.notify_manager(self).deliver_later
+    manager = employee.manager
+    return unless manager&.email.present?
+
+    LeaveRequestMailer.pending_approval(self, manager).deliver_later
+  rescue => e
+    Rails.logger.warn "[LeaveRequest] notify_manager failed: #{e.message}"
   end
 
   def update_leave_balance
