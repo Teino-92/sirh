@@ -675,4 +675,59 @@ RSpec.describe Organization, type: :model do
       expect(org).to be_valid
     end
   end
+
+  describe '#legal_region' do
+    it 'returns nil when no legal_department set' do
+      org = build(:organization, settings: {})
+      expect(org.legal_region).to be_nil
+    end
+
+    it 'returns nil for a standard department' do
+      org = build(:organization, settings: { 'legal_department' => '75' })
+      expect(org.legal_region).to be_nil
+    end
+
+    it 'returns :alsace_moselle for department 57 (Moselle)' do
+      org = build(:organization, settings: { 'legal_department' => '57' })
+      expect(org.legal_region).to eq(:alsace_moselle)
+    end
+
+    it 'returns :alsace_moselle for department 67 (Bas-Rhin)' do
+      org = build(:organization, settings: { 'legal_department' => '67' })
+      expect(org.legal_region).to eq(:alsace_moselle)
+    end
+
+    it 'returns :alsace_moselle for department 68 (Haut-Rhin)' do
+      org = build(:organization, settings: { 'legal_department' => '68' })
+      expect(org.legal_region).to eq(:alsace_moselle)
+    end
+
+    it 'handles nil legal_department safely' do
+      org = build(:organization, settings: { 'legal_department' => nil })
+      expect(org.legal_region).to be_nil
+    end
+  end
+
+  describe 'legal_department validation' do
+    it 'is valid with a correct department number' do
+      org = build(:organization, settings: { 'legal_department' => '67' })
+      expect(org).to be_valid
+    end
+
+    it 'is valid with no department set' do
+      org = build(:organization, settings: {})
+      expect(org).to be_valid
+    end
+
+    it 'is invalid with a non-existent department' do
+      org = build(:organization, settings: { 'legal_department' => '99' })
+      expect(org).not_to be_valid
+      expect(org.errors[:base]).to include(a_string_matching(/Département siège social invalide/))
+    end
+
+    it 'is invalid with letters' do
+      org = build(:organization, settings: { 'legal_department' => 'abc' })
+      expect(org).not_to be_valid
+    end
+  end
 end

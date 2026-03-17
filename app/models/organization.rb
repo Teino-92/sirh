@@ -37,6 +37,7 @@ class Organization < ApplicationRecord
   validates :billing_model, inclusion: { in: BILLING_MODELS }
   validate :safe_calendar_webhook_url
   validate :safe_payroll_webhook_url
+  validate :valid_legal_department
 
   # Initialize settings if nil
   after_initialize :ensure_settings
@@ -129,6 +130,19 @@ class Organization < ApplicationRecord
 
   def ensure_settings
     self.settings ||= {}
+  end
+
+  VALID_DEPARTMENTS = (
+    (1..95).map { |i| i.to_s.rjust(2, '0') } +
+    %w[971 972 973 974 975 976]
+  ).freeze
+
+  def valid_legal_department
+    dept = settings['legal_department'].to_s.strip
+    return if dept.blank?
+    unless VALID_DEPARTMENTS.include?(dept)
+      errors.add(:base, "Département siège social invalide — utilisez le format 01–95 ou 971–976")
+    end
   end
 
   # Prevent SSRF: only allow public HTTP/HTTPS URLs.
