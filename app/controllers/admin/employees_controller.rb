@@ -36,6 +36,19 @@ module Admin
       @employee = Employee.new(employee_params)
       @employee.organization = current_employee.organization
 
+      # Manager OS gate: warn before exceeding included seats
+      if current_employee.organization.manager_os? && !params[:seat_confirmed]
+        seat_service = SeatSyncService.new(current_employee.organization)
+        if seat_service.quota_exceeded?
+          @seat_warning = true
+          respond_to do |format|
+            format.html { render :new, status: :ok }
+            format.turbo_stream
+          end
+          return
+        end
+      end
+
       saved = ActiveRecord::Base.transaction do
         @employee.save!
         LeaveBalanceInitializer.new(@employee).initialize_balances
@@ -45,6 +58,7 @@ module Admin
       end
 
       if saved
+        SyncSeatCountJob.perform_later(current_employee.organization.id)
         respond_to do |format|
           format.html { redirect_to admin_employee_path(@employee), notice: 'Employé créé avec succès.' }
           format.turbo_stream
@@ -70,6 +84,7 @@ module Admin
         attrs = attrs.merge(settings: @employee.settings.merge(attrs[:settings].to_h))
       end
       if @employee.update(attrs)
+        SyncSeatCountJob.perform_later(current_employee.organization.id) if attrs.dig(:settings, 'active').present?
         respond_to do |format|
           format.html { redirect_to admin_employee_path(@employee), notice: 'Employé mis à jour avec succès.' }
           format.turbo_stream
