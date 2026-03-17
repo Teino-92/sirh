@@ -14,6 +14,9 @@ class Organization < ApplicationRecord
   has_many :employees, dependent: :destroy
   has_one  :subscription, dependent: :destroy
   has_many :business_rules, dependent: :destroy
+  has_many :outgoing_merge_invitations, class_name: 'OrgMergeInvitation', foreign_key: :source_organization_id, dependent: :destroy
+  has_many :incoming_merge_invitations, class_name: 'OrgMergeInvitation', foreign_key: :target_organization_id, dependent: :destroy
+  belongs_to :merged_into, class_name: 'Organization', optional: true
   has_many :approval_steps, dependent: :destroy
   has_many :rule_executions, dependent: :destroy
   has_many :employee_delegations, dependent: :destroy
@@ -94,6 +97,10 @@ class Organization < ApplicationRecord
 
   def sirh?
     plan == "sirh"
+  end
+
+  def merged?
+    status == 'merged'
   end
 
   def upgrade_to_sirh!

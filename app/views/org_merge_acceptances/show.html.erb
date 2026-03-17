@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="fr" class="h-full bg-gray-50">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Invitation de fusion — Izi-RH</title>
+  <%= stylesheet_link_tag "application", media: "all" %>
+</head>
+<body class="h-full">
+
+<div class="min-h-full flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+  <div class="sm:mx-auto sm:w-full sm:max-w-2xl">
+
+    <%# Logo / branding %>
+    <div class="text-center mb-8">
+      <span class="text-3xl font-bold text-indigo-600">Izi-RH</span>
+    </div>
+
+    <% if @invitation.status == 'completed' %>
+      <%# ─── Migration terminée ─── %>
+      <div class="bg-white rounded-xl shadow-lg border border-gray-200 p-8 text-center">
+        <div class="mx-auto flex items-center justify-center h-14 w-14 rounded-full bg-green-100 mb-4">
+          <svg class="h-8 w-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+        </div>
+        <h1 class="text-2xl font-bold text-gray-900 mb-2">Migration terminée !</h1>
+        <p class="text-gray-500 mb-6">
+          L'organisation <strong><%= @invitation.source_organization.name %></strong> a été fusionnée avec succès
+          dans <strong><%= @invitation.target_organization.name %></strong>.
+        </p>
+        <p class="text-sm text-gray-400">
+          Vous pouvez désormais vous connecter sur votre nouvel espace.
+        </p>
+        <%= link_to new_employee_session_path,
+            class: "mt-4 inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700" do %>
+          Se connecter
+        <% end %>
+      </div>
+
+    <% elsif @invitation.status == 'failed' %>
+      <%# ─── Migration échouée ─── %>
+      <div class="bg-white rounded-xl shadow-lg border border-gray-200 p-8 text-center">
+        <div class="mx-auto flex items-center justify-center h-14 w-14 rounded-full bg-red-100 mb-4">
+          <svg class="h-8 w-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+          </svg>
+        </div>
+        <h1 class="text-2xl font-bold text-gray-900 mb-2">Échec de la migration</h1>
+        <p class="text-gray-500 mb-6">
+          Une erreur s'est produite lors de la fusion. Veuillez contacter le support Izi-RH.
+        </p>
+      </div>
+
+    <% elsif @invitation.status == 'merging' %>
+      <%# ─── Migration en cours ─── %>
+      <div class="bg-white rounded-xl shadow-lg border border-gray-200 p-8 text-center">
+        <div class="mx-auto flex items-center justify-center h-14 w-14 rounded-full bg-purple-100 mb-4">
+          <svg class="h-8 w-8 text-purple-600 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+          </svg>
+        </div>
+        <h1 class="text-2xl font-bold text-gray-900 mb-2">Migration en cours...</h1>
+        <p class="text-gray-500">
+          Le processus de fusion est en cours. Vous recevrez un email lorsque la migration sera terminée.
+        </p>
+        <p class="mt-4 text-sm text-gray-400">Cette page peut être fermée en toute sécurité.</p>
+      </div>
+
+    <% else %>
+      <%# ─── Invitation en attente ─── %>
+      <div class="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
+
+        <%# Header %>
+        <div class="bg-indigo-600 px-8 py-6 text-white">
+          <h1 class="text-2xl font-bold">Rejoindre <%= @invitation.target_organization.name %></h1>
+          <p class="mt-1 text-indigo-200 text-sm">
+            Proposition de fusion de votre espace Manager OS
+          </p>
+        </div>
+
+        <div class="px-8 py-6">
+
+          <%# Description %>
+          <p class="text-gray-700 mb-6">
+            L'organisation <strong><%= @invitation.target_organization.name %></strong> vous invite à fusionner
+            votre espace <strong><%= @invitation.source_organization.name %></strong> (plan Manager OS)
+            dans leur espace SIRH.
+          </p>
+
+          <%# Ce qui sera migré %>
+          <% if @preview_items.present? %>
+            <div class="mb-6">
+              <h2 class="text-sm font-semibold text-gray-900 uppercase tracking-wider mb-3">Données qui seront migrées</h2>
+              <div class="bg-gray-50 rounded-lg border border-gray-200 divide-y divide-gray-200">
+                <% @preview_items.each do |item| %>
+                  <div class="flex items-center justify-between px-4 py-3">
+                    <div class="flex items-center gap-2">
+                      <svg class="h-4 w-4 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                      </svg>
+                      <span class="text-sm text-gray-700"><%= item[:label] %></span>
+                    </div>
+                    <span class="text-sm font-semibold text-gray-900"><%= item[:count] %></span>
+                  </div>
+                <% end %>
+              </div>
+            </div>
+          <% end %>
+
+          <%# Avertissement dissolution %>
+          <div class="mb-6 rounded-md bg-red-50 border border-red-200 p-4">
+            <div class="flex">
+              <svg class="h-5 w-5 text-red-400 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
+              </svg>
+              <div class="text-sm text-red-800">
+                <p class="font-semibold mb-1">Attention — Action irréversible</p>
+                <ul class="list-disc list-inside space-y-0.5">
+                  <li>Votre espace actuel <strong><%= @invitation.source_organization.name %></strong> sera <strong>dissous</strong></li>
+                  <li>Votre abonnement Manager OS sera annulé</li>
+                  <li>Toutes vos données seront migrées chez <%= @invitation.target_organization.name %></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <%# Expiration %>
+          <p class="text-xs text-gray-500 mb-6">
+            Cette invitation expire le <strong><%= @invitation.expires_at.strftime('%d/%m/%Y') %></strong>.
+          </p>
+
+          <%# Boutons d'action %>
+          <div class="flex flex-col sm:flex-row gap-3 border-t border-gray-200 pt-6">
+            <%= form_with url: org_merge_acceptance_path(@invitation.token), method: :patch, local: true do |f| %>
+              <%= f.hidden_field :accept, value: true %>
+              <button type="submit"
+                      data-turbo-confirm="Confirmer la fusion ? Votre espace actuel sera dissous après la migration. Cette action est irréversible."
+                      class="w-full sm:w-auto inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                <svg class="-ml-1 mr-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+                Accepter la migration
+              </button>
+            <% end %>
+
+            <%= form_with url: org_merge_acceptance_path(@invitation.token), method: :patch, local: true do |f| %>
+              <%= f.hidden_field :decline, value: true %>
+              <button type="submit"
+                      class="w-full sm:w-auto inline-flex items-center justify-center px-6 py-3 border border-gray-300 text-base font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                Décliner
+              </button>
+            <% end %>
+          </div>
+
+        </div>
+      </div>
+    <% end %>
+
+  </div>
+</div>
+
+</body>
+</html>

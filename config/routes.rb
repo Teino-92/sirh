@@ -261,5 +261,9 @@ Rails.application.routes.draw do
     end
     resource :audit_log, only: [:show], controller: 'audit_logs'
     resource :employee_import, only: [:new, :create]
+    resources :org_merge_invitations, only: [:index, :new, :create, :destroy]
   end
+
+  # Public — OrgMerge acceptance (accessible without authentication via email link)
+  resources :org_merge_acceptances, only: [:show, :update], param: :token
 end

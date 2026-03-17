@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2026_03_16_200002) do
+ActiveRecord::Schema[7.1].define(version: 2026_03_17_085351) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -31,7 +31,7 @@ ActiveRecord::Schema[7.1].define(version: 2026_03_16_200002) do
     t.index ["objective_id"], name: "index_action_items_on_objective_id"
     t.index ["one_on_one_id"], name: "index_action_items_on_one_on_one_id"
     t.index ["organization_id"], name: "index_action_items_on_organization_id"
-    t.index ["responsible_id", "deadline"], name: "idx_action_items_overdue", where: "((status)::text = ANY (ARRAY[('pending'::character varying)::text, ('in_progress'::character varying)::text]))"
+    t.index ["responsible_id", "deadline"], name: "idx_action_items_overdue", where: "((status)::text = ANY ((ARRAY['pending'::character varying, 'in_progress'::character varying])::text[]))"
     t.index ["responsible_id", "status", "deadline"], name: "idx_action_items_responsible"
     t.index ["responsible_id"], name: "index_action_items_on_responsible_id"
     t.index ["status"], name: "index_action_items_on_status"
@@ -335,7 +335,7 @@ ActiveRecord::Schema[7.1].define(version: 2026_03_16_200002) do
     t.datetime "updated_at", null: false
     t.index ["created_by_id"], name: "index_objectives_on_created_by_id"
     t.index ["deadline"], name: "index_objectives_on_deadline"
-    t.index ["manager_id", "deadline"], name: "idx_objectives_overdue", where: "((status)::text = ANY (ARRAY[('draft'::character varying)::text, ('in_progress'::character varying)::text, ('blocked'::character varying)::text]))"
+    t.index ["manager_id", "deadline"], name: "idx_objectives_overdue", where: "((status)::text = ANY ((ARRAY['draft'::character varying, 'in_progress'::character varying, 'blocked'::character varying])::text[]))"
     t.index ["manager_id", "status"], name: "idx_objectives_manager_status"
     t.index ["manager_id"], name: "index_objectives_on_manager_id"
     t.index ["organization_id", "status", "deadline"], name: "idx_objectives_org_status_deadline"
@@ -439,6 +439,25 @@ ActiveRecord::Schema[7.1].define(version: 2026_03_16_200002) do
     t.index ["status"], name: "index_one_on_ones_on_status"
   end
 
+  create_table "org_merge_invitations", force: :cascade do |t|
+    t.bigint "target_organization_id", null: false
+    t.bigint "source_organization_id", null: false
+    t.string "invited_email", null: false
+    t.string "token", null: false
+    t.string "status", default: "pending", null: false
+    t.bigint "invited_by_id", null: false
+    t.datetime "expires_at", null: false
+    t.datetime "accepted_at"
+    t.datetime "completed_at"
+    t.jsonb "merge_log", default: {}, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["source_organization_id", "status"], name: "idx_org_merge_invitations_source_active_unique", unique: true, where: "((status)::text = ANY ((ARRAY['pending'::character varying, 'accepted'::character varying, 'merging'::character varying])::text[]))"
+    t.index ["source_organization_id"], name: "index_org_merge_invitations_on_source_organization_id"
+    t.index ["target_organization_id", "status"], name: "idx_on_target_organization_id_status_7e210722ae"
+    t.index ["token"], name: "index_org_merge_invitations_on_token", unique: true
+  end
+
   create_table "organizations", force: :cascade do |t|
     t.string "name", null: false
     t.jsonb "settings", default: {}, null: false
@@ -450,8 +469,13 @@ ActiveRecord::Schema[7.1].define(version: 2026_03_16_200002) do
     t.datetime "plan_started_at"
     t.string "billing_model", default: "per_employee", null: false
     t.datetime "trial_ends_at"
+    t.string "status", default: "active", null: false
+    t.bigint "merged_into_id"
+    t.datetime "merged_at"
+    t.index ["merged_into_id"], name: "index_organizations_on_merged_into_id", where: "(merged_into_id IS NOT NULL)"
     t.index ["name"], name: "index_organizations_on_name"
     t.index ["plan"], name: "index_organizations_on_plan"
+    t.index ["status"], name: "index_organizations_on_status"
     t.index ["trial_ends_at"], name: "index_organizations_on_trial_ends_at", where: "(trial_ends_at IS NOT NULL)"
   end
 
@@ -682,9 +706,9 @@ ActiveRecord::Schema[7.1].define(version: 2026_03_16_200002) do
     t.index ["assigned_by_id", "status"], name: "idx_training_assignments_manager"
     t.index ["assigned_by_id"], name: "index_training_assignments_on_assigned_by_id"
     t.index ["deadline"], name: "index_training_assignments_on_deadline"
-    t.index ["employee_id", "deadline"], name: "idx_training_assignments_overdue", where: "(((status)::text = ANY (ARRAY[('assigned'::character varying)::text, ('in_progress'::character varying)::text])) AND (deadline IS NOT NULL))"
+    t.index ["employee_id", "deadline"], name: "idx_training_assignments_overdue", where: "(((status)::text = ANY ((ARRAY['assigned'::character varying, 'in_progress'::character varying])::text[])) AND (deadline IS NOT NULL))"
     t.index ["employee_id", "status"], name: "idx_training_assignments_employee"
-    t.index ["employee_id", "training_id"], name: "idx_unique_active_assignment", unique: true, where: "((status)::text = ANY (ARRAY[('assigned'::character varying)::text, ('in_progress'::character varying)::text]))"
+    t.index ["employee_id", "training_id"], name: "idx_unique_active_assignment", unique: true, where: "((status)::text = ANY ((ARRAY['assigned'::character varying, 'in_progress'::character varying])::text[]))"
     t.index ["employee_id"], name: "index_training_assignments_on_employee_id"
     t.index ["objective_id"], name: "index_training_assignments_on_objective_id"
     t.index ["status"], name: "index_training_assignments_on_status"

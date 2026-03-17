@@ -1,0 +1,91 @@
+<div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+
+  <%# En-tête %>
+  <div class="mb-6">
+    <%= link_to admin_org_merge_invitations_path,
+        class: "inline-flex items-center text-sm text-gray-500 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400 mb-4" do %>
+      <svg class="mr-1.5 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+      </svg>
+      Retour aux invitations
+    <% end %>
+    <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100">Inviter une organisation à fusionner</h1>
+    <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+      L'administrateur de l'organisation Manager OS recevra un email avec un lien pour accepter ou décliner la fusion.
+    </p>
+  </div>
+
+  <%# Avertissement %>
+  <div class="mb-6 rounded-md bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-700 p-4">
+    <div class="flex">
+      <svg class="h-5 w-5 text-red-400 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
+      </svg>
+      <div class="text-sm text-red-800 dark:text-red-200">
+        <p class="font-semibold mb-1">Action irréversible</p>
+        <ul class="list-disc list-inside space-y-1">
+          <li>Tous les employés et données RH de l'organisation source seront migrés ici</li>
+          <li>L'espace Manager OS sera <strong>dissous définitivement</strong></li>
+          <li>L'abonnement Stripe de l'organisation source sera annulé</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <%# Formulaire %>
+  <div class="bg-white dark:bg-gray-800 shadow rounded-lg border border-gray-200 dark:border-gray-700 p-6">
+    <%= form_with url: admin_org_merge_invitations_path, method: :post, local: false do |f| %>
+      <div class="mb-6">
+        <label for="invited_email" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+          Email de l'administrateur de l'organisation Manager OS
+        </label>
+        <input type="email"
+               name="invited_email"
+               id="invited_email"
+               required
+               placeholder="admin@organisation-source.com"
+               class="block w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm px-3 py-2">
+        <p class="mt-1.5 text-xs text-gray-500 dark:text-gray-400">
+          Cet email doit correspondre à un compte existant sur Izi-RH avec le plan <strong>Manager OS</strong>.
+        </p>
+      </div>
+
+      <div class="flex items-center justify-between pt-4 border-t border-gray-200 dark:border-gray-700">
+        <%= link_to "Annuler", admin_org_merge_invitations_path,
+            class: "text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" %>
+        <button type="submit"
+                data-turbo-confirm="Envoyer une invitation de fusion à cet administrateur ?"
+                class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+          <svg class="-ml-1 mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+          </svg>
+          Envoyer l'invitation
+        </button>
+      </div>
+    <% end %>
+  </div>
+
+  <%# Explication du processus %>
+  <div class="mt-6 bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4">
+    <h3 class="text-sm font-medium text-gray-900 dark:text-gray-100 mb-3">Comment ça fonctionne</h3>
+    <ol class="space-y-2 text-sm text-gray-600 dark:text-gray-400">
+      <li class="flex items-start gap-2">
+        <span class="flex-shrink-0 w-5 h-5 bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 rounded-full flex items-center justify-center text-xs font-bold">1</span>
+        <span>L'administrateur de l'organisation source reçoit un email d'invitation</span>
+      </li>
+      <li class="flex items-start gap-2">
+        <span class="flex-shrink-0 w-5 h-5 bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 rounded-full flex items-center justify-center text-xs font-bold">2</span>
+        <span>Il consulte la liste des données qui seront migrées et accepte ou décline</span>
+      </li>
+      <li class="flex items-start gap-2">
+        <span class="flex-shrink-0 w-5 h-5 bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 rounded-full flex items-center justify-center text-xs font-bold">3</span>
+        <span>Si accepté, la migration démarre automatiquement en arrière-plan</span>
+      </li>
+      <li class="flex items-start gap-2">
+        <span class="flex-shrink-0 w-5 h-5 bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 rounded-full flex items-center justify-center text-xs font-bold">4</span>
+        <span>Vous recevez un email de confirmation une fois la fusion terminée</span>
+      </li>
+    </ol>
+  </div>
+
+</div>
