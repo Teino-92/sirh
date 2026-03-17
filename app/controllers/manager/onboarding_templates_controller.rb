@@ -11,8 +11,9 @@ module Manager
         redirect_to manager_employee_onboardings_path,
                     notice: "Modèle « #{@template.name} » créé. Vous pouvez maintenant démarrer un onboarding."
       else
-        redirect_to manager_employee_onboardings_path,
-                    alert: @template.errors.full_messages.to_sentence
+        flash[:template_errors] = @template.errors.full_messages
+        flash[:template_params] = template_params.to_h
+        redirect_to manager_employee_onboardings_path
       end
     end
 

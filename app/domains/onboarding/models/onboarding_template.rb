@@ -7,6 +7,7 @@ class OnboardingTemplate < ApplicationRecord
   has_many :onboarding_template_tasks, dependent: :destroy
 
   validates :name, presence: true, length: { maximum: 255 }
+  validates :description, length: { maximum: 5000 }, allow_blank: true
   validates :duration_days, numericality: { only_integer: true, greater_than: 0 }
 
   scope :active, -> { where(active: true) }

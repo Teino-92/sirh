@@ -7,12 +7,14 @@
 namespace :demo do
   desc "Crée une org Manager OS démo (manager + 5 collaborateurs) pour screenshots"
   task manager_os: :environment do
+    ActiveRecord::Base.transaction do
     ActsAsTenant.without_tenant do
 
       puts "🧹 Nettoyage org Manager OS existante..."
       existing = Organization.find_by(name: "Studio Créatif Demo")
       if existing
         ActsAsTenant.with_tenant(existing) do
+          # Ordre respectant les FK : enfants avant parents
           [
             OnboardingTask, OnboardingReview, EmployeeOnboarding,
             OnboardingTemplateTask, OnboardingTemplate,
@@ -324,5 +326,6 @@ namespace :demo do
       puts "  1:1s       : 6 (3 passés, 3 planifiés)"
       puts "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
     end
+    end # transaction
   end
 end
