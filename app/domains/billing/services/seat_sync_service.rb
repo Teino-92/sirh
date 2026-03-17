@@ -26,64 +26,61 @@ class SeatSyncService
     return unless stripe_eligible?
 
     seat_price_id = SEAT_PRICE_IDS[@subscription.plan]
-    return unless seat_price_id.present?
 
-    included   = INCLUDED_SEATS.fetch(@subscription.plan, 0)
-    active_count = ActsAsTenant.without_tenant { Employee.where(organization_id: @org.id).active.count }
-    quantity   = [active_count - included, 0].max
+    unless seat_price_id.present?
+      Rails.logger.error "[SeatSyncService] Missing SEAT_PRICE_ID for plan=#{@subscription.plan} org=#{@org.id}"
+      Sentry.capture_message("[SeatSyncService] Missing seat price ID for plan #{@subscription.plan}") if defined?(Sentry)
+      return
+    end
+
+    included  = INCLUDED_SEATS.fetch(@subscription.plan, 0)
+    quantity  = [active_seat_count - included, 0].max
 
     stripe_sub = Stripe::Subscription.retrieve(@subscription.stripe_subscription_id)
     seat_item  = stripe_sub.items.data.find { |i| i.price.id == seat_price_id }
 
     if seat_item
       Stripe::SubscriptionItem.update(seat_item.id, { quantity: quantity })
-    else
+    elsif quantity > 0
+      # Only create the seat item when there are actual overages — avoids zero-amount invoices
       Stripe::SubscriptionItem.create({
-        subscription: stripe_sub.id,
-        price:        seat_price_id,
-        quantity:     quantity,
+        subscription:       stripe_sub.id,
+        price:              seat_price_id,
+        quantity:           quantity,
         proration_behavior: 'always_invoice'
       })
     end
 
-    Rails.logger.info "[SeatSyncService] #{@org.name} — plan=#{@subscription.plan} active=#{active_count} qty=#{quantity}"
+    Rails.logger.info "[SeatSyncService] #{@org.name} — plan=#{@subscription.plan} active=#{active_seat_count} qty=#{quantity}"
   rescue Stripe::StripeError => e
     Rails.logger.error "[SeatSyncService] Stripe error for org #{@org.id}: #{e.message}"
     Sentry.capture_exception(e) if defined?(Sentry)
+    raise # re-raise so the job adapter retries
   rescue => e
     Rails.logger.error "[SeatSyncService] Unexpected error for org #{@org.id}: #{e.message}"
     Sentry.capture_exception(e) if defined?(Sentry)
-  end
-
-  # Returns the extra seat count (above included quota) — used for UI display
-  def extra_seats
-    return 0 unless @subscription
-    included     = INCLUDED_SEATS.fetch(@subscription.plan, 0)
-    active_count = ActsAsTenant.without_tenant { Employee.where(organization_id: @org.id).active.count }
-    [active_count - included, 0].max
-  end
-
-  # Returns what the next monthly charge will be after adding 1 seat
-  def price_after_adding_one_seat
-    return nil unless @subscription
-    included     = INCLUDED_SEATS.fetch(@subscription.plan, 0)
-    active_count = ActsAsTenant.without_tenant { Employee.where(organization_id: @org.id).active.count }
-    new_extras   = [active_count + 1 - included, 0].max - [active_count - included, 0].max
-    new_extras > 0 ? new_extras : 0
+    raise
   end
 
   # True if adding one more employee will exceed the included quota
   def quota_exceeded?
+    stripe_eligible?
     return false unless @subscription
-    included     = INCLUDED_SEATS.fetch(@subscription.plan, 0)
-    active_count = ActsAsTenant.without_tenant { Employee.where(organization_id: @org.id).active.count }
-    active_count >= included
+
+    included = INCLUDED_SEATS.fetch(@subscription.plan, 0)
+    active_seat_count >= included
   end
 
   private
 
+  def active_seat_count
+    @active_seat_count ||= ActsAsTenant.without_tenant do
+      Employee.where(organization_id: @org.id).active.count
+    end
+  end
+
   def stripe_eligible?
-    @subscription = ActsAsTenant.without_tenant { Subscription.find_by(organization_id: @org.id) }
+    @subscription ||= ActsAsTenant.without_tenant { Subscription.find_by(organization_id: @org.id) }
     @subscription&.active? && @subscription&.stripe_subscription_id.present?
   end
 end

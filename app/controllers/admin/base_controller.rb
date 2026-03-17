@@ -12,7 +12,8 @@ module Admin
     private
 
     def authorize_admin!
-      unless current_employee.hr_or_admin? && current_employee.organization.sirh?
+      unless current_employee.hr_or_admin? &&
+             (current_employee.organization.sirh? || current_employee.organization.manager_os?)
         redirect_to root_path, alert: 'Accès non autorisé'
       end
     end

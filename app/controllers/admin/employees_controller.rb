@@ -36,17 +36,24 @@ module Admin
       @employee = Employee.new(employee_params)
       @employee.organization = current_employee.organization
 
-      # Manager OS gate: warn before exceeding included seats
-      if current_employee.organization.manager_os? && !params[:seat_confirmed]
+      # Manager OS gate: warn before exceeding included seats.
+      # Confirmation token stored server-side in session to prevent forgery.
+      if current_employee.organization.manager_os?
         seat_service = SeatSyncService.new(current_employee.organization)
-        if seat_service.quota_exceeded?
-          @seat_warning = true
+
+        if seat_service.quota_exceeded? && !valid_seat_confirmation?
+          session[:seat_confirmation_token] = SecureRandom.hex(16)
+          @seat_warning         = true
+          @seat_confirm_token   = session[:seat_confirmation_token]
           respond_to do |format|
             format.html { render :new, status: :ok }
             format.turbo_stream
           end
           return
         end
+
+        # Consume the token so it can't be reused
+        session.delete(:seat_confirmation_token) if valid_seat_confirmation?
       end
 
       saved = ActiveRecord::Base.transaction do
@@ -84,7 +91,7 @@ module Admin
         attrs = attrs.merge(settings: @employee.settings.merge(attrs[:settings].to_h))
       end
       if @employee.update(attrs)
-        SyncSeatCountJob.perform_later(current_employee.organization.id) if attrs.dig(:settings, 'active').present?
+        SyncSeatCountJob.perform_later(current_employee.organization.id) if attrs.dig(:settings)&.key?('active')
         respond_to do |format|
           format.html { redirect_to admin_employee_path(@employee), notice: 'Employé mis à jour avec succès.' }
           format.turbo_stream
@@ -107,6 +114,13 @@ module Admin
     end
 
     private
+
+    def valid_seat_confirmation?
+      token = params[:seat_confirmation_token]
+      token.present? &&
+        session[:seat_confirmation_token].present? &&
+        ActiveSupport::SecurityUtils.secure_compare(token, session[:seat_confirmation_token])
+    end
 
     def set_employee
       @employee = current_employee.organization.employees.find(params[:id])
@@ -168,7 +182,7 @@ module Admin
         :trial_period_end,
         :termination_date,
         :termination_reason,
-        settings: [:cadre]
+        settings: [:cadre, :active]
       )
 
       # Virtual euro fields → convert to cents for storage
