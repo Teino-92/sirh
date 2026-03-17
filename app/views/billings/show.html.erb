@@ -172,7 +172,7 @@
       <div class="p-6 bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-700">
         <h3 class="text-base font-bold text-gray-900 dark:text-white mb-1">SIRH Essentiel</h3>
         <p class="text-xs text-gray-500 dark:text-gray-400 mb-4">Manager OS + Temps & Congés</p>
-        <p class="text-3xl font-extrabold text-indigo-600 mb-1">59 €<span class="text-sm font-normal text-gray-500">/mois</span></p>
+        <p class="text-3xl font-extrabold text-indigo-600 mb-1">79 €<span class="text-sm font-normal text-gray-500">/mois</span></p>
         <p class="text-xs text-gray-400 mb-5">+4 €/employé au-delà de 10</p>
         <% unless manager_readonly %>
           <%= button_to "Choisir ce plan", create_checkout_billing_path, params: { plan: "sirh_essential" },
@@ -186,7 +186,7 @@
         <span class="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-0.5 bg-violet-600 text-white text-xs font-bold rounded-full">Complet</span>
         <h3 class="text-base font-bold text-white mb-1">SIRH Pro</h3>
         <p class="text-xs text-gray-400 mb-4">Tout SIRH + IA RH & audit<br>&nbsp;</p>
-        <p class="text-3xl font-extrabold text-white mb-1">159 €<span class="text-sm font-normal text-gray-400">/mois</span></p>
+        <p class="text-3xl font-extrabold text-white mb-1">149 €<span class="text-sm font-normal text-gray-400">/mois</span></p>
         <p class="text-xs text-gray-500 mb-5">+6 €/employé au-delà de 20</p>
         <% unless manager_readonly %>
           <%= button_to "Choisir ce plan", create_checkout_billing_path, params: { plan: "sirh_pro" },
