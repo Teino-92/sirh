@@ -92,7 +92,9 @@ Rails.application.configure do
     user_name:            ENV.fetch('SMTP_USERNAME', 'resend'),
     password:             ENV['SMTP_PASSWORD'],
     tls:                  smtp_port == 465,
-    enable_starttls_auto: smtp_port != 465
+    enable_starttls_auto: smtp_port != 465,
+    open_timeout:         10,
+    read_timeout:         10
   }
 
   # Enable locale fallbacks for I18n (makes lookups for any locale fall back to
