@@ -41,7 +41,8 @@ module Manager
         redirect_to manager_employee_onboarding_path(@employee_onboarding),
                     notice: "Onboarding démarré pour #{@employee_onboarding.employee.full_name}."
       else
-        @templates = policy_scope(OnboardingTemplate)
+        @templates    = policy_scope(OnboardingTemplate)
+        @team_members = current_employee.team_members.order(:last_name, :first_name)
         render :new, status: :unprocessable_entity
       end
     end
