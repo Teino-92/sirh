@@ -1,7 +1,7 @@
 # Roadmap Izi-RH
 
 **Dernière mise à jour** : 2026-03-17
-**Version** : 1.8.0
+**Version** : 1.9.0
 
 ---
 
@@ -198,6 +198,21 @@
 
 ---
 
+## Phase 8c — Per-Seat Billing Stripe ✅ TERMINÉE (2026-03-17)
+
+- ✅ `SeatSyncService` — sync quantité Stripe après create/deactivate employé (Manager OS + SIRH)
+- ✅ `SyncSeatCountJob` — async, idempotent, re-raise Stripe error pour retry
+- ✅ Gate Manager OS : confirmation via token session (`SecureRandom.hex` + `secure_compare`) — anti-forgery
+- ✅ `authorize_admin!` étendu à `manager_os?` (était bloqué sur `sirh?` uniquement)
+- ✅ `active_seat_count` memoïsé — 1 seule query SQL (DRY)
+- ✅ ENV var manquante → log error + Sentry (plus de no-op silencieux)
+- ✅ `SubscriptionItem.create` uniquement si `quantity > 0` (évite les invoices €0)
+- ✅ Fix désactivation : `key?('active')` vs `false.present?`
+- ✅ QA complet — 2 CRITICAL + 3 HIGH + 3 MEDIUM corrigés avant merge
+- ✅ Prix Stripe créés : Manager OS seat (2 €), SIRH Essentiel seat (3 €), SIRH Pro seat (2,50 €)
+
+---
+
 ## Phase 9 — Intégration Calendrier OAuth2 ⏳ PLANIFIÉE
 
 > Sprint architecturalement défini — implémentation non démarrée.
@@ -327,13 +342,22 @@ end
 
 ---
 
+## Phase 10 — Intégration paie : Silae / PayFit ⏳ PLANIFIÉE
+
+> Sprint architecturalement à définir — implémentation non démarrée.
+
+### Objectif
+
+Permettre aux organisations SIRH d'exporter leurs données de paie vers Silae ou PayFit automatiquement à chaque clôture de période.
+
+---
+
 ## Backlog 🔮
 
 - Export Excel/PDF rapports
 - Notifications temps réel (WebSocket)
 - Régions Alsace-Moselle (jours fériés)
 - Mobile app native (post-PWA)
-- Intégrations paie (Silae, PayFit)
 
 ---
 
@@ -365,6 +389,9 @@ end
 | 2026-03-17 | `OrgMergeInvitation` sans `acts_as_tenant` | Cross-tenant par nature — scoping tenant intentionnellement absent, accès via token public |
 | 2026-03-17 | Stripe cancel hors transaction ACID OrgMerge | Stripe est externe — rollback DB ne peut pas rollback Stripe ; cancel après commit garantit cohérence |
 | 2026-03-17 | `update_all WHERE status=...` pour idempotence job | Atomicité SQL > `update` AR qui lit puis écrit (race condition TOCTOU) |
+| 2026-03-17 | Per-seat via token session (vs param `seat_confirmed`) | Param forgeable par curl — token session lié à la session Rails, timing-safe via `secure_compare` |
+| 2026-03-17 | `SeatSyncService` re-raise Stripe error | Job doit être retryable — swallow silencieux = billing stale sans alerte |
+| 2026-03-17 | Seat item créé uniquement si quantity > 0 | Évite invoices Stripe €0 qui polluent l'historique client |
 
 ---
 
