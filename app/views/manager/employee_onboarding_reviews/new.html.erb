@@ -12,7 +12,7 @@
       Jour J+<%= @review.review_day %> · Ce feedback alimente le score d'intégration
     </p>
 
-    <%= form_with(model: [:manager, @employee_onboarding, @review], class: "space-y-6") do |f| %>
+    <%= form_with(model: @review, url: manager_employee_onboarding_employee_onboarding_reviews_path(@employee_onboarding), class: "space-y-6") do |f| %>
       <% if @review.errors.any? %>
         <div class="bg-red-50 dark:bg-red-900/20 border border-red-300 dark:border-red-700 rounded-md p-4">
           <ul class="list-disc list-inside text-sm text-red-600 dark:text-red-400">
