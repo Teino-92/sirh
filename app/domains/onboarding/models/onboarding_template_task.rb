@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class OnboardingTemplateTask < ApplicationRecord
-  belongs_to :onboarding_template
+  belongs_to :onboarding_template, counter_cache: true
   belongs_to :organization
   acts_as_tenant :organization
 

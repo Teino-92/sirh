@@ -41,8 +41,9 @@
                 <p class="text-sm text-gray-600 dark:text-gray-400 mt-1"><%= template.description %></p>
               <% end %>
               <p class="text-xs text-gray-500 dark:text-gray-400 mt-2">
+                <% tasks_count = template.onboarding_template_tasks_count %>
                 <%= template.duration_days %> jours ·
-                <%= template.onboarding_template_tasks.count %> étape<%= 's' if template.onboarding_template_tasks.count != 1 %>
+                <%= tasks_count %> étape<%= 's' if tasks_count != 1 %>
               </p>
             </div>
             <div class="flex gap-2 ml-4">
