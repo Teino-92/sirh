@@ -13,4 +13,5 @@ if defined?(Bullet)
   Bullet.add_safelist type: :unused_eager_loading, class_name: "LeaveRequest",        association: :employee
   Bullet.add_safelist type: :unused_eager_loading, class_name: "EmployeeOnboarding",  association: :onboarding_tasks
   Bullet.add_safelist type: :unused_eager_loading, class_name: "OneOnOne",            association: :manager
+  Bullet.add_safelist type: :unused_eager_loading, class_name: "Employee",            association: :work_schedule
 end
