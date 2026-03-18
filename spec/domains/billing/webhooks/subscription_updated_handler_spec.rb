@@ -5,23 +5,26 @@ require "rails_helper"
 RSpec.describe SubscriptionUpdatedHandler, type: :service do
   subject(:handler) { described_class.new }
 
-  # ── Stripe event builder ──────────────────────────────────────────────────
-  # Builds a minimal customer.subscription.updated event object
-  # mirroring Stripe API 2026-02-25: event.data.object = Subscription resource
   def build_event(stripe_sub_id:, status:, period_end: 30.days.from_now.to_i,
-                  cancel_at_period_end: false, price_id: nil, lookup_key: nil)
+                  cancel_at_period_end: false, price_id: nil, lookup_key: nil,
+                  org_id: nil)
     price = if price_id || lookup_key
               OpenStruct.new(id: price_id, lookup_key: lookup_key)
             end
     item  = OpenStruct.new(price: price)
     items = OpenStruct.new(data: price ? [item] : [])
 
+    # Simule Stripe::StripeObject metadata — respond à metadata["organization_id"]
+    meta_hash = org_id ? { "organization_id" => org_id.to_s } : {}
+    meta = meta_hash
+
     stripe_sub = OpenStruct.new(
       id:                   stripe_sub_id,
       status:               status,
       current_period_end:   period_end,
       cancel_at_period_end: cancel_at_period_end,
-      items:                items
+      items:                items,
+      metadata:             meta
     )
     data = OpenStruct.new(object: stripe_sub)
     OpenStruct.new(data: data)
@@ -30,11 +33,11 @@ RSpec.describe SubscriptionUpdatedHandler, type: :service do
   let(:org) { create(:organization) }
   let!(:sub) do
     create(:subscription, :active, :sirh_essential,
-           organization:          org,
+           organization:           org,
            stripe_subscription_id: "sub_update001")
   end
 
-  # ── Updates basic attributes ──────────────────────────────────────────────
+  # ── Attribute updates ─────────────────────────────────────────────────────
   describe "attribute updates" do
     it "updates status" do
       event = build_event(stripe_sub_id: "sub_update001", status: "past_due")
@@ -109,7 +112,6 @@ RSpec.describe SubscriptionUpdatedHandler, type: :service do
     end
 
     it "updates plan to 'sirh_essential' when lookup_key is 'sirh_essentiel_monthly'" do
-      # sub is already sirh_essential — set it to pro first so the update is visible
       sub.update_columns(plan: "sirh_pro")
       event = build_event(stripe_sub_id: "sub_update001", status: "active",
                           lookup_key: "sirh_essentiel_monthly")
@@ -126,7 +128,7 @@ RSpec.describe SubscriptionUpdatedHandler, type: :service do
     end
   end
 
-  # ── Plan resolution via env var (STRIPE_PRICE_SIRH_PRO) ──────────────────
+  # ── Plan resolution via env var ───────────────────────────────────────────
   describe "plan update via env var price ID match" do
     it "resolves plan from STRIPE_PRICE_SIRH_PRO env var" do
       ClimateControl.modify(STRIPE_PRICE_SIRH_PRO: "price_pro_from_env") do
@@ -161,6 +163,43 @@ RSpec.describe SubscriptionUpdatedHandler, type: :service do
       expect {
         handler.call(event)
       }.not_to change { sub.reload.status }
+    end
+  end
+
+  # ── Cross-tenant guard ────────────────────────────────────────────────────
+  describe "cross-tenant guard" do
+    let(:other_org) { create(:organization) }
+
+    it "does not update subscription when stripe org_id mismatches" do
+      # Stripe metadata points to other_org, but the sub belongs to org
+      event = build_event(
+        stripe_sub_id: "sub_update001",
+        status:        "active",
+        org_id:        other_org.id
+      )
+      expect {
+        handler.call(event)
+      }.not_to change { sub.reload.status }
+    end
+
+    it "updates normally when stripe org_id matches the sub's org" do
+      event = build_event(
+        stripe_sub_id: "sub_update001",
+        status:        "past_due",
+        org_id:        org.id
+      )
+      handler.call(event)
+      expect(sub.reload.status).to eq("past_due")
+    end
+
+    it "updates normally when stripe metadata has no org_id (legacy webhooks)" do
+      event = build_event(
+        stripe_sub_id: "sub_update001",
+        status:        "past_due",
+        org_id:        nil
+      )
+      handler.call(event)
+      expect(sub.reload.status).to eq("past_due")
     end
   end
 end

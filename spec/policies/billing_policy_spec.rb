@@ -3,14 +3,12 @@
 require "rails_helper"
 
 RSpec.describe BillingPolicy, type: :policy do
-  # ── Setup principal ────────────────────────────────────────────────────────
   let(:organization) { create(:organization, trial_ends_at: 7.days.from_now) }
   let(:admin)        { create(:employee, organization: organization, role: "admin") }
   let(:hr)           { create(:employee, organization: organization, role: "hr") }
   let(:manager)      { create(:employee, organization: organization, role: "manager") }
   let(:employee)     { create(:employee, organization: organization) }
 
-  # Org isolée — ne doit jamais être autorisée sur l'org principale
   let(:other_org)      { create(:organization) }
   let(:other_employee) { create(:employee, organization: other_org) }
   let(:other_admin)    { create(:employee, organization: other_org, role: "admin") }
@@ -42,7 +40,7 @@ RSpec.describe BillingPolicy, type: :policy do
 
   # ── create_checkout? ──────────────────────────────────────────────────────
   permissions :create_checkout? do
-    context "during trial" do
+    context "during active trial" do
       it "permits admin" do
         expect(subject).to permit(admin, organization)
       end
@@ -51,19 +49,17 @@ RSpec.describe BillingPolicy, type: :policy do
         expect(subject).to permit(hr, organization)
       end
 
-      it "permits manager while trial is active" do
-        expect(subject).to permit(manager, organization)
+      it "denies manager — checkout is HR/Admin only regardless of trial" do
+        expect(subject).not_to permit(manager, organization)
       end
 
-      it "denies plain employee even during trial" do
+      it "denies plain employee" do
         expect(subject).not_to permit(employee, organization)
       end
     end
 
     context "trial expired" do
-      let(:expired_org) do
-        create(:organization, trial_ends_at: 2.days.ago)
-      end
+      let(:expired_org)     { create(:organization, trial_ends_at: 2.days.ago) }
       let(:expired_admin)   { create(:employee, organization: expired_org, role: "admin") }
       let(:expired_hr)      { create(:employee, organization: expired_org, role: "hr") }
       let(:expired_manager) { create(:employee, organization: expired_org, role: "manager") }
@@ -179,8 +175,6 @@ RSpec.describe BillingPolicy, type: :policy do
   end
 
   # ── Isolation multi-tenant ────────────────────────────────────────────────
-  # Each cross-tenant check must be inside a permissions block so Pundit/RSpec
-  # knows which permission to evaluate.
   permissions :show? do
     it "denies an employee from another org" do
       expect(subject).not_to permit(other_employee, organization)
