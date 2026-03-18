@@ -98,7 +98,7 @@ module Manager
       end
 
       response = conn.post('/emails') do |req|
-        req.headers['Authorization'] = "Bearer #{ENV['SMTP_PASSWORD']}"
+        req.headers['Authorization'] = "Bearer #{ENV['RESEND_API_KEY']}"
         req.headers['Content-Type']  = 'application/json'
         req.body = {
           from:    "Izi-RH <noreply@#{ENV.fetch('SMTP_DOMAIN', 'izi-rh.com')}>",
