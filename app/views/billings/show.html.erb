@@ -4,7 +4,7 @@
 
   <% if @org.trial_active? %>
     <!-- Trial encore actif -->
-    <div class="mb-8 p-4 bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-200 dark:border-indigo-700 rounded-xl flex items-start gap-3">
+    <div class="mb-4 p-4 bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-200 dark:border-indigo-700 rounded-xl flex items-start gap-3">
       <svg class="w-5 h-5 text-indigo-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
       <div>
         <p class="text-sm font-semibold text-indigo-700 dark:text-indigo-300">
@@ -15,6 +15,25 @@
         </p>
       </div>
     </div>
+    <% if @org.manager_os? %>
+      <!-- Info : trial Manager OS, SIRH nécessite contact -->
+      <div class="mb-8 p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700 rounded-xl flex items-start justify-between gap-4">
+        <div class="flex items-start gap-3">
+          <svg class="w-5 h-5 text-blue-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          <div>
+            <p class="text-sm font-semibold text-blue-700 dark:text-blue-300">Vous testez actuellement Manager OS</p>
+            <p class="text-sm text-blue-600 dark:text-blue-400 mt-0.5">
+              Le SIRH (congés, pointage, paie) est un plan différent. Il n'est pas possible de tester les deux avec le même compte — contactez-nous pour une démo SIRH ou pour migrer votre essai.
+            </p>
+          </div>
+        </div>
+        <button type="button"
+                onclick="document.getElementById('upgrade-modal').classList.remove('hidden')"
+                class="flex-shrink-0 px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold rounded-lg transition-colors">
+          Nous contacter
+        </button>
+      </div>
+    <% end %>
   <% end %>
 
   <h1 class="text-2xl font-extrabold text-gray-900 dark:text-white mb-2">Abonnement</h1>
