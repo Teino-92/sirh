@@ -13,6 +13,11 @@
 
 @variant dark (.dark &);
 
+/* Curseur de saisie visible dans tous les inputs */
+input, textarea, [contenteditable] {
+  caret-color: currentColor;
+}
+
 /* SortableJS drag classes — cannot use Tailwind JIT classes for these */
 .sortable-ghost  { opacity: 0.25; }
 .sortable-drag   { opacity: 1; cursor: grabbing; }
