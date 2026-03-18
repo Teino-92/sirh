@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
+    <style>
+      body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px; }
+      .header { background: linear-gradient(to right, #f59e0b, #d97706); color: white; padding: 30px; border-radius: 8px 8px 0 0; text-align: center; }
+      .header h1 { margin: 0; font-size: 24px; }
+      .header p { margin: 6px 0 0; font-size: 14px; opacity: 0.9; }
+      .content { background: #f9fafb; padding: 30px; border: 1px solid #e5e7eb; border-top: none; }
+      .alert-box { background: #fffbeb; border-left: 4px solid #f59e0b; padding: 16px; margin: 20px 0; border-radius: 4px; }
+      .alert-box p { margin: 0; font-size: 15px; color: #92400e; }
+      .info-box { background: white; border-left: 4px solid #f59e0b; padding: 15px; margin: 20px 0; border-radius: 4px; }
+      .info-row { display: flex; margin-bottom: 8px; }
+      .info-label { font-weight: bold; width: 160px; color: #6b7280; }
+      .info-value { color: #111827; font-weight: 600; }
+      .actions { background: white; border: 1px solid #fde68a; border-radius: 6px; padding: 16px; margin: 20px 0; }
+      .actions p { margin: 0 0 8px; font-weight: 600; color: #374151; }
+      .actions ul { margin: 0; padding-left: 20px; color: #374151; }
+      .actions ul li { margin-bottom: 4px; }
+      .btn { display: inline-block; background: #f59e0b; color: white; padding: 12px 24px; border-radius: 6px; text-decoration: none; font-weight: 600; font-size: 15px; margin-top: 8px; }
+      .footer { text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid #e5e7eb; color: #6b7280; font-size: 14px; }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <h1>⏳ Période d'essai — Décision requise</h1>
+      <p>Action à effectuer dans les 7 prochains jours</p>
+    </div>
+
+    <div class="content">
+      <p>Bonjour <%= @recipient.first_name %>,</p>
+
+      <div class="alert-box">
+        <p>⚠️ La période d'essai de <strong><%= @employee.full_name %></strong> se termine le <strong><%= l(@employee.trial_period_end, format: :long) %></strong>.</p>
+      </div>
+
+      <div class="info-box">
+        <div class="info-row">
+          <span class="info-label">Employé :</span>
+          <span class="info-value"><%= @employee.full_name %></span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Fin de période :</span>
+          <span class="info-value"><%= l(@employee.trial_period_end, format: :long) %></span>
+        </div>
+      </div>
+
+      <div class="actions">
+        <p>Vous devez prendre une décision avant cette date :</p>
+        <ul>
+          <li>✅ <strong>Valider</strong> — confirmer l'embauche définitive</li>
+          <li>🔄 <strong>Renouveler</strong> — prolonger d'un mois</li>
+          <li>❌ <strong>Mettre fin</strong> — terminer la collaboration</li>
+        </ul>
+      </div>
+
+      <p>Connectez-vous à votre tableau de bord pour prendre votre décision :</p>
+      <p><a href="<%= @dashboard_url %>" class="btn">Accéder au tableau de bord →</a></p>
+
+      <p style="margin-top: 24px;">
+        Cordialement,<br>
+        <strong>L'équipe Izi-RH</strong>
+      </p>
+    </div>
+
+    <div class="footer">
+      <p>Cet email a été envoyé automatiquement, merci de ne pas y répondre.</p>
+      <p>&copy; <%= Date.current.year %> Izi-RH. Tous droits réservés.</p>
+    </div>
+  </body>
+</html>

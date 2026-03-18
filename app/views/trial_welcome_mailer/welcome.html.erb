@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
+    <style>
+      body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px; }
+      .header { background: linear-gradient(to right, #4f46e5, #7c3aed); color: white; padding: 30px; border-radius: 8px 8px 0 0; text-align: center; }
+      .header h1 { margin: 0; font-size: 26px; }
+      .header p { margin: 6px 0 0; font-size: 14px; opacity: 0.9; }
+      .content { background: #f9fafb; padding: 30px; border: 1px solid #e5e7eb; border-top: none; }
+      .credentials-box { background: #1e1b4b; color: #e0e7ff; border-radius: 8px; padding: 20px 24px; margin: 20px 0; font-family: monospace; }
+      .credentials-box p { margin: 0 0 8px; font-size: 14px; }
+      .credentials-box p:last-child { margin-bottom: 0; }
+      .credentials-box .label { color: #a5b4fc; font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 2px; }
+      .credentials-box .value { font-size: 15px; font-weight: 600; color: #ffffff; }
+      .steps { margin: 24px 0; }
+      .step { display: flex; align-items: flex-start; margin-bottom: 16px; }
+      .step-number { background: #4f46e5; color: white; border-radius: 50%; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; flex-shrink: 0; margin-right: 12px; margin-top: 2px; }
+      .step-content p { margin: 0; }
+      .step-content .step-title { font-weight: 600; color: #111827; }
+      .step-content .step-desc { font-size: 13px; color: #6b7280; margin-top: 2px; }
+      .btn { display: inline-block; background: #4f46e5; color: white; padding: 12px 28px; border-radius: 6px; text-decoration: none; font-weight: 600; font-size: 15px; }
+      .password-notice { background: #fef3c7; border-left: 4px solid #f59e0b; padding: 12px 16px; border-radius: 4px; margin: 16px 0; font-size: 13px; color: #92400e; }
+      .footer { text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid #e5e7eb; color: #6b7280; font-size: 14px; }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <h1>👋 Bienvenue sur Izi-RH</h1>
+      <p>Votre espace "<%= @organization.name %>" est prêt</p>
+    </div>
+
+    <div class="content">
+      <p>Bonjour <strong><%= @employee.first_name %></strong>,</p>
+      <p>Votre compte a été créé. Voici vos informations de connexion :</p>
+
+      <div class="credentials-box">
+        <p>
+          <span class="label">URL de connexion</span><br>
+          <span class="value"><%= @login_url %></span>
+        </p>
+        <p>
+          <span class="label">Adresse email</span><br>
+          <span class="value"><%= @employee.email %></span>
+        </p>
+        <% if @temp_password.present? %>
+        <p>
+          <span class="label">Mot de passe temporaire</span><br>
+          <span class="value"><%= @temp_password %></span>
+        </p>
+        <% end %>
+      </div>
+
+      <% if @temp_password.present? %>
+        <div class="password-notice">
+          ⚠️ Pensez à modifier votre mot de passe dès votre première connexion.
+        </div>
+      <% else %>
+        <div class="password-notice">
+          Pour définir votre mot de passe, cliquez sur <strong>"Mot de passe oublié ?"</strong> sur la page de connexion.
+        </div>
+      <% end %>
+
+      <p style="font-weight:600;margin-bottom:12px;">3 premières étapes recommandées :</p>
+      <div class="steps">
+        <div class="step">
+          <div class="step-number">1</div>
+          <div class="step-content">
+            <p class="step-title">Connectez-vous à votre espace</p>
+            <p class="step-desc"><%= @login_url %></p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-number">2</div>
+          <div class="step-content">
+            <p class="step-title">Complétez votre profil</p>
+            <p class="step-desc">Informations personnelles, photo de profil</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-number">3</div>
+          <div class="step-content">
+            <p class="step-title">Consultez vos congés et votre planning</p>
+            <p class="step-desc">Tout est accessible depuis votre tableau de bord</p>
+          </div>
+        </div>
+      </div>
+
+      <p><a href="<%= @login_url %>" class="btn">Accéder à mon espace →</a></p>
+
+      <p style="margin-top: 24px;">
+        Des questions ? Répondez directement à cet email.<br><br>
+        Cordialement,<br>
+        <strong>L'équipe Izi-RH</strong>
+      </p>
+    </div>
+
+    <div class="footer">
+      <p>Cet email a été envoyé automatiquement par Izi-RH.</p>
+      <p>&copy; <%= Date.current.year %> Izi-RH. Tous droits réservés.</p>
+    </div>
+  </body>
+</html>

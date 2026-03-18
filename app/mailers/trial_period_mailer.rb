@@ -3,8 +3,9 @@
 class TrialPeriodMailer < ApplicationMailer
   # Envoyé au manager J-7 avant la fin de période d'essai
   def reminder(employee, recipient)
-    @employee  = employee
-    @recipient = recipient
+    @employee      = employee
+    @recipient     = recipient
+    @dashboard_url = authenticated_root_url
 
     mail(
       to:      recipient.email,
