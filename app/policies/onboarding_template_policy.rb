@@ -10,7 +10,7 @@ class OnboardingTemplatePolicy < ApplicationPolicy
   end
 
   def create?
-    user.hr_or_admin? || user.manager?
+    user.hr_or_admin? || (user.manager? && org.manager_os?)
   end
 
   def new?
@@ -18,7 +18,7 @@ class OnboardingTemplatePolicy < ApplicationPolicy
   end
 
   def update?
-    user.hr_or_admin? || user.manager?
+    user.hr_or_admin? || (user.manager? && org.manager_os?)
   end
 
   def edit?
@@ -26,7 +26,13 @@ class OnboardingTemplatePolicy < ApplicationPolicy
   end
 
   def destroy?
-    user.hr_or_admin? || user.manager?
+    user.hr_or_admin? || (user.manager? && org.manager_os?)
+  end
+
+  private
+
+  def org
+    record.organization || user.organization
   end
 
   class Scope < Scope
