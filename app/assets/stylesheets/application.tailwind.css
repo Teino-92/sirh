@@ -14,8 +14,16 @@
 @variant dark (.dark &);
 
 /* Curseur de saisie visible dans tous les inputs */
-input, textarea, [contenteditable] {
-  caret-color: currentColor;
+input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"]),
+textarea,
+[contenteditable] {
+  caret-color: #4f46e5;
+}
+
+.dark input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"]),
+.dark textarea,
+.dark [contenteditable] {
+  caret-color: #818cf8;
 }
 
 /* SortableJS drag classes — cannot use Tailwind JIT classes for these */
