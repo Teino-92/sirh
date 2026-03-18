@@ -184,7 +184,7 @@
         <%= f.text_field :name,
               name: "onboarding_template[name]",
               placeholder: "Ex : Intégration développeur",
-              value: flash.dig(:template_params, "name"),
+              value: flash[:template_params]&.dig("name"),
               required: true,
               class: "block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" %>
       </div>
@@ -195,7 +195,7 @@
               name: "onboarding_template[description]",
               rows: 3,
               placeholder: "Décrivez le contexte et les objectifs de ce parcours...",
-              content: flash.dig(:template_params, "description"),
+              content: flash[:template_params]&.dig("description"),
               class: "block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" %>
       </div>
 
@@ -203,7 +203,7 @@
         <%= f.label :duration_days, "Durée (jours)", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" %>
         <%= f.number_field :duration_days,
               name: "onboarding_template[duration_days]",
-              value: flash.dig(:template_params, "duration_days") || 90,
+              value: flash[:template_params]&.dig("duration_days") || 90,
               min: 1,
               class: "block w-32 rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" %>
         <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">La durée détermine la date de fin calculée automatiquement.</p>
