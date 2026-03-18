@@ -4,7 +4,6 @@ module Manager
 
     def index
       @trainings = policy_scope(Training)
-                     .includes(:organization)
                      .order(:title)
 
       if params[:training_type].present? && Training.training_types.key?(params[:training_type])

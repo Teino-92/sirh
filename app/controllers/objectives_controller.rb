@@ -6,7 +6,6 @@ class ObjectivesController < ApplicationController
   def index
     @objectives = policy_scope(Objective)
                    .for_owner(current_employee)
-                   .includes(:manager)
                    .order(deadline: :asc)
 
     if params[:status].present? && Objective.statuses.key?(params[:status])
