@@ -5,7 +5,7 @@ module Manager
     def index
       base = policy_scope(OneOnOne)
                .for_manager(current_employee)
-               .includes(:employee, :manager)
+               .includes(:employee)
 
       @tab = params[:tab].presence_in(%w[upcoming past]) || 'upcoming'
 
