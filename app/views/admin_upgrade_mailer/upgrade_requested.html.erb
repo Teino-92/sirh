@@ -1,24 +1,76 @@
-<p>Nouvelle demande de passage au SIRH complet.</p>
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
+    <style>
+      body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px; }
+      .header { background: linear-gradient(to right, #4f46e5, #7c3aed); color: white; padding: 30px; border-radius: 8px 8px 0 0; text-align: center; }
+      .header h1 { margin: 0; font-size: 24px; }
+      .header p { margin: 6px 0 0; font-size: 14px; opacity: 0.9; }
+      .content { background: #f9fafb; padding: 30px; border: 1px solid #e5e7eb; border-top: none; }
+      .info-box { background: white; border-left: 4px solid #4f46e5; padding: 15px; margin: 20px 0; border-radius: 4px; }
+      .info-row { display: flex; margin-bottom: 8px; }
+      .info-row:last-child { margin-bottom: 0; }
+      .info-label { font-weight: bold; width: 140px; color: #6b7280; font-size: 14px; }
+      .info-value { color: #111827; font-size: 14px; }
+      .message-box { background: #eef2ff; border-left: 4px solid #818cf8; padding: 14px 16px; border-radius: 4px; margin: 16px 0; font-size: 14px; color: #374151; }
+      .btn { display: inline-block; background: #4f46e5; color: white; padding: 12px 28px; border-radius: 6px; text-decoration: none; font-weight: 600; font-size: 15px; }
+      .link-notice { margin-top: 12px; font-size: 12px; color: #9ca3af; }
+      .footer { text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid #e5e7eb; color: #6b7280; font-size: 14px; }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <h1>🚀 Demande d'upgrade SIRH</h1>
+      <p>Nouvelle demande de passage au SIRH complet</p>
+    </div>
 
-<table style="border-collapse:collapse;margin-top:16px;">
-  <tr><td style="padding:4px 12px 4px 0;color:#6b7280;font-size:14px;">Organisation</td><td style="font-weight:600;"><%= @org.name %> (ID&nbsp;: <%= @org.id %>)</td></tr>
-  <tr><td style="padding:4px 12px 4px 0;color:#6b7280;font-size:14px;">Contact</td><td><%= @contact_name.presence || "—" %></td></tr>
-  <tr><td style="padding:4px 12px 4px 0;color:#6b7280;font-size:14px;">Email</td><td><%= @contact_email.presence || "—" %></td></tr>
-  <tr><td style="padding:4px 12px 4px 0;color:#6b7280;font-size:14px;">Plan actuel</td><td>Manager OS</td></tr>
-  <tr><td style="padding:4px 12px 4px 0;color:#6b7280;font-size:14px;">Plan demandé</td><td>SIRH Essentiel</td></tr>
-</table>
+    <div class="content">
+      <p>Une organisation souhaite passer au plan SIRH Essentiel.</p>
 
-<% if @contact_message.present? %>
-  <p style="margin-top:16px;font-size:14px;color:#374151;"><strong>Message :</strong></p>
-  <p style="background:#f9fafb;padding:12px;border-radius:6px;font-size:14px;color:#374151;"><%= @contact_message %></p>
-<% end %>
+      <div class="info-box">
+        <div class="info-row">
+          <span class="info-label">Organisation</span>
+          <span class="info-value"><strong><%= @org.name %></strong> (ID : <%= @org.id %>)</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Contact</span>
+          <span class="info-value"><%= @contact_name.presence || "—" %></span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Email</span>
+          <span class="info-value"><%= @contact_email.presence || "—" %></span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Plan actuel</span>
+          <span class="info-value">Manager OS</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Plan demandé</span>
+          <span class="info-value">SIRH Essentiel</span>
+        </div>
+      </div>
 
-<p style="margin-top:24px;">
-  <a href="<%= @magic_link %>" style="background:#4f46e5;color:white;padding:10px 20px;border-radius:6px;text-decoration:none;font-size:14px;font-weight:600;">
-    ✅ Confirmer l'upgrade SIRH →
-  </a>
-</p>
+      <% if @contact_message.present? %>
+        <p style="font-weight:600;margin-bottom:8px;">Message :</p>
+        <div class="message-box"><%= @contact_message %></div>
+      <% end %>
 
-<p style="margin-top:12px;font-size:12px;color:#9ca3af;">
-  Ce lien est valable 7 jours. Il suffit de cliquer pour confirmer l'upgrade — aucun mot de passe requis.
-</p>
+      <p>Cliquez pour confirmer l'upgrade directement :</p>
+
+      <p><a href="<%= @magic_link %>" class="btn">✅ Confirmer l'upgrade SIRH →</a></p>
+
+      <p class="link-notice">Ce lien est valable 7 jours. Aucun mot de passe requis.</p>
+
+      <p style="margin-top: 24px;">
+        Cordialement,<br>
+        <strong>L'équipe Izi-RH</strong>
+      </p>
+    </div>
+
+    <div class="footer">
+      <p>Cet email a été envoyé automatiquement, merci de ne pas y répondre.</p>
+      <p>&copy; <%= Date.current.year %> Izi-RH. Tous droits réservés.</p>
+    </div>
+  </body>
+</html>

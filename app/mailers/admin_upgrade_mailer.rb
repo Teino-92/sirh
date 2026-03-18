@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class AdminUpgradeMailer < ApplicationMailer
+  layout false
+
   def upgrade_requested(organization, contact_name: nil, contact_email: nil, contact_message: nil)
     @org             = organization
     @contact_name    = contact_name

@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class BillingMailer < ApplicationMailer
+  layout false
+
   def payment_failed(organization, employee)
     @org      = organization
     @employee = employee

@@ -1,5 +1,56 @@
-<p>Bonjour <%= @employee.first_name %>,</p>
-<p>Le paiement de votre abonnement Izi-RH pour l'organisation <strong><%= @org.name %></strong> a échoué.</p>
-<p>Veuillez mettre à jour votre moyen de paiement pour éviter une interruption de service :</p>
-<p><a href="<%= billing_url(host: ENV.fetch('APP_HOST', 'izi-rh.com'), protocol: 'https') %>" style="background:#4F46E5;color:white;padding:12px 24px;border-radius:6px;text-decoration:none;display:inline-block;">Mettre à jour le paiement</a></p>
-<p>— L'équipe Izi-RH</p>
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
+    <style>
+      body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px; }
+      .header { background: linear-gradient(to right, #ef4444, #dc2626); color: white; padding: 30px; border-radius: 8px 8px 0 0; text-align: center; }
+      .header h1 { margin: 0; font-size: 24px; }
+      .header p { margin: 6px 0 0; font-size: 14px; opacity: 0.9; }
+      .content { background: #f9fafb; padding: 30px; border: 1px solid #e5e7eb; border-top: none; }
+      .alert-box { background: #fee2e2; border-left: 4px solid #ef4444; padding: 16px; margin: 20px 0; border-radius: 4px; }
+      .alert-box p { margin: 0; font-size: 15px; color: #991b1b; }
+      .info-box { background: white; border-left: 4px solid #e5e7eb; padding: 15px; margin: 20px 0; border-radius: 4px; }
+      .info-row { display: flex; margin-bottom: 8px; }
+      .info-label { font-weight: bold; width: 160px; color: #6b7280; }
+      .info-value { color: #111827; font-weight: 600; }
+      .btn { display: inline-block; background: #ef4444; color: white; padding: 12px 28px; border-radius: 6px; text-decoration: none; font-weight: 600; font-size: 15px; }
+      .footer { text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid #e5e7eb; color: #6b7280; font-size: 14px; }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <h1>⚠️ Échec de paiement</h1>
+      <p>Action requise pour maintenir votre accès</p>
+    </div>
+
+    <div class="content">
+      <p>Bonjour <strong><%= @employee.first_name %></strong>,</p>
+
+      <div class="alert-box">
+        <p>Le paiement de votre abonnement Izi-RH pour l'organisation <strong><%= @org.name %></strong> a échoué.</p>
+      </div>
+
+      <div class="info-box">
+        <div class="info-row">
+          <span class="info-label">Organisation :</span>
+          <span class="info-value"><%= @org.name %></span>
+        </div>
+      </div>
+
+      <p>Veuillez mettre à jour votre moyen de paiement pour éviter une interruption de service.</p>
+
+      <p><a href="<%= billing_url(host: ENV.fetch('APP_HOST', 'izi-rh.com'), protocol: 'https') %>" class="btn">Mettre à jour le paiement →</a></p>
+
+      <p style="margin-top: 24px;">
+        Cordialement,<br>
+        <strong>L'équipe Izi-RH</strong>
+      </p>
+    </div>
+
+    <div class="footer">
+      <p>Cet email a été envoyé automatiquement, merci de ne pas y répondre.</p>
+      <p>&copy; <%= Date.current.year %> Izi-RH. Tous droits réservés.</p>
+    </div>
+  </body>
+</html>
