@@ -26,6 +26,14 @@ class SubscriptionUpdatedHandler
       return
     end
 
+    # Cross-tenant guard : vérifie que l'org_id dans les métadonnées Stripe correspond
+    # à l'org de la subscription en base (protège contre un webhook replay cross-tenant)
+    stripe_org_id = stripe_sub.metadata&.[]("organization_id").to_i
+    if stripe_org_id.positive? && stripe_org_id != sub.organization_id
+      Rails.logger.error "[Webhook:SubscriptionUpdated] TENANT MISMATCH — stripe org_id=#{stripe_org_id} vs sub.organization_id=#{sub.organization_id} for #{stripe_sub.id}"
+      return
+    end
+
     new_status = STRIPE_STATUS_MAP.fetch(stripe_sub.status, "active")
     new_plan   = resolve_plan(stripe_sub)
 
@@ -58,7 +66,7 @@ class SubscriptionUpdatedHandler
     end
 
     conn.post('/emails') do |req|
-      req.headers['Authorization'] = "Bearer #{ENV['SMTP_PASSWORD']}"
+      req.headers['Authorization'] = "Bearer #{ENV['RESEND_API_KEY']}"
       req.headers['Content-Type']  = 'application/json'
       req.body = {
         from:    "Izi-RH <noreply@#{ENV.fetch('SMTP_DOMAIN', 'izi-rh.com')}>",

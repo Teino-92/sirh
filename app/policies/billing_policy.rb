@@ -11,7 +11,7 @@ class BillingPolicy < ApplicationPolicy
 
   # Seuls HR et Admin peuvent créer un checkout, upgrader ou résilier
   def create_checkout?
-    user.organization_id == record.id && (user.hr_or_admin? || (user.manager? && record.trial_active?))
+    user.organization_id == record.id && user.hr_or_admin?
   end
 
   def upgrade?

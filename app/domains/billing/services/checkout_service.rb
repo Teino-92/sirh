@@ -57,13 +57,18 @@ class CheckoutService
     sub = @org.subscription
     return sub.stripe_customer_id if sub&.stripe_customer_id.present?
 
+    customer_id = nil
+
     ActiveRecord::Base.transaction do
       # Recharge + lock pour sérialiser les appels concurrents
       locked_org = Organization.lock.find(@org.id)
       sub = Subscription.find_by(organization_id: locked_org.id)
 
       # Double-check après lock : un autre thread a peut-être déjà créé le customer
-      return sub.stripe_customer_id if sub&.stripe_customer_id.present?
+      if sub&.stripe_customer_id.present?
+        customer_id = sub.stripe_customer_id
+        next
+      end
 
       customer = Stripe::Customer.create(
         name:     locked_org.name,
@@ -81,8 +86,10 @@ class CheckoutService
         )
       end
 
-      customer.id
+      customer_id = customer.id
     end
+
+    customer_id
   end
 
   def create_checkout_session(customer_id, price_id)
