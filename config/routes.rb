@@ -228,6 +228,9 @@ Rails.application.routes.draw do
   # Super-admin analytics (Matteo only — gated by SUPER_ADMIN_EMAIL)
   namespace :super_admin do
     get 'analytics', to: 'analytics#show', as: :analytics
+    # Magic link upgrade OS → SIRH — token signé, confirmé par ?confirm=true
+    get 'upgrade/:token', to: 'upgrades#show',    as: :upgrade_preview
+    post 'upgrade/:token', to: 'upgrades#confirm', as: :upgrade_confirm
   end
 
   # Admin panel - Hotwire-based

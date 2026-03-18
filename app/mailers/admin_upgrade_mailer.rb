@@ -6,6 +6,15 @@ class AdminUpgradeMailer < ApplicationMailer
     @contact_name    = contact_name
     @contact_email   = contact_email
     @contact_message = contact_message
+
+    token = Rails.application.message_verifier("sirh_upgrade")
+                 .generate({ org_id: organization.id }, expires_in: 7.days)
+    @magic_link = Rails.application.routes.url_helpers.super_admin_upgrade_preview_url(
+      token,
+      host:     ENV.fetch("APP_HOST", "izi-rh.com"),
+      protocol: "https"
+    )
+
     mail(
       to:       ENV.fetch("ADMIN_EMAIL", "contact@izi-rh.com"),
       reply_to: contact_email.presence,
