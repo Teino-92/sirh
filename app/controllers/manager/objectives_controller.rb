@@ -5,7 +5,7 @@ module Manager
     def index
       @objectives = policy_scope(Objective)
                       .for_manager(current_employee)
-                      .includes(:owner, :manager)
+                      .includes(:owner)
                       .order(deadline: :asc)
 
       if params[:status].present? && Objective.statuses.key?(params[:status])
