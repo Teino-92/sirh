@@ -10,7 +10,7 @@ class OnboardingTemplatePolicy < ApplicationPolicy
   end
 
   def create?
-    user.hr_or_admin?
+    user.hr_or_admin? || user.manager?
   end
 
   def new?
@@ -18,7 +18,7 @@ class OnboardingTemplatePolicy < ApplicationPolicy
   end
 
   def update?
-    user.hr_or_admin?
+    user.hr_or_admin? || user.manager?
   end
 
   def edit?
@@ -26,7 +26,7 @@ class OnboardingTemplatePolicy < ApplicationPolicy
   end
 
   def destroy?
-    user.hr_or_admin?
+    user.hr_or_admin? || user.manager?
   end
 
   class Scope < Scope
