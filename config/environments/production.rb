@@ -107,6 +107,13 @@ Rails.application.configure do
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
 
+  # Active Record Encryption — fallback to env vars if credentials are unavailable
+  if ENV["ACTIVE_RECORD_ENCRYPTION_PRIMARY_KEY"].present?
+    config.active_record.encryption.primary_key        = ENV["ACTIVE_RECORD_ENCRYPTION_PRIMARY_KEY"]
+    config.active_record.encryption.deterministic_key  = ENV["ACTIVE_RECORD_ENCRYPTION_DETERMINISTIC_KEY"]
+    config.active_record.encryption.key_derivation_salt = ENV["ACTIVE_RECORD_ENCRYPTION_KEY_DERIVATION_SALT"]
+  end
+
   # Store uploaded files on S3 (Heroku has an ephemeral filesystem — local storage is lost on dyno restart).
   # Set STORAGE_SERVICE=local to fall back to disk (development/staging without S3).
   config.active_storage.service = ENV.fetch("STORAGE_SERVICE", "cloudinary").to_sym
