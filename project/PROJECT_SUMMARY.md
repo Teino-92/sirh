@@ -86,8 +86,6 @@ Trial gratuit 30 jours sans CB.
 - API mobile (JWT partiel, endpoints présents, sécurité à finaliser)
 
 ### ⏳ À faire
-- Tests services payroll (`PayrollCalculator`, `RttAccrualService`)
-- Tests `EmployeeDelegation` (service + policy + controller)
 - Upstash Redis + Sidekiq au 1er client SIRH
 - Intégration calendrier OAuth2 (Phase 9)
 
@@ -97,12 +95,12 @@ Trial gratuit 30 jours sans CB.
 
 | Métrique | Valeur |
 |----------|--------|
-| Total tests | 1608+ |
+| Total tests | 1774 |
 | Tests passants | 100% |
-| Coverage global | ~42% |
+| Coverage global | 40.84% |
 | Coverage LeavePolicyEngine | 100% |
 | Coverage billing | ~80% (CheckoutService, UpgradeService, PaymentFailedHandler) |
-| Nouveaux specs | OneOnOneObjective (5), AdminUpgradeMailer magic link, OnboardingTemplatePolicy, BillingPolicy |
+| Nouveaux specs | DelegationResolver (16), RttAccrualService (8), EmployeeDelegationPolicy (16), EmployeeDelegationsController (13) |
 | CI | GitHub Actions — Brakeman + RSpec |
 
 ---
