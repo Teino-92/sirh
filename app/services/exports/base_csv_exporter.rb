@@ -128,6 +128,25 @@ module Exports
       end
     end
 
+    # Template-method helper: iterate team_members, fetch records per employee,
+    # and build rows by calling the subclass's fetch_records + build_row methods.
+    #
+    # Subclass contract:
+    #   fetch_records(employee, start_date, end_date) → collection
+    #   build_row(employee, record)                   → Array
+    def build_rows
+      rows = []
+      start_date, end_date = date_range
+
+      team_members.find_each do |employee|
+        fetch_records(employee, start_date, end_date).each do |record|
+          rows << build_row(employee, record)
+        end
+      end
+
+      rows
+    end
+
     # Generate filename with timestamp and type
     def filename(type, extension = 'csv')
       start_date, end_date = date_range

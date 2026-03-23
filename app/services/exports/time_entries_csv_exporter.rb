@@ -31,22 +31,7 @@ module Exports
       ]
     end
 
-    def build_rows
-      rows = []
-      start_date, end_date = date_range
-
-      team_members.find_each do |employee|
-        time_entries = fetch_time_entries(employee, start_date, end_date)
-
-        time_entries.each do |entry|
-          rows << build_row(employee, entry)
-        end
-      end
-
-      rows
-    end
-
-    def fetch_time_entries(employee, start_date, end_date)
+    def fetch_records(employee, start_date, end_date)
       entries = employee.time_entries
                        .where('DATE(clock_in) BETWEEN ? AND ?', start_date, end_date)
                        .order(:clock_in)

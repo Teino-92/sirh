@@ -16,12 +16,5 @@ module Manager
     def current_organization
       current_employee.organization
     end
-
-    # Safe RulesEngine trigger — never breaks the main flow.
-    def fire_rules_engine(event, resource, context = {})
-      RulesEngine.new(current_organization).trigger(event, resource: resource, context: context)
-    rescue => e
-      Rails.logger.error("[RulesEngine] #{event} failed silently: #{e.message}")
-    end
   end
 end

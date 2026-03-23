@@ -91,33 +91,18 @@ module Manager
         protocol:             'https'
       )
 
-      conn = Faraday.new('https://api.resend.com') do |f|
-        f.request :json
-        f.response :json
-        f.adapter Faraday.default_adapter
-      end
-
-      response = conn.post('/emails') do |req|
-        req.headers['Authorization'] = "Bearer #{ENV['RESEND_API_KEY']}"
-        req.headers['Content-Type']  = 'application/json'
-        req.body = {
-          from:    "Izi-RH <noreply@#{ENV.fetch('SMTP_DOMAIN', 'izi-rh.com')}>",
-          to:      [member.email],
-          subject: "#{current_employee.full_name} vous invite sur Izi-RH",
-          html:    <<~HTML
-            <p>Bonjour #{member.first_name},</p>
-            <p>#{current_employee.full_name} vous a ajouté à son équipe sur Izi-RH.</p>
-            <p>Cliquez sur le lien ci-dessous pour créer votre mot de passe et accéder à votre espace :</p>
-            <p><a href="#{reset_url}" style="background:#4F46E5;color:white;padding:12px 24px;border-radius:6px;text-decoration:none;display:inline-block;">Rejoindre l'équipe</a></p>
-            <p>Ce lien est valable 6 heures.</p>
-            <p>— L'équipe Izi-RH</p>
-          HTML
-        }
-      end
-
-      unless response.success?
-        Rails.logger.error "[TeamMembers] Invitation email failed for #{member.email}: #{response.status} #{response.body}"
-      end
+      ResendClient.deliver(
+        to:      member.email,
+        subject: "#{current_employee.full_name} vous invite sur Izi-RH",
+        html:    <<~HTML
+          <p>Bonjour #{member.first_name},</p>
+          <p>#{current_employee.full_name} vous a ajouté à son équipe sur Izi-RH.</p>
+          <p>Cliquez sur le lien ci-dessous pour créer votre mot de passe et accéder à votre espace :</p>
+          <p><a href="#{reset_url}" style="background:#4F46E5;color:white;padding:12px 24px;border-radius:6px;text-decoration:none;display:inline-block;">Rejoindre l'équipe</a></p>
+          <p>Ce lien est valable 6 heures.</p>
+          <p>— L'équipe Izi-RH</p>
+        HTML
+      )
     end
 
     def has_active_linked_data?(member)

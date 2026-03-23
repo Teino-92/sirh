@@ -54,6 +54,13 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  # Safe RulesEngine trigger — never breaks the main flow.
+  def fire_rules_engine(event, resource, context = {})
+    RulesEngine.new(current_employee.organization).trigger(event, resource: resource, context: context)
+  rescue => e
+    Rails.logger.error("[RulesEngine] #{event} failed silently: #{e.message}")
+  end
+
   def user_not_authorized
     flash[:alert] = "Vous n'êtes pas autorisé à effectuer cette action."
     redirect_back(fallback_location: dashboard_path)

@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class EmployeeOnboarding < ApplicationRecord
+  include SameOrganizationValidatable
+
   self.table_name = 'employee_onboardings'
 
   has_paper_trail on: %i[create update],
@@ -28,8 +30,7 @@ class EmployeeOnboarding < ApplicationRecord
                                          message: "a déjà un onboarding actif en cours" }
   validate  :end_date_after_start_date
   validate  :manager_has_manager_role
-  validate  :employee_and_manager_in_same_org
-  validate  :template_same_organization
+  validate_same_organization :employee, :manager, :onboarding_template
 
   scope :active,       -> { where(status: 'active') }
   scope :for_manager,  ->(m) { where(manager: m) }
@@ -82,18 +83,4 @@ class EmployeeOnboarding < ApplicationRecord
     errors.add(:manager, "doit avoir le rôle manager") unless manager.manager?
   end
 
-  def employee_and_manager_in_same_org
-    return unless employee && manager
-
-    unless employee.organization_id == manager.organization_id
-      errors.add(:base, "L'employé et le manager doivent appartenir à la même organisation")
-    end
-  end
-
-  def template_same_organization
-    return unless onboarding_template.present?
-    return if onboarding_template.organization_id == organization_id
-
-    errors.add(:onboarding_template_id, "doit appartenir à la même organisation")
-  end
 end

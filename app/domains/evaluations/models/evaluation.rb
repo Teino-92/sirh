@@ -1,4 +1,6 @@
 class Evaluation < ApplicationRecord
+  include SameOrganizationValidatable
+
   # Multi-tenancy
   belongs_to :organization
   acts_as_tenant :organization
@@ -37,7 +39,7 @@ class Evaluation < ApplicationRecord
   validates :status, presence: true
   validate :period_end_after_start
   validate :manager_is_manager_role
-  validate :both_in_same_organization
+  validate_same_organization :employee, :manager
 
   # Scopes
   scope :active, -> { where(status: [:draft, :employee_review_pending, :manager_review_pending]) }
@@ -114,15 +116,4 @@ class Evaluation < ApplicationRecord
     errors.add(:manager, 'must have manager or HR role')
   end
 
-  def both_in_same_organization
-    return unless employee.present? && manager.present? && organization.present?
-
-    if employee.organization_id != organization_id
-      errors.add(:employee, 'must belong to the same organization')
-    end
-
-    if manager.organization_id != organization_id
-      errors.add(:manager, 'must belong to the same organization')
-    end
-  end
 end

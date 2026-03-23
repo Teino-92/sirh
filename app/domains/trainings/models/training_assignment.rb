@@ -1,4 +1,6 @@
 class TrainingAssignment < ApplicationRecord
+  include SameOrganizationValidatable
+
   # Parent relationship
   belongs_to :training
   belongs_to :employee, class_name: 'Employee'
@@ -27,8 +29,9 @@ class TrainingAssignment < ApplicationRecord
   # Validations
   validates :status, presence: true
   validates :assigned_at, presence: true
-  validate :assigned_by_in_same_organization
-  validate :employee_in_same_organization
+  validate_same_organization :assigned_by, :employee,
+    organization_source: :training,
+    message: 'must belong to the same organization as the training'
 
   # Scopes
   scope :active, -> { where(status: [:assigned, :in_progress]) }
@@ -52,20 +55,6 @@ class TrainingAssignment < ApplicationRecord
   end
 
   private
-
-  def assigned_by_in_same_organization
-    return unless assigned_by.present? && training.present?
-    return if assigned_by.organization_id == training.organization_id
-
-    errors.add(:assigned_by, 'must belong to the same organization as the training')
-  end
-
-  def employee_in_same_organization
-    return unless employee.present? && training.present?
-    return if employee.organization_id == training.organization_id
-
-    errors.add(:employee, 'must belong to the same organization as the training')
-  end
 
   def send_assigned_notification
     TrainingAssignmentMailer.assigned(self).deliver_later

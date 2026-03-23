@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class LeaveRequest < ApplicationRecord
+  include SameOrganizationValidatable
+
   has_paper_trail on: %i[create update destroy],
                   meta: { organization_id: :organization_id }
 
@@ -14,8 +16,7 @@ class LeaveRequest < ApplicationRecord
   validates :status, inclusion: { in: %w[pending approved rejected cancelled auto_approved] }
   validate :end_date_after_start_date
   validate :sufficient_balance, on: :create
-  validate :employee_belongs_to_same_organization
-  validate :approver_belongs_to_same_organization
+  validate_same_organization :employee, :approved_by
   validate :period_not_locked, on: %i[create update]
 
   scope :pending, -> { where(status: 'pending') }
@@ -116,22 +117,6 @@ class LeaveRequest < ApplicationRecord
         balance: balance.balance - days_count,
         used_this_year: balance.used_this_year + days_count
       )
-    end
-  end
-
-  def employee_belongs_to_same_organization
-    return unless employee && organization_id
-
-    if employee.organization_id != organization_id
-      errors.add(:employee, 'must belong to the same organization')
-    end
-  end
-
-  def approver_belongs_to_same_organization
-    return unless approved_by && organization_id
-
-    if approved_by.organization_id != organization_id
-      errors.add(:approved_by, 'must belong to the same organization')
     end
   end
 

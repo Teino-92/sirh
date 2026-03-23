@@ -1,4 +1,6 @@
 class OneOnOne < ApplicationRecord
+  include SameOrganizationValidatable
+
   # Multi-tenancy
   belongs_to :organization
   acts_as_tenant :organization
@@ -25,7 +27,7 @@ class OneOnOne < ApplicationRecord
   validates :status, presence: true
   validate :manager_different_from_employee
   validate :manager_is_actual_manager
-  validate :both_in_same_organization
+  validate_same_organization :manager, :employee
 
   # Scopes
   scope :upcoming, -> { where(status: :scheduled).where('scheduled_at >= ?', Time.current).order(:scheduled_at) }
@@ -105,10 +107,4 @@ class OneOnOne < ApplicationRecord
     errors.add(:manager, 'must have manager role')
   end
 
-  def both_in_same_organization
-    return unless manager.present? && employee.present? && organization.present?
-    return if manager.organization_id == organization_id && employee.organization_id == organization_id
-
-    errors.add(:base, 'manager and employee must belong to the same organization')
-  end
 end

@@ -1,4 +1,6 @@
 class Objective < ApplicationRecord
+  include SameOrganizationValidatable
+
   # Multi-tenancy
   belongs_to :organization
   acts_as_tenant :organization
@@ -37,8 +39,8 @@ class Objective < ApplicationRecord
   validates :owner_type, inclusion: { in: %w[Employee] }
   validates :deadline, presence: true
   validate :deadline_in_future, on: :create
-  validate :manager_in_same_organization
-  validate :owner_in_same_organization
+  validate_same_organization :manager
+  validate_same_organization :owner
 
   # Email notification to owner when assigned
   after_create_commit :send_assigned_notification
@@ -75,19 +77,5 @@ class Objective < ApplicationRecord
   def deadline_in_future
     return unless deadline.present? && deadline < Date.current
     errors.add(:deadline, 'must be in the future')
-  end
-
-  def manager_in_same_organization
-    return unless manager.present? && organization.present?
-    return if manager.organization_id == organization_id
-
-    errors.add(:manager, 'must belong to the same organization')
-  end
-
-  def owner_in_same_organization
-    return unless owner.present? && owner.respond_to?(:organization_id)
-    return if owner.organization_id == organization_id
-
-    errors.add(:owner, 'must belong to the same organization')
   end
 end

@@ -31,22 +31,7 @@ module Exports
       ]
     end
 
-    def build_rows
-      rows = []
-      start_date, end_date = date_range
-
-      team_members.find_each do |employee|
-        leave_requests = fetch_leave_requests(employee, start_date, end_date)
-
-        leave_requests.each do |request|
-          rows << build_row(employee, request)
-        end
-      end
-
-      rows
-    end
-
-    def fetch_leave_requests(employee, start_date, end_date)
+    def fetch_records(employee, start_date, end_date)
       requests = employee.leave_requests
                         .where('start_date <= ? AND end_date >= ?', end_date, start_date)
                         .order(:start_date)
