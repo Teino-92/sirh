@@ -45,6 +45,8 @@ jobs:
       RAILS_ENV: test
       DATABASE_URL: postgres://postgres:postgres@localhost:5432/easy_rh_test
       RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }}
+      SUPER_ADMIN_LOGIN: ci_admin
+      SUPER_ADMIN_PASSWORD: ci_password
 
     steps:
       - uses: actions/checkout@v4
