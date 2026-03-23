@@ -5,12 +5,15 @@ module Admin
     before_action :set_organization
 
     def show
+      authorize @organization
     end
 
     def edit
+      authorize @organization
     end
 
     def update
+      authorize @organization
       if @organization.update(organization_params)
         respond_to do |format|
           format.html { redirect_to admin_organization_path, notice: 'Paramètres de l\'organisation mis à jour avec succès.' }

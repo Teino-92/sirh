@@ -11,10 +11,11 @@ module Admin
     ].freeze
 
     def new
-      # Affiche le formulaire upload + template téléchargeable
+      authorize :employee_import
     end
 
     def create
+      authorize :employee_import
       file = params[:file]
 
       unless file.present?
