@@ -84,11 +84,16 @@ class EmployeeCsvImportService
     spreadsheet = Roo::Spreadsheet.open(@file.path, extension: :xlsx)
     sheet = spreadsheet.sheet(0)
 
-    raw_headers = sheet.row(1)
-    headers = raw_headers.map { |h| normalize_header(h.to_s) }
+    # Find the header row — some exports add a title row before the real headers.
+    # We scan the first 5 rows and use the first one that contains a recognized column.
+    header_row_index = (1..[ 5, sheet.last_row ].min).find do |i|
+      sheet.row(i).any? { |h| normalize_header(h.to_s) != h.to_s.downcase.strip }
+    end || 1
+
+    headers = sheet.row(header_row_index).map { |h| normalize_header(h.to_s) }
 
     rows = []
-    (2..sheet.last_row).each do |i|
+    ((header_row_index + 1)..sheet.last_row).each do |i|
       values = sheet.row(i).map { |v| xlsx_cell_value(v) }
       rows << headers.zip(values).to_h
     end
@@ -105,7 +110,10 @@ class EmployeeCsvImportService
     when nil
       nil
     else
-      val.to_s.strip.presence
+      str = val.to_s.strip
+      # Excel wraps hyperlinks as <html><u>value</u></html> — strip the tags
+      str = str.gsub(/<[^>]+>/, '').strip if str.start_with?('<')
+      str.presence
     end
   end
 
