@@ -1,4 +1,5 @@
-  <tr class="hover:bg-gray-50 dark:hover:bg-gray-700" id="<%= dom_id(employee) %>">
+  <tr class="hover:bg-gray-50 dark:hover:bg-gray-700" id="<%= dom_id(employee) %>"
+      data-search="<%= [employee.first_name, employee.last_name, employee.email, employee.job_title, employee.department].compact.join(' ').downcase %>">
     <td class="px-6 py-5 whitespace-nowrap">
       <div class="flex items-center">
         <div class="flex-shrink-0 h-10 w-10">

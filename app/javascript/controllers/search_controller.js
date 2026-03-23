@@ -1,44 +1,38 @@
 import { Controller } from "@hotwired/stimulus"
 
-// Connects to data-controller="search"
 export default class extends Controller {
-  static targets = ["searchIcon", "clearBtn", "input", "form"]
+  static targets = ["input", "searchIcon", "clearBtn", "count"]
 
-  connect() {
-    this.timeout = null
-  }
+  perform() {
+    const query = this.inputTarget.value.trim().toLowerCase()
 
-  disconnect() {
-    if (this.timeout) {
-      clearTimeout(this.timeout)
-    }
-  }
-
-  perform(event) {
     // Toggle icons
-    const hasValue = this.inputTarget.value.length > 0
-    if (hasValue) {
-      this.searchIconTarget.classList.add('hidden')
-      this.clearBtnTarget.classList.remove('hidden')
-    } else {
-      this.searchIconTarget.classList.remove('hidden')
-      this.clearBtnTarget.classList.add('hidden')
+    this.searchIconTarget.classList.toggle("hidden", query.length > 0)
+    this.clearBtnTarget.classList.toggle("hidden", query.length === 0)
+
+    // Filter rows
+    const rows = document.querySelectorAll("#employees tr[data-search]")
+    let visible = 0
+    rows.forEach(row => {
+      const match = query === "" || row.dataset.search.includes(query)
+      row.classList.toggle("hidden", !match)
+      if (match) visible++
+    })
+
+    // Update counter
+    if (this.hasCountTarget) {
+      this.countTarget.textContent = visible
     }
 
-    // Debounced search - 1 seconde pour laisser le temps de taper
-    if (this.timeout) {
-      clearTimeout(this.timeout)
-    }
-    this.timeout = setTimeout(() => {
-      this.formTarget.requestSubmit()
-    }, 1000)
+    // Empty state
+    const empty = document.getElementById("search-empty")
+    if (empty) empty.classList.toggle("hidden", visible > 0)
   }
 
   clear(event) {
     event.preventDefault()
-    this.inputTarget.value = ''
-    this.searchIconTarget.classList.remove('hidden')
-    this.clearBtnTarget.classList.add('hidden')
-    this.formTarget.requestSubmit()
+    this.inputTarget.value = ""
+    this.inputTarget.focus()
+    this.perform()
   }
 }

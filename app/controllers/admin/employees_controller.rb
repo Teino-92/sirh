@@ -5,21 +5,10 @@ module Admin
     before_action :set_employee, only: [:show, :edit, :update, :destroy]
 
     def index
+      # Max 250 employees per org — load all, filter client-side (no focus loss on search)
       @employees = current_employee.organization.employees
                                    .includes(:manager, avatar_attachment: :blob)
-
-      # Search functionality
-      if params[:q].present?
-        search_term = "%#{params[:q]}%"
-        @employees = @employees.where(
-          "first_name ILIKE ? OR last_name ILIKE ? OR email ILIKE ?",
-          search_term, search_term, search_term
-        )
-      end
-
-      @employees = @employees.order(last_name: :asc, first_name: :asc)
-                            .page(params[:page])
-                            .per(20)
+                                   .order(last_name: :asc, first_name: :asc)
     end
 
     def show
