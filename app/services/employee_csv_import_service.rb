@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class EmployeeCsvImportService
-  ImportResult = Struct.new(:imported, :skipped, :errors)
+  ImportResult = Struct.new(:imported, :skipped, :errors, :duplicates)
 
   # Mapping flexible des noms de colonnes — insensible à la casse et aux accents
   COLUMN_ALIASES = {
@@ -40,7 +40,7 @@ class EmployeeCsvImportService
     return size_error if @file.size > MAX_FILE_SIZE
 
     rows   = parse_file
-    result = ImportResult.new([], [], [])
+    result = ImportResult.new([], [], [], [])
 
     # 1st pass — create all employees (no manager yet)
     ActsAsTenant.with_tenant(@organization) do
@@ -181,6 +181,9 @@ class EmployeeCsvImportService
 
     if employee.save
       result.imported << employee
+    elsif employee.errors[:email].any? { |e| e.include?('disponible') || e.include?('taken') || e.include?('déjà') }
+      result.duplicates << attrs[:email]
+      result.skipped << row
     else
       result.errors << "Ligne #{line_num} (#{row['email']}) : #{employee.errors.full_messages.join(', ')}"
       result.skipped << row

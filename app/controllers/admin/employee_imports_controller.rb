@@ -34,9 +34,10 @@ module Admin
 
       result = EmployeeCsvImportService.new(file, current_organization).call
 
-      @imported = result.imported
-      @errors   = result.errors
-      @skipped  = result.skipped
+      @imported   = result.imported
+      @errors     = result.errors
+      @skipped    = result.skipped
+      @duplicates = result.duplicates
 
       render :result
     end
