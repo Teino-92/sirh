@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'roo'
-
 class EmployeeCsvImportService
   ImportResult = Struct.new(:imported, :skipped, :errors)
 
