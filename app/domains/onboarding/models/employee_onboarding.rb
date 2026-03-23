@@ -52,7 +52,12 @@ class EmployeeOnboarding < ApplicationRecord
   end
 
   def overdue_tasks
-    onboarding_tasks.pending.where('due_date < ?', Date.current)
+    # Use in-memory filter when tasks are already loaded (avoids N+1 in list views)
+    if onboarding_tasks.loaded?
+      onboarding_tasks.select { |t| t.status.to_s == 'pending' && t.due_date.present? && t.due_date < Date.current }
+    else
+      onboarding_tasks.pending.where('due_date < ?', Date.current)
+    end
   end
 
   def complete!

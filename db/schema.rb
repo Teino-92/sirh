@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2026_03_18_105056) do
+ActiveRecord::Schema[7.1].define(version: 2026_03_23_210504) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -270,6 +270,7 @@ ActiveRecord::Schema[7.1].define(version: 2026_03_18_105056) do
     t.index ["expires_at"], name: "index_leave_balances_on_expires_at"
     t.index ["leave_type"], name: "index_leave_balances_on_leave_type"
     t.index ["organization_id", "created_at"], name: "index_leave_balances_on_organization_id_and_created_at"
+    t.index ["organization_id", "leave_type"], name: "index_leave_balances_on_org_and_leave_type"
   end
 
   create_table "leave_requests", force: :cascade do |t|
