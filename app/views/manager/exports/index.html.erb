@@ -201,6 +201,7 @@
     <div data-tabs-target="panel" data-tabs-index="1" class="hidden">
 
       <!-- Scope warning -->
+      <% unless current_employee.hr_or_admin? %>
       <div class="mb-6 rounded-lg bg-indigo-50 dark:bg-indigo-900/30 border border-indigo-200 dark:border-indigo-700 px-5 py-4 flex items-start gap-3">
         <svg class="h-5 w-5 text-indigo-600 dark:text-indigo-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -210,6 +211,7 @@
           <span class="font-semibold">Recherche limitée à votre équipe</span> · Salaires non accessibles
         </p>
       </div>
+      <% end %>
 
       <!-- Query form -->
       <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 mb-6"
