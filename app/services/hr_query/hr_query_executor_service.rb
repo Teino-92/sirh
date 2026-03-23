@@ -28,6 +28,10 @@ module HrQuery
       employees = apply_leave_filter(employees)
       employees = apply_evaluation_filter(employees)
       employees = apply_onboarding_filter(employees)
+      employees = apply_one_on_one_filter(employees)
+      employees = apply_objective_filter(employees)
+      employees = apply_time_tracking_filter(employees)
+      employees = apply_training_filter(employees)
 
       employees = employees.limit(MAX_RESULTS).order(:last_name, :first_name)
       build_rows(employees)
@@ -175,6 +179,88 @@ module HrQuery
       scope.where(id: onboarding_scope.select(:employee_id))
     end
 
+    # ─── One-on-one filter ──────────────────────────────────────────────────────
+
+    def apply_one_on_one_filter(scope)
+      of = one_on_one_filters
+      return scope unless any_present?(of, :no_meeting_since_days, :total_completed_min)
+
+      if of[:no_meeting_since_days].present?
+        cutoff = Date.current - of[:no_meeting_since_days].to_i.days
+        # Employés dont le dernier 1:1 complété est avant la cutoff OU qui n'en ont aucun
+        had_recent = OneOnOne.where(status: :completed)
+                             .where('completed_at >= ?', cutoff)
+                             .select(:employee_id)
+        scope = scope.where.not(id: had_recent)
+      end
+
+      if of[:total_completed_min].present?
+        period = of[:period_days].present? ? of[:period_days].to_i.days.ago : 1.year.ago
+        enough = OneOnOne.where(status: :completed)
+                         .where('completed_at >= ?', period)
+                         .group(:employee_id)
+                         .having('COUNT(*) >= ?', of[:total_completed_min].to_i)
+                         .select(:employee_id)
+        scope = scope.where(id: enough)
+      end
+
+      scope
+    end
+
+    # ─── Objective filter ───────────────────────────────────────────────────────
+
+    def apply_objective_filter(scope)
+      of = objective_filters
+      return scope unless any_present?(of, :status, :overdue, :priority)
+
+      obj_scope = Objective.where(owner_type: 'Employee')
+      obj_scope = obj_scope.where(status: of[:status])    if of[:status].present?
+      obj_scope = obj_scope.where(priority: of[:priority]) if of[:priority].present?
+      if of[:overdue].in?([true, 'true'])
+        obj_scope = obj_scope.overdue
+      end
+
+      scope.where(id: obj_scope.select(:owner_id))
+    end
+
+    # ─── Time tracking filter ───────────────────────────────────────────────────
+
+    def apply_time_tracking_filter(scope)
+      tf = time_tracking_filters
+      return scope unless any_present?(tf, :late_checkins_min)
+
+      period = tf[:period_days].present? ? tf[:period_days].to_i.days.ago : 30.days.ago
+
+      # late? logic: clock_in > expected start + 5 min
+      # We use a subquery counting entries where clock_in is late
+      # Since late? is a Ruby method, we load IDs via a batch approach
+      employee_ids = scope.pluck(:id)
+      late_counts = Hash.new(0)
+
+      TimeEntry.where(employee_id: employee_ids)
+               .where('clock_in >= ?', period)
+               .find_each do |entry|
+        late_counts[entry.employee_id] += 1 if entry.late?
+      end
+
+      qualifying_ids = late_counts.select { |_, count| count >= tf[:late_checkins_min].to_i }.keys
+      scope.where(id: qualifying_ids)
+    end
+
+    # ─── Training filter ────────────────────────────────────────────────────────
+
+    def apply_training_filter(scope)
+      tf = training_filters
+      return scope unless any_present?(tf, :status)
+
+      # TrainingAssignment has no acts_as_tenant — scope via JOIN on trainings
+      assignment_scope = TrainingAssignment
+        .joins(:training)
+        .where(trainings: { organization_id: ActsAsTenant.current_tenant.id })
+        .where(status: tf[:status])
+      scope.where(id: assignment_scope.select(:employee_id))
+    end
+
     # ─── Row building ───────────────────────────────────────────────────────────
 
     def build_rows(employees)
@@ -190,6 +276,15 @@ module HrQuery
       end
       if (cols & %w[onboarding_status integration_score]).any?
         employees = employees.includes(:employee_onboardings)
+      end
+      if (cols & %w[last_one_on_one_date one_on_one_count]).any?
+        employees = employees.includes(:one_on_ones)
+      end
+      if (cols & %w[objective_status objective_count]).any?
+        employees = employees.includes(:objectives)
+      end
+      if cols.include?('training_status')
+        employees = employees.includes(:training_assignments)
       end
 
       employees.map do |emp|
@@ -217,6 +312,25 @@ module HrQuery
       when "onboarding_status"  then emp.employee_onboardings.active.first&.status
       when "integration_score"  then emp.employee_onboardings.active.first&.integration_score_cache
       when "salary"           then can_see_salary ? format_salary(emp) : "—"
+      when "last_one_on_one_date"
+        last = emp.one_on_ones.where(status: :completed).order(completed_at: :desc).first
+        last ? "#{(Date.current - last.completed_at.to_date).to_i}j" : "Jamais"
+      when "one_on_one_count"
+        period = one_on_one_filters[:period_days].present? ? one_on_one_filters[:period_days].to_i.days.ago : 1.year.ago
+        emp.one_on_ones.where(status: :completed).where('completed_at >= ?', period).count
+      when "objective_status"
+        obj = emp.objectives.active.order(deadline: :asc).first
+        obj&.status || "—"
+      when "objective_count"
+        of = objective_filters
+        obj_scope = emp.objectives
+        obj_scope = obj_scope.where(status: of[:status]) if of[:status].present?
+        obj_scope.count
+      when "late_checkins_count"
+        period = time_tracking_filters[:period_days].present? ? time_tracking_filters[:period_days].to_i.days.ago : 30.days.ago
+        emp.time_entries.where('clock_in >= ?', period).select(&:late?).count
+      when "training_status"
+        emp.training_assignments.order(assigned_at: :desc).first&.status || "—"
       else nil
       end
     end
@@ -284,6 +398,22 @@ module HrQuery
 
     def onboarding_filters
       @onboarding_filters ||= (filters[:onboarding] || {}).with_indifferent_access
+    end
+
+    def one_on_one_filters
+      @one_on_one_filters ||= (filters[:one_on_one] || {}).with_indifferent_access
+    end
+
+    def objective_filters
+      @objective_filters ||= (filters[:objective] || {}).with_indifferent_access
+    end
+
+    def time_tracking_filters
+      @time_tracking_filters ||= (filters[:time_tracking] || {}).with_indifferent_access
+    end
+
+    def training_filters
+      @training_filters ||= (filters[:training] || {}).with_indifferent_access
     end
 
     def output_columns

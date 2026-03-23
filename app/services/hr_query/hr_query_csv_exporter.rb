@@ -20,7 +20,13 @@ module HrQuery
       "evaluation_status"  => "Statut d'évaluation",
       "onboarding_status"  => "Statut onboarding",
       "integration_score"  => "Score d'intégration",
-      "salary"             => "Salaire brut mensuel"
+      "salary"               => "Salaire brut mensuel",
+      "last_one_on_one_date" => "Dernier 1:1 (il y a)",
+      "one_on_one_count"     => "Nb 1:1",
+      "objective_status"     => "Statut objectif",
+      "objective_count"      => "Nb objectifs",
+      "late_checkins_count"  => "Retards pointage",
+      "training_status"      => "Statut formation"
     }.freeze
 
     # @param requester [Employee] The HR/admin running the export

@@ -25,6 +25,28 @@
                 data-hr-query-target="textarea"
       ><%= params[:query] %></textarea>
 
+      <!-- Suggestions -->
+      <div class="mt-3">
+        <p class="text-xs text-gray-500 dark:text-gray-400 mb-2">Suggestions :</p>
+        <div class="flex flex-wrap gap-2">
+          <% [
+            "Collaborateurs sans 1:1 depuis plus de 30 jours",
+            "Qui est en retard sur ses objectifs ?",
+            "Onboardings en cours",
+            "Employés avec plus de 3 retards de pointage ce mois",
+            "Qui n'a pas terminé sa formation assignée ?",
+            "Employés sans 1:1 depuis 1 mois et avec un objectif en retard"
+          ].each do |suggestion| %>
+            <button type="button"
+                    data-action="click->hr-query#fillSuggestion"
+                    data-suggestion="<%= suggestion %>"
+                    class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 hover:bg-indigo-100 dark:hover:bg-indigo-900/50 border border-indigo-200 dark:border-indigo-700 transition-colors cursor-pointer">
+              <%= suggestion %>
+            </button>
+          <% end %>
+        </div>
+      </div>
+
       <div class="mt-4 flex items-center gap-4">
         <button type="submit"
                 data-hr-query-target="submitBtn"

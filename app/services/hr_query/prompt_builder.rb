@@ -52,6 +52,23 @@ module HrQuery
             "integration_score_min": null,
             "integration_score_max": null
           },
+          "one_on_one": {
+            "no_meeting_since_days": null,
+            "total_completed_min": null,
+            "period_days": null
+          },
+          "objective": {
+            "status": null,
+            "overdue": null,
+            "priority": null
+          },
+          "time_tracking": {
+            "late_checkins_min": null,
+            "period_days": null
+          },
+          "training": {
+            "status": null
+          },
           "output": {
             "columns": ["name", "department"],
             "include_salary": false
@@ -67,7 +84,15 @@ module HrQuery
         - days_used_min/max: nombre de jours (ex: "plus de 10 jours" → days_used_min: 10.5)
         - pour "cette année": period_year: #{CURRENT_YEAR}
         - include_salary: true UNIQUEMENT si salaire explicitement demandé
-        - columns: liste pertinente parmi ["name","department","role","contract_type","job_title","start_date","tenure_months","leave_days_used","leave_type","evaluation_score","evaluation_status","onboarding_status","integration_score","salary"]
+        - no_meeting_since_days: nombre de jours sans 1:1 (ex: "depuis 1 mois" → 30)
+        - total_completed_min: nombre minimum de 1:1 complétés
+        - one_on_one period_days: période en jours pour compter (ex: "ce trimestre" → 90, "ce mois" → 30)
+        - objective status: "draft" | "in_progress" | "blocked" | "completed" | "cancelled" | null
+        - objective priority: "low" | "medium" | "high" | null
+        - overdue: true si deadline dépassée
+        - late_checkins_min: nombre minimum de pointages en retard
+        - training status: "assigned" | "in_progress" | "completed" | null
+        - columns: liste pertinente parmi ["name","department","role","contract_type","job_title","start_date","tenure_months","leave_days_used","leave_type","evaluation_score","evaluation_status","onboarding_status","integration_score","salary","last_one_on_one_date","one_on_one_count","objective_status","objective_count","late_checkins_count","training_status"]
       MSG
     end
   end

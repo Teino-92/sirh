@@ -12,6 +12,11 @@ export default class extends Controller {
     this.setLoading(false)
   }
 
+  fillSuggestion(event) {
+    this.textareaTarget.value = event.currentTarget.dataset.suggestion
+    this.textareaTarget.focus()
+  }
+
   onSubmit(event) {
     const query = this.textareaTarget.value.trim()
     if (!query) {
