@@ -20,12 +20,12 @@ class EmployeeCsvImportService
   }.freeze
 
   CONTRACT_ALIASES = {
-    'cdi'        => 'CDI',
-    'cdd'        => 'CDD',
-    'stage'      => 'Stage',
-    'alternance' => 'Alternance',
-    'interim'    => 'Interim',
-    'intérim'    => 'Interim',
+    'cdi'         => 'CDI',
+    'cdd'         => 'CDD',
+    'stage'       => 'Stage',
+    'alternance'  => 'Alternance',
+    'interim'     => 'Interim',
+    'intérim'     => 'Interim',
     'interimaire' => 'Interim'
   }.freeze
 
@@ -39,7 +39,7 @@ class EmployeeCsvImportService
   def call
     return size_error if @file.size > MAX_FILE_SIZE
 
-    rows   = parse_csv
+    rows   = parse_file
     result = ImportResult.new([], [], [])
 
     # 1st pass — create all employees (no manager yet)
@@ -59,6 +59,8 @@ class EmployeeCsvImportService
     ImportResult.new([], [], ["Fichier CSV invalide : #{e.message}"])
   rescue Encoding::InvalidByteSequenceError, Encoding::UndefinedConversionError
     ImportResult.new([], [], ["Encodage invalide — sauvegardez le fichier en UTF-8 et réessayez."])
+  rescue Roo::HeaderRowNotFoundError => e
+    ImportResult.new([], [], ["En-têtes manquants dans le fichier Excel : #{e.message}"])
   end
 
   private
@@ -67,18 +69,59 @@ class EmployeeCsvImportService
     ImportResult.new([], [], ["Fichier trop volumineux (max 5 Mo)."])
   end
 
+  def parse_file
+    ext = File.extname(@file.original_filename.to_s).downcase
+    if ext.in?(%w[.xlsx .xls])
+      parse_xlsx
+    else
+      parse_csv
+    end
+  end
+
+  # ── XLSX parser ─────────────────────────────────────────────────────────────
+
+  def parse_xlsx
+    spreadsheet = Roo::Spreadsheet.open(@file.path, extension: :xlsx)
+    sheet = spreadsheet.sheet(0)
+
+    raw_headers = sheet.row(1)
+    headers = raw_headers.map { |h| normalize_header(h.to_s) }
+
+    rows = []
+    (2..sheet.last_row).each do |i|
+      values = sheet.row(i).map { |v| xlsx_cell_value(v) }
+      rows << headers.zip(values).to_h
+    end
+    rows
+  end
+
+  def xlsx_cell_value(val)
+    case val
+    when Date, DateTime, Time
+      val.strftime('%d/%m/%Y')
+    when Float
+      # Excel stores integers as floats (e.g. 58000.0) — clean it up
+      val == val.floor ? val.to_i.to_s : val.to_s
+    when nil
+      nil
+    else
+      val.to_s.strip.presence
+    end
+  end
+
+  # ── CSV parser ───────────────────────────────────────────────────────────────
+
   def parse_csv
     raw = @file.read
-    # Force UTF-8, replace invalid bytes
     content = raw.encode('UTF-8', invalid: :replace, undef: :replace, replace: '?')
-    # Strip BOM (Excel sometimes adds UTF-8 BOM)
     content.gsub!("\xEF\xBB\xBF", '')
-    # Auto-detect separator: if more semicolons than commas → Excel French
     sep = content.count(';') >= content.count(',') ? ';' : ','
     CSV.parse(content, headers: true, col_sep: sep,
               header_converters: ->(h) { normalize_header(h) })
        .map(&:to_h)
   end
+
+  # ── Shared helpers ───────────────────────────────────────────────────────────
 
   def normalize_header(header)
     normalized = header.to_s.downcase.strip
@@ -159,7 +202,6 @@ class EmployeeCsvImportService
 
   def parse_salary(val)
     return nil if val.blank?
-    # Accepte "58000", "58 000", "58 000,00 €", "58000.00"
     cleaned = val.to_s.gsub(/[^\d.,]/, '').gsub(/,(?=\d{2}\z)/, '.').gsub(',', '')
     cents = cleaned.to_f * 100
     cents.positive? ? cents.to_i : nil

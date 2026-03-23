@@ -7,6 +7,7 @@ gem "rails", "~> 7.1.6"
 
 # CSV parsing (will be extracted from stdlib in Ruby 3.4+)
 gem "csv"
+gem "roo", "~> 2.10" # XLSX/XLS/CSV import support
 
 # The original asset pipeline for Rails [https://github.com/rails/sprockets-rails]
 gem "sprockets-rails"

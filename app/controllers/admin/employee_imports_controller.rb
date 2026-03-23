@@ -7,8 +7,11 @@ module Admin
       text/plain
       application/csv
       application/vnd.ms-excel
+      application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
       application/octet-stream
     ].freeze
+
+    ALLOWED_EXTENSIONS = %w[.csv .txt .xlsx .xls].freeze
 
     def new
       authorize :employee_import
@@ -20,12 +23,13 @@ module Admin
 
       unless file.present?
         return redirect_to new_admin_employee_import_path,
-                           alert: "Veuillez sélectionner un fichier CSV."
+                           alert: "Veuillez sélectionner un fichier."
       end
 
-      unless ALLOWED_CONTENT_TYPES.include?(file.content_type)
+      ext = File.extname(file.original_filename.to_s).downcase
+      unless ALLOWED_EXTENSIONS.include?(ext) || ALLOWED_CONTENT_TYPES.include?(file.content_type)
         return redirect_to new_admin_employee_import_path,
-                           alert: "Format invalide. Veuillez uploader un fichier CSV."
+                           alert: "Format invalide. Formats acceptés : CSV, XLSX."
       end
 
       result = EmployeeCsvImportService.new(file, current_organization).call

@@ -37,16 +37,16 @@
 
         <!-- Text -->
         <p class="text-base font-medium text-gray-700 dark:text-gray-200">
-          Glissez votre fichier CSV ici
+          Glissez votre fichier ici
         </p>
-        <p class="text-sm text-gray-400 dark:text-gray-500 mt-1 mb-4">ou cliquez pour sélectionner</p>
+        <p class="text-sm text-gray-400 dark:text-gray-500 mt-1 mb-4">CSV ou Excel (.xlsx) — ou cliquez pour sélectionner</p>
 
         <!-- File input (hidden) -->
         <input
           type="file"
           name="file"
           id="csv-file-input"
-          accept=".csv,.txt"
+          accept=".csv,.txt,.xlsx,.xls"
           class="hidden"
           onchange="updateFileName(this)"
         >
@@ -69,7 +69,7 @@
           </svg>
           Télécharger le modèle CSV
         </a>
-        <span class="text-xs text-gray-400 dark:text-gray-500">Max 5 Mo — CSV ou Excel (UTF-8)</span>
+        <span class="text-xs text-gray-400 dark:text-gray-500">Max 5 Mo — CSV ou Excel (.xlsx)</span>
       </div>
 
       <!-- Submit -->
