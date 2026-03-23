@@ -121,12 +121,29 @@ class EmployeeCsvImportService
 
   def parse_csv
     raw = @file.read
-    content = raw.encode('UTF-8', invalid: :replace, undef: :replace, replace: '?')
-    content.gsub!("\xEF\xBB\xBF", '')
+    content = decode_to_utf8(raw)
+    content.gsub!("\xEF\xBB\xBF", '') # strip UTF-8 BOM
     sep = content.count(';') >= content.count(',') ? ';' : ','
     CSV.parse(content, headers: true, col_sep: sep,
               header_converters: ->(h) { normalize_header(h) })
        .map(&:to_h)
+  end
+
+  # Try common encodings used by Excel (Windows-1252, ISO-8859-1) before UTF-8 fallback.
+  def decode_to_utf8(raw)
+    return raw if raw.encoding == Encoding::UTF_8 && raw.valid_encoding?
+
+    %w[UTF-8 Windows-1252 ISO-8859-1].each do |enc|
+      begin
+        converted = raw.dup.force_encoding(enc).encode('UTF-8')
+        return converted if converted.valid_encoding?
+      rescue Encoding::InvalidByteSequenceError, Encoding::UndefinedConversionError
+        next
+      end
+    end
+
+    # Last resort — replace invalid bytes
+    raw.encode('UTF-8', invalid: :replace, undef: :replace, replace: '?')
   end
 
   # ── Shared helpers ───────────────────────────────────────────────────────────
