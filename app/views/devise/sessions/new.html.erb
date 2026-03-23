@@ -18,7 +18,9 @@
           </svg>
           <div class="text-left">
             <p class="text-sm font-semibold text-green-800 dark:text-green-200"><%= notice %></p>
-            <p class="text-xs text-green-700 dark:text-green-300 mt-1">Pensez à vérifier vos <strong>spams</strong> si vous ne le voyez pas dans les 2 minutes.</p>
+            <% if notice.to_s.downcase.include?("email") || notice.to_s.downcase.include?("mail") %>
+              <p class="text-xs text-green-700 dark:text-green-300 mt-1">Pensez à vérifier vos <strong>spams</strong> si vous ne le voyez pas dans les 2 minutes.</p>
+            <% end %>
           </div>
         </div>
       </div>
