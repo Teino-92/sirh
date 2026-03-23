@@ -12,8 +12,8 @@ class EmployeeCsvImportService
     'department'    => %w[departement department dept service],
     'job_title'     => %w[poste titre fonction job_title],
     'contract_type' => %w[contrat type_contrat contract contract_type type_de_contrat],
-    'start_date'    => %w[date_entree date_arrivee date_debut start_date date_d_entree],
-    'end_date'      => %w[date_fin end_date],
+    'start_date'    => %w[date_entree date_arrivee date_debut start_date date_d_entree date_d_arrivee],
+    'end_date'      => %w[date_fin end_date date_de_fin],
     'gross_salary'  => %w[salaire salaire_brut gross_salary remuneration],
     'manager_email' => %w[manager manager_email responsable],
     'role'          => %w[role profil]
@@ -131,7 +131,7 @@ class EmployeeCsvImportService
                        .gsub(/[ôö]/, 'o')
                        .gsub(/[ùûü]/, 'u')
                        .gsub(/[ç]/, 'c')
-                       .gsub(/[\s\-()]+/, '_')
+                       .gsub(/[\s\-()'']+/, '_')
                        .gsub(/_+/, '_')
                        .gsub(/\A_|_\z/, '')
     COLUMN_ALIASES.each do |canonical, aliases|
