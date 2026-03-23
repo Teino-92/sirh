@@ -1,8 +1,8 @@
 # PROJECT SUMMARY — IZI-RH
 
-**Dernière mise à jour** : 2026-03-16
-**Version** : 1.8.0
-**Statut** : En production sur izi-rh.com — billing câblé, monitoring actif, pas encore de client payant
+**Dernière mise à jour** : 2026-03-23
+**Version** : 2.0.0
+**Statut** : En production sur izi-rh.com — billing câblé, monitoring actif, sécurité renforcée
 **Cible** : 200 organisations, 10 000+ employés
 
 ---
@@ -19,7 +19,7 @@ Izi-RH est un SIRH SaaS **manager-first** pour les PME françaises. Architecture
 |--------|------------|
 | Backend | Ruby 3.3.5 / Rails 7.1.6 |
 | Base de données | PostgreSQL (multi-tenant via acts_as_tenant) |
-| Jobs | async adapter (Render free tier — pas de Sidekiq) |
+| Jobs | async adapter (Render Starter — Upstash + Sidekiq au 1er client SIRH) |
 | Auth | Devise (session) + JWT (API mobile — partiel) |
 | Autorisation | Pundit |
 | Frontend | Tailwind CSS v4, Stimulus, Turbo, Importmap |
@@ -76,18 +76,24 @@ Trial gratuit 30 jours sans CB.
 - CI/CD GitHub Actions (Brakeman + RSpec)
 - **Rules Engine multi-domaines** — 14 triggers / 6 domaines (congés, 1:1, objectifs, formations, onboarding, évaluations)
 - **Délégation de tâches** (`EmployeeDelegation`) — délégation d'approbation à un pair/N+1, UI complète, intégrée dans LeaveRequestPolicy
+- **HR Query Engine IA** — requêtes NL sur 8 domaines (employés, congés, évaluations, onboarding, 1:1, objectifs, pointage, formations) + suggestions cliquables
+- **Magic link upgrade OS → SIRH** — token HMAC signé 7 jours, page de confirmation super-admin
+- **Charte email HTML** — tous les mailers chartés (logo, couleurs, CTA)
+- **Session timeout 24h** — Devise timeoutable
+- **Sécurité renforcée** — OneOnOneObjective cross-tenant guard, OrganizationPolicy, EmployeeImportPolicy, ENV.fetch strict super-admin
 
 ### 🔄 Partiel
 - API mobile (JWT partiel, endpoints présents, sécurité à finaliser)
 
 ### ⏳ À faire
-- Tests Rules Engine multi-domaines (couverture à compléter)
+- Tests services payroll (`PayrollCalculator`, `RttAccrualService`)
 - Tests `EmployeeDelegation` (service + policy + controller)
-- Migration Render → Heroku/Railway (Redis + Sidekiq) quand scale le justifie
+- Upstash Redis + Sidekiq au 1er client SIRH
+- Intégration calendrier OAuth2 (Phase 9)
 
 ---
 
-## MÉTRIQUES TESTS (état 2026-03-16)
+## MÉTRIQUES TESTS (état 2026-03-23)
 
 | Métrique | Valeur |
 |----------|--------|
@@ -96,6 +102,7 @@ Trial gratuit 30 jours sans CB.
 | Coverage global | ~42% |
 | Coverage LeavePolicyEngine | 100% |
 | Coverage billing | ~80% (CheckoutService, UpgradeService, PaymentFailedHandler) |
+| Nouveaux specs | OneOnOneObjective (5), AdminUpgradeMailer magic link, OnboardingTemplatePolicy, BillingPolicy |
 | CI | GitHub Actions — Brakeman + RSpec |
 
 ---
@@ -107,7 +114,10 @@ Trial gratuit 30 jours sans CB.
 - Background jobs utilisent `ActsAsTenant.with_tenant` explicite
 - `RulesEngine#trigger` wrappé dans `ActsAsTenant.with_tenant` (fix C-2 phase 8)
 - `NotificationJob` — employees filtrés par `organization_id` (fix C-1 phase 8)
-- Pundit policies sur toutes les ressources
+- `OneOnOneObjective` — validation `same_organization` (join table sans acts_as_tenant)
+- `TrainingAssignment` dans HrQuery scopé via JOIN sur `trainings.organization_id`
+- Webhook Stripe — tenant mismatch bloqué (subscription metadata vs organization)
+- Pundit policies sur toutes les ressources (OrganizationPolicy, EmployeeImportPolicy ajoutées)
 
 ---
 

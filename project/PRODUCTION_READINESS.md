@@ -1,6 +1,6 @@
 # PRODUCTION READINESS — IZI-RH
 
-**Date audit** : 2026-03-15
+**Date audit** : 2026-03-23
 **Auditeur** : @architect
 **Statut** : 🟢 PRODUCTION-READY — 0 item critique/high/medium restant
 
@@ -57,6 +57,15 @@ L'app est déployée et fonctionnelle sur izi-rh.com. Sentry + Lograge sont en p
 - ✅ **Rack::Attack** — `Rails.cache` (memory_store sur free tier, Redis quand upgrade)
 - ✅ **JWT_SECRET_KEY** configuré sur Render (C-1)
 - ✅ **policy_scope** sur tous les `.find()` — double protection tenant + Pundit (C-2)
+- ✅ **`OneOnOneObjective`** — validation `same_organization` (cross-tenant guard join table)
+- ✅ **`OrganizationPolicy`** + authorize dans OrganizationsController
+- ✅ **`EmployeeImportPolicy`** + authorize dans EmployeeImportsController
+- ✅ **Super admin credentials** — `ENV.fetch` strict, plus de fallbacks hardcodés
+- ✅ **`RESEND_API_KEY`** — TeamMembersController + webhook handler corrigés (SMTP_PASSWORD → RESEND_API_KEY)
+- ✅ **Session timeout 24h** — Devise `:timeoutable`
+- ✅ **Active Record Encryption** — env vars fallback en production (NIR/IBAN)
+- ✅ **Cross-tenant webhook Stripe** — tenant mismatch bloqué dans SubscriptionUpdatedHandler
+- ✅ **Race condition checkout** — `next` + variable locale (vs `return` dans transaction)
 
 ---
 
@@ -75,7 +84,12 @@ L'app est déployée et fonctionnelle sur izi-rh.com. Sentry + Lograge sont en p
 | `SUPER_ADMIN_PASSWORD` | ✅ | Configuré |
 | `JWT_SECRET_KEY` | ✅ | Configuré |
 | `RAILS_MASTER_KEY` | ⚠️ | GitHub Secret pour CI |
+| `ACTIVE_RECORD_ENCRYPTION_PRIMARY_KEY` | ✅ | Chiffrement NIR/IBAN |
+| `ACTIVE_RECORD_ENCRYPTION_DETERMINISTIC_KEY` | ✅ | Chiffrement déterministe |
+| `ACTIVE_RECORD_ENCRYPTION_KEY_DERIVATION_SALT` | ✅ | Dérivation de clé |
+| `RESEND_API_KEY` | ✅ | API email Resend |
+| `ANTHROPIC_API_KEY` | ✅ | HR Query Engine IA |
 
 ---
 
-*Dernière mise à jour : 2026-03-15 par @architect*
+*Dernière mise à jour : 2026-03-23 par @architect*

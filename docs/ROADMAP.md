@@ -1,7 +1,7 @@
 # Roadmap Izi-RH
 
-**Dernière mise à jour** : 2026-03-17
-**Version** : 1.9.0
+**Dernière mise à jour** : 2026-03-23
+**Version** : 2.0.0
 
 ---
 
@@ -213,6 +213,44 @@
 
 ---
 
+## Phase 8d — Sécurité, UX & Qualité ✅ TERMINÉE (2026-03-23)
+
+### Sécurité
+- ✅ `OneOnOneObjective` — validation `same_organization` (cross-tenant guard sur join table)
+- ✅ `OrganizationPolicy` + `authorize` dans `Admin::OrganizationsController` (show/edit/update)
+- ✅ `EmployeeImportPolicy` + `authorize` dans `Admin::EmployeeImportsController` (new/create)
+- ✅ `TrainingAssignment` dans HrQuery scopé via JOIN sur `trainings.organization_id`
+- ✅ Super admin credentials — fallbacks hardcodés supprimés, `ENV.fetch` strict
+- ✅ `SMTP_PASSWORD` → `RESEND_API_KEY` dans `TeamMembersController#send_invitation_email`
+- ✅ Cross-tenant guard webhook Stripe (`subscription_updated_handler`) — tenant mismatch bloqué
+- ✅ Session timeout 24h — Devise `:timeoutable`
+- ✅ Active Record Encryption — fallback env vars en production (`ACTIVE_RECORD_ENCRYPTION_*`)
+
+### HR Query Engine — Extension domaines
+- ✅ 4 nouveaux blocs de filtres : `one_on_one`, `objective`, `time_tracking`, `training`
+- ✅ 6 nouvelles colonnes output : `last_one_on_one_date`, `one_on_one_count`, `objective_status`, `objective_count`, `late_checkins_count`, `training_status`
+- ✅ Suggestions cliquables sur la page HR Query (6 pills)
+
+### UX & SEO
+- ✅ H1 landing page optimisé SEO : "Gérez vos équipes et vos RH en un seul outil — de la gestion manager au SIRH complet"
+- ✅ `caret-color` visible sur tous les inputs (light `#4f46e5` / dark `#818cf8`)
+- ✅ Message "vérifier vos spams" conditionné aux notices email uniquement
+- ✅ Description conditions rules engine reformulée en langage naturel
+
+### Infrastructure
+- ✅ Render **Starter** (plus Free) — plus de cold start
+- ✅ Décision Upstash Redis au 1er client SIRH (vs Redis Render)
+
+### Tests
+- ✅ `OneOnOneObjective` spec — validation cross-tenant (5 tests)
+- ✅ Migration DB test à jour (`onboarding_template_tasks_count`)
+
+### Décisions techniques
+- ✅ Upstash > Redis Render — pay-per-request, free tier, zéro maintenance
+- ✅ `:async` adapter conservé jusqu'au 1er client SIRH (décision consciente)
+
+---
+
 ## Phase 9 — Intégration Calendrier OAuth2 ⏳ PLANIFIÉE
 
 > Sprint architecturalement défini — implémentation non démarrée.
@@ -405,6 +443,10 @@ Nécessite un accord partenaire avec chaque éditeur — à initier dès les pre
 | 2026-03-17 | `SeatSyncService` re-raise Stripe error | Job doit être retryable — swallow silencieux = billing stale sans alerte |
 | 2026-03-17 | Seat item créé uniquement si quantity > 0 | Évite invoices Stripe €0 qui polluent l'historique client |
 | 2026-03-17 | Silae/PayFit : attendre partenariat (vs CSV custom) | API officielle uniquement — fragile sans partenariat ; base CSV déjà en place pour V1 manuelle |
+| 2026-03-20 | Render Starter (vs Free) | Plus de cold start — premier vrai client en approche |
+| 2026-03-23 | Upstash Redis au 1er client SIRH (vs Redis Render) | Pay-per-request, free tier, zéro maintenance — Redis Render à $10/mois fixe inutile avant volume |
+| 2026-03-23 | `ENV.fetch` strict sans fallback pour super admin | Fail fast au boot si variable absente — empêche accès avec credentials hardcodés |
+| 2026-03-23 | HrQuery étendu à 4 domaines supplémentaires | 1:1, objectifs, pointage, formations — moteur NL-to-JSON inchangé, schéma étendu |
 
 ---
 

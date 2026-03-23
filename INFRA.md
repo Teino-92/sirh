@@ -11,15 +11,15 @@ Objectif : tester, démo, premiers utilisateurs. Pas de SLA, sleep acceptable.
 
 | Composant     | Service          | Plan       | Coût  | Notes                          |
 |---------------|------------------|------------|-------|--------------------------------|
-| App Rails     | Render.com       | Free       | 0€    | Sleep après 15min d'inactivité |
-| PostgreSQL    | Supabase         | Free       | 0€    | 500MB, 2 projets max           |
-| Jobs (Solid Queue) | Render      | Free (même process) | 0€ | Pas de worker séparé       |
-| Emails        | Resend           | Free       | 0€    | 3 000 emails/mois              |
-| Fichiers      | Cloudflare R2    | Free       | 0€    | 10GB, 0€ egress                |
-| CI/CD         | GitHub Actions   | Free       | 0€    | 2 000 min/mois                 |
-| DNS / SSL     | Cloudflare       | Free       | 0€    | SSL automatique                |
+| App Rails     | Render.com       | **Starter** | ~7€   | Pas de sleep, SLA 99.95%       |
+| PostgreSQL    | Render.com       | Free        | 0€    | PostgreSQL lié via render.yaml |
+| Jobs          | Render.com       | Starter (async adapter) | 0€ | Pas de worker séparé — Upstash + Sidekiq au 1er client SIRH |
+| Emails        | Resend           | Free        | 0€    | 3 000 emails/mois              |
+| Fichiers      | Cloudinary       | Free        | 0€    | Avatars Active Storage         |
+| CI/CD         | GitHub Actions   | Free        | 0€    | 2 000 min/mois                 |
+| DNS / SSL     | Cloudflare       | Free        | 0€    | SSL automatique                |
 
-**Total : 0€/mois**
+**Total : ~7€/mois** (Render Starter depuis 2026-03-20)
 
 ### Variables d'environnement Render (Phase 1)
 
