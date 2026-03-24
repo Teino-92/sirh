@@ -47,7 +47,8 @@ class Rack::Attack
   ### Custom Throttle Response ###
 
   # When a client is throttled, return 429 with Retry-After header
-  self.throttled_responder = lambda do |env|
+  self.throttled_responder = lambda do |req|
+    env        = req.env
     match_data = env['rack.attack.match_data'] || {}
     now        = match_data[:epoch_time] || Time.now.to_i
     period     = match_data[:period]     || 60
