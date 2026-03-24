@@ -46,5 +46,6 @@ PERFORMANCE_LAYER_ARCHITECTURE.md
 SPRINT_*.md
 .env
 .env.local
+.claude/settings.json
 
 /config/credentials/development.key
