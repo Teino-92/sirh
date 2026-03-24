@@ -6,7 +6,21 @@ if (dsn) {
     dsn,
     sendDefaultPii: true,
     integrations: [
-      Sentry.feedbackIntegration({ colorScheme: "system" }),
+      Sentry.feedbackIntegration({
+        colorScheme: "system",
+        buttonLabel: "Signaler un bug",
+        submitButtonLabel: "Envoyer",
+        cancelButtonLabel: "Annuler",
+        formTitle: "Signaler un problème",
+        nameLabel: "Nom",
+        namePlaceholder: "Votre nom",
+        emailLabel: "Email",
+        emailPlaceholder: "votre@email.com",
+        messageLabel: "Description",
+        messagePlaceholder: "Décrivez le problème rencontré…",
+        successMessageText: "Merci pour votre retour !",
+        isRequiredLabel: "(obligatoire)",
+      }),
     ],
   })
 }
