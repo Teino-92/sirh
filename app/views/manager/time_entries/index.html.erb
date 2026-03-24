@@ -60,6 +60,14 @@
             <tr class="bg-gray-50 dark:bg-gray-900">
               <td colspan="6" class="px-6 py-2 text-sm font-semibold text-gray-700 dark:text-gray-300">
                 Semaine du <%= l(week_start, format: :short) %>
+                <% if @complementary_hours_by_week
+                     hc = @complementary_hours_by_week[week_start]
+                     hc&.applicable? && (hc.over_legal || hc.near_ceiling) %>
+                  <% pill_color = (hc.over_conventional || hc.near_ceiling) ? "red" : "orange" %>
+                  <span class="ml-2 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-<%= pill_color %>-100 text-<%= pill_color %>-800 dark:bg-<%= pill_color %>-900/40 dark:text-<%= pill_color %>-300">
+                    HC : <%= hc.complementary.round(2) %>h / limite <%= hc.active_limit.round(2) %>h
+                  </span>
+                <% end %>
               </td>
             </tr>
 

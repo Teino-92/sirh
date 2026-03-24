@@ -48,7 +48,7 @@ RSpec.describe OneOnOne, type: :model do
         other_manager = create(:employee, organization: other_org, role: 'manager')
         one_on_one = build(:one_on_one, organization: organization, manager: other_manager, employee: employee)
         expect(one_on_one).not_to be_valid
-        expect(one_on_one.errors[:base]).to include('manager and employee must belong to the same organization')
+        expect(one_on_one.errors[:manager]).to include('must belong to the same organization')
       end
 
       it 'is invalid if employee is from different organization' do
@@ -56,7 +56,7 @@ RSpec.describe OneOnOne, type: :model do
         other_employee = create(:employee, organization: other_org)
         one_on_one = build(:one_on_one, organization: organization, manager: manager, employee: other_employee)
         expect(one_on_one).not_to be_valid
-        expect(one_on_one.errors[:base]).to include('manager and employee must belong to the same organization')
+        expect(one_on_one.errors[:employee]).to include('must belong to the same organization')
       end
     end
   end

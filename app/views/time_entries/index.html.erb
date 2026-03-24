@@ -52,6 +52,24 @@
       </div>
     </div>
 
+    <!-- Complementary Hours Warning (part-time employees only) -->
+    <% if @complementary_hours&.applicable? && (@complementary_hours.over_legal || @complementary_hours.near_ceiling) %>
+      <% ch = @complementary_hours %>
+      <% if ch.over_conventional || ch.near_ceiling %>
+        <% banner_color = "red" %>
+        <% banner_msg = "Attention : vous avez atteint #{ch.complementary.round(2)}h d'heures complémentaires cette semaine, soit au-dessus de la limite #{ch.regime == 'conventional' ? 'conventionnelle' : 'légale'} de #{ch.active_limit.round(2)}h. Au-delà de #{ch.ceiling}h hebdomadaires, votre contrat pourrait être requalifié en temps plein." %>
+      <% else %>
+        <% banner_color = "orange" %>
+        <% banner_msg = "Vous avez effectué #{ch.complementary.round(2)}h d'heures complémentaires cette semaine (limite légale : #{ch.legal_limit.round(2)}h). Pensez à en informer votre manager." %>
+      <% end %>
+      <div class="mb-6 rounded-lg bg-<%= banner_color %>-50 dark:bg-<%= banner_color %>-900/30 border border-<%= banner_color %>-300 dark:border-<%= banner_color %>-700 px-5 py-4 flex items-start gap-3">
+        <svg class="h-5 w-5 text-<%= banner_color %>-600 dark:text-<%= banner_color %>-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+        </svg>
+        <p class="text-sm text-<%= banner_color %>-800 dark:text-<%= banner_color %>-200"><%= banner_msg %></p>
+      </div>
+    <% end %>
+
     <!-- Quick Clock In/Out -->
     <% if @current_shift %>
       <%= button_to clock_out_time_entries_path, method: :post, class: "w-full sm:w-auto bg-red-600 hover:bg-red-700 text-white font-semibold py-3 px-8 rounded-lg transition-colors shadow-lg" do %>

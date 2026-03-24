@@ -64,6 +64,11 @@ class Organization < ApplicationRecord
     settings.fetch('rtt_enabled', default_settings[:rtt_enabled])
   end
 
+  # 'legal' (10%) or 'conventional' (33% — requires collective agreement)
+  def complementary_hours_regime
+    settings.fetch('complementary_hours_regime', 'legal')
+  end
+
   def payroll_webhook_url
     settings['payroll_webhook_url'].presence
   end

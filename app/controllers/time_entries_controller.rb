@@ -20,6 +20,14 @@ class TimeEntriesController < ApplicationController
 
     # Group by day for summary
     @time_entries_by_day = @time_entries.completed.group_by(&:worked_date)
+
+    # Complementary hours warning for part-time employees
+    if @employee.work_schedule&.part_time?
+      @complementary_hours = ComplementaryHoursCalculatorService.new(
+        @employee,
+        week_start: Date.current.beginning_of_week
+      ).call
+    end
   end
 
   def clock_in

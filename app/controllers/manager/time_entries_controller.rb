@@ -15,6 +15,18 @@ module Manager
 
       @pending_entries = @time_entries.pending_validation
       @validated_entries = @time_entries.validated
+
+      # Complementary hours summary per week for part-time employees
+      if @team_member.work_schedule&.part_time?
+        @complementary_hours_by_week = @time_entries
+          .group_by { |te| te.worked_date.beginning_of_week }
+          .transform_values do |entries|
+            ComplementaryHoursCalculatorService.new(
+              @team_member,
+              week_start: entries.first.worked_date.beginning_of_week
+            ).call
+          end
+      end
     end
 
     def validate_week
