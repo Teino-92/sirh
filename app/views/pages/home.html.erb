@@ -279,13 +279,14 @@
       <%# Pills %>
       <div class="flex flex-wrap justify-center gap-3 mb-8">
         <% [
-          { key: 'onboarding', label: 'Onboarding',     icon: 'M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z', active: 'bg-orange-100 text-orange-700 border-orange-200' },
-          { key: 'oneonone',   label: 'Entretiens 1:1', icon: 'M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z', active: 'bg-violet-100 text-violet-700 border-violet-200' },
-          { key: 'objectifs',  label: 'Objectifs & OKR', icon: 'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z', active: 'bg-green-100 text-green-700 border-green-200' },
-          { key: 'formation',  label: 'Formation',       icon: 'M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253', active: 'bg-blue-100 text-blue-700 border-blue-200' },
+          { key: 'onboarding', label: 'Onboarding',     icon: 'M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z', bg: '#ffedd5', color: '#c2410c', border: '#fed7aa' },
+          { key: 'oneonone',   label: 'Entretiens 1:1', icon: 'M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z', bg: '#ede9fe', color: '#6d28d9', border: '#ddd6fe' },
+          { key: 'objectifs',  label: 'Objectifs & OKR', icon: 'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z', bg: '#dcfce7', color: '#15803d', border: '#bbf7d0' },
+          { key: 'formation',  label: 'Formation',       icon: 'M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253', bg: '#dbeafe', color: '#1d4ed8', border: '#bfdbfe' },
         ].each do |pill| %>
           <button @click="tab = '<%= pill[:key] %>'"
-                  :class="tab === '<%= pill[:key] %>' ? '<%= pill[:active] %>' : 'bg-white text-gray-600 border-gray-200 hover:border-indigo-300 hover:text-indigo-600'"
+                  :style="tab === '<%= pill[:key] %>' ? 'background-color:<%= pill[:bg] %>; color:<%= pill[:color] %>; border-color:<%= pill[:border] %>' : ''"
+                  :class="tab !== '<%= pill[:key] %>' ? 'bg-white text-gray-600 border-gray-200 hover:border-indigo-300 hover:text-indigo-600' : ''"
                   class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border text-sm font-medium transition-all duration-200">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="<%= pill[:icon] %>"/></svg>
             <%= pill[:label] %>
@@ -458,9 +459,9 @@
   </div>
 </section>
 
-<div style="background-color:#0f0a2e" class="overflow-hidden">
-  <svg viewBox="0 0 1440 60" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-full block" aria-hidden="true">
-    <path d="M0,0 C360,60 1080,0 1440,60 L1440,60 L0,60 Z" fill="white"/>
+<div style="background-color:#0f0a2e; margin-bottom:-2px; line-height:0" aria-hidden="true">
+  <svg viewBox="0 0 1440 80" preserveAspectRatio="none" class="w-full block" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0,0 C360,80 1080,0 1440,80 L1440,80 L0,80 Z" fill="white"/>
   </svg>
 </div>
 
