@@ -35,6 +35,10 @@ Rails.application.routes.draw do
   # Trial registration (public)
   resource :trial_registration, only: [:create]
 
+  # Product pages (public)
+  get '/manager-os', to: 'pages#manager_os', as: :manager_os
+  get '/sirh',       to: 'pages#sirh',       as: :sirh
+
   # Legal pages (public)
   get '/cgu',                          to: 'pages#cgu',                          as: :cgu
   get '/politique-de-confidentialite', to: 'pages#politique_de_confidentialite', as: :politique_de_confidentialite

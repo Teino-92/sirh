@@ -146,12 +146,21 @@
     </script>
   </head>
 
-  <body class="bg-white dark:bg-gray-950 text-gray-900 dark:text-gray-100 antialiased">
+  <body class="bg-white dark:bg-gray-950 text-gray-900 dark:text-gray-100 antialiased" style="<%= yield :body_style %>">
     <!-- P2 Accessibilité: skip to content -->
     <a href="#main-content" class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:bg-indigo-600 focus:text-white focus:rounded-lg focus:text-sm focus:font-semibold">
       Aller au contenu principal
     </a>
 
-    <%= yield %>
+    <!-- Decorative background layer — fixed, behind all content -->
+    <% if content_for?(:bg_decoration) %>
+      <div aria-hidden="true" style="position:fixed; inset:0; pointer-events:none; z-index:0; overflow:hidden">
+        <%= yield :bg_decoration %>
+      </div>
+    <% end %>
+
+    <div style="position:relative; z-index:1">
+      <%= yield %>
+    </div>
   </body>
 </html>

@@ -1,69 +1,45 @@
 <%# Landing page Izi-RH — layout: marketing %>
 
 <%# ─── NAVBAR ─────────────────────────────────────────────────────────────── %>
-<nav class="sticky top-0 z-50 bg-white/95 dark:bg-gray-950/95 backdrop-blur border-b border-gray-100 dark:border-gray-800"
+<nav class="sticky top-0 z-50 bg-white/95 backdrop-blur-sm"
      x-data="{ mobileOpen: false }">
   <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
     <div class="flex items-center justify-between h-16">
-
       <img src="/izi_rh_logo.svg" alt="Izi-RH" class="h-7 w-auto">
 
-      <!-- Desktop nav -->
       <div class="hidden md:flex items-center gap-8">
-        <a href="#manager-os"    class="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-indigo-600 transition-colors">Manager OS</a>
-        <a href="#fonctionnalites" class="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-indigo-600 transition-colors">SIRH</a>
-        <a href="#tarifs"        class="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-indigo-600 transition-colors">Tarifs</a>
-        <a href="#faq"           class="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-indigo-600 transition-colors">FAQ</a>
+        <%= link_to "Manager OS", manager_os_path, class: "text-sm font-medium text-gray-500 hover:text-indigo-600 transition-colors" %>
+        <%= link_to "SIRH", sirh_path, class: "text-sm font-medium text-gray-500 hover:text-indigo-600 transition-colors" %>
+        <a href="#tarifs"          class="text-sm font-medium text-gray-500 hover:text-indigo-600 transition-colors">Tarifs</a>
+        <a href="#faq"             class="text-sm font-medium text-gray-500 hover:text-indigo-600 transition-colors">FAQ</a>
       </div>
 
       <div class="flex items-center gap-3">
-        <%= link_to new_employee_session_path, class: "hidden sm:block text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-indigo-600 transition-colors" do %>
-          Connexion
-        <% end %>
+        <%= link_to new_employee_session_path, class: "hidden sm:block text-sm font-medium text-gray-500 hover:text-indigo-600 transition-colors" do %>Connexion<% end %>
         <a href="#essai" class="inline-flex items-center gap-1.5 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold rounded-lg transition-colors shadow-sm">
           Essai gratuit
-          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
-          </svg>
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
         </a>
-        <!-- Hamburger -->
-        <button @click="mobileOpen = !mobileOpen"
-                :aria-expanded="mobileOpen.toString()"
-                aria-controls="mobile-menu"
-                aria-label="Menu de navigation"
-                class="md:hidden p-2 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
-          <svg x-show="!mobileOpen" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
-          </svg>
-          <svg x-show="mobileOpen" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="display:none">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-          </svg>
+        <button @click="mobileOpen = !mobileOpen" :aria-expanded="mobileOpen.toString()" aria-controls="mobile-menu" aria-label="Menu de navigation"
+                class="md:hidden p-2 rounded-lg text-gray-500 hover:bg-gray-100 transition-colors">
+          <svg x-show="!mobileOpen" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+          <svg x-show="mobileOpen" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="display:none"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
         </button>
       </div>
     </div>
   </div>
 
-  <!-- Mobile menu -->
-  <div id="mobile-menu"
-       x-show="mobileOpen"
-       @click.outside="mobileOpen = false"
-       x-transition:enter="transition ease-out duration-150"
-       x-transition:enter-start="opacity-0 -translate-y-2"
-       x-transition:enter-end="opacity-100 translate-y-0"
-       x-transition:leave="transition ease-in duration-100"
-       x-transition:leave-start="opacity-100 translate-y-0"
-       x-transition:leave-end="opacity-0 -translate-y-2"
-       class="md:hidden border-t border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-950"
-       style="display:none">
+  <div id="mobile-menu" x-show="mobileOpen" @click.outside="mobileOpen = false"
+       x-transition:enter="transition ease-out duration-150" x-transition:enter-start="opacity-0 -translate-y-2" x-transition:enter-end="opacity-100 translate-y-0"
+       x-transition:leave="transition ease-in duration-100" x-transition:leave-start="opacity-100 translate-y-0" x-transition:leave-end="opacity-0 -translate-y-2"
+       class="md:hidden border-t border-gray-100 bg-white" style="display:none">
     <div class="px-4 py-3 space-y-1">
-      <a href="#manager-os"    @click="mobileOpen = false" class="block px-3 py-2.5 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800">Manager OS</a>
-      <a href="#fonctionnalites" @click="mobileOpen = false" class="block px-3 py-2.5 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800">SIRH</a>
-      <a href="#tarifs"        @click="mobileOpen = false" class="block px-3 py-2.5 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800">Tarifs</a>
-      <a href="#faq"           @click="mobileOpen = false" class="block px-3 py-2.5 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800">FAQ</a>
-      <div class="pt-2 border-t border-gray-100 dark:border-gray-800">
-        <%= link_to new_employee_session_path, class: "block px-3 py-2.5 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800" do %>
-          Connexion
-        <% end %>
+      <%= link_to "Manager OS", manager_os_path, "@click": "mobileOpen = false", class: "block px-3 py-2.5 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50" %>
+      <%= link_to "SIRH", sirh_path, "@click": "mobileOpen = false", class: "block px-3 py-2.5 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50" %>
+      <a href="#tarifs"          @click="mobileOpen = false" class="block px-3 py-2.5 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50">Tarifs</a>
+      <a href="#faq"             @click="mobileOpen = false" class="block px-3 py-2.5 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50">FAQ</a>
+      <div class="pt-2 border-t border-gray-100">
+        <%= link_to new_employee_session_path, class: "block px-3 py-2.5 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50" do %>Connexion<% end %>
       </div>
     </div>
   </div>
@@ -71,161 +47,196 @@
 
 <%# ─── HERO ───────────────────────────────────────────────────────────────── %>
 <main id="main-content">
-<section class="relative overflow-visible bg-gradient-to-br from-indigo-50 via-white to-violet-50 dark:from-gray-900 dark:via-gray-950 dark:to-indigo-950 pt-20 pb-0">
-  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="text-center max-w-4xl mx-auto">
+<section class="relative overflow-hidden bg-white pt-20 pb-0">
 
-      <!-- Badge -->
-      <div data-hero="badge" class="inline-flex items-center gap-2 px-3 py-1.5 bg-indigo-100 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300 text-xs font-semibold rounded-full mb-6">
-        <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
-          <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+
+  <div class="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="grid lg:grid-cols-2 gap-16 items-center">
+
+      <%# Colonne texte %>
+      <div>
+        <div data-hero="badge" class="inline-flex items-center gap-2 px-3 py-1.5 bg-indigo-50 text-indigo-700 text-xs font-semibold rounded-full mb-6 border border-indigo-100">
+          <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+          Concu par des managers, pour les managers
+        </div>
+
+        <h1 data-hero="title" class="font-extrabold text-gray-900 leading-[1.1] tracking-tight mb-6" style="font-size: clamp(2rem, 5vw, 3.5rem)">
+          Gérez vos équipes.<br>
+          <span class="text-indigo-600">Sans les tableurs.</span>
+        </h1>
+
+        <p data-hero="subtitle" class="text-lg text-gray-500 mb-8 leading-relaxed max-w-lg">
+          Onboarding, objectifs, 1:1, congés, pointage — tout ce qu'un manager gère dans 4 outils différents, réuni en un seul endroit. Simple, rapide, pensé pour les équipes françaises.
+        </p>
+
+        <div data-hero="ctas" class="flex flex-col sm:flex-row gap-3 mb-10">
+          <a href="#essai-manager-os" class="inline-flex items-center justify-center gap-2 px-8 py-4 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-xl transition-colors shadow-lg shadow-indigo-200 text-base whitespace-nowrap">
+            Essai gratuit 30 jours
+            <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
+          </a>
+          <a href="#tarifs" class="inline-flex items-center justify-center gap-2 px-8 py-4 bg-gray-50 hover:bg-gray-100 text-gray-700 font-semibold rounded-xl transition-colors border border-gray-200 text-base whitespace-nowrap">
+            Voir les tarifs
+          </a>
+        </div>
+
+        <div data-hero="badges" class="flex flex-wrap gap-3">
+          <span class="inline-flex items-center gap-1.5 text-xs font-medium text-gray-500">
+            <svg class="w-4 h-4 text-green-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+            Sans carte bancaire
+          </span>
+          <span class="inline-flex items-center gap-1.5 text-xs font-medium text-gray-500">
+            <svg class="w-4 h-4 text-green-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+            Données en Europe · RGPD
+          </span>
+          <span class="inline-flex items-center gap-1.5 text-xs font-medium text-gray-500">
+            <svg class="w-4 h-4 text-green-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+            Conforme Code du Travail
+          </span>
+        </div>
+      </div>
+
+      <%# Colonne illustration SVG %>
+      <div data-hero="illustration" class="relative" style="display:block">
+        <%# Blob de fond %>
+        <svg class="absolute inset-0 w-full h-full" viewBox="0 0 500 500" fill="none" aria-hidden="true">
+          <path d="M420,280 C440,340 390,420 320,440 C250,460 160,430 120,370 C80,310 100,210 160,160 C220,110 310,80 370,120 C430,160 400,220 420,280Z" fill="#eef2ff"/>
         </svg>
-        Conçu par des managers, pour les managers
-      </div>
 
-      <h1 data-hero="title" class="font-extrabold text-gray-900 dark:text-white leading-tight tracking-tight mb-6"
-          style="font-size: clamp(1.875rem, 5vw, 3.75rem)">Gérez vos équipes et vos RH en un seul outil —<br>de la <span class="text-indigo-600">gestion manager</span> au <span class="text-indigo-600">SIRH complet</span></h1>
+        <%# Dashboard card simulé %>
+        <div class="relative z-10 p-6">
 
-      <p data-hero="subtitle" class="text-lg sm:text-xl text-gray-600 dark:text-gray-300 mb-8 max-w-2xl mx-auto leading-relaxed">
-        Onboarding, objectifs, 1:1, formation — tout ce qu'un manager gère aujourd'hui dans 4 outils différents,
-        réuni en un seul endroit. Simple, rapide, pensé pour les équipes françaises.
-      </p>
+          <%# Card principale %>
+          <div class="bg-white rounded-2xl shadow-xl border border-gray-100 p-5 mb-4">
+            <div class="flex items-center justify-between mb-4">
+              <div>
+                <div class="text-xs font-semibold text-gray-400 uppercase tracking-wide">Équipe · Semaine</div>
+                <div class="text-lg font-bold text-gray-900 mt-0.5">Vue manager</div>
+              </div>
+              <div class="w-9 h-9 bg-indigo-100 rounded-xl flex items-center justify-center">
+                <svg class="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+              </div>
+            </div>
+            <% [["Marie D.", "Onboarding J+3", "bg-orange-100 text-orange-700", "En cours"], ["Lucas B.", "1:1 cette semaine", "bg-violet-100 text-violet-700", "Planifié"], ["Sophie R.", "Objectif Q2 · 80%", "bg-green-100 text-green-700", "On track"]].each do |name, task, badge_class, status| %>
+            <div class="flex items-center justify-between py-2.5 border-b border-gray-50 last:border-0">
+              <div class="flex items-center gap-3">
+                <div class="w-7 h-7 rounded-full bg-indigo-100 flex items-center justify-center text-xs font-bold text-indigo-600"><%= name.split.map(&:first).join %></div>
+                <div>
+                  <div class="text-sm font-semibold text-gray-800"><%= name %></div>
+                  <div class="text-xs text-gray-400"><%= task %></div>
+                </div>
+              </div>
+              <span class="text-xs font-medium px-2 py-0.5 rounded-full <%= badge_class %>"><%= status %></span>
+            </div>
+            <% end %>
+          </div>
 
-      <!-- Trust badges -->
-      <div data-hero="badges" class="grid grid-cols-2 sm:flex sm:flex-wrap sm:justify-center gap-3 mb-10">
-        <span class="inline-flex justify-center items-center gap-1.5 px-3 py-1.5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-full text-xs font-medium text-gray-600 dark:text-gray-300 shadow-sm">
-          <svg class="w-3.5 h-3.5 text-green-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
-          Essai 30 jours sans CB
-        </span>
-        <span class="inline-flex justify-center items-center gap-1.5 px-3 py-1.5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-full text-xs font-medium text-gray-600 dark:text-gray-300 shadow-sm">
-          <svg class="w-3.5 h-3.5 text-green-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
-          Données en Europe · RGPD
-        </span>
-        <span class="inline-flex justify-center items-center gap-1.5 px-3 py-1.5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-full text-xs font-medium text-gray-600 dark:text-gray-300 shadow-sm">
-          <svg class="w-3.5 h-3.5 text-green-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
-          Conforme Code du Travail
-        </span>
-        <span class="inline-flex justify-center items-center gap-1.5 px-3 py-1.5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-full text-xs font-medium text-gray-600 dark:text-gray-300 shadow-sm">
-          <svg class="w-3.5 h-3.5 text-green-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
-          Prêt en 2 minutes
-        </span>
-      </div>
+          <%# Mini stats %>
+          <div class="grid grid-cols-3 gap-3 mb-3">
+            <div class="bg-white rounded-xl border border-gray-100 shadow-sm p-3 text-center">
+              <div class="text-xl font-extrabold text-indigo-600">12</div>
+              <div class="text-xs text-gray-400 mt-0.5">Membres</div>
+            </div>
+            <div class="bg-white rounded-xl border border-gray-100 shadow-sm p-3 text-center">
+              <div class="text-xl font-extrabold text-violet-600">3</div>
+              <div class="text-xs text-gray-400 mt-0.5">1:1 cette sem.</div>
+            </div>
+            <div class="bg-white rounded-xl border border-gray-100 shadow-sm p-3 text-center">
+              <div class="text-xl font-extrabold text-green-600">94%</div>
+              <div class="text-xs text-gray-400 mt-0.5">OKR atteints</div>
+            </div>
+          </div>
 
-      <!-- CTAs -->
-      <div data-hero="ctas" class="flex flex-col sm:flex-row gap-4 justify-center items-center">
-        <a href="#tarifs" class="mt-4 mb-4 w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 font-semibold rounded-xl transition-colors hover:bg-gray-50 dark:hover:bg-gray-700 text-lg">
-          Voir tous les plans
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-          </svg>
-        </a>
+          <%# Notifications en bas %>
+          <div class="flex gap-2">
+            <div class="flex-1 bg-white rounded-xl shadow-md border border-gray-100 px-3 py-2 flex items-center gap-2">
+              <div class="w-7 h-7 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                <svg class="w-3.5 h-3.5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+              </div>
+              <div>
+                <div class="text-xs font-bold text-gray-800 whitespace-nowrap">Congés approuvés</div>
+                <div class="text-xs text-gray-400">Marie · 15–22 août</div>
+              </div>
+            </div>
+            <div class="flex-1 bg-white rounded-xl shadow-md border border-gray-100 px-3 py-2 flex items-center gap-2">
+              <div class="w-7 h-7 bg-orange-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                <svg class="w-3.5 h-3.5 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+              </div>
+              <div>
+                <div class="text-xs font-bold text-gray-800 whitespace-nowrap">Onboarding · 7/10</div>
+                <div class="text-xs text-gray-400">Lucas · J+3</div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
       </div>
 
     </div>
   </div>
 
-  <!-- Hero screenshots — sorti du max-w-4xl pour pleine largeur -->
-  <div data-hero="screenshot" class="mt-12 pb-0" style="overflow:visible; position:relative;">
-    <!-- Mobile : dashboard central uniquement -->
-    <div class="sm:hidden px-6">
-      <div style="border-radius:12px; overflow:hidden; box-shadow:0 20px 60px rgba(0,0,0,0.45);">
-        <img src="/screenshots/dashboard-thomas.png" alt="Dashboard manager Izi-RH" style="width:100%; object-fit:cover; object-position:top left; display:block;">
-      </div>
-    </div>
-    <!-- Desktop : éventail 3D pleine largeur -->
-    <div class="hidden sm:flex max-w-6xl mx-auto px-4" style="align-items:flex-end; justify-content:center; gap:16px; perspective:1400px; perspective-origin:50% 0%;">
-
-      <!-- Gauche -->
-      <div style="flex:0 0 31%; transform:rotateY(22deg); transform-origin:right center; border-radius:12px; overflow:hidden; box-shadow:-8px 24px 56px rgba(0,0,0,0.45); z-index:2;">
-        <img src="/screenshots/dashboard-baptiste.png" alt="Dashboard employé Izi-RH" style="width:100%; height:auto; display:block;">
-      </div>
-
-      <!-- Centre -->
-      <div style="flex:0 0 38%; border-radius:12px; overflow:hidden; box-shadow:0 20px 60px rgba(0,0,0,0.45); z-index:3; position:relative;">
-        <img src="/screenshots/dashboard-thomas.png" alt="Dashboard manager Izi-RH" style="width:100%; height:auto; display:block;">
-      </div>
-
-      <!-- Droite -->
-      <div style="flex:0 0 31%; transform:rotateY(-22deg); transform-origin:left center; border-radius:12px; overflow:hidden; box-shadow:8px 24px 56px rgba(0,0,0,0.45); z-index:2;">
-        <img src="/screenshots/dashboard-nathalie.png" alt="Dashboard RH Izi-RH" style="width:100%; height:auto; display:block;">
-      </div>
-
-    </div>
-  </div>
 </section>
 
-<%# ─── PROBLEM SECTION ─────────────────────────────────────────────────────── %>
-<section class="py-16 bg-white dark:bg-gray-950 border-b border-gray-100 dark:border-gray-800">
+<%# ─── STATS + TÉMOIGNAGES ──────────────────────────────────────────────── %>
+<section class="bg-slate-50 py-16">
   <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
 
-    <!-- Stats -->
-    <div data-animate="stats" class="grid grid-cols-3 gap-8 text-center mb-14">
+    <%# Stats %>
+    <div data-animate="stats" class="grid grid-cols-3 gap-8 text-center mb-16">
       <div data-stat>
-        <div class="text-3xl font-extrabold text-indigo-600 mb-1">4</div>
-        <div class="text-sm text-gray-500 dark:text-gray-400">outils remplacés<br><span class="text-xs text-gray-400">(Excel · Notion · Word · PDF)</span></div>
+        <div class="text-4xl font-extrabold text-indigo-600 mb-1">4</div>
+        <div class="text-sm text-gray-500">outils remplacés<br><span class="text-xs text-gray-400">(Excel · Notion · Word · PDF)</span></div>
       </div>
       <div data-stat>
-        <div class="text-3xl font-extrabold text-indigo-600 mb-1">2 min</div>
-        <div class="text-sm text-gray-500 dark:text-gray-400">pour importer votre équipe</div>
+        <div class="text-4xl font-extrabold text-indigo-600 mb-1">2 min</div>
+        <div class="text-sm text-gray-500">pour importer votre équipe</div>
       </div>
       <div data-stat>
-        <div class="text-3xl font-extrabold text-indigo-600 mb-1">30j</div>
-        <div class="text-sm text-gray-500 dark:text-gray-400">d'essai gratuit sans CB</div>
+        <div class="text-4xl font-extrabold text-indigo-600 mb-1">30j</div>
+        <div class="text-sm text-gray-500">d'essai gratuit sans CB</div>
       </div>
     </div>
 
-    <!-- Témoignages -->
+    <%# Témoignages %>
     <div id="testimonials-grid" class="grid grid-cols-1 md:grid-cols-3 gap-6">
 
-      <figure class="bg-gray-50 dark:bg-gray-900 rounded-2xl p-6 border border-gray-100 dark:border-gray-800">
+      <figure class="bg-white rounded-2xl p-6 border-l-4 border-indigo-500 shadow-sm">
         <div class="flex gap-0.5 mb-3">
-          <% 5.times do %>
-            <svg class="w-4 h-4 text-amber-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-          <% end %>
+          <% 5.times do %><svg class="w-4 h-4 text-amber-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg><% end %>
         </div>
-        <blockquote class="text-sm text-gray-600 dark:text-gray-300 leading-relaxed mb-4">
-          "Enfin un outil RH pensé pour les managers, pas seulement pour les RH. Les 1:1 et objectifs intégrés changent vraiment notre façon de piloter les équipes."
-        </blockquote>
+        <blockquote class="text-sm text-gray-600 leading-relaxed mb-4">"Enfin un outil RH pensé pour les managers, pas seulement pour les RH. Les 1:1 et objectifs intégrés changent vraiment notre façon de piloter les équipes."</blockquote>
         <figcaption class="flex items-center gap-3">
-          <div class="w-9 h-9 rounded-full bg-violet-100 dark:bg-violet-900/40 flex items-center justify-center text-sm font-bold text-violet-600 dark:text-violet-400">TM</div>
+          <div class="w-9 h-9 rounded-full bg-violet-100 flex items-center justify-center text-sm font-bold text-violet-600">TM</div>
           <div>
-            <div class="text-sm font-semibold text-gray-800 dark:text-gray-200">Thomas M.</div>
+            <div class="text-sm font-semibold text-gray-800">Thomas M.</div>
             <div class="text-xs text-gray-400">CTO · Agence digitale, 28 personnes</div>
           </div>
         </figcaption>
       </figure>
 
-      <figure class="bg-gray-50 dark:bg-gray-900 rounded-2xl p-6 border border-gray-100 dark:border-gray-800">
+      <figure class="bg-white rounded-2xl p-6 border-l-4 border-indigo-500 shadow-sm">
         <div class="flex gap-0.5 mb-3">
-          <% 5.times do %>
-            <svg class="w-4 h-4 text-amber-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-          <% end %>
+          <% 5.times do %><svg class="w-4 h-4 text-amber-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg><% end %>
         </div>
-        <blockquote class="text-sm text-gray-600 dark:text-gray-300 leading-relaxed mb-4">
-          "J'avais un tableau de suivi onboarding, un autre pour les objectifs, un autre pour les 1:1. Izi-RH remplace tout ça. Mon équipe adore."
-        </blockquote>
+        <blockquote class="text-sm text-gray-600 leading-relaxed mb-4">"J'avais un tableau de suivi onboarding, un autre pour les objectifs, un autre pour les 1:1. Izi-RH remplace tout ça. Mon équipe adore."</blockquote>
         <figcaption class="flex items-center gap-3">
-          <div class="w-9 h-9 rounded-full bg-indigo-100 dark:bg-indigo-900/40 flex items-center justify-center text-sm font-bold text-indigo-600 dark:text-indigo-400">SC</div>
+          <div class="w-9 h-9 rounded-full bg-indigo-100 flex items-center justify-center text-sm font-bold text-indigo-600">SC</div>
           <div>
-            <div class="text-sm font-semibold text-gray-800 dark:text-gray-200">Sophie C.</div>
+            <div class="text-sm font-semibold text-gray-800">Sophie C.</div>
             <div class="text-xs text-gray-400">Head of Engineering · Scale-up B2B, 35 personnes</div>
           </div>
         </figcaption>
       </figure>
 
-      <figure class="bg-gray-50 dark:bg-gray-900 rounded-2xl p-6 border border-gray-100 dark:border-gray-800">
+      <figure class="bg-white rounded-2xl p-6 border-l-4 border-indigo-500 shadow-sm">
         <div class="flex gap-0.5 mb-3">
-          <% 5.times do %>
-            <svg class="w-4 h-4 text-amber-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-          <% end %>
+          <% 5.times do %><svg class="w-4 h-4 text-amber-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg><% end %>
         </div>
-        <blockquote class="text-sm text-gray-600 dark:text-gray-300 leading-relaxed mb-4">
-          "La conformité au Code du Travail était notre critère n°1. Izi-RH gère correctement les 35h, les RTT et les congés conventionnels — sans paramétrage complexe."
-        </blockquote>
+        <blockquote class="text-sm text-gray-600 leading-relaxed mb-4">"La conformité au Code du Travail était notre critère n°1. Izi-RH gère correctement les 35h, les RTT et les congés conventionnels — sans paramétrage complexe."</blockquote>
         <figcaption class="flex items-center gap-3">
-          <div class="w-9 h-9 rounded-full bg-emerald-100 dark:bg-emerald-900/40 flex items-center justify-center text-sm font-bold text-emerald-600 dark:text-emerald-400">AL</div>
+          <div class="w-9 h-9 rounded-full bg-emerald-100 flex items-center justify-center text-sm font-bold text-emerald-600">AL</div>
           <div>
-            <div class="text-sm font-semibold text-gray-800 dark:text-gray-200">Aurélie L.</div>
+            <div class="text-sm font-semibold text-gray-800">Aurélie L.</div>
             <div class="text-xs text-gray-400">DRH · PME industrielle, 80 personnes</div>
           </div>
         </figcaption>
@@ -235,142 +246,140 @@
   </div>
 </section>
 
-<%# ─── MANAGER OS SECTION ─────────────────────────────────────────────────── %>
-<section id="manager-os" class="py-14 sm:py-16 bg-gradient-to-br from-indigo-50 to-violet-50/40 dark:from-indigo-950/30 dark:to-gray-950 border-t border-gray-100 dark:border-gray-800">
-  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+<%# ─── MANAGER OS ─────────────────────────────────────────────────────────── %>
+<div class="bg-slate-50 overflow-hidden" style="margin-bottom:-2px">
+  <svg viewBox="0 0 1440 60" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-full block" aria-hidden="true">
+    <path d="M0,0 C360,60 1080,0 1440,60 L1440,60 L0,60 Z" fill="white"/>
+  </svg>
+</div>
+<section id="manager-os" class="py-20 bg-white relative overflow-hidden">
+
+
+  <div class="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
 
     <div class="text-center mb-16">
-      <div class="inline-flex items-center gap-2 px-3 py-1.5 bg-indigo-100 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300 text-xs font-semibold rounded-full mb-4">
-        <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
-          <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z"/>
-        </svg>
+      <div class="inline-flex items-center gap-2 px-3 py-1.5 bg-indigo-50 text-indigo-700 text-xs font-semibold rounded-full mb-4 border border-indigo-100">
+        <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z"/></svg>
         Manager OS — le produit d'entrée
       </div>
-      <h2 class="text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-white mb-4">
-        Le cycle complet du management d'équipe
-      </h2>
-      <p class="text-lg text-gray-500 dark:text-gray-400 max-w-2xl mx-auto">
-        Quatre modules essentiels. Un seul outil. Zéro tableur.
-      </p>
+      <h2 class="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-4">Le cycle complet du management d'équipe</h2>
+      <p class="text-lg text-gray-500 max-w-2xl mx-auto">Quatre modules essentiels. Un seul outil. Zéro tableur.</p>
     </div>
 
-    <!-- 4 modules Manager OS -->
-    <!-- Mobile: scroll horizontal | md+: grille 2 colonnes -->
-    <div id="manager-os-features" class="flex overflow-x-auto gap-4 pb-4 mb-16 snap-x snap-mandatory -mx-4 px-4 md:grid md:grid-cols-2 md:gap-6 md:overflow-visible md:pb-0 md:mx-0 md:px-0">
+    <%# Pills + card interactive %>
+    <div x-data="{ tab: 'onboarding' }" class="mb-14">
 
-      <!-- Onboarding -->
-      <div data-mos-feature class="opacity-0 flex-shrink-0 w-[80vw] md:w-auto snap-start bg-white dark:bg-gray-900 rounded-xl p-5 border border-indigo-100 dark:border-indigo-900/40 shadow-sm hover:shadow-md transition-shadow">
-        <div class="flex items-start gap-4">
-          <div class="w-10 h-10 bg-orange-100 dark:bg-orange-900/30 rounded-xl flex items-center justify-center flex-shrink-0">
-            <svg class="w-5 h-5 text-orange-600 dark:text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
-            </svg>
-          </div>
-          <div>
-            <div class="flex items-center gap-2 mb-1.5">
-              <h3 class="text-base font-bold text-gray-900 dark:text-white">Onboarding</h3>
-              <span class="text-xs px-2 py-0.5 bg-orange-100 dark:bg-orange-900/40 text-orange-700 dark:text-orange-300 rounded-full font-medium">Manager OS</span>
+      <%# Pills %>
+      <div class="flex flex-wrap justify-center gap-3 mb-8">
+        <% [
+          { key: 'onboarding', label: 'Onboarding',     icon: 'M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z' },
+          { key: 'oneonone',   label: 'Entretiens 1:1', icon: 'M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z' },
+          { key: 'objectifs',  label: 'Objectifs & OKR', icon: 'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z' },
+          { key: 'formation',  label: 'Formation',       icon: 'M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253' },
+        ].each do |pill| %>
+          <button @click="tab = '<%= pill[:key] %>'"
+                  :class="tab === '<%= pill[:key] %>' ? 'bg-indigo-600 text-white shadow-md shadow-indigo-200 border-indigo-600' : 'bg-white text-gray-600 border-gray-200 hover:border-indigo-300 hover:text-indigo-600'"
+                  class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border text-sm font-medium transition-all duration-200">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="<%= pill[:icon] %>"/></svg>
+            <%= pill[:label] %>
+          </button>
+        <% end %>
+      </div>
+
+      <%# Card unique %>
+      <div class="relative bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+
+        <%# Onboarding %>
+        <div x-show="tab === 'onboarding'" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 translate-y-2" x-transition:enter-end="opacity-100 translate-y-0" class="p-8 sm:p-10">
+          <div class="grid sm:grid-cols-2 gap-8 items-start">
+            <div>
+              <div class="w-12 h-12 bg-orange-100 rounded-xl flex items-center justify-center mb-5">
+                <svg class="w-6 h-6 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+              </div>
+              <h3 class="text-2xl font-bold text-gray-900 mb-3">Onboarding</h3>
+              <p class="text-gray-500 leading-relaxed">Templates réutilisables par rôle, tâches assignées automatiquement, suivi de progression en temps réel.</p>
             </div>
-            <p class="text-sm text-gray-500 dark:text-gray-400 leading-relaxed mb-3">Templates réutilisables par rôle, tâches assignées automatiquement, suivi de progression en temps réel.</p>
-            <ul class="space-y-1">
+            <ul class="space-y-3">
               <% ["Templates par rôle (dev, commercial, ops…)", "Check-lists avec responsables assignés", "Rappels automatiques si tâche en retard", "Tableau de bord d'avancement équipe"].each do |item| %>
-                <li class="flex items-center gap-2 text-xs text-gray-600 dark:text-gray-300">
-                  <svg class="w-3.5 h-3.5 text-indigo-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+                <li class="flex items-center gap-3 text-sm text-gray-600">
+                  <svg class="w-4 h-4 text-indigo-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
                   <%= item %>
                 </li>
               <% end %>
             </ul>
           </div>
         </div>
-      </div>
 
-      <!-- 1:1 -->
-      <div data-mos-feature class="opacity-0 flex-shrink-0 w-[80vw] md:w-auto snap-start bg-white dark:bg-gray-900 rounded-xl p-5 border border-indigo-100 dark:border-indigo-900/40 shadow-sm hover:shadow-md transition-shadow">
-        <div class="flex items-start gap-4">
-          <div class="w-10 h-10 bg-violet-100 dark:bg-violet-900/30 rounded-xl flex items-center justify-center flex-shrink-0">
-            <svg class="w-5 h-5 text-violet-600 dark:text-violet-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
-            </svg>
-          </div>
-          <div>
-            <div class="flex items-center gap-2 mb-1.5">
-              <h3 class="text-base font-bold text-gray-900 dark:text-white">Entretiens 1:1</h3>
-              <span class="text-xs px-2 py-0.5 bg-violet-100 dark:bg-violet-900/40 text-violet-600 dark:text-violet-300 rounded-full font-medium">Manager OS</span>
+        <%# 1:1 %>
+        <div x-show="tab === 'oneonone'" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 translate-y-2" x-transition:enter-end="opacity-100 translate-y-0" style="display:none" class="p-8 sm:p-10">
+          <div class="grid sm:grid-cols-2 gap-8 items-start">
+            <div>
+              <div class="w-12 h-12 bg-violet-100 rounded-xl flex items-center justify-center mb-5">
+                <svg class="w-6 h-6 text-violet-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+              </div>
+              <h3 class="text-2xl font-bold text-gray-900 mb-3">Entretiens 1:1</h3>
+              <p class="text-gray-500 leading-relaxed">Agenda partagé, notes collaboratives, action items avec suivi. Historique complet par collaborateur.</p>
             </div>
-            <p class="text-sm text-gray-500 dark:text-gray-400 leading-relaxed mb-3">Agenda partagé, notes collaboratives, action items avec suivi. Historique complet par collaborateur.</p>
-            <ul class="space-y-1">
+            <ul class="space-y-3">
               <% ["Récurrence hebdo / bi-mensuelle / mensuelle", "Notes et agenda partagés manager–employé", "Action items avec deadline et suivi", "Historique chronologique par collaborateur"].each do |item| %>
-                <li class="flex items-center gap-2 text-xs text-gray-600 dark:text-gray-300">
-                  <svg class="w-3.5 h-3.5 text-indigo-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+                <li class="flex items-center gap-3 text-sm text-gray-600">
+                  <svg class="w-4 h-4 text-indigo-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
                   <%= item %>
                 </li>
               <% end %>
             </ul>
           </div>
         </div>
-      </div>
 
-      <!-- Objectifs -->
-      <div data-mos-feature class="opacity-0 flex-shrink-0 w-[80vw] md:w-auto snap-start bg-white dark:bg-gray-900 rounded-xl p-5 border border-indigo-100 dark:border-indigo-900/40 shadow-sm hover:shadow-md transition-shadow">
-        <div class="flex items-start gap-4">
-          <div class="w-10 h-10 bg-green-100 dark:bg-green-900/30 rounded-xl flex items-center justify-center flex-shrink-0">
-            <svg class="w-5 h-5 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-            </svg>
-          </div>
-          <div>
-            <div class="flex items-center gap-2 mb-1.5">
-              <h3 class="text-base font-bold text-gray-900 dark:text-white">Objectifs (OKR)</h3>
-              <span class="text-xs px-2 py-0.5 bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-300 rounded-full font-medium">Manager OS</span>
+        <%# Objectifs %>
+        <div x-show="tab === 'objectifs'" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 translate-y-2" x-transition:enter-end="opacity-100 translate-y-0" style="display:none" class="p-8 sm:p-10">
+          <div class="grid sm:grid-cols-2 gap-8 items-start">
+            <div>
+              <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center mb-5">
+                <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+              </div>
+              <h3 class="text-2xl font-bold text-gray-900 mb-3">Objectifs & OKR</h3>
+              <p class="text-gray-500 leading-relaxed">OKR individuels et collectifs, évaluations multi-étapes, alignement équipe visible d'un coup d'œil.</p>
             </div>
-            <p class="text-sm text-gray-500 dark:text-gray-400 leading-relaxed mb-3">OKR individuels et collectifs, évaluations multi-étapes, alignement équipe visible d'un coup d'œil.</p>
-            <ul class="space-y-1">
+            <ul class="space-y-3">
               <% ["OKR individuels et collectifs", "Évaluations : auto-éval → éval manager", "Visibilité 360° sur les objectifs d'équipe", "Historique des cycles d'évaluation"].each do |item| %>
-                <li class="flex items-center gap-2 text-xs text-gray-600 dark:text-gray-300">
-                  <svg class="w-3.5 h-3.5 text-indigo-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+                <li class="flex items-center gap-3 text-sm text-gray-600">
+                  <svg class="w-4 h-4 text-indigo-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
                   <%= item %>
                 </li>
               <% end %>
             </ul>
           </div>
         </div>
-      </div>
 
-      <!-- Formation -->
-      <div data-mos-feature class="opacity-0 flex-shrink-0 w-[80vw] md:w-auto snap-start bg-white dark:bg-gray-900 rounded-xl p-5 border border-indigo-100 dark:border-indigo-900/40 shadow-sm hover:shadow-md transition-shadow">
-        <div class="flex items-start gap-4">
-          <div class="w-10 h-10 bg-blue-100 dark:bg-blue-900/30 rounded-xl flex items-center justify-center flex-shrink-0">
-            <svg class="w-5 h-5 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
-            </svg>
-          </div>
-          <div>
-            <div class="flex items-center gap-2 mb-1.5">
-              <h3 class="text-base font-bold text-gray-900 dark:text-white">Formation</h3>
-              <span class="text-xs px-2 py-0.5 bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 rounded-full font-medium">Manager OS</span>
+        <%# Formation %>
+        <div x-show="tab === 'formation'" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 translate-y-2" x-transition:enter-end="opacity-100 translate-y-0" style="display:none" class="p-8 sm:p-10">
+          <div class="grid sm:grid-cols-2 gap-8 items-start">
+            <div>
+              <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mb-5">
+                <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+              </div>
+              <h3 class="text-2xl font-bold text-gray-900 mb-3">Formation</h3>
+              <p class="text-gray-500 leading-relaxed">Besoins de formation liés aux objectifs, planification et suivi sans les lourdeurs d'un LMS.</p>
             </div>
-            <p class="text-sm text-gray-500 dark:text-gray-400 leading-relaxed mb-3">Besoins de formation liés aux objectifs, planification et suivi sans les lourdeurs d'un LMS.</p>
-            <ul class="space-y-1">
+            <ul class="space-y-3">
               <% ["Besoins de formation par employé", "Lien direct avec les objectifs de dev", "Statuts : souhaité → planifié → réalisé", "Vue synthèse plan formation équipe"].each do |item| %>
-                <li class="flex items-center gap-2 text-xs text-gray-600 dark:text-gray-300">
-                  <svg class="w-3.5 h-3.5 text-indigo-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+                <li class="flex items-center gap-3 text-sm text-gray-600">
+                  <svg class="w-4 h-4 text-indigo-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
                   <%= item %>
                 </li>
               <% end %>
             </ul>
           </div>
         </div>
-      </div>
 
+      </div>
     </div>
 
-    <!-- CTA Manager OS -->
     <div class="text-center">
-      <a href="#essai-manager-os" class="inline-flex items-center gap-2 px-8 py-4 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-xl transition-colors shadow-lg shadow-indigo-200 dark:shadow-indigo-900/40 text-lg">
+      <a href="#essai-manager-os" class="inline-flex items-center gap-2 px-8 py-4 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-xl transition-colors shadow-lg shadow-indigo-200 text-lg">
         Essayer Manager OS gratuitement
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
-        </svg>
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
       </a>
       <p class="mt-3 text-sm text-gray-400">30 jours gratuits · Aucune carte bancaire · Passez au SIRH quand vous êtes prêts</p>
     </div>
@@ -379,277 +388,183 @@
 </section>
 
 <%# ─── FEATURES SIRH ───────────────────────────────────────────────────────── %>
-<section id="fonctionnalites" class="py-14 sm:py-16 bg-white dark:bg-gray-950 border-t border-gray-100 dark:border-gray-800 overflow-hidden">
-  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="bg-white overflow-hidden" style="margin-bottom:-2px">
+  <svg viewBox="0 0 1440 60" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-full block" aria-hidden="true">
+    <path d="M0,60 C360,0 1080,60 1440,0 L1440,60 L0,60 Z" fill="#0f0a2e"/>
+  </svg>
+</div>
+<section id="fonctionnalites" class="py-20 relative overflow-hidden" style="background-color:#0f0a2e">
+
+
+  <div class="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
     <div class="text-center mb-16">
-      <div class="inline-flex items-center gap-2 px-3 py-1.5 bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 text-xs font-semibold rounded-full mb-4">
-        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
-        </svg>
+      <div class="inline-flex items-center gap-2 px-3 py-1.5 bg-white/10 text-indigo-300 text-xs font-semibold rounded-full mb-4 border border-white/10">
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
         SIRH complet — quand votre équipe grandit
       </div>
-      <h2 data-features-title class="mt-4 text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-white mb-4">Passez au SIRH complet en un clic</h2>
-      <p class="mb-4 text-lg text-gray-500 dark:text-gray-400 max-w-2xl mx-auto">Manager OS + gestion du temps, congés, paie et IA RH. Tout dans la même interface.</p>
+      <h2 data-features-title class="text-3xl sm:text-4xl font-extrabold text-white mb-4">Passez au SIRH complet en un clic</h2>
+      <p class="text-lg text-indigo-300 max-w-2xl mx-auto">Manager OS + gestion du temps, congés, paie et IA RH. Tout dans la même interface.</p>
     </div>
 
-    <%# Mobile : mini-cards 3 colonnes %>
+    <%# Mobile %>
     <div class="grid grid-cols-2 gap-3 sm:hidden" id="sirh-features-mobile">
-
-      <div data-feature class="flex flex-col p-4 rounded-2xl border border-gray-100 dark:border-gray-800 opacity-0">
-        <div class="w-10 h-10 bg-blue-100 dark:bg-blue-900/30 rounded-xl flex items-center justify-center mb-3">
-          <svg class="w-5 h-5 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+      <% [
+        { icon: "M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z", bg: "bg-indigo-500/35", color: "text-indigo-200", title: "Pointage", desc: "Web & mobile, géolocalisation, alertes retard." },
+        { icon: "M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z", bg: "bg-indigo-500/35", color: "text-indigo-200", title: "Congés", desc: "CP, RTT, maladie. Soldes en temps réel." },
+        { icon: "M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z", bg: "bg-indigo-500/35", color: "text-indigo-200", title: "Paie & RH", desc: "Analytics, exports DSN, bulletins intégrés." },
+        { icon: "M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2", bg: "bg-indigo-500/35", color: "text-indigo-200", title: "Planning", desc: "Vue équipe, rotations, absences." },
+        { icon: "M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10", bg: "bg-indigo-500/35", color: "text-indigo-200", title: "Import CSV", desc: "Salariés, contrats, historique de paie." },
+        { icon: "M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z", bg: "bg-indigo-500/35", color: "text-indigo-200", title: "IA RH", desc: "50 requêtes/mois, analyse et suggestions RH." }
+      ].each do |f| %>
+        <div data-feature class="flex flex-col p-4 rounded-2xl bg-white/10 border border-white/25 opacity-0">
+          <div class="w-10 h-10 <%= f[:bg] %> rounded-xl flex items-center justify-center mb-3">
+            <svg class="w-5 h-5 <%= f[:color] %>" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="<%= f[:icon] %>"/></svg>
+          </div>
+          <h3 class="text-sm font-bold text-white mb-1"><%= f[:title] %></h3>
+          <p class="text-xs text-indigo-300 leading-snug"><%= f[:desc] %></p>
         </div>
-        <h3 class="text-sm font-bold text-gray-900 dark:text-white mb-1">Pointage</h3>
-        <p class="text-xs text-gray-500 dark:text-gray-400 leading-snug">Web & mobile, géolocalisation, alertes retard.</p>
-      </div>
-
-      <div data-feature class="flex flex-col p-4 rounded-2xl border border-gray-100 dark:border-gray-800 opacity-0">
-        <div class="w-10 h-10 bg-green-100 dark:bg-green-900/30 rounded-xl flex items-center justify-center mb-3">
-          <svg class="w-5 h-5 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-        </div>
-        <h3 class="text-sm font-bold text-gray-900 dark:text-white mb-1">Congés</h3>
-        <p class="text-xs text-gray-500 dark:text-gray-400 leading-snug">CP, RTT, maladie. Soldes en temps réel.</p>
-      </div>
-
-      <div data-feature class="flex flex-col p-4 rounded-2xl border border-gray-100 dark:border-gray-800 opacity-0">
-        <div class="w-10 h-10 rounded-xl flex items-center justify-center mb-3" style="background-color:#fce7f3;">
-          <svg class="w-5 h-5" style="color:#db2777;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
-        </div>
-        <h3 class="text-sm font-bold text-gray-900 dark:text-white mb-1">Paie & RH</h3>
-        <p class="text-xs text-gray-500 dark:text-gray-400 leading-snug">Analytics, exports DSN, bulletins intégrés.</p>
-      </div>
-
-      <div data-feature class="flex flex-col p-4 rounded-2xl border border-gray-100 dark:border-gray-800 opacity-0">
-        <div class="w-10 h-10 bg-indigo-100 dark:bg-indigo-900/30 rounded-xl flex items-center justify-center mb-3">
-          <svg class="w-5 h-5 text-indigo-600 dark:text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
-        </div>
-        <h3 class="text-sm font-bold text-gray-900 dark:text-white mb-1">Planning</h3>
-        <p class="text-xs text-gray-500 dark:text-gray-400 leading-snug">Vue équipe, rotations, absences en un coup d'œil.</p>
-      </div>
-
-      <div data-feature class="flex flex-col p-4 rounded-2xl border border-gray-100 dark:border-gray-800 opacity-0">
-        <div class="w-10 h-10 bg-slate-100 dark:bg-slate-900/30 rounded-xl flex items-center justify-center mb-3">
-          <svg class="w-5 h-5 text-slate-600 dark:text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10"/></svg>
-        </div>
-        <h3 class="text-sm font-bold text-gray-900 dark:text-white mb-1">Import CSV</h3>
-        <p class="text-xs text-gray-500 dark:text-gray-400 leading-snug">Salariés, contrats, historique de paie.</p>
-      </div>
-
-      <div data-feature class="flex flex-col p-4 rounded-2xl border border-amber-100 dark:border-amber-900/30 bg-amber-50/50 dark:bg-amber-950/20 opacity-0">
-        <div class="w-10 h-10 rounded-xl flex items-center justify-center mb-3" style="background-color:#fef3c7;">
-          <svg class="w-5 h-5" style="color:#d97706;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/></svg>
-        </div>
-        <h3 class="text-sm font-bold text-gray-900 dark:text-white mb-1">IA RH <span class="text-[10px] text-amber-600 dark:text-amber-400 font-medium">Pro</span></h3>
-        <p class="text-xs text-gray-500 dark:text-gray-400 leading-snug">50 requêtes/mois, analyse et suggestions RH.</p>
-      </div>
-
+      <% end %>
     </div>
 
-    <%# Desktop : grandes cards originales %>
-    <div class="hidden sm:grid sm:grid-cols-2 lg:grid-cols-3 gap-8" id="sirh-features-desktop">
-
-      <div data-feature class="group p-6 rounded-2xl border border-gray-100 dark:border-gray-800 hover:border-indigo-200 dark:hover:border-indigo-800 hover:shadow-lg transition-all opacity-0">
-        <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-xl flex items-center justify-center mb-4">
-          <svg class="w-6 h-6 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+    <%# Desktop %>
+    <div class="hidden sm:grid sm:grid-cols-2 lg:grid-cols-3 gap-6" id="sirh-features-desktop">
+      <% [
+        { icon: "M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z", bg: "bg-indigo-500/35", color: "text-indigo-200", title: "Pointage & Temps", badge: "SIRH", desc: "Pointage web et mobile avec géolocalisation. Calcul RTT automatique, validation manager, alertes retard. Conforme limite légale 10h/j et 48h/semaine." },
+        { icon: "M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z", bg: "bg-indigo-500/35", color: "text-indigo-200", title: "Gestion des Congés", badge: "SIRH", desc: "CP, RTT, maladie, parental, sans solde. Acquisition automatique 2,5j/mois, soldes en temps réel, approbations manager, calendrier équipe." },
+        { icon: "M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z", bg: "bg-indigo-500/35", color: "text-indigo-200", title: "Paie & Analytics RH", badge: "SIRH Pro", desc: "Dashboard masse salariale, projections annuelles, répartition par département et contrat. Confidentiel RH/Admin uniquement." },
+        { icon: "M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2", bg: "bg-indigo-500/35", color: "text-indigo-200", title: "Planning équipe", badge: "SIRH", desc: "Vue calendrier équipe, gestion des horaires et rotations, exports CSV pour la paie. Visibilité totale sur la disponibilité de votre équipe." },
+        { icon: "M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10", bg: "bg-indigo-500/35", color: "text-indigo-200", title: "Import CSV express", badge: "SIRH", desc: "Migrez depuis Excel, Sage, Lucca, Factorial, PayFit ou BambooHR. Détection automatique du format. Migration en moins de 5 minutes." },
+        { icon: "M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z", bg: "bg-indigo-500/35", color: "text-indigo-200", title: "IA RH", badge: "SIRH Pro", desc: "Requêtes en langage naturel français. Export CSV des résultats. Données jamais envoyées à l'IA." }
+      ].each do |f| %>
+        <div data-feature class="group p-6 rounded-2xl bg-white/10 border border-white/25 hover:bg-white/15 hover:border-white/40 transition-all opacity-0">
+          <div class="w-12 h-12 <%= f[:bg] %> rounded-xl flex items-center justify-center mb-4">
+            <svg class="w-6 h-6 <%= f[:color] %>" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="<%= f[:icon] %>"/></svg>
+          </div>
+          <div class="flex items-center gap-2 mb-2">
+            <h3 class="text-lg font-bold text-white"><%= f[:title] %></h3>
+            <span class="text-xs px-2 py-0.5 bg-white/10 text-indigo-300 rounded-full"><%= f[:badge] %></span>
+          </div>
+          <p class="text-sm text-indigo-300 leading-relaxed"><%= f[:desc] %></p>
         </div>
-        <div class="flex items-center gap-2 mb-2">
-          <h3 class="text-lg font-bold text-gray-900 dark:text-white">Pointage & Temps</h3>
-          <span class="text-xs px-2 py-0.5 bg-gray-100 dark:bg-gray-800 text-gray-500 rounded-full">SIRH</span>
-        </div>
-        <p class="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">Pointage web et mobile avec géolocalisation. Calcul RTT automatique, validation manager, alertes retard. Conforme limite légale 10h/j et 48h/semaine.</p>
-      </div>
-
-      <div data-feature class="group p-6 rounded-2xl border border-gray-100 dark:border-gray-800 hover:border-indigo-200 dark:hover:border-indigo-800 hover:shadow-lg transition-all opacity-0">
-        <div class="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-xl flex items-center justify-center mb-4">
-          <svg class="w-6 h-6 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-        </div>
-        <div class="flex items-center gap-2 mb-2">
-          <h3 class="text-lg font-bold text-gray-900 dark:text-white">Gestion des Congés</h3>
-          <span class="text-xs px-2 py-0.5 bg-gray-100 dark:bg-gray-800 text-gray-500 rounded-full">SIRH</span>
-        </div>
-        <p class="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">CP, RTT, maladie, parental, sans solde. Acquisition automatique 2,5j/mois, soldes en temps réel, approbations manager, calendrier équipe.</p>
-      </div>
-
-      <div data-feature class="group p-6 rounded-2xl border border-gray-100 dark:border-gray-800 hover:border-indigo-200 dark:hover:border-indigo-800 hover:shadow-lg transition-all opacity-0">
-        <div class="w-12 h-12 rounded-xl flex items-center justify-center mb-4" style="background-color:#fce7f3;">
-          <svg class="w-6 h-6" style="color:#db2777;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
-        </div>
-        <div class="flex items-center gap-2 mb-2">
-          <h3 class="text-lg font-bold text-gray-900 dark:text-white">Paie & Analytics RH</h3>
-          <span class="text-xs px-2 py-0.5 bg-gray-100 dark:bg-gray-800 text-gray-500 rounded-full">SIRH</span>
-        </div>
-        <p class="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">Dashboard masse salariale, projections annuelles, répartition par département et contrat. Confidentiel RH/Admin uniquement.</p>
-      </div>
-
-      <div data-feature class="group p-6 rounded-2xl border border-gray-100 dark:border-gray-800 hover:border-indigo-200 dark:hover:border-indigo-800 hover:shadow-lg transition-all opacity-0">
-        <div class="w-12 h-12 bg-indigo-100 dark:bg-indigo-900/30 rounded-xl flex items-center justify-center mb-4">
-          <svg class="w-6 h-6 text-indigo-600 dark:text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
-        </div>
-        <div class="flex items-center gap-2 mb-2">
-          <h3 class="text-lg font-bold text-gray-900 dark:text-white">Planning équipe</h3>
-          <span class="text-xs px-2 py-0.5 bg-gray-100 dark:bg-gray-800 text-gray-500 rounded-full">SIRH</span>
-        </div>
-        <p class="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">Vue calendrier équipe, gestion des horaires et rotations, exports CSV pour la paie. Visibilité totale sur la disponibilité de votre équipe.</p>
-      </div>
-
-      <div data-feature class="group p-6 rounded-2xl border border-gray-100 dark:border-gray-800 hover:border-indigo-200 dark:hover:border-indigo-800 hover:shadow-lg transition-all opacity-0">
-        <div class="w-12 h-12 bg-slate-100 dark:bg-slate-900/30 rounded-xl flex items-center justify-center mb-4">
-          <svg class="w-6 h-6 text-slate-600 dark:text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10"/></svg>
-        </div>
-        <div class="flex items-center gap-2 mb-2">
-          <h3 class="text-lg font-bold text-gray-900 dark:text-white">Import CSV express</h3>
-          <span class="text-xs px-2 py-0.5 bg-gray-100 dark:bg-gray-800 text-gray-500 rounded-full">SIRH</span>
-        </div>
-        <p class="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">Migrez depuis Excel, Sage, Lucca, Factorial, PayFit ou BambooHR. Détection automatique du format. Rapport d'erreurs ligne par ligne. Migration en moins de 5 minutes.</p>
-      </div>
-
-      <div data-feature class="group p-6 rounded-2xl border border-gray-100 dark:border-gray-800 bg-gradient-to-br from-amber-50/50 to-yellow-50/50 dark:from-amber-950/30 dark:to-yellow-950/30 hover:border-amber-200 dark:hover:border-amber-800 hover:shadow-lg transition-all opacity-0">
-        <div class="w-12 h-12 rounded-xl flex items-center justify-center mb-4" style="background-color:#fef3c7;">
-          <svg class="w-6 h-6" style="color:#d97706;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/></svg>
-        </div>
-        <div class="flex items-center gap-2 mb-2">
-          <h3 class="text-lg font-bold text-gray-900 dark:text-white">IA RH</h3>
-          <span class="text-xs px-2 py-0.5 bg-indigo-100 dark:bg-indigo-900/50 text-indigo-600 dark:text-indigo-300 rounded-full font-medium">SIRH Pro</span>
-        </div>
-        <p class="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">Requêtes en langage naturel français : <em>"Employés CDI avec plus de 5j RTT en Engineering"</em>. Export CSV des résultats. Données jamais envoyées à l'IA.</p>
-      </div>
-
+      <% end %>
     </div>
   </div>
 </section>
+
+<div style="background-color:#0f0a2e" class="overflow-hidden">
+  <svg viewBox="0 0 1440 60" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-full block" aria-hidden="true">
+    <path d="M0,0 C360,60 1080,0 1440,60 L1440,60 L0,60 Z" fill="#f8fafc"/>
+  </svg>
+</div>
 
 <script>
 (function() {
   function initSirhFeatures() {
     if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      document.querySelectorAll('#sirh-features-mobile [data-feature], #sirh-features-desktop [data-feature], #manager-os-features [data-mos-feature]').forEach(el => el.style.opacity = 1);
+      document.querySelectorAll('#sirh-features-mobile [data-feature], #sirh-features-desktop [data-feature], #manager-os-features [data-mos-feature]').forEach(function(el) { el.style.opacity = 1; });
       return;
     }
-
     ['#sirh-features-mobile', '#sirh-features-desktop'].forEach(function(selector) {
       var grid = document.querySelector(selector);
       if (!grid) return;
-      gsap.fromTo(grid.querySelectorAll('[data-feature]'),
-        { opacity: 0, y: 20 },
-        {
-          opacity: 1,
-          y: 0,
-          duration: 0.4,
-          stagger: 0.07,
-          ease: 'power2.out',
-          scrollTrigger: {
-            trigger: grid,
-            start: 'top 85%',
-            once: true
-          }
-        }
-      );
+      gsap.fromTo(grid.querySelectorAll('[data-feature]'), { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.4, stagger: 0.07, ease: 'power2.out', scrollTrigger: { trigger: grid, start: 'top 85%', once: true } });
     });
-
     var mosGrid = document.querySelector('#manager-os-features');
     if (mosGrid) {
-      gsap.fromTo(mosGrid.querySelectorAll('[data-mos-feature]'),
-        { opacity: 0, y: 24 },
-        {
-          opacity: 1,
-          y: 0,
-          duration: 0.45,
-          stagger: 0.1,
-          ease: 'power2.out',
-          scrollTrigger: {
-            trigger: mosGrid,
-            start: 'top 82%',
-            once: true
-          }
-        }
-      );
+      gsap.fromTo(mosGrid.querySelectorAll('[data-mos-feature]'), { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.45, stagger: 0.1, ease: 'power2.out', scrollTrigger: { trigger: mosGrid, start: 'top 82%', once: true } });
     }
   }
-
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initSirhFeatures);
-  } else {
-    initSirhFeatures();
-  }
+  if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', initSirhFeatures); } else { initSirhFeatures(); }
 })();
 </script>
 
+<style>
+  .pricing-card { min-width: 82vw; }
+  @media (min-width: 768px) {
+    #pricing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; overflow: visible; padding-bottom: 0; padding-top: 1.25rem; }
+    .pricing-card { min-width: 0; flex-shrink: 1; }
+  }
+</style>
 <%# ─── PRICING ─────────────────────────────────────────────────────────────── %>
-<section id="tarifs" class="py-14 sm:py-16 bg-gray-50 dark:bg-gray-900 border-t border-gray-100 dark:border-gray-800">
-  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+<section id="tarifs" class="py-20 bg-slate-50 relative overflow-hidden">
+
+  <div class="absolute inset-0 pointer-events-none" aria-hidden="true">
+    <div style="position:absolute; left:-200px; top:-200px; width:700px; height:700px; border-radius:50%; background:radial-gradient(circle, rgba(99,102,241,0.08) 0%, transparent 65%)"></div>
+  </div>
+
+  <div class="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
     <div class="text-center mb-16">
-      <h2 class="mt-4 text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-white mb-4">Commencez avec Manager OS. Évoluez vers le SIRH.</h2>
-      <p class="mb-4 text-lg text-gray-500 dark:text-gray-400">Aucune carte bancaire requise pour l'essai. Pas de migration de données entre les plans.</p>
+      <h2 class="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-4">Commencez avec Manager OS.<br>Évoluez vers le SIRH.</h2>
+      <p class="text-lg text-gray-500">Aucune carte bancaire requise pour l'essai. Pas de migration de données entre les plans.</p>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 items-stretch">
+    <div id="pricing-grid" class="flex gap-6 items-stretch overflow-x-auto pb-4 snap-x snap-mandatory" style="-webkit-overflow-scrolling:touch; padding-top:1.25rem">
 
-      <!-- Manager OS -->
-      <div class="mb-2 p-8 rounded-2xl border-2 border-indigo-500 dark:border-indigo-500 bg-white dark:bg-gray-900 relative shadow-xl shadow-indigo-100 dark:shadow-indigo-900/20 flex flex-col">
+      <%# Manager OS %>
+      <div class="pricing-card relative p-8 rounded-2xl bg-white border-2 border-indigo-500 shadow-lg flex flex-col flex-shrink-0">
         <div class="absolute -top-3.5 left-1/2 -translate-x-1/2">
           <span class="inline-flex items-center gap-1 px-3 py-1 bg-indigo-600 text-white text-xs font-bold rounded-full shadow whitespace-nowrap">Commencer ici</span>
         </div>
         <div class="mb-6">
-          <div class="flex items-center gap-2 mb-1">
-            <h3 class="text-lg font-bold text-gray-900 dark:text-white">Manager OS</h3>
-          </div>
-          <p class="text-sm text-gray-500 dark:text-gray-400 mb-4 min-h-[3.5rem]">Le cycle complet du management d'équipe</p>
+          <h3 class="text-lg font-bold text-gray-900 mb-1">Manager OS</h3>
+          <p class="text-sm text-gray-500 mb-4 min-h-[3.5rem]">Le cycle complet du management d'équipe</p>
           <div class="flex items-baseline gap-1">
             <span class="text-4xl font-extrabold text-indigo-600">19 €</span>
             <span class="text-sm text-gray-500">/mois</span>
           </div>
           <p class="text-xs text-gray-500 mt-1">Inclut 6 membres · +2 €/membre supplémentaire</p>
         </div>
-        <ul class="space-y-3 text-sm">
-          <li class="flex items-center gap-2 text-gray-600 dark:text-gray-300"><svg class="w-4 h-4 text-indigo-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>Onboarding avec templates</li>
-          <li class="flex items-center gap-2 text-gray-600 dark:text-gray-300"><svg class="w-4 h-4 text-indigo-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>Entretiens 1:1 & action items</li>
-          <li class="flex items-center gap-2 text-gray-600 dark:text-gray-300"><svg class="w-4 h-4 text-indigo-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>Objectifs & OKR</li>
-          <li class="flex items-center gap-2 text-gray-600 dark:text-gray-300"><svg class="w-4 h-4 text-indigo-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>Plan de formation</li>
-          <li class="flex items-center gap-2 text-gray-600 dark:text-gray-300"><svg class="w-4 h-4 text-indigo-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>Dashboard équipe</li>
-          <li class="flex items-center gap-2 text-gray-400"><svg class="w-4 h-4 text-gray-300 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>Pointage & Congés</li>
-          <li class="flex items-center gap-2 text-gray-400"><svg class="w-4 h-4 text-gray-300 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>Paie & Analytics</li>
+        <ul class="space-y-3 text-sm flex-1">
+          <% [["Onboarding avec templates", true], ["Entretiens 1:1 & action items", true], ["Objectifs & OKR", true], ["Plan de formation", true], ["Dashboard équipe", true], ["Pointage & Congés", false], ["Paie & Analytics", false]].each do |label, active| %>
+            <li class="flex items-center gap-2 <%= active ? 'text-gray-600' : 'text-gray-300' %>">
+              <% if active %>
+                <svg class="w-4 h-4 text-indigo-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+              <% else %>
+                <svg class="w-4 h-4 text-gray-200 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>
+              <% end %>
+              <%= label %>
+            </li>
+          <% end %>
         </ul>
-
-        <div class="mt-auto pt-6">
+        <div class="mt-6">
           <a href="#essai-manager-os" class="block w-full text-center px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-xl transition-colors text-sm shadow">Démarrer l'essai gratuit</a>
-          <p class="mt-4 text-xs text-gray-400 truncate">Support email 48h</p>
+          <p class="mt-3 text-xs text-gray-400 text-center">Support email 48h</p>
         </div>
       </div>
 
-      <!-- SIRH Essentiel -->
-      <div class="mb-2 p-8 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-gray-900 flex flex-col">
+      <%# SIRH Essentiel %>
+      <div class="pricing-card p-8 rounded-2xl bg-white border border-gray-200 flex flex-col flex-shrink-0">
         <div class="mb-6">
-          <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-1">SIRH Essentiel</h3>
-          <p class="text-sm text-gray-500 dark:text-gray-400 mb-4 min-h-[3.5rem]">Manager OS + gestion du temps et congés</p>
+          <h3 class="text-lg font-bold text-gray-900 mb-1">SIRH Essentiel</h3>
+          <p class="text-sm text-gray-500 mb-4 min-h-[3.5rem]">Manager OS + gestion du temps et congés</p>
           <div class="flex items-baseline gap-1">
-            <span class="text-4xl font-extrabold text-gray-900 dark:text-white">79 €</span>
+            <span class="text-4xl font-extrabold text-gray-900">79 €</span>
             <span class="text-sm text-gray-500">/mois</span>
           </div>
           <p class="text-xs text-gray-500 mt-1">Inclut 30 employés · +3 €/employé supplémentaire</p>
         </div>
-        <ul class="space-y-3 text-sm">
-          <li class="flex items-center gap-2 text-gray-600 dark:text-gray-300"><svg class="w-4 h-4 text-green-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>Tout Manager OS</li>
-          <li class="flex items-center gap-2 text-gray-600 dark:text-gray-300"><svg class="w-4 h-4 text-green-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>Pointage & temps (web + mobile)</li>
-          <li class="flex items-center gap-2 text-gray-600 dark:text-gray-300"><svg class="w-4 h-4 text-green-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>Congés (CP, RTT, maladie…)</li>
-          <li class="flex items-center gap-2 text-gray-600 dark:text-gray-300"><svg class="w-4 h-4 text-green-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>Planning équipe</li>
-          <li class="flex items-center gap-2 text-gray-600 dark:text-gray-300"><svg class="w-4 h-4 text-green-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>Exports CSV paie</li>
-          <li class="flex items-center gap-2 text-gray-400"><svg class="w-4 h-4 text-gray-300 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>Paie & Analytics RH</li>
-          <li class="flex items-center gap-2 text-gray-400"><svg class="w-4 h-4 text-gray-300 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>IA RH</li>
+        <ul class="space-y-3 text-sm flex-1">
+          <% [["Tout Manager OS", true], ["Pointage & temps (web + mobile)", true], ["Congés (CP, RTT, maladie…)", true], ["Planning équipe", true], ["Exports CSV paie", true], ["Paie & Analytics RH", false], ["IA RH", false]].each do |label, active| %>
+            <li class="flex items-center gap-2 <%= active ? 'text-gray-600' : 'text-gray-300' %>">
+              <% if active %>
+                <svg class="w-4 h-4 text-green-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+              <% else %>
+                <svg class="w-4 h-4 text-gray-200 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>
+              <% end %>
+              <%= label %>
+            </li>
+          <% end %>
         </ul>
-
-        <div class="mt-auto pt-6">
-          <a href="#essai-manager-os"
-             onclick="document.getElementById('essai-manager-os').__x.$data.tab='sirh'; return true;"
-             class="block w-full text-center px-4 py-2.5 border-2 border-indigo-300 dark:border-indigo-700 text-indigo-600 dark:text-indigo-300 font-semibold rounded-xl hover:bg-indigo-50 dark:hover:bg-indigo-950 transition-colors text-sm">
-            Démarrer l'essai
-          </a>
-          <p class="mt-4 text-xs text-gray-400 truncate">Support email 24h</p>
+        <div class="mt-6">
+          <a href="#essai-manager-os" onclick="document.getElementById('essai-manager-os').__x.$data.tab='sirh'; return true;"
+             class="block w-full text-center px-4 py-2.5 border-2 border-indigo-300 text-indigo-600 font-semibold rounded-xl hover:bg-indigo-50 transition-colors text-sm">Démarrer l'essai</a>
+          <p class="mt-3 text-xs text-gray-400 text-center">Support email 24h</p>
         </div>
       </div>
 
-      <!-- SIRH Pro -->
-      <div class="mb-2 p-8 rounded-2xl border border-gray-800 dark:border-gray-600 bg-gray-900 dark:bg-gray-900 text-white relative flex flex-col">
+      <%# SIRH Pro %>
+      <div class="pricing-card relative p-8 rounded-2xl border border-white/10 flex flex-col flex-shrink-0" style="background-color:#0f0a2e">
         <div class="absolute -top-3.5 left-1/2 -translate-x-1/2">
           <span class="inline-flex items-center gap-1 px-3 py-1 bg-violet-600 text-white text-xs font-bold rounded-full shadow whitespace-nowrap">SIRH complet</span>
         </div>
@@ -662,21 +577,18 @@
           </div>
           <p class="text-xs text-gray-500 mt-1">Inclut 50 employés · +2,50 €/employé supplémentaire</p>
         </div>
-        <ul class="space-y-3 text-sm">
-          <li class="flex items-center gap-2 text-gray-300"><svg class="w-4 h-4 text-green-400 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>Tout SIRH Essentiel</li>
-          <li class="flex items-center gap-2 text-gray-300"><svg class="w-4 h-4 text-green-400 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>Paie & Analytics RH</li>
-          <li class="flex items-center gap-2 text-gray-300"><svg class="w-4 h-4 text-green-400 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>IA RH (50 requêtes/mois)</li>
-          <li class="flex items-center gap-2 text-gray-300"><svg class="w-4 h-4 text-green-400 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>API mobile JWT</li>
-          <li class="flex items-center gap-2 text-gray-300"><svg class="w-4 h-4 text-green-400 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>Journal d'audit complet</li>
-          <li class="flex items-center gap-2 text-gray-300"><svg class="w-4 h-4 text-green-400 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>Géolocalisation pointage</li>
-          <li class="flex items-center gap-2 text-gray-300"><svg class="w-4 h-4 text-green-400 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>Dashboard personnalisable</li>
+        <ul class="space-y-3 text-sm flex-1">
+          <% ["Tout SIRH Essentiel", "Paie & Analytics RH", "IA RH (50 requêtes/mois)", "API mobile JWT", "Journal d'audit complet", "Géolocalisation pointage", "Dashboard personnalisable"].each do |label| %>
+            <li class="flex items-center gap-2 text-gray-300">
+              <svg class="w-4 h-4 text-green-400 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+              <%= label %>
+            </li>
+          <% end %>
         </ul>
-
-        <div class="mt-auto pt-6">
-          <a href="#essai-manager-os"
-             onclick="document.getElementById('essai-manager-os').__x.$data.tab='sirh'; return true;"
+        <div class="mt-6">
+          <a href="#essai-manager-os" onclick="document.getElementById('essai-manager-os').__x.$data.tab='sirh'; return true;"
              class="block w-full text-center px-4 py-2.5 border-2 border-gray-600 text-gray-300 font-semibold rounded-xl hover:bg-gray-700 hover:border-gray-500 hover:text-white transition-colors text-sm">Démarrer l'essai</a>
-          <p class="mt-4 text-xs text-gray-500 truncate">Support email 4h · chat · onboarding dédié</p>
+          <p class="mt-3 text-xs text-gray-500 text-center">Support email 4h · chat · onboarding dédié</p>
         </div>
       </div>
 
@@ -689,43 +601,47 @@
   </div>
 </section>
 
-<%# ─── FORMULAIRE TRIAL — toggle Manager OS / SIRH ───────────────────────── %>
+<%# ─── FORMULAIRE TRIAL ────────────────────────────────────────────────────── %>
 <% default_tab = (@form_values&.dig(:plan) == 'sirh' || @form_values&.dig('plan') == 'sirh') ? 'sirh' : 'manager_os' %>
 <section id="essai-manager-os"
-         class="py-14 sm:py-16 border-t-4 bg-gradient-to-br from-indigo-600 to-violet-600 dark:from-indigo-800 dark:to-violet-800 relative overflow-hidden"
-         :class="tab === 'sirh' ? 'border-violet-900/40' : 'border-indigo-700/30'"
+         class="py-20 bg-gradient-to-br from-indigo-600 to-violet-600 relative overflow-hidden"
          x-data="{ tab: '<%= default_tab %>' }">
-  <%# Dark overlay for SIRH tab — transitions smoothly via opacity %>
-  <div class="absolute inset-0 bg-gray-950 transition-opacity duration-700 pointer-events-none"
-       :style="tab === 'sirh' ? 'opacity:1' : 'opacity:0'"></div>
+
+  <div class="absolute inset-0 transition-opacity duration-700 pointer-events-none"
+       :style="tab === 'sirh' ? 'opacity:1; background-color:#0f0a2e' : 'opacity:0; background-color:#0f0a2e'"></div>
+
+  <%# Wave entrée (slate-50 → couleur section) %>
+  <div class="absolute top-0 left-0 right-0 pointer-events-none" style="line-height:0; margin-top:-1px" aria-hidden="true">
+    <svg viewBox="0 0 1440 80" preserveAspectRatio="none" class="w-full block" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0,20 C360,80 1080,20 1440,80 L1440,0 L0,0 Z" fill="white"/>
+    </svg>
+  </div>
+
+  <%# Wave sortie (couleur section → white) %>
+  <div class="absolute bottom-0 left-0 right-0 pointer-events-none" style="line-height:0; margin-bottom:-1px" aria-hidden="true">
+    <svg viewBox="0 0 1440 80" preserveAspectRatio="none" class="w-full block" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0,80 C360,20 1080,80 1440,20 L1440,80 L0,80 Z" fill="white"/>
+    </svg>
+  </div>
+
+  <%# Déco radial-gradient %>
+  <div class="absolute inset-0 pointer-events-none" aria-hidden="true">
+    <div style="position:absolute; left:-200px; top:50%; transform:translateY(-50%); width:600px; height:600px; border-radius:50%; background:radial-gradient(circle, rgba(255,255,255,0.10) 0%, transparent 65%)"></div>
+    <div style="position:absolute; right:-200px; top:50%; transform:translateY(-50%); width:700px; height:700px; border-radius:50%; background:radial-gradient(circle, rgba(255,255,255,0.08) 0%, transparent 65%)"></div>
+  </div>
+
   <div class="relative z-10 max-w-xl mx-auto px-4 sm:px-6 text-center">
-
     <h2 class="text-3xl sm:text-4xl font-extrabold text-white mb-2">Essayez gratuitement</h2>
-    <p class="mb-6 transition-colors duration-300"
-       :class="tab === 'sirh' ? 'text-gray-400' : 'text-indigo-200'">30 jours gratuits. Aucune carte bancaire requise.</p>
+    <p class="mb-6 transition-colors duration-300" :class="tab === 'sirh' ? 'text-gray-400' : 'text-indigo-200'">30 jours gratuits. Aucune carte bancaire requise.</p>
 
-    <!-- Toggle -->
-    <div class="inline-flex rounded-xl p-1 mb-8 transition-colors duration-300"
-         :class="tab === 'sirh' ? 'bg-white/10' : 'bg-white/15'">
-      <button type="button"
-              @click="tab = 'manager_os'"
-              :class="tab === 'manager_os' ? 'bg-white text-indigo-700 shadow' : 'text-white/70 hover:text-white'"
-              class="px-5 py-2 rounded-lg text-sm font-semibold transition-all duration-200">
-        Manager OS
-      </button>
-      <button type="button"
-              @click="tab = 'sirh'"
-              :class="tab === 'sirh' ? 'bg-white text-gray-900 shadow' : 'text-white/70 hover:text-white'"
-              class="px-5 py-2 rounded-lg text-sm font-semibold transition-all duration-200">
-        SIRH
-      </button>
+    <div class="inline-flex rounded-xl p-1 mb-8 transition-colors duration-300" :class="tab === 'sirh' ? 'bg-white/10' : 'bg-white/15'">
+      <button type="button" @click="tab = 'manager_os'" :class="tab === 'manager_os' ? 'bg-white text-indigo-700 shadow' : 'text-white/70 hover:text-white'" class="px-5 py-2 rounded-lg text-sm font-semibold transition-all duration-200">Manager OS</button>
+      <button type="button" @click="tab = 'sirh'" :class="tab === 'sirh' ? 'bg-white text-gray-900 shadow' : 'text-white/70 hover:text-white'" class="px-5 py-2 rounded-lg text-sm font-semibold transition-all duration-200">SIRH</button>
     </div>
 
-    <!-- Description contextuelle -->
     <p x-show="tab === 'manager_os'" class="text-indigo-200 text-sm mb-6 -mt-2">Onboarding · 1:1 · Objectifs · Formation</p>
     <p x-show="tab === 'sirh'" class="text-gray-400 text-sm mb-6 -mt-2">Temps · Congés · Paie · IA RH</p>
 
-    <!-- Erreurs -->
     <% if @errors.present? %>
       <div class="mb-6 p-4 bg-red-100/90 border border-red-300 rounded-xl text-left">
         <p class="text-sm font-semibold text-red-700 mb-1">Impossible de créer votre compte :</p>
@@ -735,41 +651,27 @@
       </div>
     <% end %>
 
-    <!-- Formulaire Manager OS -->
     <div x-show="tab === 'manager_os'" x-transition:enter="transition ease-out duration-150" x-transition:enter-start="opacity-0 translate-y-1" x-transition:enter-end="opacity-100 translate-y-0">
-      <form action="<%= trial_registration_path %>" method="POST" class="bg-white dark:bg-gray-900 rounded-2xl shadow-2xl p-8 text-left space-y-4">
+      <form action="<%= trial_registration_path %>" method="POST" class="bg-white rounded-2xl shadow-2xl p-8 text-left space-y-4">
         <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
         <input type="hidden" name="trial[plan]" value="manager_os">
-
         <div>
-          <label for="mos_organization_name" class="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1 uppercase tracking-wide">Nom de votre entreprise</label>
-          <input type="text" id="mos_organization_name" name="trial[organization_name]"
-                 value="<%= @form_values&.dig(:organization_name) || @form_values&.dig('organization_name') %>"
-                 placeholder="TechCorp France" required autocomplete="organization"
-                 class="w-full px-4 py-3 border border-gray-200 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm">
+          <label for="mos_organization_name" class="block text-xs font-semibold text-gray-500 mb-1 uppercase tracking-wide">Nom de votre entreprise</label>
+          <input type="text" id="mos_organization_name" name="trial[organization_name]" value="<%= @form_values&.dig(:organization_name) || @form_values&.dig('organization_name') %>" placeholder="TechCorp France" required autocomplete="organization" class="w-full px-4 py-3 border border-gray-200 rounded-xl bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm">
         </div>
         <div class="grid grid-cols-2 gap-4">
           <div>
-            <label for="mos_first_name" class="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1 uppercase tracking-wide">Prénom</label>
-            <input type="text" id="mos_first_name" name="trial[first_name]"
-                   value="<%= @form_values&.dig(:first_name) || @form_values&.dig('first_name') %>"
-                   placeholder="Marie" required autocomplete="given-name"
-                   class="w-full px-4 py-3 border border-gray-200 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm">
+            <label for="mos_first_name" class="block text-xs font-semibold text-gray-500 mb-1 uppercase tracking-wide">Prénom</label>
+            <input type="text" id="mos_first_name" name="trial[first_name]" value="<%= @form_values&.dig(:first_name) || @form_values&.dig('first_name') %>" placeholder="Marie" required autocomplete="given-name" class="w-full px-4 py-3 border border-gray-200 rounded-xl bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm">
           </div>
           <div>
-            <label for="mos_last_name" class="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1 uppercase tracking-wide">Nom</label>
-            <input type="text" id="mos_last_name" name="trial[last_name]"
-                   value="<%= @form_values&.dig(:last_name) || @form_values&.dig('last_name') %>"
-                   placeholder="Dupont" required autocomplete="family-name"
-                   class="w-full px-4 py-3 border border-gray-200 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm">
+            <label for="mos_last_name" class="block text-xs font-semibold text-gray-500 mb-1 uppercase tracking-wide">Nom</label>
+            <input type="text" id="mos_last_name" name="trial[last_name]" value="<%= @form_values&.dig(:last_name) || @form_values&.dig('last_name') %>" placeholder="Dupont" required autocomplete="family-name" class="w-full px-4 py-3 border border-gray-200 rounded-xl bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm">
           </div>
         </div>
         <div>
-          <label for="mos_email" class="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1 uppercase tracking-wide">Email professionnel</label>
-          <input type="email" id="mos_email" name="trial[email]"
-                 value="<%= @form_values&.dig(:email) || @form_values&.dig('email') %>"
-                 placeholder="marie.dupont@techcorp.fr" required autocomplete="email"
-                 class="w-full px-4 py-3 border border-gray-200 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm">
+          <label for="mos_email" class="block text-xs font-semibold text-gray-500 mb-1 uppercase tracking-wide">Email professionnel</label>
+          <input type="email" id="mos_email" name="trial[email]" value="<%= @form_values&.dig(:email) || @form_values&.dig('email') %>" placeholder="marie.dupont@techcorp.fr" required autocomplete="email" class="w-full px-4 py-3 border border-gray-200 rounded-xl bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm">
         </div>
         <div class="flex justify-center">
           <button type="submit" class="inline-flex items-center justify-center gap-2 px-10 py-3.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl transition-colors shadow text-base">
@@ -777,47 +679,31 @@
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
           </button>
         </div>
-        <p class="text-xs text-gray-400 text-center pt-1">
-          En créant un compte, vous acceptez nos <a href="/cgu" class="underline hover:text-gray-600">CGU</a> et notre <a href="/politique-de-confidentialite" class="underline hover:text-gray-600">politique de confidentialité</a>.
-        </p>
+        <p class="text-xs text-gray-400 text-center pt-1">En créant un compte, vous acceptez nos <a href="/cgu" class="underline hover:text-gray-600">CGU</a> et notre <a href="/politique-de-confidentialite" class="underline hover:text-gray-600">politique de confidentialité</a>.</p>
       </form>
     </div>
 
-    <!-- Formulaire SIRH -->
     <div x-show="tab === 'sirh'" x-transition:enter="transition ease-out duration-150" x-transition:enter-start="opacity-0 translate-y-1" x-transition:enter-end="opacity-100 translate-y-0">
-      <form action="<%= trial_registration_path %>" method="POST" class="bg-white dark:bg-gray-900 rounded-2xl shadow-2xl p-8 text-left space-y-4">
+      <form action="<%= trial_registration_path %>" method="POST" class="bg-white rounded-2xl shadow-2xl p-8 text-left space-y-4">
         <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
         <input type="hidden" name="trial[plan]" value="sirh">
-
         <div>
-          <label for="sirh_organization_name" class="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1 uppercase tracking-wide">Nom de votre entreprise</label>
-          <input type="text" id="sirh_organization_name" name="trial[organization_name]"
-                 value="<%= @form_values&.dig(:organization_name) || @form_values&.dig('organization_name') %>"
-                 placeholder="TechCorp France" required autocomplete="organization"
-                 class="w-full px-4 py-3 border border-gray-200 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm">
+          <label for="sirh_organization_name" class="block text-xs font-semibold text-gray-500 mb-1 uppercase tracking-wide">Nom de votre entreprise</label>
+          <input type="text" id="sirh_organization_name" name="trial[organization_name]" value="<%= @form_values&.dig(:organization_name) || @form_values&.dig('organization_name') %>" placeholder="TechCorp France" required autocomplete="organization" class="w-full px-4 py-3 border border-gray-200 rounded-xl bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm">
         </div>
         <div class="grid grid-cols-2 gap-4">
           <div>
-            <label for="sirh_first_name" class="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1 uppercase tracking-wide">Prénom</label>
-            <input type="text" id="sirh_first_name" name="trial[first_name]"
-                   value="<%= @form_values&.dig(:first_name) || @form_values&.dig('first_name') %>"
-                   placeholder="Marie" required autocomplete="given-name"
-                   class="w-full px-4 py-3 border border-gray-200 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm">
+            <label for="sirh_first_name" class="block text-xs font-semibold text-gray-500 mb-1 uppercase tracking-wide">Prénom</label>
+            <input type="text" id="sirh_first_name" name="trial[first_name]" value="<%= @form_values&.dig(:first_name) || @form_values&.dig('first_name') %>" placeholder="Marie" required autocomplete="given-name" class="w-full px-4 py-3 border border-gray-200 rounded-xl bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm">
           </div>
           <div>
-            <label for="sirh_last_name" class="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1 uppercase tracking-wide">Nom</label>
-            <input type="text" id="sirh_last_name" name="trial[last_name]"
-                   value="<%= @form_values&.dig(:last_name) || @form_values&.dig('last_name') %>"
-                   placeholder="Dupont" required autocomplete="family-name"
-                   class="w-full px-4 py-3 border border-gray-200 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm">
+            <label for="sirh_last_name" class="block text-xs font-semibold text-gray-500 mb-1 uppercase tracking-wide">Nom</label>
+            <input type="text" id="sirh_last_name" name="trial[last_name]" value="<%= @form_values&.dig(:last_name) || @form_values&.dig('last_name') %>" placeholder="Dupont" required autocomplete="family-name" class="w-full px-4 py-3 border border-gray-200 rounded-xl bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm">
           </div>
         </div>
         <div>
-          <label for="sirh_email" class="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1 uppercase tracking-wide">Email professionnel</label>
-          <input type="email" id="sirh_email" name="trial[email]"
-                 value="<%= @form_values&.dig(:email) || @form_values&.dig('email') %>"
-                 placeholder="marie.dupont@techcorp.fr" required autocomplete="email"
-                 class="w-full px-4 py-3 border border-gray-200 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm">
+          <label for="sirh_email" class="block text-xs font-semibold text-gray-500 mb-1 uppercase tracking-wide">Email professionnel</label>
+          <input type="email" id="sirh_email" name="trial[email]" value="<%= @form_values&.dig(:email) || @form_values&.dig('email') %>" placeholder="marie.dupont@techcorp.fr" required autocomplete="email" class="w-full px-4 py-3 border border-gray-200 rounded-xl bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm">
         </div>
         <div class="flex justify-center">
           <button type="submit" class="inline-flex items-center justify-center gap-2 px-10 py-3.5 bg-violet-600 hover:bg-violet-700 text-white font-bold rounded-xl transition-colors shadow text-base">
@@ -825,23 +711,20 @@
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
           </button>
         </div>
-        <p class="text-xs text-gray-400 text-center pt-1">
-          En créant un compte, vous acceptez nos <a href="/cgu" class="underline hover:text-gray-600">CGU</a> et notre <a href="/politique-de-confidentialite" class="underline hover:text-gray-600">politique de confidentialité</a>.
-        </p>
+        <p class="text-xs text-gray-400 text-center pt-1">En créant un compte, vous acceptez nos <a href="/cgu" class="underline hover:text-gray-600">CGU</a> et notre <a href="/politique-de-confidentialite" class="underline hover:text-gray-600">politique de confidentialité</a>.</p>
       </form>
     </div>
-
   </div>
 </section>
 
 <%# ─── FAQ ────────────────────────────────────────────────────────────────── %>
-<section id="faq" class="py-14 sm:py-16 bg-white dark:bg-gray-950 border-t border-gray-100 dark:border-gray-800">
+<section id="faq" class="py-20 bg-white">
   <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="text-center mb-12">
-      <h2 class="mt-4 text-3xl font-extrabold text-gray-900 dark:text-white">Questions fréquentes</h2>
+    <div class="text-center mb-14">
+      <h2 class="text-3xl font-extrabold text-gray-900">Questions fréquentes</h2>
     </div>
 
-    <div class="mt-4 space-y-3" x-data>
+    <div class="space-y-3" x-data>
       <% [
         { q: "Quelle est la différence entre Manager OS et SIRH ?",
           a: "Manager OS couvre le cycle de management d'équipe : onboarding, entretiens 1:1, objectifs (OKR) et formation. C'est l'outil du manager terrain. Le SIRH ajoute la gestion administrative : pointage, congés (CP/RTT), planning, paie et analytics RH. Les deux partagent la même interface — vous pouvez passer de l'un à l'autre en un clic, sans migration de données." },
@@ -856,22 +739,14 @@
         { q: "Puis-je importer mes collaborateurs depuis un tableur ?",
           a: "Oui. Izi-RH accepte n'importe quel fichier CSV — qu'il vienne d'Excel, Sage, Lucca, Factorial, PayFit, BambooHR ou d'un export maison. Détection automatique du format, rapport d'erreurs ligne par ligne. La migration prend généralement moins de 5 minutes." }
       ].each_with_index do |item, i| %>
-        <div x-data="{ open: <%= i == 0 %> }"
-             class="border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden">
-          <button @click="open = !open"
-                  :aria-expanded="open.toString()"
-                  aria-controls="faq-answer-<%= i %>"
-                  class="w-full flex items-center justify-between px-6 py-4 text-left bg-white dark:bg-gray-900 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
-            <span class="text-sm font-semibold text-gray-800 dark:text-gray-200"><%= item[:q] %></span>
-            <svg class="w-5 h-5 text-gray-400 flex-shrink-0 transition-transform duration-200" :class="open ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-            </svg>
+        <div x-data="{ open: <%= i == 0 %> }" class="border border-gray-200 rounded-xl overflow-hidden">
+          <button @click="open = !open" :aria-expanded="open.toString()" aria-controls="faq-answer-<%= i %>"
+                  class="w-full flex items-center justify-between px-6 py-4 text-left bg-white hover:bg-gray-50 transition-colors">
+            <span class="text-sm font-semibold text-gray-800"><%= item[:q] %></span>
+            <svg class="w-5 h-5 text-gray-400 flex-shrink-0 transition-transform duration-200" :class="open ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
           </button>
-          <div id="faq-answer-<%= i %>"
-               x-show="open"
-               x-collapse
-               class="px-6 pb-4 bg-white dark:bg-gray-900">
-            <p class="text-sm text-gray-500 dark:text-gray-400 leading-relaxed"><%= item[:a] %></p>
+          <div id="faq-answer-<%= i %>" x-show="open" x-collapse class="px-6 pb-4 bg-white">
+            <p class="text-sm text-gray-500 leading-relaxed"><%= item[:a] %></p>
           </div>
         </div>
       <% end %>
@@ -879,167 +754,86 @@
   </div>
 </section>
 
+<%# ─── WAVE white → indigo footer ────────────────────────────────────────── %>
+<div style="background-color:white; margin-bottom:-2px; line-height:0" aria-hidden="true">
+  <svg viewBox="0 0 1440 80" preserveAspectRatio="none" class="w-full block" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0,20 C360,80 1080,20 1440,80 L1440,80 L0,80 Z" fill="#4f46e5"/>
+  </svg>
+</div>
+
+<%# ─── FOOTER + CTA ────────────────────────────────────────────────────────── %>
+<footer class="bg-indigo-600 relative overflow-hidden">
+  <div class="absolute inset-0 pointer-events-none" aria-hidden="true">
+    <div style="position:absolute; left:-200px; top:50%; transform:translateY(-50%); width:700px; height:700px; border-radius:50%; background:radial-gradient(circle, rgba(255,255,255,0.10) 0%, transparent 65%)"></div>
+    <div style="position:absolute; right:-200px; top:50%; transform:translateY(-50%); width:600px; height:600px; border-radius:50%; background:radial-gradient(circle, rgba(255,255,255,0.08) 0%, transparent 65%)"></div>
+  </div>
+
+  <%# CTA %>
+  <div class="relative max-w-3xl mx-auto px-4 sm:px-6 text-center pt-20 pb-16">
+    <h2 class="text-3xl sm:text-4xl font-extrabold text-white mb-4">Prêt à simplifier votre management ?</h2>
+    <p class="text-indigo-200 text-lg mb-8">30 jours gratuits. Sans carte bancaire. Prêt en 2 minutes.</p>
+    <a href="#essai-manager-os" class="inline-flex items-center gap-2 px-8 py-4 bg-white hover:bg-indigo-50 text-indigo-600 font-bold rounded-xl transition-colors shadow-lg text-lg">
+      Démarrer gratuitement
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
+    </a>
+  </div>
+
+  <%# Footer links %>
+  <div class="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-0 pb-10">
+    <div class="mb-10" style="border-top: 1px solid rgba(255,255,255,0.2)"></div>
+    <div class="flex flex-col md:flex-row md:items-start md:justify-between gap-8">
+      <div>
+        <svg class="h-7 w-auto mb-2" viewBox="0 0 606 144" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Izi-RH">
+          <path d="M11.4 144C7.93333 144 5.13333 143.067 3 141.2C1 139.333 0 136.733 0 133.4V10.6C0 7.26667 1 4.66667 3 2.8C5.13333 0.933337 7.93333 0 11.4 0C14.7333 0 17.4667 1 19.6 3C21.7333 4.86667 22.8 7.4 22.8 10.6V133.4C22.8 136.6 21.7333 139.2 19.6 141.2C17.4667 143.067 14.7333 144 11.4 144Z" fill="white"/>
+          <path d="M72.9516 142C65.0849 142 58.8182 140.133 54.1516 136.4C49.6182 132.533 47.3516 127.333 47.3516 120.8C47.3516 115.867 48.2849 111.6 50.1516 108C52.1516 104.267 55.8182 100.333 61.1516 96.2L141.152 34.2C143.152 32.6 144.552 31.2 145.352 30C146.285 28.6667 146.752 27.0667 146.752 25.2C146.752 21.6 144.218 19.8 139.152 19.8H63.1516C59.6849 19.8 56.8182 19.0667 54.5516 17.6C52.2849 16 51.1516 13.8 51.1516 11C51.1516 8.06666 52.2849 5.86667 54.5516 4.4C56.8182 2.8 59.6849 2 63.1516 2H143.952C151.952 2 158.218 3.86667 162.752 7.6C167.285 11.2 169.552 16.4 169.552 23.2C169.552 28.5333 168.618 32.9333 166.752 36.4C164.885 39.7333 161.218 43.4667 155.752 47.6L75.7516 109.8C73.7516 111.267 72.2849 112.733 71.3516 114.2C70.5516 115.533 70.1516 117.133 70.1516 119C70.1516 122.467 73.2849 124.2 79.5516 124.2H159.152C162.618 124.2 165.485 125 167.752 126.6C170.018 128.067 171.152 130.2 171.152 133C171.152 135.933 170.018 138.2 167.752 139.8C165.485 141.267 162.618 142 159.152 142H72.9516Z" fill="white" style="opacity:0.9"/>
+          <path d="M207.111 144C203.644 144 200.844 143.067 198.711 141.2C196.711 139.333 195.711 136.733 195.711 133.4V10.6C195.711 7.26667 196.711 4.66667 198.711 2.8C200.844 0.933337 203.644 0 207.111 0C210.444 0 213.178 1 215.311 3C217.444 4.86667 218.511 7.4 218.511 10.6V133.4C218.511 136.6 217.444 139.2 215.311 141.2C213.178 143.067 210.444 144 207.111 144Z" fill="white"/>
+          <path d="M249.841 81.0749C246.241 81.0749 243.441 80.2749 241.441 78.6749C239.574 77.0749 238.641 74.9416 238.641 72.2749C238.641 66.2749 242.374 63.2749 249.841 63.2749H309.241C316.707 63.2749 320.441 66.2749 320.441 72.2749C320.441 74.9416 319.441 77.0749 317.441 78.6749C315.574 80.2749 312.841 81.0749 309.241 81.0749H249.841Z" fill="white"/>
+          <path d="M391.477 93.4028L386.675 93.3984L386.578 93.4001H363.978V133.2C363.978 136.533 362.845 139.2 360.578 141.2C358.445 143.067 355.645 144 352.178 144C348.578 144 345.711 143.067 343.578 141.2C341.578 139.2 340.578 136.533 340.578 133.2V30C340.578 21.3335 343.111 14.5334 348.178 9.6001C353.245 4.53345 360.378 2 369.578 2L391.479 2.00342H399.272C418.606 2.00342 433.174 5.99564 442.907 13.729C452.774 21.4623 457.707 32.8623 457.707 47.929C457.707 62.1957 453.374 73.2624 444.707 81.129C437.92 86.8332 430.333 90.2794 420.353 91.9404L454.782 126.475C456.915 128.608 457.982 130.941 457.982 133.475C457.982 136.275 456.648 138.808 453.982 141.075C451.448 142.941 448.982 143.875 446.582 143.875C443.248 143.875 440.048 142.275 436.982 139.075L392.908 93.4028H391.477ZM391.479 20.4034L372.978 20.4001C370.178 20.4001 367.978 21.3335 366.378 23.2002C364.778 24.9333 363.978 27.4001 363.978 30.6001V75L391.514 75.129H399.107C411.907 75.129 420.907 73.129 426.107 69.129C431.441 64.9957 434.107 57.929 434.107 47.929C434.107 38.1957 431.241 31.1957 425.507 26.929C419.774 22.6624 410.939 20.4034 399.072 20.4034H391.479Z" fill="white"/>
+          <path d="M493.747 144C490.28 144 487.547 143.067 485.547 141.2C483.547 139.333 482.547 136.733 482.547 133.4V10.6C482.547 7.26667 483.547 4.66667 485.547 2.8C487.547 0.933337 490.28 0 493.747 0C497.214 0 499.947 1 501.947 3C504.08 4.86667 505.147 7.4 505.147 10.6V61.2H582.347V10.6C582.347 7.4 583.347 4.86667 585.347 3C587.48 1 590.28 0 593.747 0C597.214 0 599.947 0.933337 601.947 2.8C604.08 4.66667 605.147 7.26667 605.147 10.6V133.4C605.147 136.733 604.08 139.333 601.947 141.2C599.947 143.067 597.214 144 593.747 144C590.28 144 587.48 143.067 585.347 141.2C583.347 139.2 582.347 136.6 582.347 133.4V79H505.147V133.4C505.147 136.6 504.08 139.2 501.947 141.2C499.947 143.067 497.214 144 493.747 144Z" fill="white"/>
+        </svg>
+        <p class="text-indigo-200 text-sm">Le logiciel RH pensé pour les managers français.</p>
+      </div>
+      <nav class="flex flex-row flex-wrap items-center gap-y-3 text-sm text-indigo-200" style="gap-x: 0">
+        <%= link_to "CGU", "/cgu", class: "hover:text-white transition-colors px-5" %>
+        <span style="color:rgba(255,255,255,0.3)">|</span>
+        <%= link_to "Confidentialité", "/politique-de-confidentialite", class: "hover:text-white transition-colors px-5" %>
+        <span style="color:rgba(255,255,255,0.3)">|</span>
+        <%= link_to "Mentions légales", "/mentions-legales", class: "hover:text-white transition-colors px-5" %>
+        <span style="color:rgba(255,255,255,0.3)">|</span>
+        <%= link_to "Contact", "mailto:contact@izi-rh.fr", class: "hover:text-white transition-colors px-5" %>
+      </nav>
+    </div>
+    <div class="mt-8 pt-6 text-xs text-indigo-300 text-center" style="border-top: 1px solid rgba(255,255,255,0.2)">
+      © <%= Time.current.year %> Izi-RH — Tous droits réservés · Données hébergées en Europe · Conforme RGPD
+    </div>
+  </div>
+</footer>
+
+</main>
+
 <script>
 function initGsap() {
   if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
   gsap.registerPlugin(ScrollTrigger);
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
-  // Hero
   var heroTl = gsap.timeline({ defaults: { ease: 'power2.out' } });
   heroTl
-    .from('[data-hero="badge"]',      { opacity: 0, y: -16, duration: 0.5 })
-    .from('[data-hero="title"]',      { opacity: 0, y: 24,  duration: 0.6 }, '-=0.2')
-    .from('[data-hero="subtitle"]',   { opacity: 0, y: 20,  duration: 0.5 }, '-=0.3')
-    .from('[data-hero="badges"] span',{ opacity: 0, y: 12,  duration: 0.4, stagger: 0.08 }, '-=0.2')
-    .from('[data-hero="ctas"] a',     { opacity: 0, y: 16,  duration: 0.4, stagger: 0.1  }, '-=0.2')
-    .from('[data-hero="screenshot"]', { opacity: 0, y: 40,  scale: 0.97, duration: 0.9, ease: 'power2.out' }, '-=0.2');
+    .from('[data-hero="badge"]',        { opacity: 0, y: -16, duration: 0.5 })
+    .from('[data-hero="title"]',        { opacity: 0, y: 24,  duration: 0.6 }, '-=0.2')
+    .from('[data-hero="subtitle"]',     { opacity: 0, y: 20,  duration: 0.5 }, '-=0.3')
+    .from('[data-hero="ctas"] a',       { opacity: 0, y: 16,  duration: 0.4, stagger: 0.1 }, '-=0.2')
+    .from('[data-hero="badges"] span',  { opacity: 0, y: 12,  duration: 0.4, stagger: 0.08 }, '-=0.2')
+    .from('[data-hero="illustration"]', { opacity: 0, x: 40,  duration: 0.8, ease: 'power2.out' }, '-=0.4');
 
-  // Stats — fade in
   var statEls = document.querySelectorAll('[data-animate="stats"] [data-stat]');
   gsap.set(statEls, { opacity: 0 });
-  ScrollTrigger.create({
-    trigger: '[data-animate="stats"]',
-    start: 'top 85%',
-    once: true,
-    onEnter: function() {
-      gsap.to(statEls, { opacity: 1, duration: 0.6, stagger: 0.15, ease: 'power2.out' });
-    }
-  });
+  ScrollTrigger.create({ trigger: '[data-animate="stats"]', start: 'top 85%', once: true, onEnter: function() { gsap.to(statEls, { opacity: 1, duration: 0.6, stagger: 0.15, ease: 'power2.out' }); } });
 
-  // Témoignages
   var figureEls = document.querySelectorAll('#testimonials-grid figure');
   gsap.set(figureEls, { opacity: 0 });
-  ScrollTrigger.create({
-    trigger: '#testimonials-grid',
-    start: 'top 85%',
-    once: true,
-    onEnter: function() {
-      gsap.to(figureEls, { opacity: 1, duration: 0.5, stagger: 0.15, ease: 'power2.out' });
-    }
-  });
-
-  // Features SIRH — glissades
-  var allCards = document.querySelectorAll('[data-feature]');
-  if (allCards.length === 6) {
-    var startPos = [
-      { x: '-120vw', y: 0 },
-      { x: 0, y: '-120vh' },
-      { x: '120vw',  y: 0 },
-      { x: '-120vw', y: 0 },
-      { x: 0, y: '120vh' },
-      { x: '120vw',  y: 0 },
-    ];
-    allCards.forEach(function(c, i) {
-      gsap.set(c, { x: startPos[i].x, y: startPos[i].y, opacity: 1 });
-    });
-    var order = [0, 2, 3, 5, 1, 4];
-    var featureTl = gsap.timeline({ paused: true });
-    order.forEach(function(cardIdx, step) {
-      var t = step < 4 ? step * 0.35 : 4 * 0.35;
-      featureTl.to(allCards[cardIdx], {
-        x: 0, y: 0, duration: 0.5, ease: 'power3.out'
-      }, t);
-    });
-    ScrollTrigger.create({
-      trigger: '[data-features-title]',
-      start: 'top 8px',
-      once: true,
-      onEnter: function() {
-        document.documentElement.style.overflow = 'hidden';
-        featureTl.eventCallback('onComplete', function() {
-          document.documentElement.style.overflow = '';
-        });
-        featureTl.play();
-      }
-    });
-  }
+  ScrollTrigger.create({ trigger: '#testimonials-grid', start: 'top 85%', once: true, onEnter: function() { gsap.to(figureEls, { opacity: 1, duration: 0.5, stagger: 0.15, ease: 'power2.out' }); } });
 }
 
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', initGsap);
-} else {
-  initGsap();
-}
+if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', initGsap); } else { initGsap(); }
 </script>
-
-</main>
-
-<%# ─── FOOTER ──────────────────────────────────────────────────────────────── %>
-<!-- Bandeau cookies -->
-<div x-data="cookieConsent()"
-     x-show="visible"
-     x-transition:enter="transition ease-out duration-300"
-     x-transition:enter-start="opacity-0 translate-y-4"
-     x-transition:enter-end="opacity-100 translate-y-0"
-     x-transition:leave="transition ease-in duration-200"
-     x-transition:leave-start="opacity-100 translate-y-0"
-     x-transition:leave-end="opacity-0 translate-y-4"
-     class="fixed bottom-0 inset-x-0 z-50 p-4 sm:p-6"
-     role="dialog" aria-label="Gestion des cookies" aria-modal="true">
-  <div class="max-w-2xl mx-auto bg-white dark:bg-gray-900 rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700 p-5 sm:p-6">
-    <div class="flex flex-col sm:flex-row sm:items-center gap-4">
-      <div class="flex-1 min-w-0">
-        <p class="text-sm font-semibold text-gray-900 dark:text-white mb-1">🍪 Cookies</p>
-        <p class="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">
-          Izi-RH utilise uniquement des cookies strictement nécessaires au fonctionnement du service (session, sécurité CSRF). Aucun cookie publicitaire ou de tracking tiers n'est déposé.
-          <a href="/politique-de-confidentialite" class="text-indigo-600 dark:text-indigo-400 hover:underline whitespace-nowrap">En savoir plus →</a>
-        </p>
-      </div>
-      <div class="flex flex-shrink-0 gap-3">
-        <button @click="accept()"
-                class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold rounded-xl transition-colors">
-          Accepter
-        </button>
-        <button @click="decline()"
-                class="px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 text-sm font-semibold rounded-xl transition-colors">
-          Refuser
-        </button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<script>
-function cookieConsent() {
-  return {
-    visible: false,
-    init() {
-      if (!localStorage.getItem('cookie_consent')) {
-        setTimeout(() => { this.visible = true; }, 800);
-      }
-    },
-    accept() {
-      localStorage.setItem('cookie_consent', 'accepted');
-      this.visible = false;
-    },
-    decline() {
-      localStorage.setItem('cookie_consent', 'declined');
-      this.visible = false;
-    }
-  }
-}
-</script>
-
-<footer class="mt-4 bg-gray-900 dark:bg-gray-950 text-gray-400 py-12 border-t-4 border-gray-800">
-  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="flex flex-col md:flex-row items-center justify-between gap-6">
-      <div>
-        <img src="/izi_rh_logo.svg" alt="Izi-RH" class="h-7 w-auto invert">
-        <p class="text-sm mt-1 text-gray-500">Manager OS + SIRH complet pour les équipes françaises.</p>
-      </div>
-      <div class="flex flex-wrap gap-6 text-sm">
-        <a href="#manager-os" class="hover:text-white transition-colors">Manager OS</a>
-        <a href="#tarifs" class="hover:text-white transition-colors">Tarifs</a>
-        <a href="/cgu" class="hover:text-white transition-colors">CGU</a>
-        <a href="/politique-de-confidentialite" class="hover:text-white transition-colors">Confidentialité</a>
-        <a href="/mentions-legales" class="hover:text-white transition-colors">Mentions légales</a>
-        <a href="mailto:contact@izi-rh.fr" class="hover:text-white transition-colors">Contact</a>
-        <%= link_to new_employee_session_path, class: "hover:text-white transition-colors" do %>Connexion<% end %>
-      </div>
-    </div>
-    <div class="border-t border-gray-800 mt-8 pt-6 text-center text-xs text-gray-600">
-      © <%= Date.current.year %> Izi-RH — Tous droits réservés
-    </div>
-  </div>
-</footer>

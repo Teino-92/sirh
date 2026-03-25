@@ -9,6 +9,9 @@ class PagesController < ApplicationController
     @errors      ||= []
   end
 
+  def manager_os; end
+  def sirh; end
+
   def cgu; end
   def politique_de_confidentialite; end
   def mentions_legales; end
