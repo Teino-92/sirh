@@ -1,4 +1,16 @@
 <%# Page produit Manager OS — layout: marketing %>
+<% content_for :body_style do %>background-color:#0f0a2e<% end %>
+<style>
+  .mock-logo-z    { fill: #B0B91A; }
+  .mock-logo-rest { fill: white; }
+</style>
+
+<% content_for :bg_decoration do %>
+  <div style="position:absolute; left:-15vw; top:5vh; width:60vw; height:60vw; max-width:800px; max-height:800px; border-radius:50%; background:radial-gradient(circle, rgba(99,102,241,0.13) 0%, transparent 65%)"></div>
+  <div style="position:absolute; right:-10vw; top:20vh; width:50vw; height:50vw; max-width:700px; max-height:700px; border-radius:50%; background:radial-gradient(circle, rgba(139,92,246,0.10) 0%, transparent 65%)"></div>
+  <div style="position:absolute; left:10vw; bottom:15vh; width:45vw; height:45vw; max-width:600px; max-height:600px; border-radius:50%; background:radial-gradient(circle, rgba(99,102,241,0.09) 0%, transparent 65%)"></div>
+  <div style="position:absolute; right:-5vw; bottom:5vh; width:40vw; height:40vw; max-width:550px; max-height:550px; border-radius:50%; background:radial-gradient(circle, rgba(139,92,246,0.08) 0%, transparent 65%)"></div>
+<% end %>
 
 <%# ─── NAVBAR ─────────────────────────────────────────────────────────────── %>
 <nav class="sticky top-0 z-50 bg-white/95 backdrop-blur-sm"
@@ -30,256 +42,122 @@
 <main id="main-content">
 
 <%# ─── HERO ───────────────────────────────────────────────────────────────── %>
-<section class="relative bg-white pt-20 pb-24 overflow-hidden">
-  <div class="absolute inset-0 pointer-events-none" aria-hidden="true">
-    <div style="position:absolute; right:-200px; top:-200px; width:800px; height:800px; border-radius:50%; background:radial-gradient(circle, rgba(99,102,241,0.07) 0%, transparent 65%)"></div>
-  </div>
+<section class="relative pt-20 pb-24">
 
   <div class="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="grid lg:grid-cols-2 gap-12 items-center">
-    <div data-hero="text">
-      <div class="inline-flex items-center gap-2 px-3 py-1.5 bg-indigo-50 text-indigo-700 text-xs font-semibold rounded-full mb-6 border border-indigo-100">
+    <div class="max-w-3xl" data-hero="text">
+      <div class="inline-flex items-center gap-2 px-3 py-1.5 bg-white/10 text-indigo-300 text-xs font-semibold rounded-full mb-6 border border-white/10">
         <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z"/></svg>
         Manager OS — Le produit d'entrée
       </div>
-      <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-gray-900 leading-tight mb-6">
-        Le cycle complet<br>du <span class="text-indigo-600">management d'équipe</span>
+      <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white leading-tight mb-6">
+        Le cycle complet<br>du <span class="text-indigo-400">management d'équipe</span>
       </h1>
-      <p class="text-xl text-gray-500 mb-10 leading-relaxed max-w-2xl">
+      <p class="text-xl text-indigo-200 mb-10 leading-relaxed max-w-2xl">
         Onboarding, 1:1, objectifs, formation — tout ce qu'un manager fait aujourd'hui dans 4 outils différents, réuni en un seul endroit. Simple, rapide, pensé pour les équipes françaises.
       </p>
       <div class="flex flex-col sm:flex-row gap-3">
-        <%= link_to root_path + "#essai-manager-os", class: "inline-flex items-center justify-center gap-2 px-5 py-3 sm:px-8 sm:py-4 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-xl transition-colors shadow-lg shadow-indigo-200 text-sm sm:text-base" do %>
+        <%= link_to root_path + "#essai-manager-os", class: "inline-flex items-center justify-center gap-2 px-5 py-3 sm:px-8 sm:py-4 bg-white hover:bg-indigo-50 text-indigo-600 font-bold rounded-xl transition-colors shadow-lg text-sm sm:text-base" do %>
           Essayer gratuitement — 30 jours
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
         <% end %>
-        <%= link_to sirh_path, class: "inline-flex items-center justify-center gap-2 px-5 py-3 sm:px-8 sm:py-4 bg-white border border-gray-200 hover:border-indigo-300 text-gray-700 font-semibold rounded-xl transition-colors text-sm sm:text-base" do %>
+        <%= link_to sirh_path, class: "inline-flex items-center justify-center gap-2 px-5 py-3 sm:px-8 sm:py-4 bg-white/10 hover:bg-white/20 border border-white/20 text-white font-semibold rounded-xl transition-colors text-sm sm:text-base" do %>
           Voir le SIRH complet
         <% end %>
       </div>
       <div class="flex flex-wrap gap-5 mt-8">
-        <span class="inline-flex items-center gap-1.5 text-xs font-medium text-gray-500">
-          <svg class="w-4 h-4 text-green-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+        <span class="inline-flex items-center gap-1.5 text-xs font-medium text-indigo-300">
+          <svg class="w-4 h-4 text-green-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
           Sans carte bancaire
         </span>
-        <span class="inline-flex items-center gap-1.5 text-xs font-medium text-gray-500">
-          <svg class="w-4 h-4 text-green-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+        <span class="inline-flex items-center gap-1.5 text-xs font-medium text-indigo-300">
+          <svg class="w-4 h-4 text-green-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
           Données en Europe · RGPD
         </span>
-        <span class="inline-flex items-center gap-1.5 text-xs font-medium text-gray-500">
-          <svg class="w-4 h-4 text-green-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+        <span class="inline-flex items-center gap-1.5 text-xs font-medium text-indigo-300">
+          <svg class="w-4 h-4 text-green-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
           Conforme Code du Travail
         </span>
       </div>
     </div>
-
-    <%# Hero right — version mobile %>
-    <div class="block lg:hidden mt-6">
-      <div class="bg-white rounded-2xl shadow-lg border border-gray-100 p-4">
-        <div class="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-3">Dashboard manager</div>
-        <% [["Manon G.", "Onboarding J+3", "bg-orange-100 text-orange-700"], ["Antoine L.", "1:1 vendredi", "bg-violet-100 text-violet-700"], ["Sophie D.", "OKR Q2 · 72%", "bg-green-100 text-green-700"]].each do |name, task, badge| %>
-        <div class="flex items-center justify-between py-2.5 border-b border-gray-50 last:border-0">
-          <div class="flex items-center gap-2.5">
-            <div class="w-7 h-7 rounded-full bg-indigo-100 flex items-center justify-center text-xs font-bold text-indigo-600 flex-shrink-0"><%= name.split.map(&:first).join %></div>
-            <div>
-              <div class="text-sm font-semibold text-gray-800"><%= name %></div>
-              <div class="text-xs text-gray-400"><%= task %></div>
-            </div>
-          </div>
-          <span class="text-xs font-medium px-2 py-0.5 rounded-full flex-shrink-0 <%= badge %>"><%= task.split("·").first.strip.split.last %></span>
-        </div>
-        <% end %>
-        <div class="grid grid-cols-3 gap-2 mt-3 pt-3 border-t border-gray-50">
-          <div class="text-center"><div class="text-lg font-extrabold text-indigo-600">8</div><div class="text-xs text-gray-400">Membres</div></div>
-          <div class="text-center"><div class="text-lg font-extrabold text-violet-600">2</div><div class="text-xs text-gray-400">1:1 sem.</div></div>
-          <div class="text-center"><div class="text-lg font-extrabold text-green-600">85%</div><div class="text-xs text-gray-400">OKR</div></div>
-        </div>
-      </div>
-    </div>
-
-    <%# Hero right — mini dashboard preview (light) %>
-    <div data-hero="visual" class="hidden lg:block">
-      <div class="bg-white rounded-2xl shadow-xl border border-gray-200 overflow-hidden">
-        <%# Navbar %>
-        <div class="flex items-center justify-between px-4 py-2.5 bg-white border-b border-gray-200">
-          <div class="flex items-center gap-3">
-            <img src="/izi_rh_logo.svg" alt="Izi-RH" class="h-4 w-auto">
-            <span class="text-xs text-gray-400">Studio Créatif Demo</span>
-            <span class="text-xs font-semibold text-indigo-600 border-b border-indigo-600 pb-0.5 ml-2">Dashboard</span>
-            <span class="text-xs text-gray-400">Équipe ↓</span>
-          </div>
-          <div class="flex items-center gap-2">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6 6 0 10-12 0v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-            </svg>
-            <div class="w-6 h-6 rounded-full bg-indigo-100 flex items-center justify-center text-xs font-bold text-indigo-700">L</div>
-          </div>
-        </div>
-        <%# Content %>
-        <div class="p-4">
-          <div class="mb-3">
-            <div class="text-sm font-bold text-gray-900">Bonjour, Lucas 👋</div>
-            <div class="text-xs text-gray-400">25 mars 2026 · Studio Créatif Demo</div>
-          </div>
-          <%# Stat cards — 4 colonnes comme la vraie app %>
-          <div class="grid gap-2 mb-3" style="grid-template-columns:repeat(4,1fr)">
-            <% [
-              ["1", "Onboarding actif", "text-emerald-600", "bg-emerald-50", "M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2", "bg-emerald-500"],
-              ["1", "1:1 cette semaine", "text-violet-600", "bg-violet-50", "M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z", "bg-violet-500"],
-              ["4", "Objectifs en cours", "text-blue-600", "bg-blue-50", "M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z", "bg-blue-500"],
-              ["2", "Formations", "text-amber-600", "bg-amber-50", "M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253", "bg-amber-500"],
-            ].each do |val, label, text_cls, bg_cls, icon, icon_bg| %>
-              <div class="<%= bg_cls %> rounded-xl p-2.5">
-                <div class="flex items-center justify-between mb-1.5">
-                  <div class="w-5 h-5 <%= icon_bg %> rounded-md flex items-center justify-center">
-                    <svg class="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="<%= icon %>"/></svg>
-                  </div>
-                  <span class="text-xs text-gray-400">Voir tout</span>
-                </div>
-                <div class="text-xl font-extrabold <%= text_cls %>"><%= val %></div>
-                <div class="text-xs text-gray-500 mt-0.5 leading-tight"><%= label %></div>
-              </div>
-            <% end %>
-          </div>
-          <%# Deux cards comme le vrai dashboard %>
-          <div class="grid grid-cols-2 gap-2">
-            <div class="bg-gray-50 rounded-xl p-3 border border-gray-100">
-              <div class="flex items-center justify-between mb-2">
-                <span class="text-xs font-semibold text-gray-700">Onboardings en cours</span>
-                <span class="text-xs text-indigo-500">Tous</span>
-              </div>
-              <div class="flex items-center gap-2">
-                <div class="w-7 h-7 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center text-xs font-bold flex-shrink-0">MG</div>
-                <div class="flex-1 min-w-0">
-                  <div class="text-xs font-semibold text-gray-800 truncate">Manon Garcia</div>
-                  <div class="text-xs text-gray-400">8 / 8 tâches</div>
-                </div>
-                <span class="text-xs text-indigo-500">Voir</span>
-              </div>
-            </div>
-            <div class="bg-gray-50 rounded-xl p-3 border border-gray-100">
-              <div class="flex items-center justify-between mb-2">
-                <span class="text-xs font-semibold text-gray-700">Prochains 1:1</span>
-                <span class="text-xs text-indigo-500">Tous</span>
-              </div>
-              <div class="flex items-center gap-2">
-                <div class="w-7 h-7 rounded-full bg-violet-100 text-violet-700 flex items-center justify-center text-xs font-bold flex-shrink-0">AL</div>
-                <div class="flex-1 min-w-0">
-                  <div class="text-xs font-semibold text-gray-800 truncate">Antoine Leroy</div>
-                  <div class="text-xs text-gray-400">26 mar. 10:30</div>
-                </div>
-                <span class="text-xs text-indigo-500">Voir</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    </div>
   </div>
 </section>
 
-<%# ─── WAVE white → slate-50 ─────────────────────────────────────────────── %>
-<div style="background-color:white; margin-bottom:-2px; line-height:0" aria-hidden="true">
-  <svg viewBox="0 0 1440 80" preserveAspectRatio="none" class="w-full block" xmlns="http://www.w3.org/2000/svg">
-    <path d="M0,20 C360,80 1080,20 1440,80 L1440,80 L0,80 Z" fill="#f8fafc"/>
-  </svg>
-</div>
 
 <%# ─── MOCK UI DASHBOARD ──────────────────────────────────────────────────── %>
-<section class="bg-slate-50 py-20">
+<section class="py-14">
   <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="text-center mb-12">
-      <p class="text-sm font-semibold text-indigo-600 uppercase tracking-wide mb-2">L'interface</p>
-      <h2 class="text-3xl font-extrabold text-gray-900">Vue manager en temps réel</h2>
+    <div class="text-center mb-8">
+      <p class="text-sm font-semibold text-indigo-400 uppercase tracking-wide mb-2">L'interface</p>
+      <h2 class="text-3xl font-extrabold text-white">Vue manager en temps réel</h2>
     </div>
 
-    <%# Mock dashboard — version mobile %>
-    <div class="block lg:hidden bg-white rounded-2xl shadow border border-gray-100 overflow-hidden mb-2">
-      <div class="px-4 py-3 border-b border-gray-100">
-        <div class="text-base font-bold text-gray-900">Bonjour, Lucas 👋</div>
-        <div class="text-xs text-gray-400">Studio Créatif Demo</div>
-      </div>
-      <div class="p-4 grid grid-cols-2 gap-3 mb-1">
-        <% [["2", "text-orange-500", "bg-orange-50", "Onboardings actifs"], ["1", "text-violet-500", "bg-violet-50", "1:1 cette semaine"], ["3", "text-green-500", "bg-green-50", "OKR en cours"], ["0", "text-red-500", "bg-red-50", "Retards"]].each do |val, color, bg, label| %>
-        <div class="rounded-xl p-3 <%= bg %>">
-          <div class="text-xl font-extrabold <%= color %>"><%= val %></div>
-          <div class="text-xs text-gray-500 mt-0.5"><%= label %></div>
-        </div>
-        <% end %>
-      </div>
-    </div>
-
-    <%# Mock dashboard — light, fidèle à la vraie app %>
-    <div data-mock-ui class="hidden lg:block bg-white rounded-2xl shadow-xl border border-gray-200 overflow-hidden" style="opacity:0">
-      <%# Navbar — même structure que la vraie app %>
-      <div class="flex items-center justify-between px-6 py-3 bg-white border-b border-gray-200">
+    <%# Mock dashboard — dark mode %>
+    <div data-mock-ui class="rounded-2xl overflow-hidden border border-white/10" style="opacity:0; background-color:#1e2035">
+      <%# Navbar %>
+      <div class="flex items-center justify-between px-6 py-3 border-b border-white/10" style="background-color:#15172a">
         <div class="flex items-center gap-6">
-          <img src="/izi_rh_logo.svg" alt="Izi-RH" class="h-5 w-auto">
-          <span class="text-sm text-gray-400">Studio Créatif Demo</span>
-          <span class="text-sm font-semibold text-indigo-600 border-b-2 border-indigo-600 pb-0.5">Dashboard</span>
-          <span class="text-sm text-gray-400">Équipe ↓</span>
+          <svg class="h-4 w-auto" viewBox="0 0 606 144" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Izi-RH"><path d="M11.4 144C7.93333 144 5.13333 143.067 3 141.2C1 139.333 0 136.733 0 133.4V10.6C0 7.26667 1 4.66667 3 2.8C5.13333 0.933337 7.93333 0 11.4 0C14.7333 0 17.4667 1 19.6 3C21.7333 4.86667 22.8 7.4 22.8 10.6V133.4C22.8 136.6 21.7333 139.2 19.6 141.2C17.4667 143.067 14.7333 144 11.4 144Z" class="mock-logo-rest"/><path d="M72.9516 142C65.0849 142 58.8182 140.133 54.1516 136.4C49.6182 132.533 47.3516 127.333 47.3516 120.8C47.3516 115.867 48.2849 111.6 50.1516 108C52.1516 104.267 55.8182 100.333 61.1516 96.2L141.152 34.2C143.152 32.6 144.552 31.2 145.352 30C146.285 28.6667 146.752 27.0667 146.752 25.2C146.752 21.6 144.218 19.8 139.152 19.8H63.1516C59.6849 19.8 56.8182 19.0667 54.5516 17.6C52.2849 16 51.1516 13.8 51.1516 11C51.1516 8.06666 52.2849 5.86667 54.5516 4.4C56.8182 2.8 59.6849 2 63.1516 2H143.952C151.952 2 158.218 3.86667 162.752 7.6C167.285 11.2 169.552 16.4 169.552 23.2C169.552 28.5333 168.618 32.9333 166.752 36.4C164.885 39.7333 161.218 43.4667 155.752 47.6L75.7516 109.8C73.7516 111.267 72.2849 112.733 71.3516 114.2C70.5516 115.533 70.1516 117.133 70.1516 119C70.1516 122.467 73.2849 124.2 79.5516 124.2H159.152C162.618 124.2 165.485 125 167.752 126.6C170.018 128.067 171.152 130.2 171.152 133C171.152 135.933 170.018 138.2 167.752 139.8C165.485 141.267 162.618 142 159.152 142H72.9516Z" class="mock-logo-z"/><path d="M207.111 144C203.644 144 200.844 143.067 198.711 141.2C196.711 139.333 195.711 136.733 195.711 133.4V10.6C195.711 7.26667 196.711 4.66667 198.711 2.8C200.844 0.933337 203.644 0 207.111 0C210.444 0 213.178 1 215.311 3C217.444 4.86667 218.511 7.4 218.511 10.6V133.4C218.511 136.6 217.444 139.2 215.311 141.2C213.178 143.067 210.444 144 207.111 144Z" class="mock-logo-rest"/><path d="M249.841 81.0749C246.241 81.0749 243.441 80.2749 241.441 78.6749C239.574 77.0749 238.641 74.9416 238.641 72.2749C238.641 66.2749 242.374 63.2749 249.841 63.2749H309.241C316.707 63.2749 320.441 66.2749 320.441 72.2749C320.441 74.9416 319.441 77.0749 317.441 78.6749C315.574 80.2749 312.841 81.0749 309.241 81.0749H249.841Z" class="mock-logo-rest"/><path d="M391.477 93.4028L386.675 93.3984L386.578 93.4001H363.978V133.2C363.978 136.533 362.845 139.2 360.578 141.2C358.445 143.067 355.645 144 352.178 144C348.578 144 345.711 143.067 343.578 141.2C341.578 139.2 340.578 136.533 340.578 133.2V30C340.578 21.3335 343.111 14.5334 348.178 9.6001C353.245 4.53345 360.378 2 369.578 2L391.479 2.00342H399.272C418.606 2.00342 433.174 5.99564 442.907 13.729C452.774 21.4623 457.707 32.8623 457.707 47.929C457.707 62.1957 453.374 73.2624 444.707 81.129C437.92 86.8332 430.333 90.2794 420.353 91.9404L454.782 126.475C456.915 128.608 457.982 130.941 457.982 133.475C457.982 136.275 456.648 138.808 453.982 141.075C451.448 142.941 448.982 143.875 446.582 143.875C443.248 143.875 440.048 142.275 436.982 139.075L392.908 93.4028H391.477ZM391.479 20.4034L372.978 20.4001C370.178 20.4001 367.978 21.3335 366.378 23.2002C364.778 24.9333 363.978 27.4001 363.978 30.6001V75L391.514 75.129H399.107C411.907 75.129 420.907 73.129 426.107 69.129C431.441 64.9957 434.107 57.929 434.107 47.929C434.107 38.1957 431.241 31.1957 425.507 26.929C419.774 22.6624 410.939 20.4034 399.072 20.4034H391.479Z" class="mock-logo-rest"/><path d="M493.747 144C490.28 144 487.547 143.067 485.547 141.2C483.547 139.333 482.547 136.733 482.547 133.4V10.6C482.547 7.26667 483.547 4.66667 485.547 2.8C487.547 0.933337 490.28 0 493.747 0C497.214 0 499.947 1 501.947 3C504.08 4.86667 505.147 7.4 505.147 10.6V61.2H582.347V10.6C582.347 7.4 583.347 4.86667 585.347 3C587.48 1 590.28 0 593.747 0C597.214 0 599.947 0.933337 601.947 2.8C604.08 4.66667 605.147 7.26667 605.147 10.6V133.4C605.147 136.733 604.08 139.333 601.947 141.2C599.947 143.067 597.214 144 593.747 144C590.28 144 587.48 143.067 585.347 141.2C583.347 139.2 582.347 136.6 582.347 133.4V79H505.147V133.4C505.147 136.6 504.08 139.2 501.947 141.2C499.947 143.067 497.214 144 493.747 144Z" class="mock-logo-rest"/></svg>
+          <span class="text-xs text-gray-400">Studio Créatif Demo</span>
+          <span class="text-xs font-semibold text-indigo-400 border-b border-indigo-400 pb-0.5">Dashboard</span>
+          <span class="text-xs text-gray-500">Équipe</span>
         </div>
         <div class="flex items-center gap-3">
-          <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
-          <div class="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center text-xs font-bold text-indigo-700">L</div>
+          <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6 6 0 10-12 0v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+          <div class="w-7 h-7 rounded-full bg-indigo-500/30 flex items-center justify-center text-xs font-bold text-indigo-300">L</div>
         </div>
       </div>
       <%# Body %>
-      <div class="p-6 bg-gray-50">
+      <div class="p-6">
         <div class="mb-5">
-          <h3 class="text-xl font-bold text-gray-900">Bonjour, Lucas 👋</h3>
+          <h3 class="text-xl font-bold text-white">Bonjour, Lucas 👋</h3>
           <p class="text-sm text-gray-400">25 mars 2026 · Studio Créatif Demo</p>
         </div>
-        <%# 4 stat cards — exactement comme la vraie app %>
+        <%# 4 stat cards %>
         <div class="grid gap-3 mb-5" style="grid-template-columns:repeat(4,1fr)">
           <% [
-            ["1", "Onboarding actif", "text-emerald-600", "bg-white border border-gray-100", "M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2", "bg-emerald-500"],
-            ["1", "1:1 cette semaine", "text-violet-600", "bg-white border border-gray-100", "M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z", "bg-violet-500"],
-            ["4", "Objectifs en cours", "text-blue-600", "bg-white border border-gray-100", "M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z", "bg-blue-500"],
-            ["2", "Formations en cours", "text-amber-600", "bg-white border border-gray-100", "M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253", "bg-amber-500"],
-          ].each do |val, label, text_cls, card_cls, icon, icon_bg| %>
-            <div class="<%= card_cls %> rounded-xl p-4">
-              <div class="flex items-start justify-between mb-3">
-                <div class="w-9 h-9 <%= icon_bg %> rounded-lg flex items-center justify-center">
-                  <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="<%= icon %>"/></svg>
-                </div>
-                <span class="text-xs text-indigo-500 font-medium">Voir tout</span>
+            ["1", "Onboarding actif", "#22c55e", "M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"],
+            ["1", "1:1 cette semaine", "#8b5cf6", "M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"],
+            ["4", "Objectifs en cours", "#6366f1", "M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"],
+            ["2", "Formations en cours", "#f59e0b", "M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"],
+          ].each do |val, label, color, icon| %>
+            <div class="rounded-xl p-4 border border-white/5" style="background-color:#15172a">
+              <div class="w-8 h-8 rounded-lg flex items-center justify-center mb-3" style="background-color:<%= color %>22">
+                <svg class="w-4 h-4" style="color:<%= color %>" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="<%= icon %>"/></svg>
               </div>
-              <div class="text-3xl font-extrabold <%= text_cls %>"><%= val %></div>
-              <div class="text-xs text-gray-500 mt-1"><%= label %></div>
+              <div class="text-xl font-extrabold text-white"><%= val %></div>
+              <div class="text-xs text-gray-400 mt-0.5"><%= label %></div>
             </div>
           <% end %>
         </div>
         <%# 2 cards — Onboardings + 1:1 %>
         <div class="grid grid-cols-2 gap-3">
-          <div class="bg-white rounded-xl border border-gray-100 p-4">
-            <div class="flex items-center justify-between mb-3">
-              <span class="text-sm font-semibold text-gray-800">Onboardings en cours</span>
-              <span class="text-xs text-indigo-500">Tous</span>
+          <div class="rounded-xl border border-white/5 overflow-hidden" style="background-color:#15172a">
+            <div class="px-4 py-3 border-b border-white/5 flex items-center justify-between">
+              <span class="text-sm font-semibold text-white">Onboardings en cours</span>
+              <span class="text-xs text-indigo-400">Tous</span>
             </div>
-            <div class="flex items-center gap-3 p-2.5 rounded-lg bg-gray-50">
-              <div class="w-8 h-8 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center text-xs font-bold flex-shrink-0">MG</div>
+            <div class="px-4 py-3 flex items-center gap-3">
+              <div class="w-8 h-8 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-xs font-bold flex-shrink-0">MG</div>
               <div class="flex-1 min-w-0">
-                <div class="text-sm font-semibold text-gray-800">Manon Garcia</div>
+                <div class="text-sm font-semibold text-white">Manon Garcia</div>
                 <div class="text-xs text-gray-400">8 / 8 tâches</div>
               </div>
-              <span class="text-xs text-indigo-500">Voir</span>
+              <span class="text-xs text-indigo-400">Voir</span>
             </div>
           </div>
-          <div class="bg-white rounded-xl border border-gray-100 p-4">
-            <div class="flex items-center justify-between mb-3">
-              <span class="text-sm font-semibold text-gray-800">Prochains 1:1</span>
-              <span class="text-xs text-indigo-500">Tous</span>
+          <div class="rounded-xl border border-white/5 overflow-hidden" style="background-color:#15172a">
+            <div class="px-4 py-3 border-b border-white/5 flex items-center justify-between">
+              <span class="text-sm font-semibold text-white">Prochains 1:1</span>
+              <span class="text-xs text-indigo-400">Tous</span>
             </div>
-            <div class="flex items-center gap-3 p-2.5 rounded-lg bg-gray-50">
-              <div class="w-8 h-8 rounded-full bg-violet-100 text-violet-700 flex items-center justify-center text-xs font-bold flex-shrink-0">AL</div>
+            <div class="px-4 py-3 flex items-center gap-3">
+              <div class="w-8 h-8 rounded-full bg-violet-500/20 text-violet-400 flex items-center justify-center text-xs font-bold flex-shrink-0">AL</div>
               <div class="flex-1 min-w-0">
-                <div class="text-sm font-semibold text-gray-800">Antoine Leroy</div>
+                <div class="text-sm font-semibold text-white">Antoine Leroy</div>
                 <div class="text-xs text-gray-400">26 mar. 10:30</div>
               </div>
-              <span class="text-xs text-indigo-500 font-medium">Voir</span>
+              <span class="text-xs text-indigo-400">Voir</span>
             </div>
           </div>
         </div>
@@ -288,17 +166,17 @@
   </div>
 </section>
 
-<%# ─── WAVE slate-50 → white ─────────────────────────────────────────────── %>
-<div style="background-color:#f8fafc; margin-bottom:-2px; line-height:0" aria-hidden="true">
-  <svg viewBox="0 0 1440 80" preserveAspectRatio="none" class="w-full block" xmlns="http://www.w3.org/2000/svg">
-    <path d="M0,80 C360,20 1080,80 1440,20 L1440,80 L0,80 Z" fill="white"/>
+<%# ─── WAVE dark → white ──────────────────────────────────────────────────── %>
+<div style="margin-bottom:-1px; line-height:0" aria-hidden="true">
+  <svg viewBox="0 0 1440 80" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-full block" preserveAspectRatio="none">
+    <path d="M0,80 C360,20 1080,80 1440,20 L1440,80 Z" fill="white"/>
   </svg>
 </div>
 
 <%# ─── MODULE ONBOARDING ──────────────────────────────────────────────────── %>
-<section class="py-24 bg-white" id="onboarding">
+<section class="py-16 bg-white" id="onboarding">
   <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="grid lg:grid-cols-2 gap-12 items-start">
+    <div class="grid lg:grid-cols-2 gap-10 items-start">
       <div data-module="left">
         <div class="inline-flex items-center gap-2 px-3 py-1.5 bg-orange-50 text-orange-700 text-xs font-semibold rounded-full mb-6 border border-orange-100">
           <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
@@ -326,35 +204,8 @@
         </ul>
       </div>
 
-      <%# Mock onboarding — version mobile %>
-      <div class="block lg:hidden">
-        <div class="bg-white rounded-2xl shadow border border-gray-100 overflow-hidden">
-          <div class="px-4 py-3 border-b border-gray-100 flex items-center justify-between">
-            <div class="text-sm font-bold text-gray-900">Onboarding équipe</div>
-            <span class="text-xs font-semibold text-indigo-600">2 actifs</span>
-          </div>
-          <div class="p-3 space-y-2">
-            <% [["Manon Garcia", "Intégration Designer", "Actif", "bg-emerald-100 text-emerald-700"], ["Thomas Bernard", "Intégration Tech", "Terminé", "bg-indigo-100 text-indigo-700"]].each do |name, tmpl, status, cls| %>
-            <div class="rounded-xl border border-gray-100 p-3">
-              <div class="flex items-center justify-between mb-1.5">
-                <div class="flex items-center gap-2">
-                  <div class="w-7 h-7 rounded-full bg-orange-100 flex items-center justify-center text-xs font-bold text-orange-600"><%= name.split.map(&:first).join %></div>
-                  <div>
-                    <div class="text-sm font-semibold text-gray-800"><%= name %></div>
-                    <div class="text-xs text-gray-400"><%= tmpl %></div>
-                  </div>
-                </div>
-                <span class="text-xs font-medium px-2 py-0.5 rounded-full <%= cls %>"><%= status %></span>
-              </div>
-              <div class="w-full bg-gray-100 rounded-full h-1.5"><div class="bg-indigo-500 h-1.5 rounded-full" style="width:100%"></div></div>
-            </div>
-            <% end %>
-          </div>
-        </div>
-      </div>
-
       <%# Mock onboarding UI — fidèle à la vraie app %>
-      <div data-module="right" class="relative hidden lg:block">
+      <div data-module="right" class="relative">
         <div class="bg-white rounded-2xl shadow-xl border border-gray-200 overflow-hidden">
           <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
             <div>
@@ -422,38 +273,40 @@
 </div>
 
 <%# ─── MODULE 1:1 ─────────────────────────────────────────────────────────── %>
-<section class="py-24 bg-slate-50" id="entretiens">
+<section class="py-16 bg-slate-50" id="entretiens">
   <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="grid lg:grid-cols-2 gap-12 items-start">
+    <div class="grid lg:grid-cols-2 gap-10 items-start">
 
-      <%# Mock 1:1 — version mobile %>
-      <div class="block lg:hidden">
-        <div class="bg-white rounded-2xl shadow border border-gray-100 overflow-hidden">
-          <div class="px-4 py-3 border-b border-gray-100 flex items-center justify-between">
-            <div class="text-sm font-bold text-gray-900">Entretiens 1:1</div>
-            <span class="text-xs font-semibold text-violet-600">1 prochain</span>
-          </div>
-          <div class="p-3">
-            <div class="rounded-xl border border-gray-100 p-3">
-              <div class="text-sm font-semibold text-gray-900 mb-1">1:1 avec Antoine Leroy</div>
-              <div class="flex items-center gap-3 text-xs text-gray-400 mb-2">
-                <span>Vendredi 28 mars · 10h00</span>
-                <span class="px-2 py-0.5 rounded-full bg-violet-50 text-violet-700 font-medium">Planifié</span>
-              </div>
-              <div class="text-xs text-gray-500 mb-1 font-medium">Points à aborder</div>
-              <% ["Avancement refonte design system", "Charge de travail — Q2", "Objectifs personnels"].each do |pt| %>
-              <div class="flex items-center gap-2 py-1 text-xs text-gray-600">
-                <div class="w-1.5 h-1.5 rounded-full bg-violet-400 flex-shrink-0"></div>
-                <%= pt %>
-              </div>
-              <% end %>
-            </div>
-          </div>
+      <%# Texte 1:1 — en premier dans le HTML (ordre mobile correct) %>
+      <div data-module="right" class="lg:order-last">
+        <div class="inline-flex items-center gap-2 px-3 py-1.5 bg-violet-100 text-violet-700 text-xs font-semibold rounded-full mb-6 border border-violet-200">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+          Entretiens 1:1
         </div>
+        <h2 class="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-4">Des 1:1 structurés, pas des réunions improvisées</h2>
+        <p class="text-lg text-gray-500 mb-8 leading-relaxed">Agenda partagé avant chaque réunion, notes collaboratives, action items avec deadline. Tout l'historique d'un collaborateur en un clic.</p>
+        <ul class="space-y-4">
+          <% [
+            ["Récurrence configurable", "Hebdo, bi-mensuelle, mensuelle — la cadence s'adapte à chaque relation manager–employé."],
+            ["Notes et agenda partagés", "Manager et employé co-construisent l'agenda avant la réunion. Plus de surprises."],
+            ["Action items avec suivi", "Chaque décision devient une tâche assignée, avec deadline et statut visible des deux côtés."],
+            ["Historique chronologique", "L'historique complet de chaque collaborateur, accessible en un clic. Utile pour les évaluations."],
+          ].each do |title, desc| %>
+            <li class="flex gap-4">
+              <div class="w-6 h-6 bg-violet-100 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
+                <svg class="w-3.5 h-3.5 text-violet-600" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+              </div>
+              <div>
+                <div class="text-sm font-semibold text-gray-800 mb-0.5"><%= title %></div>
+                <div class="text-sm text-gray-500"><%= desc %></div>
+              </div>
+            </li>
+          <% end %>
+        </ul>
       </div>
 
-      <%# Mock 1:1 UI — light, avec vrai contenu %>
-      <div data-module="left" class="relative hidden lg:block">
+      <%# Mock 1:1 UI %>
+      <div data-module="left" class="relative lg:order-first">
         <div class="bg-white rounded-2xl shadow-xl border border-gray-200 overflow-hidden">
           <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
             <div>
@@ -487,33 +340,6 @@
           </div>
         </div>
       </div>
-
-      <div data-module="right" class="order-1 lg:order-2">
-        <div class="inline-flex items-center gap-2 px-3 py-1.5 bg-violet-100 text-violet-700 text-xs font-semibold rounded-full mb-6 border border-violet-200">
-          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
-          Entretiens 1:1
-        </div>
-        <h2 class="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-4">Des 1:1 structurés, pas des réunions improvisées</h2>
-        <p class="text-lg text-gray-500 mb-8 leading-relaxed">Agenda partagé avant chaque réunion, notes collaboratives, action items avec deadline. Tout l'historique d'un collaborateur en un clic.</p>
-        <ul class="space-y-4">
-          <% [
-            ["Récurrence configurable", "Hebdo, bi-mensuelle, mensuelle — la cadence s'adapte à chaque relation manager–employé."],
-            ["Notes et agenda partagés", "Manager et employé co-construisent l'agenda avant la réunion. Plus de surprises."],
-            ["Action items avec suivi", "Chaque décision devient une tâche assignée, avec deadline et statut visible des deux côtés."],
-            ["Historique chronologique", "L'historique complet de chaque collaborateur, accessible en un clic. Utile pour les évaluations."],
-          ].each do |title, desc| %>
-            <li class="flex gap-4">
-              <div class="w-6 h-6 bg-violet-100 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
-                <svg class="w-3.5 h-3.5 text-violet-600" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
-              </div>
-              <div>
-                <div class="text-sm font-semibold text-gray-800 mb-0.5"><%= title %></div>
-                <div class="text-sm text-gray-500"><%= desc %></div>
-              </div>
-            </li>
-          <% end %>
-        </ul>
-      </div>
     </div>
   </div>
 </section>
@@ -526,9 +352,9 @@
 </div>
 
 <%# ─── MODULE OBJECTIFS ───────────────────────────────────────────────────── %>
-<section class="py-24 bg-white" id="objectifs">
+<section class="py-16 bg-white" id="objectifs">
   <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="grid lg:grid-cols-2 gap-12 items-start">
+    <div class="grid lg:grid-cols-2 gap-10 items-start">
       <div data-module="left">
         <div class="inline-flex items-center gap-2 px-3 py-1.5 bg-green-50 text-green-700 text-xs font-semibold rounded-full mb-6 border border-green-100">
           <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
@@ -556,33 +382,8 @@
         </ul>
       </div>
 
-      <%# Mock OKR — version mobile %>
-      <div class="block lg:hidden">
-        <div class="bg-white rounded-2xl shadow border border-gray-100 overflow-hidden">
-          <div class="px-4 py-3 border-b border-gray-100 flex items-center justify-between">
-            <div class="text-sm font-bold text-gray-900">Objectifs équipe</div>
-            <span class="text-xs font-semibold text-green-600">4 en cours</span>
-          </div>
-          <div class="p-3 space-y-2">
-            <% [["Produire 3 vidéos motion", "Antoine L.", 23], ["Refonte design system", "Sophie D.", 19], ["Lancer le site v2", "Camille P.", 13]].each do |obj, owner, days| %>
-            <div class="rounded-xl border border-gray-50 p-3 bg-gray-50/50">
-              <div class="flex items-start justify-between mb-1.5">
-                <div class="text-xs font-semibold text-gray-800 flex-1 mr-2"><%= obj %></div>
-                <span class="text-xs text-gray-400 flex-shrink-0"><%= days %>j</span>
-              </div>
-              <div class="flex items-center gap-2">
-                <div class="w-5 h-5 rounded-full bg-green-100 flex items-center justify-center text-xs font-bold text-green-700"><%= owner.split.map(&:first).join %></div>
-                <span class="text-xs text-gray-400"><%= owner %></span>
-                <span class="ml-auto text-xs font-medium text-amber-600">En cours</span>
-              </div>
-            </div>
-            <% end %>
-          </div>
-        </div>
-      </div>
-
       <%# Mock OKR UI — light, fidèle à la vraie app %>
-      <div data-module="right" class="relative hidden lg:block">
+      <div data-module="right" class="relative">
         <div class="bg-white rounded-2xl shadow-xl border border-gray-200 overflow-hidden">
           <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
             <div>
@@ -638,37 +439,41 @@
 </div>
 
 <%# ─── MODULE FORMATION ───────────────────────────────────────────────────── %>
-<section class="py-24 bg-slate-50" id="formation">
+<section class="py-16 bg-slate-50" id="formation">
   <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="grid lg:grid-cols-2 gap-12 items-start">
+    <div class="grid lg:grid-cols-2 gap-10 items-start">
 
-      <%# Mock formation — version mobile %>
-      <div class="block lg:hidden">
-        <div class="bg-white rounded-2xl shadow border border-gray-100 overflow-hidden">
-          <div class="px-4 py-3 border-b border-gray-100 flex items-center justify-between">
-            <div class="text-sm font-bold text-gray-900">Formations</div>
-            <span class="text-xs font-semibold text-blue-600">2 en cours</span>
-          </div>
-          <div class="p-3 space-y-2">
-            <% [["CP", "bg-amber-100 text-amber-700", "Camille Petit", "Notion pour les équipes créatives", "Assignée", "bg-amber-100 text-amber-700"], ["SD", "bg-indigo-100 text-indigo-700", "Sophie Dubois", "Figma avancé — auto-layout", "En cours", "bg-indigo-100 text-indigo-700"]].each do |ini, avatar_cls, name, title, status, badge_cls| %>
-            <div class="rounded-xl border border-gray-50 p-3 bg-gray-50/50">
-              <div class="flex items-start gap-2.5">
-                <div class="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 <%= avatar_cls %>"><%= ini %></div>
-                <div class="flex-1 min-w-0">
-                  <div class="text-xs font-semibold text-gray-800 truncate"><%= title %></div>
-                  <div class="text-xs text-gray-400"><%= name %></div>
-                </div>
-                <span class="text-xs font-medium px-2 py-0.5 rounded-full flex-shrink-0 <%= badge_cls %>"><%= status %></span>
-              </div>
-            </div>
-            <% end %>
-          </div>
+      <%# Texte Formation — en premier dans le HTML %>
+      <div data-module="right" class="lg:order-last">
+        <div class="inline-flex items-center gap-2 px-3 py-1.5 bg-blue-50 text-blue-700 text-xs font-semibold rounded-full mb-6 border border-blue-100">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+          Formation
         </div>
+        <h2 class="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-4">La formation liée aux objectifs, pas dans un LMS oublié</h2>
+        <p class="text-lg text-gray-500 mb-8 leading-relaxed">Identifiez les besoins directement depuis les objectifs, planifiez et suivez sans les lourdeurs d'un LMS. Simple comme un tableau.</p>
+        <ul class="space-y-4">
+          <% [
+            ["Besoins remontés des objectifs", "Quand un objectif implique une compétence manquante, le besoin de formation se crée automatiquement."],
+            ["Statuts clairs", "Souhaitée → Planifiée → En cours → Réalisée. Tout le monde sait où on en est."],
+            ["Vue synthèse équipe", "Le manager voit le plan de formation complet de l'équipe en un tableau."],
+            ["Sans LMS", "Pas besoin d'un outil supplémentaire. Tout est dans Izi-RH."],
+          ].each do |title, desc| %>
+            <li class="flex gap-4">
+              <div class="w-6 h-6 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
+                <svg class="w-3.5 h-3.5 text-blue-600" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+              </div>
+              <div>
+                <div class="text-sm font-semibold text-gray-800 mb-0.5"><%= title %></div>
+                <div class="text-sm text-gray-500"><%= desc %></div>
+              </div>
+            </li>
+          <% end %>
+        </ul>
       </div>
 
-      <%# Mock formation UI — light, fidèle à la vraie app %>
-      <div data-module="left" class="hidden lg:block">
-        <div class="bg-white rounded-2xl shadow-xl border border-gray-200 overflow-hidden">
+      <%# Mock formation UI %>
+      <div data-module="left" class="lg:order-first">
+        <div class="bg-white rounded-2xl shadow-xl border border-gray-200 overflow-hidden" style="max-height:520px">
           <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
             <div>
               <div class="text-xl font-extrabold text-gray-900">Formations</div>
@@ -720,33 +525,6 @@
             </div>
           </div>
         </div>
-      </div>
-
-      <div data-module="right" class="order-1 lg:order-2">
-        <div class="inline-flex items-center gap-2 px-3 py-1.5 bg-blue-50 text-blue-700 text-xs font-semibold rounded-full mb-6 border border-blue-100">
-          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
-          Formation
-        </div>
-        <h2 class="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-4">La formation liée aux objectifs, pas dans un LMS oublié</h2>
-        <p class="text-lg text-gray-500 mb-8 leading-relaxed">Identifiez les besoins directement depuis les objectifs, planifiez et suivez sans les lourdeurs d'un LMS. Simple comme un tableau.</p>
-        <ul class="space-y-4">
-          <% [
-            ["Besoins remontés des objectifs", "Quand un objectif implique une compétence manquante, le besoin de formation se crée automatiquement."],
-            ["Statuts clairs", "Souhaitée → Planifiée → En cours → Réalisée. Tout le monde sait où on en est."],
-            ["Vue synthèse équipe", "Le manager voit le plan de formation complet de l'équipe en un tableau."],
-            ["Sans LMS", "Pas besoin d'un outil supplémentaire. Tout est dans Izi-RH."],
-          ].each do |title, desc| %>
-            <li class="flex gap-4">
-              <div class="w-6 h-6 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
-                <svg class="w-3.5 h-3.5 text-blue-600" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
-              </div>
-              <div>
-                <div class="text-sm font-semibold text-gray-800 mb-0.5"><%= title %></div>
-                <div class="text-sm text-gray-500"><%= desc %></div>
-              </div>
-            </li>
-          <% end %>
-        </ul>
       </div>
     </div>
   </div>

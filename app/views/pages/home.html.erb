@@ -1,4 +1,16 @@
 <%# Landing page Izi-RH — layout: marketing %>
+<% content_for :body_style do %>background-color:#0f0a2e<% end %>
+<style>
+  .mock-logo-z    { fill: #B0B91A; }
+  .mock-logo-rest { fill: white; }
+</style>
+
+<% content_for :bg_decoration do %>
+  <div style="position:absolute; left:-15vw; top:5vh; width:60vw; height:60vw; max-width:800px; max-height:800px; border-radius:50%; background:radial-gradient(circle, rgba(99,102,241,0.13) 0%, transparent 65%)"></div>
+  <div style="position:absolute; right:-10vw; top:20vh; width:50vw; height:50vw; max-width:700px; max-height:700px; border-radius:50%; background:radial-gradient(circle, rgba(139,92,246,0.10) 0%, transparent 65%)"></div>
+  <div style="position:absolute; left:10vw; bottom:15vh; width:45vw; height:45vw; max-width:600px; max-height:600px; border-radius:50%; background:radial-gradient(circle, rgba(99,102,241,0.09) 0%, transparent 65%)"></div>
+  <div style="position:absolute; right:-5vw; bottom:5vh; width:40vw; height:40vw; max-width:550px; max-height:550px; border-radius:50%; background:radial-gradient(circle, rgba(139,92,246,0.08) 0%, transparent 65%)"></div>
+<% end %>
 
 <%# ─── NAVBAR ─────────────────────────────────────────────────────────────── %>
 <nav class="sticky top-0 z-50 bg-white/95 backdrop-blur-sm"
@@ -47,228 +59,204 @@
 
 <%# ─── HERO ───────────────────────────────────────────────────────────────── %>
 <main id="main-content">
-<section class="relative overflow-hidden bg-white pt-20 pb-0">
-
+<section class="relative pt-20 pb-24">
 
   <div class="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="grid lg:grid-cols-2 gap-16 items-center">
+    <div class="grid lg:grid-cols-2 gap-10 items-center">
 
       <%# Colonne texte %>
       <div>
-        <div data-hero="badge" class="inline-flex items-center gap-2 px-3 py-1.5 bg-indigo-50 text-indigo-700 text-xs font-semibold rounded-full mb-6 border border-indigo-100">
+        <div data-hero="badge" class="inline-flex items-center gap-2 px-3 py-1.5 bg-white/10 text-indigo-300 text-xs font-semibold rounded-full mb-6 border border-white/10">
           <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-          Concu par des managers, pour les managers
+          Conçu par des managers, pour les managers
         </div>
-
-        <h1 data-hero="title" class="font-extrabold text-gray-900 leading-[1.1] tracking-tight mb-6" style="font-size: clamp(2rem, 5vw, 3.5rem)">
-          Gérez vos équipes.<br>
-          <span class="text-indigo-600">Sans les tableurs.</span>
+        <h1 data-hero="title" class="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white leading-tight mb-6">
+          Gérez vos équipes.<br><span class="text-indigo-400">Sans les tableurs.</span>
         </h1>
-
-        <p data-hero="subtitle" class="text-lg text-gray-500 mb-8 leading-relaxed max-w-lg">
-          Onboarding, objectifs, 1:1, congés, pointage — tout ce qu'un manager gère dans 4 outils différents, réuni en un seul endroit. Simple, rapide, pensé pour les équipes françaises.
+        <p data-hero="subtitle" class="text-xl text-indigo-200 mb-10 leading-relaxed">
+          Onboarding, objectifs, 1:1, congés, pointage — tout ce qu'un manager gère dans 4 outils différents, réuni en un seul endroit.
         </p>
-
-        <div data-hero="ctas" class="flex flex-col sm:flex-row gap-3 mb-10">
-          <a href="#essai-manager-os" class="inline-flex items-center justify-center gap-2 px-5 py-3 sm:px-8 sm:py-4 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-xl transition-colors shadow-lg shadow-indigo-200 text-sm sm:text-base">
+        <div data-hero="ctas" class="flex flex-col sm:flex-row gap-3">
+          <a href="#essai-manager-os" class="inline-flex items-center justify-center gap-2 px-5 py-3 sm:px-8 sm:py-4 bg-white hover:bg-indigo-50 text-indigo-600 font-bold rounded-xl transition-colors shadow-lg text-sm sm:text-base">
             Essai gratuit 30 jours
-            <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
           </a>
-          <a href="#tarifs" class="inline-flex items-center justify-center gap-2 px-5 py-3 sm:px-8 sm:py-4 bg-gray-50 hover:bg-gray-100 text-gray-700 font-semibold rounded-xl transition-colors border border-gray-200 text-sm sm:text-base">
+          <a href="#tarifs" class="inline-flex items-center justify-center gap-2 px-5 py-3 sm:px-8 sm:py-4 bg-white/10 hover:bg-white/20 border border-white/20 text-white font-semibold rounded-xl transition-colors text-sm sm:text-base">
             Voir les tarifs
           </a>
         </div>
-
-        <div data-hero="badges" class="flex flex-wrap gap-3">
-          <span class="inline-flex items-center gap-1.5 text-xs font-medium text-gray-500">
-            <svg class="w-4 h-4 text-green-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+        <div data-hero="badges" class="flex flex-wrap gap-5 mt-8">
+          <span class="inline-flex items-center gap-1.5 text-xs font-medium text-indigo-300">
+            <svg class="w-4 h-4 text-green-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
             Sans carte bancaire
           </span>
-          <span class="inline-flex items-center gap-1.5 text-xs font-medium text-gray-500">
-            <svg class="w-4 h-4 text-green-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+          <span class="inline-flex items-center gap-1.5 text-xs font-medium text-indigo-300">
+            <svg class="w-4 h-4 text-green-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
             Données en Europe · RGPD
           </span>
-          <span class="inline-flex items-center gap-1.5 text-xs font-medium text-gray-500">
-            <svg class="w-4 h-4 text-green-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+          <span class="inline-flex items-center gap-1.5 text-xs font-medium text-indigo-300">
+            <svg class="w-4 h-4 text-green-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
             Conforme Code du Travail
           </span>
         </div>
       </div>
 
-      <%# Colonne illustration — version mobile %>
-      <div class="block lg:hidden mt-6">
-        <div class="bg-white rounded-2xl shadow-lg border border-gray-100 p-4">
-          <div class="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-3">Vue manager · Semaine</div>
-          <% [["Marie D.", "Onboarding J+3", "bg-orange-100 text-orange-700", "En cours"], ["Lucas B.", "1:1 cette semaine", "bg-violet-100 text-violet-700", "Planifié"], ["Sophie R.", "Objectif Q2 · 80%", "bg-green-100 text-green-700", "On track"]].each do |name, task, badge_class, status| %>
-          <div class="flex items-center justify-between py-2.5 border-b border-gray-50 last:border-0">
-            <div class="flex items-center gap-2.5">
-              <div class="w-7 h-7 rounded-full bg-indigo-100 flex items-center justify-center text-xs font-bold text-indigo-600 flex-shrink-0"><%= name.split.map(&:first).join %></div>
+      <%# Colonne mock — Vue manager dark %>
+      <div data-hero="illustration">
+        <div class="flex flex-col gap-3">
+
+          <%# Carte principale — Vue manager %>
+          <div class="rounded-2xl p-6 border border-white/10 shadow-2xl" style="background-color:#1e2035">
+            <%# Header %>
+            <div class="flex items-start justify-between mb-5">
               <div>
-                <div class="text-sm font-semibold text-gray-800"><%= name %></div>
-                <div class="text-xs text-gray-400"><%= task %></div>
+                <p class="text-xs font-semibold tracking-widest uppercase text-gray-400 mb-1">ÉQUIPE · SEMAINE</p>
+                <h3 class="text-xl font-bold text-white">Vue manager</h3>
+              </div>
+              <div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background-color:#2d2f55">
+                <svg class="w-5 h-5 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
               </div>
             </div>
-            <span class="text-xs font-medium px-2 py-0.5 rounded-full flex-shrink-0 <%= badge_class %>"><%= status %></span>
-          </div>
-          <% end %>
-          <div class="grid grid-cols-3 gap-2 mt-3 pt-3 border-t border-gray-50">
-            <div class="text-center"><div class="text-lg font-extrabold text-indigo-600">12</div><div class="text-xs text-gray-400">Membres</div></div>
-            <div class="text-center"><div class="text-lg font-extrabold text-violet-600">3</div><div class="text-xs text-gray-400">1:1 sem.</div></div>
-            <div class="text-center"><div class="text-lg font-extrabold text-green-600">94%</div><div class="text-xs text-gray-400">OKR</div></div>
-          </div>
-        </div>
-      </div>
 
-      <%# Colonne illustration SVG — desktop %>
-      <div data-hero="illustration" class="relative hidden lg:block">
-        <%# Blob de fond %>
-        <svg class="absolute inset-0 w-full h-full" viewBox="0 0 500 500" fill="none" aria-hidden="true">
-          <path d="M420,280 C440,340 390,420 320,440 C250,460 160,430 120,370 C80,310 100,210 160,160 C220,110 310,80 370,120 C430,160 400,220 420,280Z" fill="#eef2ff"/>
-        </svg>
-
-        <%# Dashboard card simulé %>
-        <div class="relative z-10 p-6">
-
-          <%# Card principale %>
-          <div class="bg-white rounded-2xl shadow-xl border border-gray-100 p-5 mb-4">
-            <div class="flex items-center justify-between mb-4">
-              <div>
-                <div class="text-xs font-semibold text-gray-400 uppercase tracking-wide">Équipe · Semaine</div>
-                <div class="text-lg font-bold text-gray-900 mt-0.5">Vue manager</div>
-              </div>
-              <div class="w-9 h-9 bg-indigo-100 rounded-xl flex items-center justify-center">
-                <svg class="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-              </div>
-            </div>
-            <% [["Marie D.", "Onboarding J+3", "bg-orange-100 text-orange-700", "En cours"], ["Lucas B.", "1:1 cette semaine", "bg-violet-100 text-violet-700", "Planifié"], ["Sophie R.", "Objectif Q2 · 80%", "bg-green-100 text-green-700", "On track"]].each do |name, task, badge_class, status| %>
-            <div class="flex items-center justify-between py-2.5 border-b border-gray-50 last:border-0">
-              <div class="flex items-center gap-3">
-                <div class="w-7 h-7 rounded-full bg-indigo-100 flex items-center justify-center text-xs font-bold text-indigo-600"><%= name.split.map(&:first).join %></div>
-                <div>
-                  <div class="text-sm font-semibold text-gray-800"><%= name %></div>
-                  <div class="text-xs text-gray-400"><%= task %></div>
+            <%# Lignes collaborateurs %>
+            <div class="space-y-0 divide-y divide-white/5">
+              <%# Marie D. — En cours %>
+              <div class="flex items-center gap-4 py-4">
+                <div class="w-9 h-9 rounded-full bg-indigo-500/25 flex items-center justify-center text-xs font-bold text-indigo-300 flex-shrink-0">MD</div>
+                <div class="flex-1 min-w-0">
+                  <div class="text-sm font-semibold text-white">Marie D.</div>
+                  <div class="text-xs text-gray-400">Onboarding J+3</div>
                 </div>
+                <span class="text-xs font-semibold px-3 py-1 rounded-full" style="background-color:#3d2a10; color:#f59e0b">En cours</span>
               </div>
-              <span class="text-xs font-medium px-2 py-0.5 rounded-full <%= badge_class %>"><%= status %></span>
+              <%# Lucas B. — Planifié %>
+              <div class="flex items-center gap-4 py-4">
+                <div class="w-9 h-9 rounded-full bg-indigo-500/25 flex items-center justify-center text-xs font-bold text-indigo-300 flex-shrink-0">LB</div>
+                <div class="flex-1 min-w-0">
+                  <div class="text-sm font-semibold text-white">Lucas B.</div>
+                  <div class="text-xs text-gray-400">1:1 cette semaine</div>
+                </div>
+                <span class="text-xs font-semibold px-3 py-1 rounded-full" style="background-color:#2d2355; color:#a78bfa">Planifié</span>
+              </div>
+              <%# Sophie R. — On track %>
+              <div class="flex items-center gap-4 py-4">
+                <div class="w-9 h-9 rounded-full bg-indigo-500/25 flex items-center justify-center text-xs font-bold text-indigo-300 flex-shrink-0">SR</div>
+                <div class="flex-1 min-w-0">
+                  <div class="text-sm font-semibold text-white">Sophie R.</div>
+                  <div class="text-xs text-gray-400">Objectif Q2 · 80%</div>
+                </div>
+                <span class="text-xs font-semibold px-3 py-1 rounded-full" style="background-color:#0d2e1a; color:#34d399">On track</span>
+              </div>
             </div>
-            <% end %>
           </div>
 
-          <%# Mini stats %>
-          <div class="grid grid-cols-3 gap-3 mb-3">
-            <div class="bg-white rounded-xl border border-gray-100 shadow-sm p-3 text-center">
-              <div class="text-xl font-extrabold text-indigo-600">12</div>
-              <div class="text-xs text-gray-400 mt-0.5">Membres</div>
+          <%# 3 stats %>
+          <div class="grid grid-cols-3 gap-3">
+            <div class="rounded-2xl p-4 border border-white/10 text-center" style="background-color:#1e2035">
+              <div class="text-2xl font-extrabold text-indigo-400 mb-1">12</div>
+              <div class="text-xs text-gray-400">Membres</div>
             </div>
-            <div class="bg-white rounded-xl border border-gray-100 shadow-sm p-3 text-center">
-              <div class="text-xl font-extrabold text-violet-600">3</div>
-              <div class="text-xs text-gray-400 mt-0.5">1:1 cette sem.</div>
+            <div class="rounded-2xl p-4 border border-white/10 text-center" style="background-color:#1e2035">
+              <div class="text-2xl font-extrabold text-violet-400 mb-1">3</div>
+              <div class="text-xs text-gray-400">1:1 cette sem.</div>
             </div>
-            <div class="bg-white rounded-xl border border-gray-100 shadow-sm p-3 text-center">
-              <div class="text-xl font-extrabold text-green-600">94%</div>
-              <div class="text-xs text-gray-400 mt-0.5">OKR atteints</div>
+            <div class="rounded-2xl p-4 border border-white/10 text-center" style="background-color:#1e2035">
+              <div class="text-2xl font-extrabold text-emerald-400 mb-1">94%</div>
+              <div class="text-xs text-gray-400">OKR atteints</div>
             </div>
           </div>
 
-          <%# Notifications en bas %>
-          <div class="flex gap-2">
-            <div class="flex-1 bg-white rounded-xl shadow-md border border-gray-100 px-3 py-2 flex items-center gap-2">
-              <div class="w-7 h-7 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                <svg class="w-3.5 h-3.5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+          <%# 2 mini notifications %>
+          <div class="grid grid-cols-2 gap-3">
+            <div class="rounded-2xl p-4 border border-white/10 flex items-center gap-3" style="background-color:#1e2035">
+              <div class="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0" style="background-color:#0d2e1a">
+                <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
               </div>
-              <div>
-                <div class="text-xs font-bold text-gray-800 whitespace-nowrap">Congés approuvés</div>
-                <div class="text-xs text-gray-400">Marie · 15–22 août</div>
+              <div class="min-w-0">
+                <div class="text-xs font-bold text-white">Congés approuvés</div>
+                <div class="text-xs text-gray-400 truncate">Marie · 15–22 août</div>
               </div>
             </div>
-            <div class="flex-1 bg-white rounded-xl shadow-md border border-gray-100 px-3 py-2 flex items-center gap-2">
-              <div class="w-7 h-7 bg-orange-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                <svg class="w-3.5 h-3.5 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            <div class="rounded-2xl p-4 border border-white/10 flex items-center gap-3" style="background-color:#1e2035">
+              <div class="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0" style="background-color:#3d2a10">
+                <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
               </div>
-              <div>
-                <div class="text-xs font-bold text-gray-800 whitespace-nowrap">Onboarding · 7/10</div>
-                <div class="text-xs text-gray-400">Lucas · J+3</div>
+              <div class="min-w-0">
+                <div class="text-xs font-bold text-white">Onboarding · 7/10</div>
+                <div class="text-xs text-gray-400 truncate">Lucas · J+3</div>
               </div>
             </div>
           </div>
 
         </div>
-
       </div>
 
     </div>
   </div>
-
 </section>
 
-<%# ─── WAVE white → slate-50 ─────────────────────────────────────────────── %>
-<div style="background-color:white; margin-bottom:-2px; line-height:0" aria-hidden="true">
-  <svg viewBox="0 0 1440 80" preserveAspectRatio="none" class="w-full block" xmlns="http://www.w3.org/2000/svg">
-    <path d="M0,20 C360,80 1080,20 1440,80 L1440,80 L0,80 Z" fill="#f8fafc"/>
-  </svg>
-</div>
 
 <%# ─── STATS + TÉMOIGNAGES ──────────────────────────────────────────────── %>
-<section class="bg-slate-50 py-16">
+<section class="py-16">
   <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
 
     <%# Stats %>
-    <div data-animate="stats" class="grid grid-cols-3 gap-8 text-center mb-16">
+    <div data-animate="stats" class="grid grid-cols-3 gap-8 text-center mb-10">
       <div data-stat>
-        <div class="text-4xl font-extrabold text-indigo-600 mb-1">4</div>
-        <div class="text-sm text-gray-500">outils remplacés<br><span class="text-xs text-gray-400">(Excel · Notion · Word · PDF)</span></div>
+        <div class="text-4xl font-extrabold text-indigo-400 mb-1">4</div>
+        <div class="text-sm text-indigo-200">outils remplacés<br><span class="text-xs text-indigo-300">(Excel · Notion · Word · PDF)</span></div>
       </div>
       <div data-stat>
-        <div class="text-4xl font-extrabold text-indigo-600 mb-1">2 min</div>
-        <div class="text-sm text-gray-500">pour importer votre équipe</div>
+        <div class="text-4xl font-extrabold text-indigo-400 mb-1">2 min</div>
+        <div class="text-sm text-indigo-200">pour importer votre équipe</div>
       </div>
       <div data-stat>
-        <div class="text-4xl font-extrabold text-indigo-600 mb-1">30j</div>
-        <div class="text-sm text-gray-500">d'essai gratuit sans CB</div>
+        <div class="text-4xl font-extrabold text-indigo-400 mb-1">30j</div>
+        <div class="text-sm text-indigo-200">d'essai gratuit sans CB</div>
       </div>
     </div>
 
     <%# Témoignages %>
     <div id="testimonials-grid" class="grid grid-cols-1 md:grid-cols-3 gap-6">
 
-      <figure class="bg-white rounded-2xl p-6 border-l-4 border-indigo-500 shadow-sm">
+      <figure class="rounded-2xl p-6 border-l-4 border-indigo-500" style="background-color:#1e2035">
         <div class="flex gap-0.5 mb-3">
           <% 5.times do %><svg class="w-4 h-4 text-amber-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg><% end %>
         </div>
-        <blockquote class="text-sm text-gray-600 leading-relaxed mb-4">"Enfin un outil RH pensé pour les managers, pas seulement pour les RH. Les 1:1 et objectifs intégrés changent vraiment notre façon de piloter les équipes."</blockquote>
+        <blockquote class="text-sm text-indigo-200 leading-relaxed mb-4">"Enfin un outil RH pensé pour les managers, pas seulement pour les RH. Les 1:1 et objectifs intégrés changent vraiment notre façon de piloter les équipes."</blockquote>
         <figcaption class="flex items-center gap-3">
           <div class="w-9 h-9 rounded-full bg-violet-100 flex items-center justify-center text-sm font-bold text-violet-600">TM</div>
           <div>
-            <div class="text-sm font-semibold text-gray-800">Thomas M.</div>
-            <div class="text-xs text-gray-400">CTO · Agence digitale, 28 personnes</div>
+            <div class="text-sm font-semibold text-white">Thomas M.</div>
+            <div class="text-xs text-indigo-300">CTO · Agence digitale, 28 personnes</div>
           </div>
         </figcaption>
       </figure>
 
-      <figure class="bg-white rounded-2xl p-6 border-l-4 border-indigo-500 shadow-sm">
+      <figure class="rounded-2xl p-6 border-l-4 border-indigo-500" style="background-color:#1e2035">
         <div class="flex gap-0.5 mb-3">
           <% 5.times do %><svg class="w-4 h-4 text-amber-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg><% end %>
         </div>
-        <blockquote class="text-sm text-gray-600 leading-relaxed mb-4">"J'avais un tableau de suivi onboarding, un autre pour les objectifs, un autre pour les 1:1. Izi-RH remplace tout ça. Mon équipe adore."</blockquote>
+        <blockquote class="text-sm text-indigo-200 leading-relaxed mb-4">"J'avais un tableau de suivi onboarding, un autre pour les objectifs, un autre pour les 1:1. Izi-RH remplace tout ça. Mon équipe adore."</blockquote>
         <figcaption class="flex items-center gap-3">
           <div class="w-9 h-9 rounded-full bg-indigo-100 flex items-center justify-center text-sm font-bold text-indigo-600">SC</div>
           <div>
-            <div class="text-sm font-semibold text-gray-800">Sophie C.</div>
-            <div class="text-xs text-gray-400">Head of Engineering · Scale-up B2B, 35 personnes</div>
+            <div class="text-sm font-semibold text-white">Sophie C.</div>
+            <div class="text-xs text-indigo-300">Head of Engineering · Scale-up B2B, 35 personnes</div>
           </div>
         </figcaption>
       </figure>
 
-      <figure class="bg-white rounded-2xl p-6 border-l-4 border-indigo-500 shadow-sm">
+      <figure class="rounded-2xl p-6 border-l-4 border-indigo-500" style="background-color:#1e2035">
         <div class="flex gap-0.5 mb-3">
           <% 5.times do %><svg class="w-4 h-4 text-amber-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg><% end %>
         </div>
-        <blockquote class="text-sm text-gray-600 leading-relaxed mb-4">"La conformité au Code du Travail était notre critère n°1. Izi-RH gère correctement les 35h, les RTT et les congés conventionnels — sans paramétrage complexe."</blockquote>
+        <blockquote class="text-sm text-indigo-200 leading-relaxed mb-4">"La conformité au Code du Travail était notre critère n°1. Izi-RH gère correctement les 35h, les RTT et les congés conventionnels — sans paramétrage complexe."</blockquote>
         <figcaption class="flex items-center gap-3">
           <div class="w-9 h-9 rounded-full bg-emerald-100 flex items-center justify-center text-sm font-bold text-emerald-600">AL</div>
           <div>
-            <div class="text-sm font-semibold text-gray-800">Aurélie L.</div>
-            <div class="text-xs text-gray-400">DRH · PME industrielle, 80 personnes</div>
+            <div class="text-sm font-semibold text-white">Aurélie L.</div>
+            <div class="text-xs text-indigo-300">DRH · PME industrielle, 80 personnes</div>
           </div>
         </figcaption>
       </figure>
@@ -277,18 +265,20 @@
   </div>
 </section>
 
-<%# ─── MANAGER OS ─────────────────────────────────────────────────────────── %>
-<div class="bg-slate-50 overflow-hidden" style="margin-bottom:-2px">
-  <svg viewBox="0 0 1440 60" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-full block" aria-hidden="true">
-    <path d="M0,0 C360,60 1080,0 1440,60 L1440,60 L0,60 Z" fill="white"/>
+<%# ─── WAVE dark → blanc ──────────────────────────────────────────────────── %>
+<div style="margin-bottom:-1px; line-height:0" aria-hidden="true">
+  <svg viewBox="0 0 1440 80" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-full block" preserveAspectRatio="none">
+    <path d="M0,80 C360,20 1080,80 1440,20 L1440,80 Z" fill="white"/>
   </svg>
 </div>
-<section id="manager-os" class="py-20 bg-white relative overflow-hidden">
+
+<%# ─── MANAGER OS ─────────────────────────────────────────────────────────── %>
+<section id="manager-os" class="py-14 bg-white relative overflow-hidden">
 
 
   <div class="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
 
-    <div class="text-center mb-16">
+    <div class="text-center mb-10">
       <div class="inline-flex items-center gap-2 px-3 py-1.5 bg-indigo-50 text-indigo-700 text-xs font-semibold rounded-full mb-4 border border-indigo-100">
         <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z"/></svg>
         Manager OS — le produit d'entrée
@@ -425,11 +415,11 @@
     <path d="M0,60 C360,0 1080,60 1440,0 L1440,60 L0,60 Z" fill="#0f0a2e"/>
   </svg>
 </div>
-<section id="fonctionnalites" class="py-20 relative overflow-hidden" style="background-color:#0f0a2e">
+<section id="fonctionnalites" class="py-14 relative overflow-hidden" style="background-color:#0f0a2e">
 
 
   <div class="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="text-center mb-16">
+    <div class="text-center mb-10">
       <div class="inline-flex items-center gap-2 px-3 py-1.5 bg-white/10 text-indigo-300 text-xs font-semibold rounded-full mb-4 border border-white/10">
         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
         SIRH complet — quand votre équipe grandit
@@ -512,21 +502,21 @@
 </script>
 
 <style>
-  .pricing-card { min-width: 82vw; }
+  .pricing-card { min-width: 82vw; max-width: 82vw; width: 82vw; }
   @media (min-width: 768px) {
     #pricing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; overflow: visible; padding-bottom: 0; padding-top: 1.25rem; }
-    .pricing-card { min-width: 0; flex-shrink: 1; }
+    .pricing-card { min-width: 0; max-width: none; width: auto; flex-shrink: 1; }
   }
 </style>
 <%# ─── PRICING ─────────────────────────────────────────────────────────────── %>
-<section id="tarifs" class="py-20 bg-white relative overflow-hidden">
+<section id="tarifs" class="py-14 bg-white relative overflow-hidden">
 
   <div class="absolute inset-0 pointer-events-none" aria-hidden="true">
     <div style="position:absolute; left:-200px; top:-200px; width:700px; height:700px; border-radius:50%; background:radial-gradient(circle, rgba(99,102,241,0.08) 0%, transparent 65%)"></div>
   </div>
 
   <div class="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="text-center mb-16">
+    <div class="text-center mb-10">
       <h2 class="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-4">Commencez avec Manager OS.<br>Évoluez vers le SIRH.</h2>
       <p class="text-lg text-gray-500">Aucune carte bancaire requise pour l'essai. Pas de migration de données entre les plans.</p>
     </div>
@@ -566,7 +556,7 @@
       </div>
 
       <%# SIRH Essentiel %>
-      <div class="pricing-card p-8 rounded-2xl bg-white border border-gray-200 flex flex-col flex-shrink-0">
+      <div class="pricing-card p-8 rounded-2xl bg-white border-2 border-gray-300 flex flex-col flex-shrink-0">
         <div class="mb-6">
           <h3 class="text-lg font-bold text-gray-900 mb-1">SIRH Essentiel</h3>
           <p class="text-sm text-gray-500 mb-4 min-h-[3.5rem]">Manager OS + gestion du temps et congés</p>
@@ -596,7 +586,7 @@
       </div>
 
       <%# SIRH Pro %>
-      <div class="pricing-card relative p-8 rounded-2xl border border-white/10 flex flex-col flex-shrink-0 overflow-hidden" style="background-color:#0f0a2e">
+      <div class="pricing-card relative p-8 rounded-2xl border border-white/10 flex flex-col flex-shrink-0" style="background-color:#0f0a2e">
         <div class="absolute -top-3.5 left-1/2 -translate-x-1/2">
           <span class="inline-flex items-center gap-1 px-3 py-1 bg-violet-600 text-white text-xs font-bold rounded-full shadow">SIRH complet</span>
         </div>
@@ -636,7 +626,7 @@
 <%# ─── FORMULAIRE TRIAL ────────────────────────────────────────────────────── %>
 <% default_tab = (@form_values&.dig(:plan) == 'sirh' || @form_values&.dig('plan') == 'sirh') ? 'sirh' : 'manager_os' %>
 <section id="essai-manager-os"
-         class="py-20 bg-gradient-to-br from-indigo-600 to-violet-600 relative overflow-hidden"
+         class="py-14 bg-gradient-to-br from-indigo-600 to-violet-600 relative overflow-hidden"
          x-data="{ tab: '<%= default_tab %>' }">
 
   <div class="absolute inset-0 transition-opacity duration-700 pointer-events-none"
@@ -750,7 +740,7 @@
 </section>
 
 <%# ─── FAQ ────────────────────────────────────────────────────────────────── %>
-<section id="faq" class="py-20 bg-white">
+<section id="faq" class="py-14 bg-white">
   <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
     <div class="text-center mb-14">
       <h2 class="text-3xl font-extrabold text-gray-900">Questions fréquentes</h2>
