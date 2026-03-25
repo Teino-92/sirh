@@ -95,7 +95,31 @@
         </div>
       </div>
 
-      <%# Colonne illustration SVG %>
+      <%# Colonne illustration — version mobile %>
+      <div class="block lg:hidden mt-6">
+        <div class="bg-white rounded-2xl shadow-lg border border-gray-100 p-4">
+          <div class="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-3">Vue manager · Semaine</div>
+          <% [["Marie D.", "Onboarding J+3", "bg-orange-100 text-orange-700", "En cours"], ["Lucas B.", "1:1 cette semaine", "bg-violet-100 text-violet-700", "Planifié"], ["Sophie R.", "Objectif Q2 · 80%", "bg-green-100 text-green-700", "On track"]].each do |name, task, badge_class, status| %>
+          <div class="flex items-center justify-between py-2.5 border-b border-gray-50 last:border-0">
+            <div class="flex items-center gap-2.5">
+              <div class="w-7 h-7 rounded-full bg-indigo-100 flex items-center justify-center text-xs font-bold text-indigo-600 flex-shrink-0"><%= name.split.map(&:first).join %></div>
+              <div>
+                <div class="text-sm font-semibold text-gray-800"><%= name %></div>
+                <div class="text-xs text-gray-400"><%= task %></div>
+              </div>
+            </div>
+            <span class="text-xs font-medium px-2 py-0.5 rounded-full flex-shrink-0 <%= badge_class %>"><%= status %></span>
+          </div>
+          <% end %>
+          <div class="grid grid-cols-3 gap-2 mt-3 pt-3 border-t border-gray-50">
+            <div class="text-center"><div class="text-lg font-extrabold text-indigo-600">12</div><div class="text-xs text-gray-400">Membres</div></div>
+            <div class="text-center"><div class="text-lg font-extrabold text-violet-600">3</div><div class="text-xs text-gray-400">1:1 sem.</div></div>
+            <div class="text-center"><div class="text-lg font-extrabold text-green-600">94%</div><div class="text-xs text-gray-400">OKR</div></div>
+          </div>
+        </div>
+      </div>
+
+      <%# Colonne illustration SVG — desktop %>
       <div data-hero="illustration" class="relative hidden lg:block">
         <%# Blob de fond %>
         <svg class="absolute inset-0 w-full h-full" viewBox="0 0 500 500" fill="none" aria-hidden="true">

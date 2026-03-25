@@ -92,6 +92,22 @@
       <h2 class="text-3xl font-extrabold text-white">Tout votre SIRH en un tableau de bord</h2>
     </div>
 
+    <%# Dashboard mock — version mobile %>
+    <div class="block lg:hidden rounded-2xl overflow-hidden border border-white/10 mb-2" style="background-color:#1e2035">
+      <div class="px-4 py-3 border-b border-white/10" style="background-color:#15172a">
+        <div class="text-sm font-bold text-white">Bonjour, Nicolas 👋</div>
+        <div class="text-xs text-gray-400">TechCorp France</div>
+      </div>
+      <div class="p-4 grid grid-cols-2 gap-3">
+        <% [["38h12", "text-white", "Cette semaine"], ["12j", "text-indigo-400", "CP restants"], ["2", "text-amber-400", "Demandes en attente"], ["Actif", "text-green-400", "Statut contrat"]].each do |val, color, label| %>
+        <div class="rounded-xl p-3 border border-white/10" style="background-color:#15172a">
+          <div class="text-lg font-extrabold <%= color %>"><%= val %></div>
+          <div class="text-xs text-gray-400 mt-0.5"><%= label %></div>
+        </div>
+        <% end %>
+      </div>
+    </div>
+
     <div data-mock-ui class="hidden lg:block rounded-2xl overflow-hidden border border-white/10" style="opacity:0; background-color:#1e2035">
       <%# Navbar — fidèle à la vraie app %>
       <div class="flex items-center justify-between px-6 py-3 border-b border-white/10" style="background-color:#15172a">
@@ -226,6 +242,33 @@
         </ul>
       </div>
 
+      <%# Mock pointage — version mobile %>
+      <div class="block lg:hidden">
+        <div class="rounded-2xl border border-white/10 overflow-hidden" style="background-color:#1e2035">
+          <div class="px-4 py-3 border-b border-white/10" style="background-color:#15172a">
+            <div class="text-sm font-bold text-white">Mes pointages</div>
+            <div class="text-xs text-gray-400">TechCorp France</div>
+          </div>
+          <div class="p-4">
+            <div class="grid grid-cols-3 gap-2 mb-4">
+              <% [["38h12", "text-white", "Cette semaine"], ["7h45", "text-indigo-300", "Aujourd'hui"], ["+1h12", "text-green-400", "Heures supp."]].each do |val, color, label| %>
+              <div class="rounded-xl p-2.5 border border-white/10 text-center" style="background-color:#15172a">
+                <div class="text-sm font-extrabold <%= color %>"><%= val %></div>
+                <div class="text-xs text-gray-400 mt-0.5 leading-tight"><%= label %></div>
+              </div>
+              <% end %>
+            </div>
+            <div class="rounded-xl p-4 text-center border border-indigo-500/30" style="background-color:#15172a">
+              <div class="w-12 h-12 rounded-full bg-indigo-500/20 flex items-center justify-center mx-auto mb-2">
+                <svg class="w-6 h-6 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+              </div>
+              <div class="text-xs text-gray-400 mb-2">Pointage du jour</div>
+              <div class="inline-flex items-center gap-1.5 px-4 py-2 bg-indigo-600 text-white text-sm font-semibold rounded-lg">Pointer l'arrivée</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <%# Mock pointage mobile — fidèle à la vraie app %>
       <div data-module="right" class="hidden lg:flex justify-center">
         <div class="shadow-2xl w-72 overflow-hidden border border-white/10" style="background-color:#15172a; border-radius:2.5rem">
@@ -297,6 +340,34 @@
 <section class="py-24 bg-white" id="conges">
   <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
     <div class="grid lg:grid-cols-2 gap-16 items-center">
+
+      <%# Mock congés — version mobile %>
+      <div class="block lg:hidden">
+        <div class="rounded-2xl border border-white/10 overflow-hidden" style="background-color:#1e2035">
+          <div class="px-4 py-3 border-b border-white/10" style="background-color:#15172a">
+            <div class="text-sm font-bold text-white">Mes congés</div>
+            <div class="text-xs text-gray-400">TechCorp France</div>
+          </div>
+          <div class="p-4">
+            <div class="grid grid-cols-3 gap-2 mb-4">
+              <% [["12j", "text-white", "CP restants"], ["3j", "text-indigo-300", "RTT restants"], ["0", "text-amber-400", "En attente"]].each do |val, color, label| %>
+              <div class="rounded-xl p-2.5 border border-white/10 text-center" style="background-color:#15172a">
+                <div class="text-base font-extrabold <%= color %>"><%= val %></div>
+                <div class="text-xs text-gray-400 mt-0.5 leading-tight"><%= label %></div>
+              </div>
+              <% end %>
+            </div>
+            <div class="rounded-xl border border-white/10 p-3 mb-2" style="background-color:#15172a">
+              <div class="flex items-center justify-between mb-1">
+                <div class="text-sm font-semibold text-white">Congés été</div>
+                <span class="text-xs px-2 py-0.5 rounded-full bg-green-900/40 text-green-400">Approuvé</span>
+              </div>
+              <div class="text-xs text-gray-400">14 juil. → 28 juil. 2026 · 10 jours ouvrés</div>
+            </div>
+            <div class="inline-flex items-center gap-1.5 px-4 py-2 bg-indigo-600 text-white text-sm font-semibold rounded-lg w-full justify-center">+ Nouvelle demande</div>
+          </div>
+        </div>
+      </div>
 
       <%# Mock congés UI — dark mode fidèle %>
       <div data-module="left" class="hidden lg:block">
@@ -417,6 +488,37 @@
         </ul>
       </div>
 
+      <%# Mock paie — version mobile %>
+      <div class="block lg:hidden">
+        <div class="rounded-2xl border border-white/10 overflow-hidden" style="background-color:#1e2035">
+          <div class="px-4 py-3 border-b border-white/10 flex items-center justify-between" style="background-color:#15172a">
+            <div>
+              <div class="text-sm font-bold text-white">Masse salariale</div>
+              <div class="text-xs text-gray-400">2026</div>
+            </div>
+            <span class="text-xs font-semibold px-2 py-0.5 rounded-full bg-red-900/40 text-red-400">🔒 RH</span>
+          </div>
+          <div class="p-4">
+            <div class="grid grid-cols-3 gap-2 mb-4">
+              <% [["312k€", "text-white", "Masse mensuelle"], ["3.74M€", "text-indigo-300", "Projection"], ["+4.2%", "text-green-400", "vs N-1"]].each do |val, color, label| %>
+              <div class="rounded-xl p-2.5 border border-white/10 text-center" style="background-color:#15172a">
+                <div class="text-sm font-extrabold <%= color %>"><%= val %></div>
+                <div class="text-xs text-gray-400 mt-0.5 leading-tight"><%= label %></div>
+              </div>
+              <% end %>
+            </div>
+            <div class="space-y-1.5">
+              <% [["Ingénierie", "38%", 38], ["Commercial", "29%", 29], ["Marketing", "19%", 19]].each do |dept, pct, w| %>
+              <div>
+                <div class="flex justify-between text-xs text-gray-400 mb-1"><span><%= dept %></span><span><%= pct %></span></div>
+                <div class="w-full bg-white/10 rounded-full h-1.5"><div class="bg-indigo-400 h-1.5 rounded-full" style="width:<%= w %>%"></div></div>
+              </div>
+              <% end %>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <%# Mock paie UI — dark mode fidèle %>
       <div data-module="right" class="hidden lg:block">
         <div class="rounded-2xl shadow-xl border border-white/10 overflow-hidden" style="background-color:#1e2035">
@@ -479,6 +581,28 @@
         <h2 class="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-4">Migration depuis votre ancien SIRH en 5 minutes</h2>
         <p class="text-lg text-gray-500 mb-8 leading-relaxed">Importez depuis Excel, Sage, Lucca, Factorial, PayFit ou BambooHR. Détection automatique du format, rapport d'erreurs ligne par ligne.</p>
         <%# Mock Import fidèle à la vraie app admin %>
+        <%# Import CSV — version mobile %>
+        <div class="block lg:hidden rounded-2xl border border-white/10 overflow-hidden mt-6" style="background-color:#1e2035">
+          <div class="px-4 py-3 border-b border-white/10" style="background-color:#15172a">
+            <div class="text-sm font-bold text-white">Importer vos collaborateurs</div>
+            <div class="text-xs text-gray-400">Admin · Import CSV</div>
+          </div>
+          <div class="p-4">
+            <div class="rounded-xl border-2 border-dashed border-white/20 p-5 text-center mb-3" style="background-color:#15172a">
+              <div class="w-8 h-8 rounded-full bg-indigo-500/20 flex items-center justify-center mx-auto mb-2">
+                <svg class="w-4 h-4 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10"/></svg>
+              </div>
+              <p class="text-xs font-medium text-white mb-0.5">Sélectionner un fichier</p>
+              <p class="text-xs text-gray-400">CSV ou Excel (.xlsx)</p>
+            </div>
+            <div class="flex flex-wrap gap-1.5">
+              <% ["Excel", "Sage", "Lucca", "PayFit", "BambooHR"].each do |src| %>
+              <span class="text-xs px-2 py-1 rounded-full border border-white/10 text-gray-400" style="background-color:#15172a"><%= src %></span>
+              <% end %>
+            </div>
+          </div>
+        </div>
+
         <div class="hidden lg:block rounded-2xl border border-white/10 overflow-hidden" style="background-color:#1e2035">
           <div class="flex items-center justify-between px-5 py-3 border-b border-white/10" style="background-color:#15172a">
             <div class="flex items-center gap-4">
@@ -516,6 +640,26 @@
         </div>
         <h2 class="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-4">Interrogez vos données RH en français naturel</h2>
         <p class="text-lg text-gray-500 mb-8 leading-relaxed">50 requêtes par mois incluses. Les données ne quittent jamais vos serveurs.</p>
+        <%# Mock IA — version mobile %>
+        <div class="block lg:hidden rounded-2xl border border-white/10 overflow-hidden mt-6" style="background-color:#1e2035">
+          <div class="px-4 py-3 border-b border-white/10" style="background-color:#15172a">
+            <div class="text-sm font-bold text-white">Requêtes RH — IA</div>
+            <div class="text-xs text-gray-400">Admin · SIRH Pro</div>
+          </div>
+          <div class="p-4">
+            <div class="rounded-xl border border-white/10 p-3 mb-3 text-xs text-gray-500" style="background-color:#15172a">
+              Ex: Employés cadres du département IT avec une évaluation supérieure à 3…
+            </div>
+            <p class="text-xs text-gray-500 mb-2">Suggestions :</p>
+            <div class="flex flex-col gap-1.5 mb-3">
+              <% ["Collaborateurs sans 1:1 depuis 30 jours", "Qui est en retard sur ses objectifs ?", "Onboardings en cours"].each do |s| %>
+              <span class="px-2.5 py-1.5 text-xs rounded-lg border border-indigo-500/40 text-indigo-300" style="background-color:#15172a"><%= s %></span>
+              <% end %>
+            </div>
+            <div class="inline-flex items-center gap-1.5 px-4 py-2 bg-indigo-600 text-white text-sm font-semibold rounded-lg w-full justify-center">Rechercher</div>
+          </div>
+        </div>
+
         <%# Mock IA fidèle à la vraie app admin %>
         <div class="hidden lg:block rounded-2xl border border-white/10 overflow-hidden" style="background-color:#1e2035; height:381px; margin-top:3.75rem">
           <div class="flex items-center justify-between px-5 py-3 border-b border-white/10" style="background-color:#15172a">
