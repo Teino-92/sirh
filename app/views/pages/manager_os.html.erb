@@ -114,7 +114,7 @@
           <p class="text-sm text-gray-400">25 mars 2026 · Studio Créatif Demo</p>
         </div>
         <%# 4 stat cards %>
-        <div class="grid gap-3 mb-5" class="grid-cols-2 sm:grid-cols-4">
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-5">
           <% [
             ["1", "Onboarding actif", "#22c55e", "M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"],
             ["1", "1:1 cette semaine", "#8b5cf6", "M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"],
@@ -444,7 +444,7 @@
     <div class="grid lg:grid-cols-2 gap-10 items-start">
 
       <%# Texte Formation — en premier dans le HTML %>
-      <div data-module="right" class="lg:order-last">
+      <div data-module="right" class="lg:order-last min-w-0">
         <div class="inline-flex items-center gap-2 px-3 py-1.5 bg-blue-50 text-blue-700 text-xs font-semibold rounded-full mb-6 border border-blue-100">
           <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
           Formation
@@ -472,7 +472,7 @@
       </div>
 
       <%# Mock formation UI %>
-      <div data-module="left" class="lg:order-first">
+      <div data-module="left" class="lg:order-first min-w-0">
         <div class="bg-white rounded-2xl shadow-xl border border-gray-200 overflow-hidden" style="max-height:520px">
           <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
             <div>
