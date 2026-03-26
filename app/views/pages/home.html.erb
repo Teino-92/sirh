@@ -730,7 +730,6 @@
         <div class="flex justify-center">
           <button type="submit" class="inline-flex items-center justify-center gap-2 w-full px-6 py-3.5 bg-violet-600 hover:bg-violet-700 text-white font-bold rounded-xl transition-colors shadow text-base whitespace-nowrap">
             Créer mon espace SIRH
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
           </button>
         </div>
         <p class="text-xs text-gray-400 text-center pt-1">En créant un compte, vous acceptez nos <a href="/cgu" class="underline hover:text-gray-600">CGU</a> et notre <a href="/politique-de-confidentialite" class="underline hover:text-gray-600">politique de confidentialité</a>.</p>
@@ -815,14 +814,14 @@
         </svg>
         <p class="text-indigo-200 text-sm">Le logiciel RH pensé pour les managers français.</p>
       </div>
-      <nav class="flex flex-row flex-nowrap items-center text-sm text-indigo-200">
-        <%= link_to "CGU", "/cgu", class: "hover:text-white transition-colors px-2" %>
+      <nav class="flex flex-row flex-nowrap items-center text-xs text-indigo-200">
+        <%= link_to "CGU", "/cgu", class: "hover:text-white transition-colors px-2 whitespace-nowrap" %>
         <span style="color:rgba(255,255,255,0.3)">|</span>
-        <%= link_to "Confidentialité", "/politique-de-confidentialite", class: "hover:text-white transition-colors px-2" %>
+        <%= link_to "Confidentialité", "/politique-de-confidentialite", class: "hover:text-white transition-colors px-2 whitespace-nowrap" %>
         <span style="color:rgba(255,255,255,0.3)">|</span>
-        <%= link_to "Mentions légales", "/mentions-legales", class: "hover:text-white transition-colors px-2" %>
+        <%= link_to "Mentions légales", "/mentions-legales", class: "hover:text-white transition-colors px-2 whitespace-nowrap" %>
         <span style="color:rgba(255,255,255,0.3)">|</span>
-        <%= link_to "Contact", "mailto:contact@izi-rh.fr", class: "hover:text-white transition-colors px-2" %>
+        <%= link_to "Contact", "mailto:contact@izi-rh.fr", class: "hover:text-white transition-colors px-2 whitespace-nowrap" %>
       </nav>
     </div>
     <div class="mt-8 pt-6 text-xs text-indigo-300 text-center" style="border-top: 1px solid rgba(255,255,255,0.2)">

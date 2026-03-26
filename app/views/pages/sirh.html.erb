@@ -170,12 +170,18 @@
             </div>
             <div class="p-4 grid grid-cols-2 gap-3">
               <div class="rounded-xl p-3 text-center" style="background-color:#7c3aed">
-                <div class="text-xs font-semibold text-purple-200 mb-1">CP</div>
+                <div class="text-xs font-semibold text-purple-200 mb-1">
+                  <span class="sm:hidden">CP</span>
+                  <span class="hidden sm:inline">Congés payés</span>
+                </div>
                 <div class="text-2xl font-extrabold text-white">30.0</div>
                 <div class="text-xs text-purple-200">jours</div>
               </div>
               <div class="rounded-xl p-3 text-center" style="background-color:#7c3aed">
-                <div class="text-xs font-semibold text-purple-200 mb-1">AM</div>
+                <div class="text-xs font-semibold text-purple-200 mb-1">
+                  <span class="sm:hidden">AM</span>
+                  <span class="hidden sm:inline">Arrêt maladie</span>
+                </div>
                 <div class="text-2xl font-extrabold text-white">0.0</div>
                 <div class="text-xs text-purple-200">jours</div>
               </div>
@@ -653,14 +659,14 @@
         </svg>
         <p class="text-sm" style="color:rgba(165,180,252,0.7)">Le logiciel RH pensé pour les managers français.</p>
       </div>
-      <nav class="flex flex-row flex-wrap items-center gap-y-3 text-sm" style="color:rgba(165,180,252,0.8); gap-x:0">
-        <%= link_to "CGU", cgu_path, class: "hover:text-white transition-colors px-5" %>
+      <nav class="flex flex-row flex-nowrap items-center text-xs" style="color:rgba(165,180,252,0.8)">
+        <%= link_to "CGU", cgu_path, class: "hover:text-white transition-colors px-2 whitespace-nowrap" %>
         <span style="color:rgba(255,255,255,0.2)">|</span>
-        <%= link_to "Confidentialité", politique_de_confidentialite_path, class: "hover:text-white transition-colors px-5" %>
+        <%= link_to "Confidentialité", politique_de_confidentialite_path, class: "hover:text-white transition-colors px-2 whitespace-nowrap" %>
         <span style="color:rgba(255,255,255,0.2)">|</span>
-        <%= link_to "Mentions légales", mentions_legales_path, class: "hover:text-white transition-colors px-5" %>
+        <%= link_to "Mentions légales", mentions_legales_path, class: "hover:text-white transition-colors px-2 whitespace-nowrap" %>
         <span style="color:rgba(255,255,255,0.2)">|</span>
-        <%= link_to "Contact", "mailto:contact@izi-rh.fr", class: "hover:text-white transition-colors px-5" %>
+        <%= link_to "Contact", "mailto:contact@izi-rh.fr", class: "hover:text-white transition-colors px-2 whitespace-nowrap" %>
       </nav>
     </div>
     <div class="mt-8 pt-6 text-xs text-center" style="border-top: 1px solid rgba(255,255,255,0.1); color:rgba(165,180,252,0.5)">
