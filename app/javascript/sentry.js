@@ -8,6 +8,7 @@ if (dsn) {
     integrations: [
       Sentry.feedbackIntegration({
         colorScheme: "system",
+        showBranding: false,
         buttonLabel: "Signaler un bug",
         submitButtonLabel: "Envoyer",
         cancelButtonLabel: "Annuler",
@@ -20,6 +21,8 @@ if (dsn) {
         messagePlaceholder: "Décrivez le problème rencontré…",
         successMessageText: "Merci pour votre retour !",
         isRequiredLabel: "(obligatoire)",
+        addScreenshotButtonLabel: "Ajouter une capture d'écran",
+        removeScreenshotButtonLabel: "Supprimer la capture",
       }),
     ],
   })
