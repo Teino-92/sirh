@@ -141,7 +141,7 @@
             <%
               card_size = if card['h'].to_i <= 2
                            'compact'
-                         elsif card['w'].to_i >= 8
+                         elsif card['w'].to_i >= 8 && card['h'].to_i >= 5
                            'wide'
                          else
                            'normal'
@@ -194,7 +194,7 @@
             <%
               card_size = if card['h'].to_i <= 2
                            'compact'
-                         elsif card['w'].to_i >= 8
+                         elsif card['w'].to_i >= 8 && card['h'].to_i >= 5
                            'wide'
                          else
                            'normal'

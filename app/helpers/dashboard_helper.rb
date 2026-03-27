@@ -21,7 +21,7 @@ module DashboardHelper
   }.freeze
 
   CARD_MIN_H = {
-    'personal_planning'    => 4,
+    'personal_planning'    => 3,
     'team_planning'        => 4,
     'active_onboardings'   => 2,
     'upcoming_one_on_ones' => 3,
