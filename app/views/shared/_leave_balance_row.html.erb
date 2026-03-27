@@ -1,0 +1,21 @@
+<%
+  balance = local_assigns[:balance]
+  dot_color = case balance.leave_type
+  when 'cp'      then 'bg-blue-500'
+  when 'rtt'     then 'bg-green-500'
+  when 'maladie' then 'bg-red-500'
+  else                'bg-purple-500'
+  end
+%>
+<div class="flex items-center justify-between px-3 py-2.5">
+  <div class="flex items-center gap-2 min-w-0">
+    <span class="w-2 h-2 rounded-full flex-shrink-0 <%= dot_color %>"></span>
+    <span class="text-sm text-gray-700 dark:text-gray-300 truncate"><%= LeaveBalance.leave_type_name(balance.leave_type) %></span>
+    <% if balance.expiring_soon? %>
+      <span class="text-[10px] text-orange-500 flex-shrink-0">⚠ expire</span>
+    <% end %>
+  </div>
+  <span class="text-sm font-bold text-gray-900 dark:text-gray-100 flex-shrink-0 ml-2">
+    <%= balance.balance.to_f.round(1) %> <span class="text-xs font-normal text-gray-500">j</span>
+  </span>
+</div>

@@ -9,15 +9,24 @@
     </span>
     <%= link_to 'Demander', new_leave_request_path, class: "text-[10px] text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 font-medium" %>
   </div>
-  <div class="flex-1 p-2 min-h-0 flex items-stretch gap-2 overflow-x-auto">
+  <div class="flex-1 min-h-0 overflow-auto">
     <% if @leave_balances.any? %>
-      <% @leave_balances.each do |balance| %>
-        <div class="flex-1 min-w-0">
-          <%= render 'shared/leave_balance_card', balance: balance %>
-        </div>
-      <% end %>
+      <%# Mobile: liste verticale compacte %>
+      <div class="sm:hidden divide-y divide-gray-100 dark:divide-gray-700">
+        <% @leave_balances.each do |balance| %>
+          <%= render 'shared/leave_balance_row', balance: balance %>
+        <% end %>
+      </div>
+      <%# Desktop: pills horizontales %>
+      <div class="hidden sm:flex items-stretch gap-2 p-2 h-full">
+        <% @leave_balances.each do |balance| %>
+          <div class="flex-1 min-w-0">
+            <%= render 'shared/leave_balance_card', balance: balance %>
+          </div>
+        <% end %>
+      </div>
     <% else %>
-      <p class="text-xs text-gray-400 dark:text-gray-500 text-center py-2">Aucun solde configuré</p>
+      <p class="text-xs text-gray-400 dark:text-gray-500 text-center py-4">Aucun solde configuré</p>
     <% end %>
   </div>
 </div>
