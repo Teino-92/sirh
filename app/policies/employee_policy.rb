@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 class EmployeePolicy < ApplicationPolicy
-  # Employee can view and edit their own profile
+  # Employee can view their own profile; HR/admin can view any employee
   def show?
-    user == record
+    user.hr_or_admin? || user == record
   end
 
   def update?

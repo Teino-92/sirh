@@ -1,0 +1,13 @@
+<%# placeholder — full view added in Task 5 %>
+<div>
+  <h1><%= @employee.full_name %></h1>
+  <p><%= l(@current_date, format: '%B %Y').capitalize %></p>
+  <% @calendar_weeks.each do |week_start| %>
+    <% plan = @weekly_plans[week_start] %>
+    <% if plan %>
+      <% plan.schedule_pattern.each do |day, hours| %>
+        <span><%= hours %></span>
+      <% end %>
+    <% end %>
+  <% end %>
+</div>
