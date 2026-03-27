@@ -6,13 +6,46 @@ import { Controller } from "@hotwired/stimulus"
 export default class extends Controller {
   static targets = ["grid", "card", "saveBtn", "customizeBtn", "cancelBtn", "feedback",
                     "hiddenPanel", "hiddenList", "emptyHint"]
-  static values  = { saveUrl: String, mobileSaveUrl: String }
+  static values  = { saveUrl: String, mobileSaveUrl: String, mobileLayout: Object }
 
   connect() {
     this._grid = null
     this._editMode = false
     this._isMobile = window.innerWidth < 768
+    if (this._isMobile) this._applyMobileLayout()
     this._tryInit(0)
+  }
+
+  // Rewrite gs-* attributes on card elements to use the mobile layout positions
+  _applyMobileLayout() {
+    if (!this.hasMobileLayoutValue) return
+    const mobileGrid = this.mobileLayoutValue.grid || []
+    const byId = {}
+    mobileGrid.forEach(c => { byId[c.id] = c })
+
+    this.cardTargets.forEach(card => {
+      const id = card.dataset.cardId
+      const pos = byId[id]
+      if (!pos) return
+      card.setAttribute('gs-x', pos.x)
+      card.setAttribute('gs-y', pos.y)
+      card.setAttribute('gs-w', pos.w)
+      card.setAttribute('gs-h', pos.h)
+    })
+
+    // Also rewrite stash cards
+    const stash = this._getStash()
+    if (stash) {
+      stash.querySelectorAll('[data-card-id]').forEach(card => {
+        const id = card.dataset.cardId
+        const pos = byId[id]
+        if (!pos) return
+        card.setAttribute('gs-x', pos.x)
+        card.setAttribute('gs-y', pos.y)
+        card.setAttribute('gs-w', pos.w)
+        card.setAttribute('gs-h', pos.h)
+      })
+    }
   }
 
   _tryInit(attempt) {
