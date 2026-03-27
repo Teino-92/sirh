@@ -1,13 +1,119 @@
-<%# placeholder — full view added in Task 5 %>
-<div>
-  <h1><%= @employee.full_name %></h1>
-  <p><%= l(@current_date, format: '%B %Y').capitalize %></p>
-  <% @calendar_weeks.each do |week_start| %>
-    <% plan = @weekly_plans[week_start] %>
-    <% if plan %>
-      <% plan.schedule_pattern.each do |day, hours| %>
-        <span><%= hours %></span>
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+  <!-- Header -->
+  <div class="mb-6">
+    <div class="flex items-center text-gray-600 dark:text-gray-400 mb-4">
+      <%= link_to admin_employees_path, class: "text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300" do %>
+        ← Retour aux employés
       <% end %>
-    <% end %>
-  <% end %>
+    </div>
+
+    <div class="flex items-center">
+      <div class="h-12 w-12 rounded-full bg-indigo-100 dark:bg-indigo-800 flex items-center justify-center mr-4">
+        <span class="text-indigo-700 dark:text-indigo-300 font-semibold text-lg">
+          <%= @employee.first_name[0] %><%= @employee.last_name[0] %>
+        </span>
+      </div>
+      <div>
+        <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100"><%= @employee.full_name %></h1>
+        <p class="text-sm text-gray-600 dark:text-gray-400">
+          <%= @employee.contract_type %>
+          <% if @employee.work_schedule %>
+            • <%= @employee.work_schedule.weekly_hours %>h/semaine
+          <% end %>
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Month Navigation -->
+  <div class="bg-white dark:bg-gray-800 rounded-lg shadow mb-6 p-4">
+    <div class="flex items-center justify-between">
+      <%= link_to admin_employee_weekly_schedule_plans_path(@employee, date: @current_date - 1.month),
+          class: "inline-flex items-center px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600" do %>
+        <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+        </svg>
+        Mois précédent
+      <% end %>
+
+      <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100">
+        <%= l(@current_date, format: '%B %Y').capitalize %>
+      </h2>
+
+      <%= link_to admin_employee_weekly_schedule_plans_path(@employee, date: @current_date + 1.month),
+          class: "inline-flex items-center px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600" do %>
+        Mois suivant
+        <svg class="w-5 h-5 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+        </svg>
+      <% end %>
+    </div>
+  </div>
+
+  <!-- Read-only info banner -->
+  <div class="bg-amber-50 dark:bg-amber-900/30 border border-amber-200 dark:border-amber-700 rounded-lg p-4 mb-6">
+    <div class="flex items-center gap-2 text-sm text-amber-700 dark:text-amber-300">
+      <svg class="h-4 w-4 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/>
+      </svg>
+      Vue consultation uniquement — les modifications se font depuis l'interface du manager.
+    </div>
+  </div>
+
+  <!-- Weekly Calendar (read-only) -->
+  <div class="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden">
+    <div class="divide-y divide-gray-200 dark:divide-gray-700">
+      <% @calendar_weeks.each do |week_start| %>
+        <%
+          week_end = week_start + 6.days
+          plan = @weekly_plans[week_start]
+          is_current_week = week_start == Date.current.beginning_of_week(:monday)
+          is_past = week_start < Date.current.beginning_of_week(:monday)
+          in_current_month = week_start.month == @current_date.month || week_end.month == @current_date.month
+        %>
+        <div class="p-4 sm:p-6 <%= 'bg-gray-50 dark:bg-gray-900' unless in_current_month %> <%= 'bg-green-50 dark:bg-green-900/30' if is_current_week %>">
+          <!-- Week Header -->
+          <div class="flex items-center gap-3 mb-4">
+            <h3 class="text-base sm:text-lg font-semibold text-gray-900 dark:text-gray-100">
+              Semaine du <%= l(week_start, format: :short) %>
+            </h3>
+            <% if is_current_week %>
+              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-600 text-white">Cette semaine</span>
+            <% elsif is_past %>
+              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-400 text-white">Passée</span>
+            <% end %>
+          </div>
+
+          <!-- Week Content -->
+          <% if plan %>
+            <div class="grid grid-cols-2 sm:grid-cols-7 gap-2">
+              <% %w[monday tuesday wednesday thursday friday saturday sunday].each do |day| %>
+                <% hours = plan.schedule_pattern[day] %>
+                <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-3 text-center">
+                  <p class="text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">
+                    <%= l(week_start + %w[monday tuesday wednesday thursday friday saturday sunday].index(day).days, format: '%a') %>
+                  </p>
+                  <% if hours.present? && hours != 'off' %>
+                    <p class="text-sm font-semibold text-gray-900 dark:text-gray-100"><%= hours %></p>
+                  <% else %>
+                    <p class="text-sm text-gray-400 dark:text-gray-500">Repos</p>
+                  <% end %>
+                </div>
+              <% end %>
+            </div>
+            <div class="mt-3 text-sm text-gray-600 dark:text-gray-400">
+              <span class="font-semibold"><%= plan.total_weekly_hours.round(1) %>h</span> de travail
+              <% if plan.notes.present? %>
+                <span class="ml-3 italic">Note : <%= plan.notes %></span>
+              <% end %>
+            </div>
+          <% else %>
+            <div class="bg-gray-100 dark:bg-gray-800 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-6 text-center">
+              <p class="text-gray-500 dark:text-gray-400 text-sm">Semaine non planifiée</p>
+            </div>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+  </div>
 </div>
