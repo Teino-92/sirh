@@ -5,12 +5,15 @@
     <p class="text-sm text-gray-600 dark:text-gray-400">Consultez votre planning et vos congés</p>
   </div>
 
+  <turbo-frame id="work-schedule-content">
+
   <!-- Month Navigation -->
   <div class="bg-white dark:bg-gray-800 rounded-lg shadow mb-6 p-4">
     <div class="flex items-center justify-between gap-2">
       <%= link_to work_schedule_path(current_employee.id, date: @current_date - 1.month,
             week: (@current_date - 1.month).beginning_of_month.beginning_of_week(:monday).iso8601),
-        class: "flex-shrink-0 inline-flex items-center px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600" do %>
+        class: "flex-shrink-0 inline-flex items-center px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600",
+        data: { turbo_frame: "work-schedule-content" } do %>
         <svg class="w-5 h-5 sm:mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
         </svg>
@@ -23,7 +26,8 @@
 
       <%= link_to work_schedule_path(current_employee.id, date: @current_date + 1.month,
             week: (@current_date + 1.month).beginning_of_month.beginning_of_week(:monday).iso8601),
-        class: "flex-shrink-0 inline-flex items-center px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600" do %>
+        class: "flex-shrink-0 inline-flex items-center px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600",
+        data: { turbo_frame: "work-schedule-content" } do %>
         <span class="hidden sm:inline">Mois suivant</span>
         <svg class="w-5 h-5 sm:ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
@@ -34,7 +38,8 @@
     <div class="mt-4">
       <%= link_to work_schedule_path(current_employee.id, date: Date.current,
             week: Date.current.beginning_of_week(:monday).iso8601),
-        class: "text-sm text-indigo-600 hover:text-indigo-800 dark:text-indigo-200 font-medium" do %>
+        class: "text-sm text-indigo-600 hover:text-indigo-800 dark:text-indigo-200 font-medium",
+        data: { turbo_frame: "work-schedule-content" } do %>
         Aujourd'hui
       <% end %>
     </div>
@@ -135,7 +140,8 @@
     <%# Navigation semaine %>
     <div class="flex items-center justify-between mb-3">
       <%= link_to work_schedule_path(@employee.id, week: @mobile_prev_week.iso8601, date: @mobile_prev_week.iso8601),
-          class: "flex items-center justify-center min-h-[44px] min-w-[44px] rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-400" do %>
+          class: "flex items-center justify-center min-h-[44px] min-w-[44px] rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-400",
+          data: { turbo_frame: "work-schedule-content" } do %>
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
         </svg>
@@ -149,7 +155,8 @@
         <% end %>
       </div>
       <%= link_to work_schedule_path(@employee.id, week: @mobile_next_week.iso8601, date: @mobile_next_week.iso8601),
-          class: "flex items-center justify-center min-h-[44px] min-w-[44px] rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-400" do %>
+          class: "flex items-center justify-center min-h-[44px] min-w-[44px] rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-400",
+          data: { turbo_frame: "work-schedule-content" } do %>
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
         </svg>
@@ -317,4 +324,6 @@
       </p>
     </div>
   </div>
+
+  </turbo-frame><%# end work-schedule-content %>
 </div>
