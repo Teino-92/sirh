@@ -6,11 +6,12 @@ import { Controller } from "@hotwired/stimulus"
 export default class extends Controller {
   static targets = ["grid", "card", "saveBtn", "customizeBtn", "cancelBtn", "feedback",
                     "hiddenPanel", "hiddenList", "emptyHint"]
-  static values  = { saveUrl: String }
+  static values  = { saveUrl: String, mobileSaveUrl: String }
 
   connect() {
     this._grid = null
     this._editMode = false
+    this._isMobile = window.innerWidth < 768
     this._tryInit(0)
   }
 
@@ -67,11 +68,15 @@ export default class extends Controller {
   }
 
   save() {
-    const layout = this._collectLayout()
+    const layout  = this._collectLayout()
+    const saveUrl = this._isMobile && this.hasMobileSaveUrlValue
+      ? this.mobileSaveUrlValue
+      : this.saveUrlValue
+
     this.saveBtnTarget.disabled = true
     this.saveBtnTarget.textContent = 'Sauvegarde…'
 
-    fetch(this.saveUrlValue, {
+    fetch(saveUrl, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
@@ -145,6 +150,12 @@ export default class extends Controller {
 
   _initGrid(options = {}) {
     try {
+      const mobileConfig = this._isMobile ? {
+        column: 1,
+        cellHeight: 70,
+        disableResize: true,
+      } : {}
+
       this._grid = window.GridStack.init({
         column: 12,
         cellHeight: 90,
@@ -153,6 +164,7 @@ export default class extends Controller {
         animate: true,
         resizable: { handles: 'se' },
         draggable: { handle: '.grid-stack-item-content' },
+        ...mobileConfig,
         ...options
       }, this.gridTarget)
     } catch(e) {

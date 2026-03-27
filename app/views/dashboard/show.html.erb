@@ -1,5 +1,6 @@
 <%
-  layout = @employee.dashboard_layout
+  is_mobile_req = request.user_agent.to_s =~ /Mobile|Android|iPhone|iPad/i
+  layout = is_mobile_req ? @employee.dashboard_layout_mobile : @employee.dashboard_layout
   grid   = layout['grid']
   hidden = layout['hidden']
 %>
@@ -11,6 +12,7 @@
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6"
      data-controller="dashboard-customizer tour"
      data-dashboard-customizer-save-url-value="<%= dashboard_layout_profile_path %>"
+     data-dashboard-customizer-mobile-save-url-value="<%= dashboard_layout_mobile_profile_path %>"
      data-tour-name-value="sirh-dashboard"
      data-tour-autostart-value="true">
 
