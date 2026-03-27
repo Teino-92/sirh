@@ -127,7 +127,82 @@
     </div>
   </div>
 
+  <%# ── VUE MOBILE : semaine glissante ─────────────────────────────────────── %>
+  <div class="sm:hidden mb-6">
+    <%# Navigation semaine %>
+    <div class="flex items-center justify-between mb-3">
+      <%= link_to work_schedule_path(@employee.id, week: @mobile_prev_week.iso8601),
+          class: "flex items-center justify-center min-h-[44px] min-w-[44px] rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-400" do %>
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+        </svg>
+      <% end %>
+      <div class="text-center">
+        <p class="text-sm font-semibold text-gray-900 dark:text-gray-100">
+          <%= l(@mobile_week_start, format: "%-d %b") %> – <%= l(@mobile_week_end, format: "%-d %b %Y") %>
+        </p>
+        <% if @mobile_week_start == Date.current.beginning_of_week(:monday) %>
+          <p class="text-xs text-indigo-500">Cette semaine</p>
+        <% end %>
+      </div>
+      <%= link_to work_schedule_path(@employee.id, week: @mobile_next_week.iso8601),
+          class: "flex items-center justify-center min-h-[44px] min-w-[44px] rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-400" do %>
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+        </svg>
+      <% end %>
+    </div>
+
+    <%# Liste des 7 jours %>
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow border border-gray-200 dark:border-gray-700 divide-y divide-gray-100 dark:divide-gray-700">
+      <% (0..6).each do |offset| %>
+        <%
+          day_date    = @mobile_week_start + offset.days
+          is_today    = day_date == Date.current
+          leave_on    = @leaves.find { |l| day_date >= l.start_date && day_date <= l.end_date }
+          day_name    = day_date.strftime('%A').downcase
+          work_hours  = @mobile_week_plan&.schedule_pattern&.dig(day_name)
+          is_work_day = work_hours.present? && work_hours != 'off'
+          time_entry  = @time_entries.find { |te| te.worked_date == day_date }
+        %>
+        <div class="flex items-center justify-between px-4 py-3
+                    <%= 'bg-indigo-50 dark:bg-indigo-900/20' if is_today %>">
+          <div class="flex items-center gap-3">
+            <div class="w-10 text-center flex-shrink-0">
+              <p class="text-xs font-semibold <%= is_today ? 'text-indigo-600 dark:text-indigo-400' : 'text-gray-500 dark:text-gray-400' %>">
+                <%= l(day_date, format: '%a') %>
+              </p>
+              <p class="text-lg font-bold <%= is_today ? 'text-indigo-600 dark:text-indigo-400' : 'text-gray-900 dark:text-gray-100' %>">
+                <%= day_date.day %>
+              </p>
+            </div>
+            <div>
+              <% if leave_on %>
+                <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200">
+                  Congé — <%= LeaveBalance.leave_type_name(leave_on.leave_type) %>
+                </span>
+              <% elsif is_work_day %>
+                <p class="text-sm font-semibold text-gray-900 dark:text-gray-100"><%= work_hours %></p>
+                <% if time_entry %>
+                  <p class="text-xs text-green-600 dark:text-green-400">✓ <%= time_entry.hours_worked.round(1) %>h pointées</p>
+                <% end %>
+              <% elsif @mobile_week_plan %>
+                <span class="text-sm text-gray-400 dark:text-gray-500">Repos</span>
+              <% else %>
+                <span class="text-sm text-gray-400 dark:text-gray-500">Non planifié</span>
+              <% end %>
+            </div>
+          </div>
+          <% if is_today %>
+            <span class="text-[10px] font-bold px-2 py-1 bg-indigo-600 text-white rounded-full flex-shrink-0">Aujourd'hui</span>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
   <!-- Calendar -->
+  <div class="hidden sm:block">
   <div class="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden">
     <!-- Calendar Header -->
     <div class="grid grid-cols-7 bg-gray-50 dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700">
@@ -221,6 +296,7 @@
       <% end %>
     </div>
   </div>
+  </div><%# end hidden sm:block %>
 
   <!-- Summary Stats -->
   <div class="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-4">

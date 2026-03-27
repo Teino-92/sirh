@@ -32,6 +32,34 @@ class WorkSchedulesController < ApplicationController
 
     # Build calendar data structure
     @calendar_weeks = build_calendar_weeks(@start_date, @end_date)
+
+    # Mobile week view — default current week, navigable by ?week= param
+    @mobile_week_start = begin
+      params[:week]&.to_date&.beginning_of_week(:monday) || Date.current.beginning_of_week(:monday)
+    rescue ArgumentError
+      Date.current.beginning_of_week(:monday)
+    end
+    @mobile_week_end  = @mobile_week_start + 6.days
+    @mobile_prev_week = @mobile_week_start - 1.week
+    @mobile_next_week = @mobile_week_start + 1.week
+    @mobile_week_plan = @employee.weekly_schedule_plans.find_by(week_start_date: @mobile_week_start)
+
+    # Ensure leaves and time_entries cover the mobile week (may be outside current month)
+    if @mobile_week_start < @start_date || @mobile_week_end > @end_date
+      @leaves = @employee.leave_requests
+                         .approved
+                         .for_date_range(
+                           [@start_date, @mobile_week_start].min,
+                           [@end_date, @mobile_week_end].max
+                         )
+                         .order(:start_date)
+      @time_entries = @employee.time_entries
+                               .where('DATE(clock_in) BETWEEN ? AND ?',
+                                      [@start_date, @mobile_week_start].min,
+                                      [@end_date, @mobile_week_end].max)
+                               .completed
+                               .order(:clock_in)
+    end
   end
 
   def edit
