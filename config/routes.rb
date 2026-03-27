@@ -243,6 +243,15 @@ Rails.application.routes.draw do
   namespace :admin do
     root to: 'employees#index'
     resources :employees
+
+    # Aggregate org-wide view: /admin/weekly_schedule_plans?week=YYYY-MM-DD
+    resources :weekly_schedule_plans, only: [:index]
+
+    # Per-employee calendar: /admin/employees/:employee_id/weekly_schedule_plans?date=YYYY-MM-DD
+    resources :employees do
+      resources :weekly_schedule_plans, only: [:index], module: :employees
+    end
+
     resource :organization, only: [:show, :edit, :update]
     resources :business_rules do
       member do
