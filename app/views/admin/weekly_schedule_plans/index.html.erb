@@ -1,0 +1,7 @@
+<%# placeholder — full view added in Task 4 %>
+<div>
+  <p>Semaine du <%= l(@week_start, format: :long) %> au <%= l(@week_end, format: :short) %></p>
+  <% @employees.each do |emp| %>
+    <p><%= emp.full_name %></p>
+  <% end %>
+</div>
