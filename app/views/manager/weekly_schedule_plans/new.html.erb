@@ -53,7 +53,7 @@
       <div>
         <%= f.label :week_start_date, "Début de semaine (lundi)", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" %>
         <%= f.date_field :week_start_date,
-          class: "block w-full rounded-md border-gray-300 dark:border-gray-600 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm",
+          class: "block w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm",
           required: true %>
         <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Sélectionnez un lundi</p>
       </div>
@@ -94,13 +94,13 @@
                      name="weekly_schedule_plan[schedule_pattern][<%= day %>]"
                      id="schedule_pattern_<%= day %>"
                      value="<%= @weekly_plan.schedule_pattern&.dig(day) %>"
-                     class="flex-1 rounded-md border-gray-300 dark:border-gray-600 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm day-schedule"
+                     class="flex-1 rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm day-schedule"
                      placeholder="09:00-17:00 ou 'off'"
                      pattern="^(\d{2}:\d{2}-\d{2}:\d{2}|off)$"
                      title="Format: HH:MM-HH:MM ou 'off'">
 
               <button type="button"
-                      class="set-off-btn px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:bg-gray-900"
+                      class="set-off-btn px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-md text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
                       data-day="<%= day %>">
                 Repos
               </button>
@@ -132,7 +132,7 @@
       <div>
         <%= f.text_area :notes,
           rows: 3,
-          class: "block w-full rounded-md border-gray-300 dark:border-gray-600 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm",
+          class: "block w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm",
           placeholder: "Informations complémentaires sur cette semaine..." %>
       </div>
     </div>
@@ -149,49 +149,50 @@
 </div>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-  // Template selection
-  document.querySelectorAll('.template-btn').forEach(btn => {
-    btn.addEventListener('click', function() {
-      const pattern = JSON.parse(this.dataset.pattern);
+(function() {
+  function initScheduleForm() {
+    const container = document.getElementById('schedule-templates')
+    if (!container || container.dataset.initialized) return
+    container.dataset.initialized = 'true'
 
-      // Highlight selected template
-      document.querySelectorAll('.template-btn').forEach(b => {
-        b.classList.remove('border-indigo-500', 'bg-indigo-50 dark:bg-indigo-900');
-        b.classList.add('border-gray-200 dark:border-gray-700');
+    // Template selection
+    container.querySelectorAll('.template-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        const pattern = JSON.parse(this.dataset.pattern);
+
+        // Highlight selected template
+        container.querySelectorAll('.template-btn').forEach(b => {
+          b.classList.remove('border-indigo-500', 'bg-indigo-50', 'dark:bg-indigo-900');
+          b.classList.add('border-gray-200', 'dark:border-gray-700');
+        });
+        this.classList.add('border-indigo-500', 'bg-indigo-50');
+        this.classList.remove('border-gray-200', 'dark:border-gray-700');
+
+        // Set daily schedule pattern
+        const allDays = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+        allDays.forEach(day => {
+          const input = document.getElementById(`schedule_pattern_${day}`);
+          if (input) {
+            input.value = pattern[day] || 'off';
+          }
+        });
       });
-      this.classList.add('border-indigo-500', 'bg-indigo-50 dark:bg-indigo-900');
-      this.classList.remove('border-gray-200 dark:border-gray-700');
+    });
 
-      // Set daily schedule pattern
-      Object.keys(pattern).forEach(day => {
+    // "Repos" button functionality
+    document.querySelectorAll('.set-off-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        const day = this.dataset.day;
         const input = document.getElementById(`schedule_pattern_${day}`);
         if (input) {
-          input.value = pattern[day] || 'off';
-        }
-      });
-
-      // Set remaining days to 'off' if not in pattern
-      ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'].forEach(day => {
-        if (!pattern[day]) {
-          const input = document.getElementById(`schedule_pattern_${day}`);
-          if (input && !input.value) {
-            input.value = 'off';
-          }
+          input.value = 'off';
         }
       });
     });
-  });
+  }
 
-  // "Repos" button functionality
-  document.querySelectorAll('.set-off-btn').forEach(btn => {
-    btn.addEventListener('click', function() {
-      const day = this.dataset.day;
-      const input = document.getElementById(`schedule_pattern_${day}`);
-      if (input) {
-        input.value = 'off';
-      }
-    });
-  });
-});
+  document.addEventListener('DOMContentLoaded', initScheduleForm)
+  document.addEventListener('turbo:load', initScheduleForm)
+  document.addEventListener('turbo:frame-load', initScheduleForm)
+})();
 </script>
