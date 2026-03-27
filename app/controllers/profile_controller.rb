@@ -56,6 +56,37 @@ class ProfileController < ApplicationController
     end
   end
 
+  def dashboard_layout_mobile
+    @employee = current_employee
+    authorize @employee, :update?
+
+    raw    = params.require(:dashboard_layout)
+    hidden = Array(raw[:hidden]).map(&:to_s)
+
+    grid = Array(raw[:grid]).filter_map do |item|
+      id = item[:id].to_s
+      next unless @employee.dashboard_card_permitted?(id)
+      { 'id' => id,
+        'x'  => item[:x].to_i,
+        'y'  => item[:y].to_i,
+        'w'  => item[:w].to_i.clamp(1, 1),
+        'h'  => item[:h].to_i.clamp(1, 20) }
+    end
+
+    layout = {
+      'grid'   => grid,
+      'hidden' => hidden.select { |c| @employee.dashboard_card_permitted?(c) }
+    }
+
+    @employee.dashboard_layout_mobile = layout
+
+    if @employee.save
+      render json: { status: 'ok', message: 'Préférences mobile sauvegardées' }
+    else
+      render json: { status: 'error' }, status: :unprocessable_entity
+    end
+  end
+
   private
 
   def profile_params

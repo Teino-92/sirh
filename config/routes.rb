@@ -48,6 +48,7 @@ Rails.application.routes.draw do
   resource :dashboard, only: [:show], controller: 'dashboard'
   resource :profile, only: [:show, :edit, :update], controller: 'profile' do
     patch :dashboard_layout, on: :member
+    patch :dashboard_layout_mobile, on: :member
   end
 
   resources :time_entries, only: [:index] do
@@ -155,6 +156,7 @@ Rails.application.routes.draw do
       end
     end
     get 'team_schedules', to: 'team_schedules#index'
+    get 'team_schedules/planning', to: 'team_schedules#planning', as: 'team_schedules_planning'
 
     # Onboarding templates (quick-create from manager UI)
     resources :onboarding_templates, only: [:create]
