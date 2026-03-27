@@ -205,6 +205,50 @@ class Employee < ApplicationRecord
     }
   }.freeze
 
+  # Mobile layout: 1-column grid (w=1 always), stacked vertically.
+  DASHBOARD_DEFAULT_LAYOUTS_MOBILE = {
+    'employee' => {
+      'grid' => [
+        { 'id' => 'leave_balances',   'x' => 0, 'y' => 0,  'w' => 1, 'h' => 3 },
+        { 'id' => 'upcoming_leaves',  'x' => 0, 'y' => 3,  'w' => 1, 'h' => 3 },
+        { 'id' => 'personal_planning','x' => 0, 'y' => 6,  'w' => 1, 'h' => 4 },
+        { 'id' => 'pending_requests', 'x' => 0, 'y' => 10, 'w' => 1, 'h' => 3 },
+        { 'id' => 'quick_links',      'x' => 0, 'y' => 13, 'w' => 1, 'h' => 4 }
+      ],
+      'hidden' => []
+    },
+    'manager' => {
+      'grid' => [
+        { 'id' => 'trial_period_alerts',  'x' => 0, 'y' => 0,  'w' => 1, 'h' => 3 },
+        { 'id' => 'pending_approvals',    'x' => 0, 'y' => 3,  'w' => 1, 'h' => 3 },
+        { 'id' => 'absences_today',       'x' => 0, 'y' => 6,  'w' => 1, 'h' => 3 },
+        { 'id' => 'leave_balances',       'x' => 0, 'y' => 9,  'w' => 1, 'h' => 3 },
+        { 'id' => 'quick_links',          'x' => 0, 'y' => 12, 'w' => 1, 'h' => 4 }
+      ],
+      'hidden' => []
+    },
+    'hr' => {
+      'grid' => [
+        { 'id' => 'trial_period_alerts', 'x' => 0, 'y' => 0,  'w' => 1, 'h' => 3 },
+        { 'id' => 'absences_today',      'x' => 0, 'y' => 3,  'w' => 1, 'h' => 3 },
+        { 'id' => 'leave_balances',      'x' => 0, 'y' => 6,  'w' => 1, 'h' => 3 },
+        { 'id' => 'pending_requests',    'x' => 0, 'y' => 9,  'w' => 1, 'h' => 3 },
+        { 'id' => 'quick_links',         'x' => 0, 'y' => 12, 'w' => 1, 'h' => 4 }
+      ],
+      'hidden' => []
+    },
+    'admin' => {
+      'grid' => [
+        { 'id' => 'trial_period_alerts', 'x' => 0, 'y' => 0,  'w' => 1, 'h' => 3 },
+        { 'id' => 'absences_today',      'x' => 0, 'y' => 3,  'w' => 1, 'h' => 3 },
+        { 'id' => 'leave_balances',      'x' => 0, 'y' => 6,  'w' => 1, 'h' => 3 },
+        { 'id' => 'pending_requests',    'x' => 0, 'y' => 9,  'w' => 1, 'h' => 3 },
+        { 'id' => 'quick_links',         'x' => 0, 'y' => 12, 'w' => 1, 'h' => 4 }
+      ],
+      'hidden' => []
+    }
+  }.freeze
+
   def dashboard_layout
     stored = settings.fetch('dashboard_layout', nil)
     return default_dashboard_layout if stored.blank?
@@ -230,6 +274,16 @@ class Employee < ApplicationRecord
 
   def dashboard_layout=(layout_hash)
     self.settings = settings.merge('dashboard_layout' => layout_hash)
+  end
+
+  def dashboard_layout_mobile
+    stored = settings.fetch('dashboard_layout_mobile', nil)
+    return default_dashboard_layout_mobile if stored.blank?
+    stored
+  end
+
+  def dashboard_layout_mobile=(layout_hash)
+    self.settings = settings.merge('dashboard_layout_mobile' => layout_hash)
   end
 
   def dashboard_card_permitted?(card_id)
@@ -288,6 +342,12 @@ class Employee < ApplicationRecord
 
   def default_dashboard_layout
     base = DASHBOARD_DEFAULT_LAYOUTS.fetch(role, DASHBOARD_DEFAULT_LAYOUTS['employee']).deep_dup
+    base['grid'].select! { |card| dashboard_card_permitted?(card['id']) }
+    base
+  end
+
+  def default_dashboard_layout_mobile
+    base = DASHBOARD_DEFAULT_LAYOUTS_MOBILE.fetch(role, DASHBOARD_DEFAULT_LAYOUTS_MOBILE['employee']).deep_dup
     base['grid'].select! { |card| dashboard_card_permitted?(card['id']) }
     base
   end
