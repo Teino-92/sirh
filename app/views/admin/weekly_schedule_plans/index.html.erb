@@ -1,7 +1,102 @@
-<%# placeholder — full view added in Task 4 %>
-<div>
-  <p>Semaine du <%= l(@week_start, format: :long) %> au <%= l(@week_end, format: :short) %></p>
-  <% @employees.each do |emp| %>
-    <p><%= emp.full_name %></p>
-  <% end %>
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+  <!-- Header -->
+  <div class="mb-6 flex items-center justify-between">
+    <div>
+      <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100">Plannings de l'organisation</h1>
+      <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">
+        Semaine du <%= l(@week_start, format: :short) %> au <%= l(@week_end, format: :short) %> &middot; <%= l(@week_start, format: '%B %Y') %>
+      </p>
+    </div>
+    <%= link_to admin_employees_path,
+        class: "text-sm text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300" do %>
+      ← Retour aux employés
+    <% end %>
+  </div>
+
+  <!-- Week Navigation -->
+  <div class="bg-white dark:bg-gray-800 rounded-lg shadow mb-6 p-4">
+    <div class="flex items-center justify-between">
+      <%= link_to admin_weekly_schedule_plans_path(week: @prev_week),
+          class: "inline-flex items-center px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600" do %>
+        <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+        </svg>
+        Semaine précédente
+      <% end %>
+
+      <h2 class="text-lg font-bold text-gray-900 dark:text-gray-100">
+        <%= l(@week_start, format: :short) %> – <%= l(@week_end, format: :short) %>
+      </h2>
+
+      <%= link_to admin_weekly_schedule_plans_path(week: @next_week),
+          class: "inline-flex items-center px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600" do %>
+        Semaine suivante
+        <svg class="w-5 h-5 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+        </svg>
+      <% end %>
+    </div>
+  </div>
+
+  <!-- Table -->
+  <div class="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden">
+    <div class="overflow-x-auto">
+      <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+        <thead class="bg-gray-50 dark:bg-gray-900">
+          <tr>
+            <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider w-48">
+              Employé
+            </th>
+            <% %w[monday tuesday wednesday thursday friday saturday sunday].each do |day| %>
+              <% day_date = @week_start + %w[monday tuesday wednesday thursday friday saturday sunday].index(day).days %>
+              <th scope="col" class="px-3 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                <div><%= l(day_date, format: '%a') %></div>
+                <div class="font-normal normal-case text-gray-400 dark:text-gray-500"><%= l(day_date, format: '%d/%m') %></div>
+              </th>
+            <% end %>
+          </tr>
+        </thead>
+        <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+          <% @employees.each do |emp| %>
+            <% plan = @plans_by_employee[emp.id] %>
+            <tr class="hover:bg-gray-50 dark:hover:bg-gray-700">
+              <td class="px-4 py-3 whitespace-nowrap">
+                <%= link_to admin_employee_weekly_schedule_plans_path(emp),
+                    class: "flex items-center gap-2 group" do %>
+                  <div class="h-8 w-8 rounded-full bg-indigo-100 dark:bg-indigo-800 flex-shrink-0 flex items-center justify-center">
+                    <span class="text-indigo-700 dark:text-indigo-300 text-xs font-semibold">
+                      <%= emp.first_name[0] %><%= emp.last_name[0] %>
+                    </span>
+                  </div>
+                  <span class="text-sm font-medium text-gray-900 dark:text-gray-100 group-hover:text-indigo-600 dark:group-hover:text-indigo-400">
+                    <%= emp.full_name %>
+                  </span>
+                <% end %>
+              </td>
+              <% %w[monday tuesday wednesday thursday friday saturday sunday].each do |day| %>
+                <td class="px-3 py-3 text-center">
+                  <% if plan %>
+                    <% hours = plan.schedule_pattern[day] %>
+                    <% if hours.present? && hours != 'off' %>
+                      <span class="text-xs font-medium text-gray-900 dark:text-gray-100"><%= hours %></span>
+                    <% else %>
+                      <span class="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400">Repos</span>
+                    <% end %>
+                  <% else %>
+                    <span class="text-gray-300 dark:text-gray-600">—</span>
+                  <% end %>
+                </td>
+              <% end %>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+
+    <% if @employees.empty? %>
+      <div class="py-12 text-center text-sm text-gray-400 dark:text-gray-500">
+        Aucun employé dans l'organisation.
+      </div>
+    <% end %>
+  </div>
 </div>
