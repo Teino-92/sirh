@@ -10,14 +10,48 @@
     <span class="text-base font-bold text-gray-900 dark:text-gray-100 flex-shrink-0"><%= label %></span>
   </div>
 <% else %>
-  <div class="card-inner bg-white dark:bg-gray-800 rounded-lg shadow p-5">
-    <div class="flex items-center justify-between mb-4">
+  <div class="card-inner bg-white dark:bg-gray-800 rounded-lg shadow p-4">
+    <div class="flex items-center justify-between mb-3">
       <h2 class="text-sm font-semibold text-gray-900 dark:text-gray-100">Planning de la semaine</h2>
       <%= link_to 'Voir tout', work_schedule_path(employee.id), class: "text-sm text-indigo-600 hover:text-indigo-700 dark:text-indigo-400" %>
     </div>
     <% if @weekly_plan %>
       <% week_start = @today.beginning_of_week(:monday) %>
-      <div class="grid grid-cols-7 gap-1 mb-4">
+
+      <%# Mobile : liste verticale des jours %>
+      <div class="sm:hidden space-y-1 mb-3">
+        <% %w[monday tuesday wednesday thursday friday saturday sunday].each_with_index do |day_name, index| %>
+          <%
+            day_date    = week_start + index.days
+            is_today    = day_date == @today
+            hours       = @weekly_plan.schedule_pattern[day_name]
+            has_worked  = @week_time_entries.key?(day_date)
+            is_work_day = hours.present? && hours != 'off'
+          %>
+          <div class="flex items-center justify-between px-3 py-2 rounded-lg
+                      <%= is_today ? 'ring-2 ring-indigo-600 bg-indigo-50 dark:bg-indigo-900' : (has_worked ? 'bg-green-50 dark:bg-green-900/30' : (is_work_day ? 'bg-gray-50 dark:bg-gray-800' : 'bg-gray-50 dark:bg-gray-800 opacity-60')) %>">
+            <div class="flex items-center gap-2">
+              <span class="text-xs font-semibold w-8 <%= is_today ? 'text-indigo-600 dark:text-indigo-400' : 'text-gray-600 dark:text-gray-400' %>">
+                <%= l(day_date, format: '%a') %>
+              </span>
+              <span class="text-xs text-gray-400 dark:text-gray-500"><%= day_date.strftime('%-d/%-m') %></span>
+            </div>
+            <div class="flex items-center gap-1.5">
+              <% if is_work_day %>
+                <span class="text-xs font-medium text-gray-900 dark:text-gray-100"><%= hours %></span>
+                <% if has_worked %>
+                  <span class="text-xs text-green-600 dark:text-green-400">✓</span>
+                <% end %>
+              <% else %>
+                <span class="text-xs text-gray-400 dark:text-gray-500">—</span>
+              <% end %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+
+      <%# Desktop : grille 7 colonnes inchangée %>
+      <div class="hidden sm:grid grid-cols-7 gap-1 mb-4">
         <% %w[monday tuesday wednesday thursday friday saturday sunday].each_with_index do |day_name, index| %>
           <%
             day_date   = week_start + index.days
@@ -44,8 +78,9 @@
           </div>
         <% end %>
       </div>
+
       <% if size == 'wide' %>
-        <div class="flex items-end justify-between pt-4 border-t border-gray-200 dark:border-gray-700">
+        <div class="flex items-end justify-between pt-3 border-t border-gray-200 dark:border-gray-700">
           <div>
             <p class="text-3xl font-bold text-gray-900 dark:text-gray-100"><%= @weekly_hours.round(1) %>h</p>
             <p class="text-sm text-gray-600 dark:text-gray-400">sur <%= @expected_hours.round(1) %>h prévues</p>
