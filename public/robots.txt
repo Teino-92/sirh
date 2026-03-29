@@ -2,7 +2,7 @@ User-agent: *
 Allow: /
 
 Disallow: /admin
-Disallow: /manager
+Disallow: /manager/
 Disallow: /api
 Disallow: /employees/sign_in
 Disallow: /profile
