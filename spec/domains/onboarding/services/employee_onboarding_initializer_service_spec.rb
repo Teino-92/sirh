@@ -15,8 +15,8 @@ RSpec.describe EmployeeOnboardingInitializerService do
              employee: employee,
              manager: manager,
              onboarding_template: template,
-             start_date: Date.new(2026, 3, 1),
-             end_date:   Date.new(2026, 5, 30))
+             start_date: 30.days.from_now.to_date,
+             end_date:   90.days.from_now.to_date)
     end
   end
 
@@ -55,7 +55,7 @@ RSpec.describe EmployeeOnboardingInitializerService do
         ActsAsTenant.with_tenant(organization) do
           service.call
           task = onboarding.reload.onboarding_tasks.first
-          expect(task.due_date).to eq(Date.new(2026, 3, 2))
+          expect(task.due_date).to eq(30.days.from_now.to_date + 1.day)
         end
       end
 
@@ -267,8 +267,8 @@ RSpec.describe EmployeeOnboardingInitializerService do
                  employee: other_employee,
                  manager: other_manager,
                  onboarding_template: other_template,
-                 start_date: Date.new(2026, 3, 1),
-                 end_date:   Date.new(2026, 5, 30))
+                 start_date: 30.days.from_now.to_date,
+                 end_date:   90.days.from_now.to_date)
         end
       end
 
