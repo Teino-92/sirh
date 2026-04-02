@@ -49,3 +49,10 @@ SPRINT_*.md
 .claude/settings.json
 
 /config/credentials/development.key
+
+# macOS
+.DS_Store
+**/.DS_Store
+
+# Test coverage
+/coverage/
