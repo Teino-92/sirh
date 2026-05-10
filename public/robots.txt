@@ -10,5 +10,6 @@ Disallow: /dashboard
 Disallow: /time_entries
 Disallow: /leave_requests
 Disallow: /leave_balances
+Disallow: /sirh
 
 Sitemap: https://izi-rh.com/sitemap.xml

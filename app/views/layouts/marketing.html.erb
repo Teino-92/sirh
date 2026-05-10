@@ -7,7 +7,7 @@
     <!-- SEO — P2: title enrichi + meta description avec CTA -->
     <title><%= content_for?(:title) ? yield(:title) : "Izi-RH — Logiciel RH pour PME françaises | Congés, Pointage, Paie" %></title>
     <meta name="description" content="<%= content_for?(:description) ? yield(:description) : "Gérez congés, RTT, pointage, performance et onboarding en un seul outil. Conforme Code du Travail. Données en Europe. Essai gratuit 30 jours sans carte bancaire." %>">
-    <meta name="robots" content="index, follow">
+    <%= content_for?(:head) ? yield(:head) : tag.meta(name: "robots", content: "index, follow") %>
     <link rel="canonical" href="<%= request.base_url + request.path %>">
 
     <!-- Open Graph -->
