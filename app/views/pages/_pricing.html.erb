@@ -1,0 +1,49 @@
+<section id="pricing" class="py-24 bg-bg-soft">
+  <div class="max-w-3xl mx-auto px-6"
+       data-controller="pricing-toggle">
+    <div data-controller="reveal" class="text-center">
+      <h2 class="font-serif text-4xl sm:text-5xl text-text-deep">Un seul prix. Sans engagement.</h2>
+      <p class="mt-4 text-muted-soft text-lg">Annulez en un clic. On ne s'en formalisera pas.</p>
+    </div>
+
+    <div data-controller="reveal" class="mt-10 flex justify-center">
+      <button type="button"
+              data-pricing-toggle-target="toggle"
+              data-action="click->pricing-toggle#toggle"
+              data-mode="monthly"
+              class="inline-flex items-center gap-3 px-2 py-2 rounded-full bg-surface border border-border-soft">
+        <span class="px-4 py-2 rounded-full bg-primary text-white text-sm font-medium" data-pricing-toggle-target="monthly">Mensuel</span>
+        <span class="px-4 py-2 rounded-full text-sm font-medium text-muted-soft hidden" data-pricing-toggle-target="monthly">Annuel · 2 mois offerts</span>
+        <span class="px-4 py-2 rounded-full text-sm font-medium text-muted-soft" data-pricing-toggle-target="yearly">Mensuel</span>
+        <span class="px-4 py-2 rounded-full bg-primary text-white text-sm font-medium hidden" data-pricing-toggle-target="yearly">Annuel · 2 mois offerts</span>
+      </button>
+    </div>
+
+    <div data-controller="reveal" class="mt-10 p-10 rounded-2xl bg-surface border border-border-soft text-center">
+      <p class="font-serif text-2xl text-text-deep">Manager OS</p>
+
+      <div class="mt-6">
+        <div data-pricing-toggle-target="monthly">
+          <p class="font-serif text-6xl text-text-deep">19 €<span class="text-2xl text-muted-soft">/mois</span></p>
+          <p class="mt-2 text-muted-soft">Sans engagement</p>
+        </div>
+        <div data-pricing-toggle-target="yearly" class="hidden">
+          <p class="font-serif text-6xl text-text-deep">200 €<span class="text-2xl text-muted-soft">/an</span></p>
+          <p class="mt-2 text-muted-soft">Soit ≈ 16,67 €/mois · économise 28 €</p>
+        </div>
+      </div>
+
+      <ul class="mt-8 space-y-3 text-left max-w-md mx-auto">
+        <li class="flex gap-3"><span class="text-success">✓</span><span class="text-text-deep">6 membres inclus (manager + 5)</span></li>
+        <li class="flex gap-3"><span class="text-success">✓</span><span class="text-text-deep">+2 €/mois par membre supplémentaire</span></li>
+        <li class="flex gap-3"><span class="text-success">✓</span><span class="text-text-deep">1:1, objectifs, onboarding illimités</span></li>
+        <li class="flex gap-3"><span class="text-success">✓</span><span class="text-text-deep">Annulation en 1 clic, à tout moment</span></li>
+      </ul>
+
+      <%= link_to "Commencer maintenant",
+                  new_employee_registration_path,
+                  data: { controller: "confetti", action: "click->confetti#fire" },
+                  class: "mt-10 inline-flex items-center justify-center px-8 py-4 rounded-2xl bg-primary text-white font-medium hover:opacity-90 transition" %>
+    </div>
+  </div>
+</section>
