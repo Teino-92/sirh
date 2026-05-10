@@ -9,7 +9,6 @@ class PagesController < ApplicationController
     @errors      ||= []
   end
 
-  def manager_os; end
   def sirh; end
 
   def cgu; end
