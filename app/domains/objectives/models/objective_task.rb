@@ -13,22 +13,23 @@ class ObjectiveTask < ApplicationRecord
 
   enum status: { todo: 'todo', done: 'done', validated: 'validated' }
 
+  class InvalidTransitionError < StandardError; end
+
   validates :title, presence: true, length: { maximum: 255 }
   validates :assigned_to, presence: true
   validate_same_organization :objective
   validate_same_organization :assigned_to
 
-  default_scope { order(:position, :created_at) }
-
+  scope :ordered,            -> { order(:position, :created_at) }
   scope :pending_validation, -> { where(status: 'done') }
 
   def complete!(employee)
-    raise "already validated — cannot mark done" if validated?
+    raise InvalidTransitionError, "already validated — cannot mark done" if validated?
     update!(status: :done, completed_at: Time.current, completed_by: employee)
   end
 
   def validate_task!(manager)
-    raise "not done yet — employee must complete first" unless done?
+    raise InvalidTransitionError, "not done yet — employee must complete first" unless done?
     update!(status: :validated, validated_at: Time.current, validated_by: manager)
   end
 end

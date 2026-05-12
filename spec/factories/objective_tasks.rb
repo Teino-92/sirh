@@ -15,15 +15,15 @@ FactoryBot.define do
     trait :done do
       status       { :done }
       completed_at { 1.day.ago }
-      association :completed_by, factory: :employee
+      completed_by { association(:employee, organization: organization) }
     end
 
     trait :validated do
       status       { :validated }
       completed_at { 2.days.ago }
       validated_at { 1.day.ago }
-      association :completed_by, factory: :employee
-      association :validated_by, factory: :employee
+      completed_by { association(:employee, organization: organization) }
+      validated_by { association(:employee, organization: organization) }
     end
   end
 end

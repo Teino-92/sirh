@@ -42,7 +42,7 @@ RSpec.describe ObjectiveTask, type: :model do
       ActsAsTenant.with_tenant(org) do
         task.save!
         task.update_columns(status: 'validated')
-        expect { task.complete!(employee) }.to raise_error(RuntimeError, /validated/)
+        expect { task.complete!(employee) }.to raise_error(ObjectiveTask::InvalidTransitionError, /validated/)
       end
     end
   end
@@ -62,7 +62,7 @@ RSpec.describe ObjectiveTask, type: :model do
     it 'raises if not done' do
       ActsAsTenant.with_tenant(org) do
         task.save!
-        expect { task.validate_task!(manager) }.to raise_error(RuntimeError, /not done/)
+        expect { task.validate_task!(manager) }.to raise_error(ObjectiveTask::InvalidTransitionError, /not done/)
       end
     end
   end
