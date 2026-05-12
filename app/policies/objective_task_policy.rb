@@ -20,7 +20,7 @@ class ObjectiveTaskPolicy < ApplicationPolicy
   end
 
   def complete?
-    user == record.assigned_to && !record.validated?
+    user == record.assigned_to && record.todo?
   end
 
   def validate_task?
