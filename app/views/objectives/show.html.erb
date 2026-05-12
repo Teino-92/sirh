@@ -1,26 +1,26 @@
 <div class="max-w-3xl mx-auto px-4 py-6">
-  <%= link_to "&larr; Mes objectifs".html_safe, objectives_path, class: "text-sm text-gray-600 dark:text-gray-400 hover:text-indigo-600 mb-4 inline-block" %>
+  <%= link_to "&larr; Mes objectifs".html_safe, objectives_path, class: "text-sm text-muted-soft dark:text-white/50 hover:text-primary mb-4 inline-block" %>
 
-  <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+  <div class="bg-surface dark:bg-[#1C1B2E] rounded-lg shadow p-6">
     <div class="flex justify-between items-start mb-4">
-      <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100 flex-1"><%= @objective.title %></h1>
-      <span class="ml-3 px-3 py-1 text-sm font-medium rounded-full bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300">
+      <h1 class="text-2xl font-serif text-text-deep dark:text-white flex-1"><%= @objective.title %></h1>
+      <span class="ml-3 px-3 py-1 text-sm font-medium rounded-full bg-bg-soft dark:bg-surface/10 text-text-deep dark:text-white/70">
         <%= @objective.status.humanize %>
       </span>
     </div>
 
     <% if @objective.description.present? %>
-      <p class="text-gray-700 dark:text-gray-300 mb-6"><%= @objective.description %></p>
+      <p class="text-text-deep dark:text-white/70 mb-6"><%= @objective.description %></p>
     <% end %>
 
     <dl class="grid grid-cols-2 gap-4 text-sm">
       <div>
-        <dt class="font-medium text-gray-600 dark:text-gray-400">Priorité</dt>
-        <dd class="text-gray-900 dark:text-gray-100 mt-1"><%= @objective.priority.humanize %></dd>
+        <dt class="font-medium text-muted-soft dark:text-white/50">Priorité</dt>
+        <dd class="text-text-deep dark:text-white mt-1"><%= @objective.priority.humanize %></dd>
       </div>
       <div>
-        <dt class="font-medium text-gray-600 dark:text-gray-400">Échéance</dt>
-        <dd class="mt-1 <%= @objective.overdue? ? 'text-red-600 font-medium' : 'text-gray-900 dark:text-gray-100' %>">
+        <dt class="font-medium text-muted-soft dark:text-white/50">Échéance</dt>
+        <dd class="mt-1 <%= @objective.overdue? ? 'text-red-600 font-medium' : 'text-text-deep dark:text-white' %>">
           <%= l(@objective.deadline, format: :long) %>
           <% if @objective.overdue? %>
             <span class="ml-1 text-xs">(en retard)</span>
@@ -28,15 +28,37 @@
         </dd>
       </div>
       <div>
-        <dt class="font-medium text-gray-600 dark:text-gray-400">Manager</dt>
-        <dd class="text-gray-900 dark:text-gray-100 mt-1"><%= @objective.manager.full_name %></dd>
+        <dt class="font-medium text-muted-soft dark:text-white/50">Manager</dt>
+        <dd class="text-text-deep dark:text-white mt-1"><%= @objective.manager.full_name %></dd>
       </div>
       <% if @objective.completed_at.present? %>
         <div>
-          <dt class="font-medium text-gray-600 dark:text-gray-400">Complété le</dt>
-          <dd class="text-gray-900 dark:text-gray-100 mt-1"><%= l(@objective.completed_at.to_date, format: :long) %></dd>
+          <dt class="font-medium text-muted-soft dark:text-white/50">Complété le</dt>
+          <dd class="text-text-deep dark:text-white mt-1"><%= l(@objective.completed_at.to_date, format: :long) %></dd>
         </div>
       <% end %>
     </dl>
+
+    <%# Progression tâches %>
+    <% @objective.objective_tasks.reload %>
+    <%= render 'manager/objectives/progress', objective: @objective %>
   </div>
+
+  <%# Section mes tâches %>
+  <% my_tasks = @objective.objective_tasks.select { |t| t.assigned_to_id == current_employee.id } %>
+  <% if my_tasks.any? %>
+    <div class="bg-surface dark:bg-[#1C1B2E] rounded-lg shadow p-6 mt-4">
+      <h2 class="text-base font-semibold text-text-deep dark:text-white mb-4">
+        Mes tâches
+        <span class="ml-1.5 text-xs font-normal text-muted-soft dark:text-white/40">
+          <%= my_tasks.count { |t| t.validated? } %>/<%= my_tasks.count %> validées
+        </span>
+      </h2>
+      <div class="space-y-2">
+        <% my_tasks.each do |task| %>
+          <%= render 'objective_tasks/task', task: task, objective: @objective %>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
 </div>

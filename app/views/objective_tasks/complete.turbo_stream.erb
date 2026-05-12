@@ -1,0 +1,3 @@
+<%= turbo_stream.replace "objective_task_emp_#{@task.id}" do %>
+  <%= render 'objective_tasks/task', task: @task, objective: @objective %>
+<% end %>
