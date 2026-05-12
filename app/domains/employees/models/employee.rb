@@ -291,7 +291,8 @@ class Employee < ApplicationRecord
   end
 
   def tenure_in_months
-    ((Time.current.to_date - start_date) / 30).to_i
+    today = Time.current.to_date
+    (today.year * 12 + today.month) - (start_date.year * 12 + start_date.month)
   end
 
   # Virtual euro-denominated attributes for form display/input.
