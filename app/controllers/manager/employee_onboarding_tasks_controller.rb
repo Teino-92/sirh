@@ -23,5 +23,24 @@ module Manager
         format.turbo_stream
       end
     end
+
+    def validate
+      @task = current_organization.onboarding_tasks.includes(:employee_onboarding).find(params[:id])
+      authorize @task, :validate?
+
+      @onboarding = @task.employee_onboarding
+      @task.validate!(current_employee)
+      EmployeeOnboardingScoreRefreshJob.perform_later(@onboarding.id)
+
+      respond_to do |format|
+        format.html { redirect_to manager_employee_onboarding_path(@onboarding), notice: 'Tâche validée.' }
+        format.turbo_stream
+      end
+    rescue OnboardingTask::InvalidTransitionError => e
+      respond_to do |format|
+        format.html { redirect_to manager_employee_onboarding_path(@task.employee_onboarding), alert: e.message }
+        format.turbo_stream { head :unprocessable_entity }
+      end
+    end
   end
 end
