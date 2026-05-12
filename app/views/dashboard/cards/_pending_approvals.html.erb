@@ -1,14 +1,14 @@
 <%# locals: (size:, employee:) %>
 <% count = @pending_approvals_count.to_i %>
-<div class="card-inner h-full flex flex-col rounded-lg shadow overflow-hidden <%= count > 0 ? 'bg-orange-50 dark:bg-orange-900/40 border border-orange-300 dark:border-orange-700' : 'bg-white dark:bg-gray-800' %>">
-  <div class="flex items-center justify-between px-3 py-2 border-b <%= count > 0 ? 'border-orange-200 dark:border-orange-800' : 'border-gray-100 dark:border-gray-700' %> flex-shrink-0">
-    <span class="text-xs font-semibold <%= count > 0 ? 'text-orange-700 dark:text-orange-300' : 'text-gray-600 dark:text-gray-300' %> flex items-center gap-1.5">
+<div class="card-inner h-full flex flex-col rounded-lg shadow overflow-hidden <%= count > 0 ? 'bg-orange-50 dark:bg-orange-900/40 border border-orange-300 dark:border-orange-700' : 'bg-surface dark:bg-[#1C1B2E]' %>">
+  <div class="flex items-center justify-between px-3 py-2 border-b <%= count > 0 ? 'border-orange-200 dark:border-orange-800' : 'border-border-soft dark:border-white/8' %> flex-shrink-0">
+    <span class="text-xs font-semibold <%= count > 0 ? 'text-orange-700 dark:text-orange-300' : 'text-muted-soft dark:text-white/60' %> flex items-center gap-1.5">
       <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
       </svg>
       Approbations
     </span>
-    <span class="text-sm font-bold <%= count > 0 ? 'text-orange-600 dark:text-orange-400' : 'text-gray-400 dark:text-gray-500' %>"><%= count %></span>
+    <span class="text-sm font-bold <%= count > 0 ? 'text-orange-600 dark:text-orange-400' : 'text-muted-soft dark:text-white/30' %>"><%= count %></span>
   </div>
   <div class="flex-1 flex flex-col justify-between px-3 py-2">
     <% if count > 0 %>
@@ -20,7 +20,7 @@
         Voir les demandes →
       <% end %>
     <% else %>
-      <p class="text-xs text-gray-400 dark:text-gray-500 text-center py-2">Aucune approbation en attente ✓</p>
+      <p class="text-xs text-muted-soft dark:text-white/30 text-center py-2">Aucune approbation en attente ✓</p>
     <% end %>
   </div>
 </div>

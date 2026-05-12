@@ -5,15 +5,15 @@
     today_hours = @weekly_plan&.schedule_pattern&.dig(today_key)
     label       = today_hours.present? && today_hours != 'off' ? today_hours : 'Repos'
   %>
-  <div class="card-inner bg-white dark:bg-gray-800 rounded-lg shadow px-4 py-3 flex items-center justify-between gap-3">
-    <span class="text-xs font-medium text-gray-500 dark:text-gray-400 truncate">Aujourd'hui</span>
-    <span class="text-base font-bold text-gray-900 dark:text-gray-100 flex-shrink-0"><%= label %></span>
+  <div class="card-inner bg-surface dark:bg-[#1C1B2E] rounded-lg shadow px-4 py-3 flex items-center justify-between gap-3">
+    <span class="text-xs font-medium text-muted-soft dark:text-white/40 truncate">Aujourd'hui</span>
+    <span class="text-base font-bold text-text-deep dark:text-white flex-shrink-0"><%= label %></span>
   </div>
 <% else %>
-  <div class="card-inner bg-white dark:bg-gray-800 rounded-lg shadow p-4">
+  <div class="card-inner bg-surface dark:bg-[#1C1B2E] rounded-lg shadow p-4">
     <div class="flex items-center justify-between mb-3">
-      <h2 class="text-sm font-semibold text-gray-900 dark:text-gray-100">Planning de la semaine</h2>
-      <%= link_to 'Voir tout', work_schedule_path(employee.id), class: "text-sm text-indigo-600 hover:text-indigo-700 dark:text-indigo-400" %>
+      <h2 class="text-sm font-semibold text-text-deep dark:text-white">Planning de la semaine</h2>
+      <%= link_to 'Voir tout', work_schedule_path(employee.id), class: "text-sm text-primary hover:text-primary dark:text-primary/70" %>
     </div>
     <% if @weekly_plan %>
       <% week_start = @today.beginning_of_week(:monday) %>
@@ -29,21 +29,21 @@
             is_work_day = hours.present? && hours != 'off'
           %>
           <div class="flex items-center justify-between px-3 py-2 rounded-lg
-                      <%= is_today ? 'ring-2 ring-indigo-600 bg-indigo-50 dark:bg-indigo-900' : (has_worked ? 'bg-green-50 dark:bg-green-900/30' : (is_work_day ? 'bg-gray-50 dark:bg-gray-800' : 'bg-gray-50 dark:bg-gray-800 opacity-60')) %>">
+                      <%= is_today ? 'ring-2 ring-primary bg-primary/10 dark:bg-primary/20' : (has_worked ? 'bg-green-50 dark:bg-green-900/30' : (is_work_day ? 'bg-bg-soft dark:bg-[#1C1B2E]' : 'bg-bg-soft dark:bg-[#1C1B2E] opacity-60')) %>">
             <div class="flex items-center gap-2">
-              <span class="text-xs font-semibold w-8 <%= is_today ? 'text-indigo-600 dark:text-indigo-400' : 'text-gray-600 dark:text-gray-400' %>">
+              <span class="text-xs font-semibold w-8 <%= is_today ? 'text-primary dark:text-primary/70' : 'text-muted-soft dark:text-white/50' %>">
                 <%= l(day_date, format: '%a') %>
               </span>
-              <span class="text-xs text-gray-400 dark:text-gray-500"><%= day_date.strftime('%-d/%-m') %></span>
+              <span class="text-xs text-muted-soft dark:text-white/30"><%= day_date.strftime('%-d/%-m') %></span>
             </div>
             <div class="flex items-center gap-1.5">
               <% if is_work_day %>
-                <span class="text-xs font-medium text-gray-900 dark:text-gray-100"><%= hours %></span>
+                <span class="text-xs font-medium text-text-deep dark:text-white"><%= hours %></span>
                 <% if has_worked %>
                   <span class="text-xs text-green-600 dark:text-green-400">✓</span>
                 <% end %>
               <% else %>
-                <span class="text-xs text-gray-400 dark:text-gray-500">—</span>
+                <span class="text-xs text-muted-soft dark:text-white/30">—</span>
               <% end %>
             </div>
           </div>
@@ -60,44 +60,44 @@
             has_worked = @week_time_entries.key?(day_date)
             is_work_day = hours.present? && hours != 'off'
           %>
-          <div class="<%= is_today ? 'ring-2 ring-indigo-600' : 'border border-gray-200 dark:border-gray-700' %>
-                      <%= has_worked ? 'bg-green-50 dark:bg-green-900' : (is_work_day ? 'bg-indigo-50 dark:bg-indigo-900' : 'bg-gray-50 dark:bg-gray-900') %>
+          <div class="<%= is_today ? 'ring-2 ring-primary' : 'border border-border-soft dark:border-white/10' %>
+                      <%= has_worked ? 'bg-green-50 dark:bg-green-900' : (is_work_day ? 'bg-primary/10 dark:bg-primary/20' : 'bg-bg-soft dark:bg-[#13121F]') %>
                       rounded-lg p-2 text-center">
-            <p class="text-xs font-medium <%= is_today ? 'text-indigo-600' : 'text-gray-600 dark:text-gray-400' %>">
+            <p class="text-xs font-medium <%= is_today ? 'text-primary' : 'text-muted-soft dark:text-white/50' %>">
               <%= l(day_date, format: '%a') %>
             </p>
-            <p class="text-xs text-gray-500 dark:text-gray-400"><%= day_date.day %>/<%= day_date.month %></p>
+            <p class="text-xs text-muted-soft dark:text-white/40"><%= day_date.day %>/<%= day_date.month %></p>
             <% if is_work_day %>
-              <p class="text-xs font-semibold <%= has_worked ? 'text-green-700 dark:text-green-300' : 'text-gray-900 dark:text-gray-100' %>">
+              <p class="text-xs font-semibold <%= has_worked ? 'text-green-700 dark:text-green-300' : 'text-text-deep dark:text-white' %>">
                 <%= hours %>
               </p>
               <% if has_worked %><p class="text-xs text-green-600">✓</p><% end %>
             <% else %>
-              <p class="text-xs text-gray-400">—</p>
+              <p class="text-xs text-muted-soft">—</p>
             <% end %>
           </div>
         <% end %>
       </div>
 
       <% if size == 'wide' %>
-        <div class="flex items-end justify-between pt-3 border-t border-gray-200 dark:border-gray-700">
+        <div class="flex items-end justify-between pt-3 border-t border-border-soft dark:border-white/10">
           <div>
-            <p class="text-3xl font-bold text-gray-900 dark:text-gray-100"><%= @weekly_hours.round(1) %>h</p>
-            <p class="text-sm text-gray-600 dark:text-gray-400">sur <%= @expected_hours.round(1) %>h prévues</p>
+            <p class="text-3xl font-bold text-text-deep dark:text-white"><%= @weekly_hours.round(1) %>h</p>
+            <p class="text-sm text-muted-soft dark:text-white/50">sur <%= @expected_hours.round(1) %>h prévues</p>
           </div>
           <div class="flex-1 ml-6">
-            <div class="h-6 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+            <div class="h-6 bg-border-soft dark:bg-surface/10 rounded-full overflow-hidden">
               <% pct = [(@expected_hours > 0 ? (@weekly_hours / @expected_hours * 100).to_i : 0), 100].min %>
-              <div class="h-full bg-indigo-600 rounded-full" style="width: <%= pct %>%"></div>
+              <div class="h-full bg-primary rounded-full" style="width: <%= pct %>%"></div>
             </div>
-            <p class="text-xs text-gray-600 dark:text-gray-400 text-right mt-1"><%= pct %>%</p>
+            <p class="text-xs text-muted-soft dark:text-white/50 text-right mt-1"><%= pct %>%</p>
           </div>
         </div>
       <% end %>
     <% else %>
-      <div class="bg-yellow-50 dark:bg-yellow-900 border border-yellow-200 dark:border-yellow-700 rounded-lg p-4 text-center">
-        <p class="text-yellow-800 dark:text-yellow-200 font-medium text-sm">Aucun planning pour cette semaine</p>
-        <p class="text-xs text-yellow-700 dark:text-yellow-300 mt-1">Contactez votre manager</p>
+      <div class="bg-warning/10 dark:bg-warning/10 border border-yellow-200 dark:border-yellow-700 rounded-lg p-4 text-center">
+        <p class="text-warning dark:text-warning font-medium text-sm">Aucun planning pour cette semaine</p>
+        <p class="text-xs text-warning dark:text-warning mt-1">Contactez votre manager</p>
       </div>
     <% end %>
   </div>

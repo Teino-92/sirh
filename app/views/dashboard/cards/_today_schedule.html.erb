@@ -1,26 +1,26 @@
 <%# locals: (size:, employee:) %>
 <% if size == 'compact' %>
-  <div class="card-inner bg-white dark:bg-gray-800 rounded-lg shadow px-4 py-3 flex items-center justify-between gap-3">
-    <span class="text-xs font-medium text-gray-500 dark:text-gray-400 truncate">Horaire du jour</span>
-    <span class="text-base font-bold text-gray-900 dark:text-gray-100 flex-shrink-0"><%= @today_schedule || '—' %></span>
+  <div class="card-inner bg-surface dark:bg-[#1C1B2E] rounded-lg shadow px-4 py-3 flex items-center justify-between gap-3">
+    <span class="text-xs font-medium text-muted-soft dark:text-white/40 truncate">Horaire du jour</span>
+    <span class="text-base font-bold text-text-deep dark:text-white flex-shrink-0"><%= @today_schedule || '—' %></span>
   </div>
 <% else %>
-  <div class="card-inner bg-white dark:bg-gray-800 rounded-lg shadow p-5">
-    <h2 class="text-sm font-semibold text-gray-900 dark:text-gray-100 mb-4">Horaire du jour</h2>
+  <div class="card-inner bg-surface dark:bg-[#1C1B2E] rounded-lg shadow p-5">
+    <h2 class="text-sm font-semibold text-text-deep dark:text-white mb-4">Horaire du jour</h2>
     <% if @today_schedule %>
       <div class="flex items-center">
-        <svg class="w-8 h-8 text-indigo-600 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg class="w-8 h-8 text-primary mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
         </svg>
         <div>
-          <p class="text-2xl font-bold text-gray-900 dark:text-gray-100"><%= @today_schedule %></p>
-          <p class="text-sm text-gray-600 dark:text-gray-400">
+          <p class="text-2xl font-bold text-text-deep dark:text-white"><%= @today_schedule %></p>
+          <p class="text-sm text-muted-soft dark:text-white/50">
             Horaire prévu<% if size == 'wide' %> · <%= l(Date.current, format: :long) %><% end %>
           </p>
         </div>
       </div>
     <% else %>
-      <p class="text-sm text-gray-400 dark:text-gray-500 text-center py-4">Aucun horaire configuré</p>
+      <p class="text-sm text-muted-soft dark:text-white/30 text-center py-4">Aucun horaire configuré</p>
     <% end %>
   </div>
 <% end %>

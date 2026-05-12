@@ -1,9 +1,10 @@
-<section id="pricing" class="py-24 bg-bg-soft">
-  <div class="max-w-3xl mx-auto px-6"
+<section id="pricing" class="py-8 px-4 sm:px-8">
+  <div class="max-w-3xl mx-auto bg-white/60 backdrop-blur-sm rounded-3xl shadow-sm border border-white/80 px-8 py-16"
        data-controller="pricing-toggle">
     <div data-controller="reveal" class="text-center">
       <h2 class="font-serif text-4xl sm:text-5xl text-text-deep">Un seul prix. Sans engagement.</h2>
-      <p class="mt-4 text-muted-soft text-lg">Annulez en un clic. On ne s'en formalisera pas.</p>
+      <div class="mt-4 mx-auto w-12 h-1 rounded-full bg-success"></div>
+      <p class="mt-6 text-muted-soft text-lg">Annulez en un clic. On ne s'en formalisera pas.</p>
     </div>
 
     <div data-controller="reveal" class="mt-10 flex justify-center">
@@ -11,7 +12,7 @@
               data-pricing-toggle-target="toggle"
               data-action="click->pricing-toggle#toggle"
               data-mode="monthly"
-              class="inline-flex items-center gap-1 px-2 py-2 rounded-full bg-surface border border-border-soft">
+              class="inline-flex items-center gap-1 px-2 py-2 rounded-full bg-white border border-border-soft shadow-sm">
         <span data-pricing-toggle-target="monthly" class="px-4 py-2 rounded-full bg-primary text-white text-sm font-medium">Mensuel</span>
         <span data-pricing-toggle-target="monthly" class="px-4 py-2 rounded-full text-sm font-medium text-muted-soft">Annuel · 2 mois offerts</span>
         <span data-pricing-toggle-target="yearly" class="hidden px-4 py-2 rounded-full text-sm font-medium text-muted-soft">Mensuel</span>
@@ -19,7 +20,7 @@
       </button>
     </div>
 
-    <div data-controller="reveal" class="mt-10 p-10 rounded-2xl bg-surface border border-border-soft text-center">
+    <div data-controller="reveal" class="mt-10 p-10 rounded-2xl border border-border-soft bg-white/70 backdrop-blur-sm text-center">
       <p class="font-serif text-2xl text-text-deep">Manager OS</p>
 
       <div class="mt-6">
@@ -34,16 +35,16 @@
       </div>
 
       <ul class="mt-8 space-y-3 text-left max-w-md mx-auto">
-        <li class="flex gap-3"><span class="text-success">✓</span><span class="text-text-deep">6 membres inclus (manager + 5)</span></li>
-        <li class="flex gap-3"><span class="text-success">✓</span><span class="text-text-deep">+2 €/mois par membre supplémentaire</span></li>
-        <li class="flex gap-3"><span class="text-success">✓</span><span class="text-text-deep">1:1, objectifs, onboarding illimités</span></li>
-        <li class="flex gap-3"><span class="text-success">✓</span><span class="text-text-deep">Annulation en 1 clic, à tout moment</span></li>
+        <li class="flex gap-3"><span class="text-success font-semibold">✓</span><span class="text-text-deep">6 membres inclus (manager + 5)</span></li>
+        <li class="flex gap-3"><span class="text-success font-semibold">✓</span><span class="text-text-deep">+2 €/mois par membre supplémentaire</span></li>
+        <li class="flex gap-3"><span class="text-success font-semibold">✓</span><span class="text-text-deep">1:1, objectifs, onboarding illimités</span></li>
+        <li class="flex gap-3"><span class="text-success font-semibold">✓</span><span class="text-text-deep">Annulation en 1 clic, à tout moment</span></li>
       </ul>
 
       <%= link_to "Commencer maintenant",
                   new_employee_session_path,
                   data: { controller: "confetti", action: "click->confetti#fire" },
-                  class: "mt-10 inline-flex items-center justify-center px-8 py-4 rounded-2xl bg-primary text-white font-medium hover:opacity-90 transition" %>
+                  class: "mt-10 inline-flex items-center justify-center px-8 py-4 rounded-2xl bg-primary text-white font-medium hover:opacity-90 transition shadow-lg shadow-primary/25" %>
     </div>
   </div>
 </section>

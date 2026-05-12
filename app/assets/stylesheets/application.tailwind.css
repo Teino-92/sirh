@@ -77,3 +77,45 @@ textarea,
 @media (prefers-reduced-motion: reduce) {
   .reveal-init { opacity: 1; transform: none; transition: none; }
 }
+
+/* Solution card icon animations */
+@keyframes icon-chat-pulse {
+  0%   { transform: scale(1); }
+  40%  { transform: scale(1.2); }
+  70%  { transform: scale(0.95); }
+  100% { transform: scale(1); }
+}
+
+@keyframes icon-flag-wave {
+  0%   { transform: rotate(0deg); }
+  20%  { transform: rotate(-10deg); }
+  45%  { transform: rotate(8deg); }
+  65%  { transform: rotate(-5deg); }
+  82%  { transform: rotate(3deg); }
+  100% { transform: rotate(0deg); }
+}
+
+.icon-flag {
+  transform-origin: center bottom;
+}
+
+@keyframes icon-rocket-launch {
+  0%   { transform: translate(0, 0); opacity: 1; }
+  60%  { transform: translate(24px, -24px); opacity: 0; }
+  61%  { transform: translate(-24px, 24px); opacity: 0; }
+  100% { transform: translate(0, 0); opacity: 1; }
+}
+
+.icon-chat    { transition: transform 0.2s; }
+.icon-flag    { transition: transform 0.2s; }
+.icon-rocket  { transition: transform 0.2s; }
+
+.group:hover .icon-chat   { animation: icon-chat-pulse   0.5s ease-in-out; }
+.group:hover .icon-flag   { animation: icon-flag-wave    0.9s ease-in-out; }
+.group:hover .icon-rocket { animation: icon-rocket-launch 0.7s ease-in-out forwards; }
+
+@media (prefers-reduced-motion: reduce) {
+  .group:hover .icon-chat,
+  .group:hover .icon-flag,
+  .group:hover .icon-rocket { animation: none; }
+}

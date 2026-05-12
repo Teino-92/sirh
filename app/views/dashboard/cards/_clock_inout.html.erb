@@ -35,20 +35,20 @@
   <% end %>
 <% else %>
   <% if size == 'compact' %>
-    <div class="card-inner bg-indigo-50 dark:bg-indigo-900 border border-indigo-300 rounded-lg px-4 py-3 flex items-center justify-between gap-3">
-      <span class="text-xs font-medium text-indigo-800 dark:text-indigo-200">Pointer l'arrivée</span>
-      <%= button_to clock_in_time_entries_path, method: :post, class: "bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-1.5 px-3 rounded-lg transition-colors text-xs flex-shrink-0" do %>
+    <div class="card-inner bg-primary/10 dark:bg-primary/20 border border-primary/40 rounded-lg px-4 py-3 flex items-center justify-between gap-3">
+      <span class="text-xs font-medium text-primary">Pointer l'arrivée</span>
+      <%= button_to clock_in_time_entries_path, method: :post, class: "bg-primary hover:opacity-90 text-white font-semibold py-1.5 px-3 rounded-lg transition-colors text-xs flex-shrink-0" do %>
         Entrée
       <% end %>
     </div>
   <% else %>
-    <div class="card-inner bg-gradient-to-r from-indigo-500 to-purple-600 rounded-lg p-5 text-white shadow-xl">
+    <div class="card-inner bg-gradient-to-r from-primary to-[#A78BFA] rounded-lg p-5 text-white shadow-xl">
       <div class="flex items-center justify-between">
         <div>
           <p class="text-sm font-medium opacity-90">Prêt(e) à commencer ?</p>
           <p class="text-2xl font-bold mt-1">Pointez votre arrivée</p>
         </div>
-        <%= button_to clock_in_time_entries_path, method: :post, class: "bg-white dark:bg-gray-800 hover:bg-gray-100 text-indigo-600 font-semibold py-3 px-5 rounded-lg transition-colors shadow flex-shrink-0" do %>
+        <%= button_to clock_in_time_entries_path, method: :post, class: "bg-surface dark:bg-[#1C1B2E] hover:bg-bg-soft text-primary font-semibold py-3 px-5 rounded-lg transition-colors shadow flex-shrink-0" do %>
           <div class="flex items-center gap-2">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>

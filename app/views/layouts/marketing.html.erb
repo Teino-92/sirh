@@ -160,7 +160,7 @@
 
     <!-- Decorative background layer — fixed, behind all content -->
     <% if content_for?(:bg_decoration) %>
-      <div aria-hidden="true" style="position:fixed; inset:0; pointer-events:none; z-index:0; overflow:hidden">
+      <div aria-hidden="true" style="position:fixed; inset:0; pointer-events:none; z-index:0;">
         <%= yield :bg_decoration %>
       </div>
     <% end %>

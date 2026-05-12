@@ -1,0 +1,19 @@
+<section class="py-24">
+  <div class="max-w-3xl mx-auto px-6 text-center">
+    <div data-controller="reveal" class="relative inline-block w-full">
+      <%# Halo décoratif derrière le bloc CTA %>
+      <div class="absolute inset-0 -m-8 rounded-3xl bg-primary/8 blur-2xl pointer-events-none"></div>
+      <div class="relative p-12 rounded-3xl border border-primary/20 bg-white/70 backdrop-blur-sm">
+        <h2 class="font-serif text-4xl sm:text-5xl text-text-deep">Prêt à arrêter Excel ?</h2>
+        <p class="mt-4 text-muted-soft text-lg">Créez votre espace en 30 secondes. Pas de carte bancaire.</p>
+        <div class="mt-10">
+          <%= link_to "Commencer gratuitement",
+                      new_employee_session_path,
+                      data: { controller: "confetti", action: "click->confetti#fire" },
+                      class: "inline-flex items-center justify-center px-10 py-4 rounded-2xl bg-primary text-white font-semibold text-lg hover:opacity-90 transition shadow-lg shadow-primary/25" %>
+        </div>
+        <p class="mt-4 text-muted-soft text-sm">30 jours d'essai · Annulation en 1 clic</p>
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,21 +1,113 @@
-<section data-controller="reveal" class="py-24 bg-surface border-t border-border-soft">
-  <div class="max-w-4xl mx-auto px-6 text-center">
-    <h2 class="font-serif text-4xl sm:text-5xl text-text-deep">Vous managez avec Excel ?</h2>
-    <p class="mt-4 text-muted-soft text-lg">Vous n'êtes pas seul. Et c'est précisément le problème.</p>
+<section class="py-8 px-4 sm:px-8">
+  <div class="max-w-4xl mx-auto bg-white/60 backdrop-blur-sm rounded-3xl shadow-sm border border-white/80 px-8 py-16 text-center">
+    <div data-controller="reveal">
+      <h2 class="font-serif text-4xl sm:text-5xl text-text-deep">Vous managez avec Excel ?</h2>
+      <div class="mt-4 mx-auto w-12 h-1 rounded-full bg-primary"></div>
+      <p class="mt-6 text-muted-soft text-lg">Vous n'êtes pas seul. Et c'est précisément le problème.</p>
+    </div>
 
-    <div class="mt-12 grid sm:grid-cols-3 gap-8 text-left">
-      <div class="p-6 rounded-2xl bg-bg-soft">
-        <p class="font-serif text-xl text-text-deep">📊 Tableurs partout</p>
-        <p class="mt-2 text-muted-soft">Un fichier par manager, aucune source de vérité.</p>
+    <div class="mt-14 grid sm:grid-cols-3 gap-6 text-left">
+
+      <%# Card Tableur %>
+      <div data-controller="reveal problem-spreadsheet"
+           class="group p-6 rounded-2xl border border-border-soft bg-white/70 backdrop-blur-sm overflow-hidden cursor-default">
+        <div class="relative h-24 mb-4 overflow-hidden rounded-lg border border-border-soft bg-white/80">
+          <%# Grille tableur miniature %>
+          <div class="problem-spreadsheet-grid absolute inset-0 grid" style="grid-template-columns: 28px repeat(5, 1fr); grid-template-rows: 18px repeat(4, 1fr); font-size: 7px; line-height: 1;">
+            <%# Header row %>
+            <div class="bg-gray-100 border-r border-b border-gray-200"></div>
+            <% ["A","B","C","D","E"].each do |col| %>
+              <div class="bg-gray-100 border-r border-b border-gray-200 flex items-center justify-center font-semibold text-gray-500"><%= col %></div>
+            <% end %>
+            <%# Data rows %>
+            <% 4.times do |row| %>
+              <div class="bg-gray-50 border-r border-b border-gray-200 flex items-center justify-center font-semibold text-gray-400"><%= row + 1 %></div>
+              <% 5.times do |col| %>
+                <div class="border-r border-b border-gray-200 flex items-center px-1 text-gray-700 problem-spreadsheet-cell" data-row="<%= row %>" data-col="<%= col %>">
+                  <span class="cell-value truncate"></span>
+                </div>
+              <% end %>
+            <% end %>
+          </div>
+        </div>
+        <p class="font-serif text-xl text-text-deep">Tableurs partout</p>
+        <p class="mt-2 text-muted-soft text-sm">Un fichier par manager, aucune source de vérité.</p>
       </div>
-      <div class="p-6 rounded-2xl bg-bg-soft">
-        <p class="font-serif text-xl text-text-deep">💬 Slack noyé</p>
-        <p class="mt-2 text-muted-soft">Les décisions importantes disparaissent dans le bruit.</p>
+
+      <%# Card Slack %>
+      <div data-controller="reveal problem-slack"
+           class="relative group p-6 rounded-2xl border border-border-soft bg-white/70 backdrop-blur-sm cursor-default">
+
+        <%# Bulle de notif — sort hors de la card en haut à droite %>
+        <div data-problem-slack-target="bubble"
+             class="absolute -top-14 -right-2 z-20 pointer-events-none
+                    opacity-0 scale-75 origin-bottom-right
+                    transition-all duration-300 ease-out">
+          <%# Corps de la bulle %>
+          <div class="bg-red-500 text-white rounded-2xl px-4 py-2 shadow-lg shadow-red-500/30 flex items-center gap-2 whitespace-nowrap">
+            <span class="font-bold text-lg" data-problem-slack-target="counter">0</span>
+            <span class="text-sm opacity-80">messages non lus</span>
+          </div>
+          <%# Queue de la bulle %>
+          <div class="absolute -bottom-2 right-6 w-4 h-4 bg-red-500 rotate-45 rounded-sm"></div>
+        </div>
+
+        <div class="relative h-20 mb-4 rounded-lg bg-[#3F0F40] flex flex-col justify-end p-2 gap-1 overflow-hidden">
+          <% [
+            ["SB", "bg-purple-400", "Quelqu'un a les chiffres Q3 ?"],
+            ["ML", "bg-blue-400",   "Réunion annulée, on reporte ?"],
+            ["CR", "bg-green-400",  "Feedback sur le recrutement svp"],
+            ["JD", "bg-yellow-400", "Où est le doc onboarding ?"],
+            ["AB", "bg-pink-400",   "1:1 cette semaine ou pas ?"],
+            ["NF", "bg-red-400",    "Urgence client — qui gère ?"],
+          ].each do |initials, color, msg| %>
+            <div class="flex items-center gap-1.5">
+              <div class="w-4 h-4 rounded-sm <%= color %> flex-shrink-0 flex items-center justify-center text-white font-bold" style="font-size:5px"><%= initials %></div>
+              <span class="text-white/80 truncate" style="font-size:8px"><%= msg %></span>
+            </div>
+          <% end %>
+        </div>
+        <p class="font-serif text-xl text-text-deep">Slack noyé</p>
+        <p class="mt-2 text-muted-soft text-sm">Les décisions importantes disparaissent dans le bruit.</p>
       </div>
-      <div class="p-6 rounded-2xl bg-bg-soft">
-        <p class="font-serif text-xl text-text-deep">📝 Post-it perdus</p>
-        <p class="mt-2 text-muted-soft">L'historique des 1:1 ? Dans votre tête, au mieux.</p>
+
+      <%# Card Post-it %>
+      <div data-controller="reveal problem-postit"
+           class="group p-6 rounded-2xl border border-border-soft bg-white/70 backdrop-blur-sm overflow-hidden cursor-default">
+        <div class="relative h-24 mb-4">
+          <%# Post-its empilés %>
+          <%# positions initiales (empilées au centre) et finales (éparpillées) définies en data-%>
+          <div class="problem-postit-stack absolute inset-0">
+            <% [
+              ["bg-yellow-200", "1:1 Marc\nfeedback ?",   "2deg",  "38%","35%",  "-5deg", "2%",  "5%"  ],
+              ["bg-pink-200",   "OKR Q2 ???",            "-5deg",  "38%","35%",  "12deg", "55%", "0%"  ],
+              ["bg-green-200",  "Sophie\nJ+30",           "8deg",  "38%","35%",  "-8deg", "70%", "40%" ],
+              ["bg-blue-200",   "Réunion\nannulée?",     "-10deg", "38%","35%",  "18deg", "20%", "50%" ],
+              ["bg-orange-200", "Objectifs\nnon définis", "4deg",  "38%","35%",  "-15deg","0%",  "20%" ],
+              ["bg-purple-200", "Perf revue\nen attente","-3deg",  "38%","35%",  "22deg", "60%", "55%" ],
+              ["bg-red-200",    "Congés\nnon validés",   "11deg",  "38%","35%",  "-20deg","75%", "15%" ],
+              ["bg-teal-200",   "Entretien\nannuel ?",   "-7deg",  "38%","35%",  "8deg",  "35%", "60%" ],
+              ["bg-lime-200",   "Budget\nformation",     "16deg",  "38%","35%",  "-12deg","10%", "60%" ],
+              ["bg-rose-200",   "1:1 Karim\nreporter",   "-14deg","38%","35%",  "25deg", "45%", "10%" ],
+            ].each_with_index do |(color, text, irot, il, it, frot, fl, ft), i| %>
+              <div class="problem-postit absolute w-14 h-14 <%= color %> rounded-sm shadow-md p-1.5 flex items-start"
+                   style="font-size:6.5px; line-height:1.3; z-index:<%= i + 2 %>;
+                          left:<%= il %>; top:<%= it %>;
+                          transform: rotate(<%= irot %>);
+                          transition: left 0.45s cubic-bezier(0.34,1.56,0.64,1) <%= i * 35 %>ms,
+                                      top  0.45s cubic-bezier(0.34,1.56,0.64,1) <%= i * 35 %>ms,
+                                      transform 0.45s cubic-bezier(0.34,1.56,0.64,1) <%= i * 35 %>ms;"
+                   data-irot="<%= irot %>" data-il="<%= il %>" data-it="<%= it %>"
+                   data-frot="<%= frot %>" data-fl="<%= fl %>" data-ft="<%= ft %>">
+                <span class="text-gray-700 whitespace-pre-line"><%= text %></span>
+              </div>
+            <% end %>
+          </div>
+        </div>
+        <p class="font-serif text-xl text-text-deep">Post-it perdus</p>
+        <p class="mt-2 text-muted-soft text-sm">L'historique des 1:1 ? Dans votre tête, au mieux.</p>
       </div>
+
     </div>
   </div>
 </section>

@@ -1,29 +1,29 @@
 <%# locals: (size:, employee:) %>
-<div class="card-inner h-full flex flex-col bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden">
-  <div class="flex items-center justify-between px-3 py-2 border-b border-gray-100 dark:border-gray-700 flex-shrink-0">
-    <span class="text-xs font-semibold text-gray-600 dark:text-gray-300 flex items-center gap-1.5">
-      <svg class="w-3.5 h-3.5 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+<div class="card-inner h-full flex flex-col bg-surface dark:bg-[#1C1B2E] rounded-lg shadow overflow-hidden">
+  <div class="flex items-center justify-between px-3 py-2 border-b border-border-soft dark:border-white/8 flex-shrink-0">
+    <span class="text-xs font-semibold text-muted-soft dark:text-white/60 flex items-center gap-1.5">
+      <svg class="w-3.5 h-3.5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z"/>
       </svg>
       Prochains 1:1
     </span>
-    <%= link_to 'Voir tout', manager_one_on_ones_path, class: "text-[10px] text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 font-medium" %>
+    <%= link_to 'Voir tout', manager_one_on_ones_path, class: "text-[10px] text-primary hover:text-primary dark:text-primary/70 font-medium" %>
   </div>
   <div class="flex-1 overflow-auto px-3 py-2">
     <% if @upcoming_one_on_ones&.any? %>
       <div class="space-y-1.5">
         <% @upcoming_one_on_ones.first(6).each do |meeting| %>
-          <div class="flex items-center justify-between py-1 border-b border-gray-50 dark:border-gray-700 last:border-0">
+          <div class="flex items-center justify-between py-1 border-b border-border-soft dark:border-white/8 last:border-0">
             <div class="min-w-0">
-              <p class="text-xs font-medium text-gray-900 dark:text-gray-100 truncate"><%= meeting.employee.full_name %></p>
-              <p class="text-[10px] text-gray-500 dark:text-gray-400"><%= l(meeting.scheduled_at, format: :short) %></p>
+              <p class="text-xs font-medium text-text-deep dark:text-white truncate"><%= meeting.employee.full_name %></p>
+              <p class="text-[10px] text-muted-soft dark:text-white/40"><%= l(meeting.scheduled_at, format: :short) %></p>
             </div>
-            <%= link_to 'Voir', manager_one_on_one_path(meeting), class: "text-[10px] text-indigo-600 hover:text-indigo-700 font-medium flex-shrink-0 ml-2" %>
+            <%= link_to 'Voir', manager_one_on_one_path(meeting), class: "text-[10px] text-primary hover:text-primary font-medium flex-shrink-0 ml-2" %>
           </div>
         <% end %>
       </div>
     <% else %>
-      <p class="text-xs text-gray-400 dark:text-gray-500 text-center py-2">Aucun 1:1 planifié</p>
+      <p class="text-xs text-muted-soft dark:text-white/30 text-center py-2">Aucun 1:1 planifié</p>
     <% end %>
   </div>
 </div>
