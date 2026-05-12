@@ -1,13 +1,11 @@
 import { Controller } from "@hotwired/stimulus"
 
-const LOOP_INTERVAL = 11000
-
 export default class extends Controller {
   connect() {
     this._notes = this.element.querySelectorAll(".problem-postit")
 
     if (window.matchMedia("(pointer: coarse)").matches) {
-      this._startLoop()
+      this.element.addEventListener("touchstart", () => this._onTouch(), { passive: true })
     } else {
       this.element.addEventListener("mouseenter", () => this.scatter())
       this.element.addEventListener("mouseleave", () => this.stack())
@@ -15,7 +13,7 @@ export default class extends Controller {
   }
 
   disconnect() {
-    clearInterval(this._loop)
+    clearTimeout(this._resetTimer)
   }
 
   scatter() {
@@ -34,12 +32,9 @@ export default class extends Controller {
     })
   }
 
-  _startLoop() {
-    const cycle = () => {
-      this.scatter()
-      setTimeout(() => this.stack(), 3000)
-    }
-    cycle()
-    this._loop = setInterval(cycle, LOOP_INTERVAL)
+  _onTouch() {
+    this.scatter()
+    clearTimeout(this._resetTimer)
+    this._resetTimer = setTimeout(() => this.stack(), 3000)
   }
 }

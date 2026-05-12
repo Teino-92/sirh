@@ -1,13 +1,11 @@
 import { Controller } from "@hotwired/stimulus"
 
-const LOOP_INTERVAL = 10000
-
 export default class extends Controller {
   static targets = ["counter", "bubble"]
 
   connect() {
     if (window.matchMedia("(pointer: coarse)").matches) {
-      this._startLoop()
+      this.element.addEventListener("touchstart", () => this._onTouch(), { passive: true })
     } else {
       this.element.addEventListener("mouseenter", () => this.show())
       this.element.addEventListener("mouseleave", () => this.hide())
@@ -15,8 +13,8 @@ export default class extends Controller {
   }
 
   disconnect() {
-    clearInterval(this._loop)
     cancelAnimationFrame(this._raf)
+    clearTimeout(this._resetTimer)
   }
 
   show() {
@@ -43,12 +41,10 @@ export default class extends Controller {
     this._raf = requestAnimationFrame(tick)
   }
 
-  _startLoop() {
-    const cycle = () => {
-      this.show()
-      setTimeout(() => this.hide(), 3000)
-    }
-    cycle()
-    this._loop = setInterval(cycle, LOOP_INTERVAL)
+  _onTouch() {
+    this.hide()
+    this.show()
+    clearTimeout(this._resetTimer)
+    this._resetTimer = setTimeout(() => this.hide(), 3000)
   }
 }

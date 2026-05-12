@@ -7,15 +7,13 @@ const DATA = [
   ["Petit S.",  "#N/A",    "Q1-24", "2 450 €", "=VLOOKUP"],
 ]
 
-const LOOP_INTERVAL = 9000
-
 export default class extends Controller {
   connect() {
     this._cells  = this.element.querySelectorAll(".problem-spreadsheet-cell .cell-value")
     this._timers = []
 
     if (window.matchMedia("(pointer: coarse)").matches) {
-      this._startLoop()
+      this.element.addEventListener("touchstart", () => this._onTouch(), { passive: true })
     } else {
       this.element.addEventListener("mouseenter", () => this.flood())
       this.element.addEventListener("mouseleave", () => this.clear())
@@ -23,7 +21,6 @@ export default class extends Controller {
   }
 
   disconnect() {
-    clearInterval(this._loop)
     this._timers.forEach(t => clearTimeout(t))
   }
 
@@ -52,12 +49,10 @@ export default class extends Controller {
     })
   }
 
-  _startLoop() {
-    const cycle = () => {
-      this.flood()
-      setTimeout(() => this.clear(), 3500)
-    }
-    cycle()
-    this._loop = setInterval(cycle, LOOP_INTERVAL)
+  _onTouch() {
+    this.clear()
+    this.flood()
+    clearTimeout(this._resetTimer)
+    this._resetTimer = setTimeout(() => this.clear(), 3500)
   }
 }
