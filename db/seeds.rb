@@ -1066,42 +1066,52 @@ EmployeeOnboardingScoreRefreshJob.perform_now(ob3.id)
 
 puts "  Created #{EmployeeOnboarding.where(organization: org).count} onboardings, #{OnboardingTask.where(organization: org).count} tasks"
 
-# ─── Organisation 2 — StartupCo Paris ────────────────────────────────────────
+# ─── Organisation 2 — Studio Créatif (Manager OS) ────────────────────────────
 
-puts "\n🏢 Creating second organization: StartupCo Paris (Manager OS only)..."
+puts "\n🏢 Creating second organization: Studio Créatif (Manager OS)..."
 org2 = Organization.create!(
-  name: "StartupCo Paris",
+  name: "Studio Créatif",
   plan: "manager_os",
   settings: { work_week_hours: 39, cp_acquisition_rate: 2.5, rtt_enabled: true, overtime_threshold: 35 }
 )
 
+# ── Équipe direction ──────────────────────────────────────────────────────────
+
 admin2 = org2.employees.create!(
-  email: "admin@startupco.fr", password: "password123",
-  first_name: "Pierre", last_name: "Lefebvre",
-  role: "admin", department: "Direction", job_title: "CEO",
-  contract_type: "CDI", start_date: 3.years.ago,
-  gross_salary_cents: 850000, variable_pay_cents: 150000, employer_charges_rate: 1.45,
+  email: "admin@studio-creatif.fr", password: "password123",
+  first_name: "Sophie", last_name: "Laurent",
+  role: "admin", department: "Direction", job_title: "CEO & Fondatrice",
+  contract_type: "CDI", start_date: 4.years.ago,
+  gross_salary_cents: 920000, variable_pay_cents: 180000, employer_charges_rate: 1.45,
   settings: { "cadre" => true, "active" => true }
 )
 
-mgr_startup = org2.employees.create!(
-  email: "claire.rousseau@startupco.fr", password: "password123",
-  first_name: "Claire", last_name: "Rousseau",
-  role: "manager", department: "Product", job_title: "Head of Product",
-  contract_type: "CDI", start_date: 1.year.ago, manager: admin2,
-  gross_salary_cents: 560000, variable_pay_cents: 60000, employer_charges_rate: 1.45,
+mgr_studio = org2.employees.create!(
+  email: "lucas.martin@studio-creatif.fr", password: "password123",
+  first_name: "Lucas", last_name: "Martin",
+  role: "manager", department: "Design & Tech", job_title: "Head of Design",
+  contract_type: "CDI", start_date: 2.years.ago, manager: admin2,
+  gross_salary_cents: 620000, variable_pay_cents: 80000, employer_charges_rate: 1.45,
   settings: { "cadre" => true, "active" => true }
 )
 
-[
-  ["antoine.mercier@startupco.fr", "Antoine", "Mercier", "Product Owner", 8.months.ago, 450000],
-  ["lea.blanc@startupco.fr",       "Léa",     "Blanc",   "UX Designer",   4.months.ago, 380000],
-].each do |email, fn, ln, jt, sd, sal|
+# ── Membres d'équipe ──────────────────────────────────────────────────────────
+
+team_data = [
+  ["camille.dupont@studio-creatif.fr",  "Camille", "Dupont",   "UX Designer Senior",     14.months.ago, 480000, "CDI"],
+  ["thomas.garcia@studio-creatif.fr",   "Thomas",  "Garcia",   "Développeur Front-end",  10.months.ago, 520000, "CDI"],
+  ["inès.benali@studio-creatif.fr",     "Inès",    "Benali",   "Motion Designer",         7.months.ago, 420000, "CDI"],
+  ["romain.leclerc@studio-creatif.fr",  "Romain",  "Leclerc",  "Product Designer",        5.months.ago, 460000, "CDI"],
+  ["amandine.rey@studio-creatif.fr",    "Amandine","Rey",       "UI Designer",             2.months.ago, 390000, "CDI"],
+  ["kevin.moreau@studio-creatif.fr",    "Kévin",   "Moreau",   "Développeur Full-stack",  3.weeks.ago,  440000, "CDI"],
+]
+
+s2_members = team_data.map do |email, fn, ln, jt, sd, sal, ct|
   emp = org2.employees.create!(
     email: email, password: "password123",
     first_name: fn, last_name: ln, role: "employee",
-    department: "Product", job_title: jt,
-    contract_type: "CDI", start_date: sd, manager: mgr_startup,
+    department: "Design & Tech", job_title: jt,
+    contract_type: ct, start_date: sd, manager: mgr_studio,
     gross_salary_cents: sal, variable_pay_cents: 0, employer_charges_rate: 1.45,
     settings: { "cadre" => false, "active" => true }
   )
@@ -1112,108 +1122,372 @@ mgr_startup = org2.employees.create!(
     used_this_year: 0, expires_at: Date.new(Date.current.year + 1, 5, 31))
   LeaveBalance.create!(employee: emp, organization: org2, leave_type: 'Maladie',
     balance: 0, accrued_this_year: 0, used_this_year: 0)
+  emp
 end
 
-# ── Manager OS data pour StartupCo (pas de SIRH) ──────────────────────────
+camille, thomas, ines, romain, amandine, kevin = s2_members
 
-# Objectifs
-Objective.create!(organization: org2, manager: admin2, created_by: mgr_startup,
-  owner: mgr_startup, title: "Lancer la v1 du produit en juin",
-  description: "MVP validé par les early adopters. Objectif Q2.",
-  status: 'in_progress', priority: 'critical', deadline: 3.months.from_now)
+# ── Objectifs ────────────────────────────────────────────────────────────────
 
-Objective.create!(organization: org2, manager: mgr_startup, created_by: mgr_startup,
-  owner: org2.employees.find_by(email: "antoine.mercier@startupco.fr"),
-  title: "Écrire les specs des 5 user stories prioritaires",
-  description: "Backlog Q2 — specs validées avec le CTO avant sprint.",
+puts "  Creating objectives..."
+
+Objective.create!(organization: org2, manager: admin2, created_by: admin2,
+  owner: mgr_studio,
+  title: "Lancer le nouveau site vitrine d'ici fin Q2",
+  description: "Refonte complète — nouveau branding, performances Core Web Vitals > 90. Livraison en juin.",
+  status: 'in_progress', priority: 'critical', deadline: 7.weeks.from_now)
+
+Objective.create!(organization: org2, manager: mgr_studio, created_by: mgr_studio,
+  owner: camille,
+  title: "Conduire 8 tests utilisateurs sur le nouveau parcours d'achat",
+  description: "Recrutement panel, guide d'entretien, synthèse insights. Résultats présentés en rétrospective sprint.",
   status: 'in_progress', priority: 'high', deadline: 3.weeks.from_now)
 
-Objective.create!(organization: org2, manager: mgr_startup, created_by: mgr_startup,
-  owner: org2.employees.find_by(email: "lea.blanc@startupco.fr"),
-  title: "Refaire les maquettes du onboarding utilisateur",
-  description: "Figma — 3 écrans clés. Présentation aux fondateurs en semaine 4.",
-  status: 'draft', priority: 'medium', deadline: 6.weeks.from_now)
+Objective.create!(organization: org2, manager: mgr_studio, created_by: mgr_studio,
+  owner: thomas,
+  title: "Migrer le front-end vers React 18 + TypeScript strict",
+  description: "Zero erreurs TS, couverture de tests > 70%, pipeline CI vert.",
+  status: 'in_progress', priority: 'high', deadline: 5.weeks.from_now)
 
-# 1:1
-OneOnOne.create!(organization: org2, manager: mgr_startup,
-  employee: org2.employees.find_by(email: "antoine.mercier@startupco.fr"),
-  scheduled_at: 1.week.ago, completed_at: 1.week.ago + 1.hour,
+obj_ines = Objective.create!(organization: org2, manager: mgr_studio, created_by: mgr_studio,
+  owner: ines,
+  title: "Créer la bibliothèque de 30 animations pour le design system",
+  description: "Lottie + CSS animations. Documentées dans Storybook. Validées par Lucas.",
+  status: 'completed', priority: 'medium', deadline: 1.week.from_now)
+obj_ines.update_column(:deadline, 3.weeks.ago)
+
+Objective.create!(organization: org2, manager: mgr_studio, created_by: mgr_studio,
+  owner: romain,
+  title: "Définir les guidelines du nouveau design system",
+  description: "Tokens couleur, typographie, spacing. Figma + documentation Notion.",
+  status: 'in_progress', priority: 'high', deadline: 2.weeks.from_now)
+
+obj_camille_a11y = Objective.create!(organization: org2, manager: mgr_studio, created_by: mgr_studio,
+  owner: camille,
+  title: "Auditer l'accessibilité WCAG 2.1 AA du produit actuel",
+  description: "Rapport complet, priorisation des 10 critères bloquants, plan de correction.",
+  status: 'completed', priority: 'medium', deadline: 1.week.from_now)
+obj_camille_a11y.update_column(:deadline, 6.weeks.ago)
+
+Objective.create!(organization: org2, manager: mgr_studio, created_by: mgr_studio,
+  owner: thomas,
+  title: "Réduire le temps de build de 40%",
+  description: "Analyse profiling webpack, optimisation imports, passage à Vite si pertinent.",
+  status: 'draft', priority: 'low', deadline: 10.weeks.from_now)
+
+Objective.create!(organization: org2, manager: mgr_studio, created_by: mgr_studio,
+  owner: romain,
+  title: "Onboarder Amandine sur le design system",
+  description: "Sessions de travail en pair, checklist autonomie validée en J+30.",
+  status: 'in_progress', priority: 'medium', deadline: 3.weeks.from_now)
+
+# ── Tâches d'objectifs ────────────────────────────────────────────────────────
+
+puts "  Creating objective tasks..."
+
+ActsAsTenant.with_tenant(org2) do
+  obj_tests = Objective.find_by(title: "Conduire 8 tests utilisateurs sur le nouveau parcours d'achat")
+  obj_react  = Objective.find_by(title: "Migrer le front-end vers React 18 + TypeScript strict")
+  obj_design = Objective.find_by(title: "Définir les guidelines du nouveau design system")
+
+  if obj_tests
+    [
+      { title: "Recruter 8 participants test",          desc: "Panel diversifié — 4 clients existants, 4 prospects.", deadline: 3.weeks.from_now, status: 'validated', pos: 1 },
+      { title: "Rédiger le guide d'entretien",          desc: "Questions ouvertes, scénarios, grille d'observation.", deadline: 2.weeks.from_now, status: 'validated', pos: 2 },
+      { title: "Conduire les 8 sessions (5/8 faites)",  desc: "Sessions en remote via Maze. 45 min chacune.",         deadline: 1.week.from_now,  status: 'done',      pos: 3 },
+      { title: "Synthèse insights + recommandations",   desc: "Top 5 frictions identifiées, plan de correction.",    deadline: 3.weeks.from_now, status: 'todo',      pos: 4 },
+    ].each do |t|
+      task = ObjectiveTask.create!(
+        organization: org2, objective: obj_tests,
+        title: t[:title], description: t[:desc],
+        deadline: t[:deadline], assigned_to: camille,
+        status: t[:status], position: t[:pos]
+      )
+      if t[:status] == 'validated'
+        task.update_columns(completed_at: 1.week.ago, completed_by_id: camille.id, validated_at: 3.days.ago, validated_by_id: mgr_studio.id)
+      elsif t[:status] == 'done'
+        task.update_columns(completed_at: 2.days.ago, completed_by_id: camille.id)
+      end
+    end
+  end
+
+  if obj_react
+    [
+      { title: "Activer strict mode TypeScript",           desc: "tsconfig.json — noImplicitAny, strictNullChecks.", deadline: 4.weeks.from_now, status: 'validated', pos: 1 },
+      { title: "Migrer les composants core (50 fichiers)", desc: "Priorité : Auth, Layout, DataTable.",              deadline: 3.weeks.from_now, status: 'done',      pos: 2 },
+      { title: "Migrer les pages (30 fichiers)",           desc: "Après les composants core.",                       deadline: 2.weeks.from_now, status: 'todo',      pos: 3 },
+      { title: "Pipeline CI — zero erreurs TS",            desc: "GitHub Actions — block merge si TS errors.",       deadline: 1.week.from_now,  status: 'todo',      pos: 4 },
+      { title: "Coverage tests > 70%",                    desc: "Jest + React Testing Library.",                    deadline: 5.weeks.from_now, status: 'todo',      pos: 5 },
+    ].each do |t|
+      task = ObjectiveTask.create!(
+        organization: org2, objective: obj_react,
+        title: t[:title], description: t[:desc],
+        deadline: t[:deadline], assigned_to: thomas,
+        status: t[:status], position: t[:pos]
+      )
+      if t[:status] == 'validated'
+        task.update_columns(completed_at: 2.weeks.ago, completed_by_id: thomas.id, validated_at: 1.week.ago, validated_by_id: mgr_studio.id)
+      elsif t[:status] == 'done'
+        task.update_columns(completed_at: 3.days.ago, completed_by_id: thomas.id)
+      end
+    end
+  end
+
+  if obj_design
+    [
+      { title: "Définir les tokens couleur (light + dark)", desc: "Primary, secondary, neutrals, semantic.",  deadline: 1.week.from_now,  status: 'validated', pos: 1 },
+      { title: "Définir les tokens typographie",            desc: "Scale, line-height, font-weight.",         deadline: 1.week.from_now,  status: 'validated', pos: 2 },
+      { title: "Définir les tokens spacing",                desc: "Base 4px grid, rem values.",              deadline: 2.weeks.from_now, status: 'done',      pos: 3 },
+      { title: "Documentation Notion + Figma",              desc: "Page Notion liée aux frames Figma.",       deadline: 2.weeks.from_now, status: 'todo',      pos: 4 },
+    ].each do |t|
+      task = ObjectiveTask.create!(
+        organization: org2, objective: obj_design,
+        title: t[:title], description: t[:desc],
+        deadline: t[:deadline], assigned_to: romain,
+        status: t[:status], position: t[:pos]
+      )
+      if t[:status] == 'validated'
+        task.update_columns(completed_at: 1.week.ago, completed_by_id: romain.id, validated_at: 4.days.ago, validated_by_id: mgr_studio.id)
+      elsif t[:status] == 'done'
+        task.update_columns(completed_at: 1.day.ago, completed_by_id: romain.id)
+      end
+    end
+  end
+end
+
+# ── Entretiens 1:1 ───────────────────────────────────────────────────────────
+
+puts "  Creating 1:1 meetings..."
+
+# Passés
+[
+  [camille, 3.weeks.ago, "Point Q1 — résultats tests utilisateurs + objectifs Q2",
+   "Très bonne dynamique sur les tests. Camille prend de l'autonomie. Proposé lead sur le parcours mobile en Q2."],
+  [thomas,  3.weeks.ago, "Bilan technique — migration React 18",
+   "Blocage sur les types génériques. Prévu session pair-programming avec Kevin la semaine prochaine."],
+  [ines,    2.weeks.ago, "Revue animations bibliothèque — livraison prévue",
+   "Librairie quasi terminée. 2 animations manquantes. Délai tenu. Excellent travail."],
+  [romain,  2.weeks.ago, "Kick-off design system + intégration Amandine",
+   "Romain est partant pour le rôle de mentor. Plan de 30 jours établi ensemble."],
+  [camille, 1.week.ago,  "Suivi tests utilisateurs — itération 2",
+   "5 tests réalisés sur 8. Insights clés : confusion sur le checkout. Plan de correction partagé."],
+  [thomas,  1.week.ago,  "Session technique — TypeScript strict mode",
+   "Avancement bon. 80% des fichiers migrés. Blocage sur les types d'API — besoin doc OpenAPI."],
+].each do |emp, sched, agenda, notes|
+  OneOnOne.create!(organization: org2, manager: mgr_studio,
+    employee: emp, scheduled_at: sched,
+    completed_at: sched + 1.hour, status: 'completed',
+    agenda: agenda, notes: notes)
+end
+
+# À venir cette semaine / semaine prochaine
+[
+  [camille,  2.days.from_now,  "Retour tests utilisateurs — itération 3 + priorisation correctifs"],
+  [thomas,   3.days.from_now,  "Finalisation migration TS + revue CI pipeline"],
+  [ines,     4.days.from_now,  "Bilan Q2 animations + nouveaux objectifs"],
+  [romain,   5.days.from_now,  "Design system — review tokens avec l'équipe"],
+  [amandine, 6.days.from_now,  "Premier 1:1 — intégration J+30 + objectifs"],
+  [kevin,    8.days.from_now,  "Onboarding kick-off — accès, stack, premiers tickets"],
+].each do |emp, sched, agenda|
+  OneOnOne.create!(organization: org2, manager: mgr_studio,
+    employee: emp, scheduled_at: sched,
+    status: 'scheduled', agenda: agenda)
+end
+
+# ── Formations ───────────────────────────────────────────────────────────────
+
+puts "  Creating trainings..."
+
+t_figma = Training.create!(organization: org2,
+  title: "Figma Advanced — Variables & Auto-Layout",
+  description: "Maîtriser les variables Figma, auto-layout avancé et composants dynamiques.",
+  training_type: 'e_learning', duration_estimate: 6)
+
+t_a11y = Training.create!(organization: org2,
+  title: "Accessibilité web — WCAG 2.1 pratique",
+  description: "Comprendre et appliquer les critères WCAG 2.1 AA. Outils d'audit, patterns ARIA.",
+  training_type: 'external', duration_estimate: 14)
+
+t_react = Training.create!(organization: org2,
+  title: "React 18 — Concurrent features & TypeScript",
+  description: "useTransition, Suspense, Server Components. Migration patterns et bonnes pratiques TS.",
+  training_type: 'e_learning', duration_estimate: 8)
+
+t_leadership = Training.create!(organization: org2,
+  title: "Leadership & feedback manager",
+  description: "Donner du feedback constructif, conduire des 1:1 efficaces, gérer les tensions d'équipe.",
+  training_type: 'external', duration_estimate: 7)
+
+t_motion = Training.create!(organization: org2,
+  title: "Motion Design — After Effects & Lottie",
+  description: "Créer des animations UI exportables en Lottie. Intégration dans React et iOS.",
+  training_type: 'e_learning', duration_estimate: 10)
+
+# Assignations
+TrainingAssignment.create!(training: t_figma, employee: amandine,
+  assigned_by: mgr_studio, assigned_at: 3.weeks.ago,
+  status: 'in_progress')
+
+TrainingAssignment.create!(training: t_figma, employee: romain,
+  assigned_by: mgr_studio, assigned_at: 3.weeks.ago,
+  status: 'completed', completed_at: 1.week.ago)
+
+TrainingAssignment.create!(training: t_a11y, employee: camille,
+  assigned_by: mgr_studio, assigned_at: 2.months.ago,
+  status: 'completed', completed_at: 5.weeks.ago)
+
+TrainingAssignment.create!(training: t_a11y, employee: thomas,
+  assigned_by: mgr_studio, assigned_at: 3.weeks.ago,
+  status: 'assigned')
+
+TrainingAssignment.create!(training: t_react, employee: thomas,
+  assigned_by: mgr_studio, assigned_at: 6.weeks.ago,
+  status: 'in_progress')
+
+TrainingAssignment.create!(training: t_react, employee: kevin,
+  assigned_by: mgr_studio, assigned_at: 1.week.ago,
+  status: 'assigned')
+
+TrainingAssignment.create!(training: t_leadership, employee: mgr_studio,
+  assigned_by: admin2, assigned_at: 1.month.ago,
+  status: 'in_progress')
+
+TrainingAssignment.create!(training: t_motion, employee: ines,
+  assigned_by: mgr_studio, assigned_at: 2.months.ago,
+  status: 'completed', completed_at: 3.weeks.ago)
+
+# ── Évaluations ──────────────────────────────────────────────────────────────
+
+puts "  Creating evaluations..."
+
+Evaluation.create!(organization: org2,
+  employee: camille, manager: mgr_studio, created_by: mgr_studio,
+  period_start: 6.months.ago, period_end: 1.month.ago,
   status: 'completed',
-  agenda: "Point avancement specs + blockers backlog",
-  notes: "Antoine avance bien. Besoin de clarification sur le scope auth. Prévoir atelier avec Thomas.")
+  score: 4,
+  manager_review: "Camille a pris une vraie posture de leadership sur les tests utilisateurs. Livrables de qualité, bonne communication avec les devs. Prête pour plus de responsabilités en Q3.",
+  self_review: "Période enrichissante. J'aimerais m'impliquer davantage sur la stratégie produit et pas seulement l'exécution UX.")
 
-OneOnOne.create!(organization: org2, manager: mgr_startup,
-  employee: org2.employees.find_by(email: "lea.blanc@startupco.fr"),
-  scheduled_at: 4.days.from_now, status: 'scheduled',
-  agenda: "Review maquettes onboarding + feedback itération 1")
+Evaluation.create!(organization: org2,
+  employee: thomas, manager: mgr_studio, created_by: mgr_studio,
+  period_start: 6.months.ago, period_end: 1.month.ago,
+  status: 'manager_review_pending',
+  self_review: "Migration complexe mais je progresse. Besoin d'un peu plus de visibilité sur la roadmap technique pour mieux prioriser.")
 
-OneOnOne.create!(organization: org2, manager: mgr_startup,
-  employee: org2.employees.find_by(email: "antoine.mercier@startupco.fr"),
-  scheduled_at: 5.days.from_now, status: 'scheduled',
-  agenda: "Priorisation backlog Q2 + démo interne")
+Evaluation.create!(organization: org2,
+  employee: ines, manager: mgr_studio, created_by: mgr_studio,
+  period_start: 3.months.ago, period_end: Date.current,
+  status: 'employee_review_pending',
+  manager_review: "Bibliothèque d'animations livrée dans les temps, qualité excellente. Inès est une référence motion pour toute l'équipe.")
 
-# Onboarding template StartupCo
-tpl_startup = OnboardingTemplate.create!(
+Evaluation.create!(organization: org2,
+  employee: romain, manager: mgr_studio, created_by: mgr_studio,
+  period_start: 4.months.ago, period_end: 1.week.ago,
+  status: 'completed',
+  score: 3,
+  manager_review: "Bon travail sur le design system. La documentation peut encore être améliorée. Montée en compétence visible sur Figma Variables.",
+  self_review: "Contenu de la direction prise sur le design system. L'objectif mentor avec Amandine me motive beaucoup.")
+
+# ── Onboarding template ───────────────────────────────────────────────────────
+
+puts "  Creating onboarding template..."
+
+tpl_studio = OnboardingTemplate.create!(
   organization: org2,
-  name: "Onboarding Startup",
-  description: "Intégration rapide en 30 jours — focus autonomie.",
-  duration_days: 30, active: true
+  name: "Onboarding Studio — 45 jours",
+  description: "Intégration créative en 45 jours — culture, outils, premier projet en autonomie.",
+  duration_days: 45, active: true
 )
 
 [
-  { title: "Accès outils (Notion, Slack, GitHub)",  role: 'hr',       type: 'manual',     day: 1  },
-  { title: "Présentation de la vision produit",     role: 'manager',  type: 'one_on_one', day: 2  },
-  { title: "Lecture du wiki technique",             role: 'employee', type: 'training',   day: 3  },
-  { title: "Premier livrable en autonomie",         role: 'employee', type: 'manual',     day: 7  },
-  { title: "Bilan J14 avec manager",                role: 'manager',  type: 'one_on_one', day: 14 },
-  { title: "Évaluation fin de période d'essai",     role: 'manager',  type: 'one_on_one', day: 30 },
+  { title: "Accès outils (Figma, Slack, Notion, GitHub)",  role: 'hr',       type: 'manual',     day: 1  },
+  { title: "Tour des bureaux + rencontre équipe",          role: 'manager',  type: 'one_on_one', day: 1  },
+  { title: "Session culture & valeurs avec la CEO",        role: 'manager',  type: 'one_on_one', day: 2  },
+  { title: "Lecture du Playbook Design Studio",            role: 'employee', type: 'training',   day: 3  },
+  { title: "Formation Figma Advanced assignée",            role: 'manager',  type: 'training',   day: 5  },
+  { title: "Premier brief créatif en binôme",             role: 'employee', type: 'manual',     day: 7  },
+  { title: "Bilan J14 — intégration & ressenti",          role: 'manager',  type: 'one_on_one', day: 14 },
+  { title: "Première présentation client (observateur)",  role: 'employee', type: 'manual',     day: 21 },
+  { title: "Revue qualité premier livrable solo",         role: 'manager',  type: 'one_on_one', day: 30 },
+  { title: "Bilan fin période d'essai",                   role: 'manager',  type: 'one_on_one', day: 45 },
 ].each_with_index do |t, i|
   OnboardingTemplateTask.create!(
-    onboarding_template: tpl_startup, organization: org2,
+    onboarding_template: tpl_studio, organization: org2,
     title: t[:title], assigned_to_role: t[:role], task_type: t[:type],
     due_day_offset: t[:day], position: i + 1
   )
 end
 
-# Onboarding actif — Léa (arrivée il y a 4 jours)
-lea = org2.employees.find_by(email: "lea.blanc@startupco.fr")
-ob_lea_start = lea.start_date
-ob_lea = EmployeeOnboarding.create!(
-  organization: org2, employee: lea, manager: mgr_startup,
-  onboarding_template: tpl_startup,
-  start_date: ob_lea_start, end_date: ob_lea_start + 30.days,
-  status: 'active', notes: "UX designer — intégration en cours."
+# ── Onboardings actifs ────────────────────────────────────────────────────────
+
+puts "  Creating onboardings..."
+
+# Amandine — arrivée il y a 2 mois, onboarding terminé
+ob_amandine = EmployeeOnboarding.create!(
+  organization: org2, employee: amandine, manager: mgr_studio,
+  onboarding_template: tpl_studio,
+  start_date: amandine.start_date, end_date: amandine.start_date + 45.days,
+  status: 'completed', notes: "UI Designer — intégration réussie, très bonne adaptation."
 )
 
-OnboardingTask.create!(employee_onboarding: ob_lea, organization: org2,
-  title: "Accès outils (Notion, Slack, GitHub)",
-  assigned_to_role: 'hr', task_type: 'manual',
-  due_date: ob_lea_start + 1.day,
-  status: 'completed', completed_at: ob_lea_start + 1.day,
-  completed_by: admin2, assigned_to: admin2)
+[
+  ["Accès outils (Figma, Slack, Notion, GitHub)", 'hr',       'manual',     1,  admin2,      amandine.start_date + 1.day],
+  ["Tour des bureaux + rencontre équipe",         'manager',  'one_on_one', 1,  mgr_studio,  amandine.start_date + 1.day],
+  ["Session culture & valeurs avec la CEO",       'manager',  'one_on_one', 2,  admin2,      amandine.start_date + 2.days],
+  ["Lecture du Playbook Design Studio",           'employee', 'training',   3,  amandine,    amandine.start_date + 3.days],
+  ["Formation Figma Advanced assignée",           'manager',  'training',   5,  mgr_studio,  amandine.start_date + 5.days],
+  ["Premier brief créatif en binôme",            'employee', 'manual',     7,  amandine,    amandine.start_date + 7.days],
+  ["Bilan J14 — intégration & ressenti",         'manager',  'one_on_one', 14, mgr_studio,  amandine.start_date + 14.days],
+  ["Première présentation client (observateur)", 'employee', 'manual',     21, amandine,    amandine.start_date + 21.days],
+  ["Revue qualité premier livrable solo",        'manager',  'one_on_one', 30, mgr_studio,  amandine.start_date + 30.days],
+  ["Bilan fin période d'essai",                  'manager',  'one_on_one', 45, mgr_studio,  amandine.start_date + 45.days],
+].each do |title, role, type, day, assignee, completed|
+  OnboardingTask.create!(employee_onboarding: ob_amandine, organization: org2,
+    title: title, assigned_to_role: role, task_type: type,
+    due_date: amandine.start_date + day.days,
+    status: 'completed', completed_at: completed,
+    completed_by: assignee, assigned_to: assignee)
+end
 
-OnboardingTask.create!(employee_onboarding: ob_lea, organization: org2,
-  title: "Présentation de la vision produit",
-  assigned_to_role: 'manager', task_type: 'one_on_one',
-  due_date: ob_lea_start + 2.days,
-  status: 'completed', completed_at: ob_lea_start + 2.days,
-  completed_by: mgr_startup, assigned_to: mgr_startup)
+EmployeeOnboardingScoreRefreshJob.perform_now(ob_amandine.id)
 
-OnboardingTask.create!(employee_onboarding: ob_lea, organization: org2,
-  title: "Lecture du wiki technique",
-  assigned_to_role: 'employee', task_type: 'training',
-  due_date: ob_lea_start + 3.days,
-  status: 'pending', assigned_to: lea)
+# Kévin — arrivé il y a 3 semaines, onboarding en cours
+ob_kevin = EmployeeOnboarding.create!(
+  organization: org2, employee: kevin, manager: mgr_studio,
+  onboarding_template: tpl_studio,
+  start_date: kevin.start_date, end_date: kevin.start_date + 45.days,
+  status: 'active', notes: "Développeur Full-stack — prise de poste rapide, déjà opérationnel sur les tickets."
+)
 
-OnboardingTask.create!(employee_onboarding: ob_lea, organization: org2,
-  title: "Premier livrable en autonomie",
-  assigned_to_role: 'employee', task_type: 'manual',
-  due_date: ob_lea_start + 7.days,
-  status: 'pending', assigned_to: lea)
+kevin_tasks = [
+  ["Accès outils (Figma, Slack, Notion, GitHub)", 'hr',       'manual',     1,  admin2,     :completed, kevin.start_date + 1.day],
+  ["Tour des bureaux + rencontre équipe",         'manager',  'one_on_one', 1,  mgr_studio, :completed, kevin.start_date + 1.day],
+  ["Session culture & valeurs avec la CEO",       'manager',  'one_on_one', 2,  admin2,     :completed, kevin.start_date + 2.days],
+  ["Lecture du Playbook Design Studio",           'employee', 'training',   3,  kevin,      :completed, kevin.start_date + 3.days],
+  ["Formation Figma Advanced assignée",           'manager',  'training',   5,  mgr_studio, :completed, kevin.start_date + 5.days],
+  ["Premier brief créatif en binôme",            'employee', 'manual',     7,  kevin,      :completed, kevin.start_date + 7.days],
+  ["Bilan J14 — intégration & ressenti",         'manager',  'one_on_one', 14, mgr_studio, :pending,   nil],
+  ["Première présentation client (observateur)", 'employee', 'manual',     21, kevin,      :pending,   nil],
+  ["Revue qualité premier livrable solo",        'manager',  'one_on_one', 30, mgr_studio, :pending,   nil],
+  ["Bilan fin période d'essai",                  'manager',  'one_on_one', 45, mgr_studio, :pending,   nil],
+]
 
-EmployeeOnboardingScoreRefreshJob.perform_now(ob_lea.id)
+kevin_tasks.each do |title, role, type, day, assignee, status, completed_at|
+  attrs = {
+    employee_onboarding: ob_kevin, organization: org2,
+    title: title, assigned_to_role: role, task_type: type,
+    due_date: kevin.start_date + day.days,
+    status: status.to_s, assigned_to: assignee
+  }
+  if status == :completed
+    attrs.merge!(completed_at: completed_at, completed_by: assignee)
+  end
+  OnboardingTask.create!(attrs)
+end
 
-puts "  StartupCo created with #{org2.employees.count} employees (Manager OS plan)"
+EmployeeOnboardingScoreRefreshJob.perform_now(ob_kevin.id)
+
+puts "  Studio Créatif: #{org2.employees.count} employees, #{Objective.where(organization: org2).count} objectives, #{OneOnOne.where(organization: org2).count} 1:1s, #{Training.where(organization: org2).count} trainings, #{Evaluation.where(organization: org2).count} evaluations, #{EmployeeOnboarding.where(organization: org2).count} onboardings"
 
 # ─── Résumé ───────────────────────────────────────────────────────────────────
 
@@ -1339,10 +1613,14 @@ puts "    Frontend dev:        emma.morel@techcorp.fr"
 puts "    Sales AE:            alice.dumont@techcorp.fr"
 puts "    Alternant frontend:  yanis.benali@techcorp.fr"
 puts "    Stagiaire backend:   ana.ferreira@techcorp.fr"
-puts "\n  🏢 StartupCo Paris (Manager OS — pas de SIRH)"
-puts "    Admin:   admin@startupco.fr"
-puts "    Manager: claire.rousseau@startupco.fr  ← démo Manager OS"
-puts "    Employé: antoine.mercier@startupco.fr"
-puts "    Employé: lea.blanc@startupco.fr"
+puts "\n  🏢 Studio Créatif (Manager OS — pas de SIRH)"
+puts "    Admin:   admin@studio-creatif.fr"
+puts "    Manager: lucas.martin@studio-creatif.fr  ← démo Manager OS"
+puts "    Équipe:  camille.dupont@studio-creatif.fr"
+puts "             thomas.garcia@studio-creatif.fr"
+puts "             ines.benali@studio-creatif.fr"
+puts "             romain.leclerc@studio-creatif.fr"
+puts "             amandine.rey@studio-creatif.fr"
+puts "             kevin.moreau@studio-creatif.fr"
 
 end # ActsAsTenant.without_tenant
