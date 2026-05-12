@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width,initial-scale=1">
 
     <!-- SEO — P2: title enrichi + meta description avec CTA -->
-    <title><%= content_for?(:title) ? yield(:title) : "Izi-RH — Logiciel RH pour PME françaises | Congés, Pointage, Paie" %></title>
-    <meta name="description" content="<%= content_for?(:description) ? yield(:description) : "Gérez congés, RTT, pointage, performance et onboarding en un seul outil. Conforme Code du Travail. Données en Europe. Essai gratuit 30 jours sans carte bancaire." %>">
+    <title><%= content_for?(:title) ? yield(:title) : "Manager OS — 1:1, objectifs & OKR, onboarding | Izi-RH" %></title>
+    <meta name="description" content="<%= content_for?(:description) ? yield(:description) : "Gérez moins. Managez mieux. Izi-RH réunit 1:1 structurés, objectifs & OKR et onboarding 90 jours en un seul outil pensé pour les managers. Essai gratuit 30 jours sans CB." %>">
     <%= content_for?(:head) ? yield(:head) : tag.meta(name: "robots", content: "index, follow") %>
     <link rel="canonical" href="<%= request.base_url + request.path %>">
 
@@ -77,30 +77,15 @@
           "name": "Izi-RH",
           "applicationCategory": "BusinessApplication",
           "operatingSystem": "Web, iOS, Android",
-          "description": "SIRH moderne pour PME françaises — gestion congés, pointage, performance, onboarding.",
-          "offers": [
-            {
-              "@type": "Offer",
-              "name": "Essentiel",
-              "price": "19",
-              "priceCurrency": "EUR",
-              "billingIncrement": "P1M"
-            },
-            {
-              "@type": "Offer",
-              "name": "Pro",
-              "price": "79",
-              "priceCurrency": "EUR",
-              "billingIncrement": "P1M"
-            },
-            {
-              "@type": "Offer",
-              "name": "Entreprise",
-              "price": "149",
-              "priceCurrency": "EUR",
-              "billingIncrement": "P1M"
-            }
-          ]
+          "description": "Manager OS par Izi-RH — 1:1 structurés, objectifs & OKR et onboarding 90 jours en un seul outil pour managers d'équipe.",
+          "offers": {
+            "@type": "Offer",
+            "name": "Manager OS",
+            "price": "19",
+            "priceCurrency": "EUR",
+            "billingIncrement": "P1M",
+            "description": "6 membres inclus, +2 €/mois par membre supplémentaire. Annulation en 1 clic."
+          }
         },
         {
           "@type": "FAQPage",
