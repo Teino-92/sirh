@@ -3,106 +3,87 @@
 require 'rails_helper'
 
 RSpec.describe OnboardingTaskPolicy, type: :policy do
-  let(:organization)  { create(:organization) }
-  let(:hr)            { create(:employee, organization: organization, role: 'hr') }
-  let(:manager)       { create(:employee, organization: organization, role: 'manager') }
-  let(:employee)      { create(:employee, organization: organization) }
-  let(:other_manager) { create(:employee, organization: organization, role: 'manager') }
-  let(:template)      { create(:onboarding_template, organization: organization) }
+  let(:org)       { create(:organization) }
+  let(:manager)   { create(:employee, :manager, organization: org) }
+  let(:employee)  { create(:employee, organization: org) }
+  let(:other_emp) { create(:employee, organization: org) }
 
   let(:onboarding) do
-    ActsAsTenant.with_tenant(organization) do
-      create(:employee_onboarding,
-             organization: organization,
-             employee: employee,
-             manager: manager,
-             onboarding_template: template)
+    ActsAsTenant.with_tenant(org) do
+      create(:employee_onboarding, organization: org, employee: employee, manager: manager)
     end
   end
 
-  let(:task) do
-    ActsAsTenant.with_tenant(organization) do
-      create(:onboarding_task,
-             employee_onboarding: onboarding,
-             organization: organization,
-             status: 'pending',
-             task_type: 'manual')
+  let(:pending_emp_task) do
+    ActsAsTenant.with_tenant(org) do
+      create(:onboarding_task, :employee_task, organization: org,
+             employee_onboarding: onboarding, status: 'pending')
     end
   end
 
-  subject { described_class }
+  let(:done_emp_task) do
+    ActsAsTenant.with_tenant(org) do
+      create(:onboarding_task, :done, organization: org, employee_onboarding: onboarding)
+    end
+  end
 
-  describe 'Scope' do
-    before { task }
+  let(:completed_task) do
+    ActsAsTenant.with_tenant(org) do
+      create(:onboarding_task, :completed, organization: org, employee_onboarding: onboarding)
+    end
+  end
 
-    let(:other_onboarding) do
-      ActsAsTenant.with_tenant(organization) do
-        other_emp = create(:employee, organization: organization)
-        create(:employee_onboarding,
-               organization: organization,
-               employee: other_emp,
-               manager: other_manager,
-               onboarding_template: template)
+  describe 'manager permissions' do
+    describe 'validate?' do
+      it 'permits manager of onboarding when task is done' do
+        policy = described_class.new(manager, done_emp_task)
+        expect(policy.validate?).to be true
+      end
+
+      it 'denies when task is not done' do
+        policy = described_class.new(manager, pending_emp_task)
+        expect(policy.validate?).to be false
+      end
+
+      it 'denies employee' do
+        policy = described_class.new(employee, done_emp_task)
+        expect(policy.validate?).to be false
       end
     end
 
-    let(:other_task) do
-      ActsAsTenant.with_tenant(organization) do
-        create(:onboarding_task,
-               employee_onboarding: other_onboarding,
-               organization: organization,
-               status: 'pending',
-               task_type: 'manual')
-      end
-    end
-
-    before { other_task }
-
-    context 'as HR' do
-      it 'returns all tasks in organization' do
-        ActsAsTenant.with_tenant(organization) do
-          resolved = OnboardingTaskPolicy::Scope.new(hr, OnboardingTask).resolve
-          expect(resolved).to include(task, other_task)
-        end
-      end
-    end
-
-    context 'as manager' do
-      it 'returns only tasks belonging to managed onboardings' do
-        ActsAsTenant.with_tenant(organization) do
-          resolved = OnboardingTaskPolicy::Scope.new(manager, OnboardingTask).resolve
-          expect(resolved).to include(task)
-          expect(resolved).not_to include(other_task)
-        end
-      end
-    end
-
-    context 'as employee' do
-      it 'returns only tasks from own onboarding' do
-        ActsAsTenant.with_tenant(organization) do
-          resolved = OnboardingTaskPolicy::Scope.new(employee, OnboardingTask).resolve
-          expect(resolved).to include(task)
-          expect(resolved).not_to include(other_task)
-        end
+    describe 'update?' do
+      it 'permits manager of onboarding' do
+        policy = described_class.new(manager, pending_emp_task)
+        expect(policy.update?).to be true
       end
     end
   end
 
-  permissions :update? do
-    it 'permits HR' do
-      expect(subject).to permit(hr, task)
-    end
+  describe 'employee permissions' do
+    describe 'mark_done?' do
+      it 'permits assigned employee on pending task' do
+        policy = described_class.new(employee, pending_emp_task)
+        expect(policy.mark_done?).to be true
+      end
 
-    it 'permits the assigned manager' do
-      expect(subject).to permit(manager, task)
-    end
+      it 'denies if task not pending' do
+        policy = described_class.new(employee, done_emp_task)
+        expect(policy.mark_done?).to be false
+      end
 
-    it 'denies another manager' do
-      expect(subject).not_to permit(other_manager, task)
-    end
+      it 'denies if assigned_to_role != employee' do
+        manager_task = ActsAsTenant.with_tenant(org) do
+          create(:onboarding_task, organization: org,
+                 employee_onboarding: onboarding, assigned_to_role: 'manager', status: 'pending')
+        end
+        policy = described_class.new(employee, manager_task)
+        expect(policy.mark_done?).to be false
+      end
 
-    it 'denies plain employee' do
-      expect(subject).not_to permit(employee, task)
+      it 'denies other employee' do
+        policy = described_class.new(other_emp, pending_emp_task)
+        expect(policy.mark_done?).to be false
+      end
     end
   end
 end

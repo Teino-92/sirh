@@ -5,6 +5,17 @@ class OnboardingTaskPolicy < ApplicationPolicy
     hr_admin? || manager_of_onboarding?
   end
 
+  def validate?
+    return false unless record.done?
+    manager_of_onboarding?
+  end
+
+  def mark_done?
+    return false unless record.pending?
+    return false unless record.assigned_to_role == 'employee'
+    user == record.employee_onboarding.employee
+  end
+
   class Scope < Scope
     def resolve
       if user.hr_or_admin?
