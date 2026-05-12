@@ -1,0 +1,29 @@
+<%
+  type_icons = {
+    'manual'        => '✓',
+    'objective_30'  => '🎯',
+    'objective_60'  => '🎯',
+    'objective_90'  => '🎯',
+    'training'      => '📚',
+    'one_on_one'    => '💬'
+  }
+  progress = @onboarding.progress_percentage
+  risk     = @onboarding.integration_score < 40
+%>
+
+<%= turbo_stream.replace "onboarding_task_#{@task.id}" do %>
+  <%= render 'manager/employee_onboardings/task_row', task: @task, type_icons: type_icons %>
+<% end %>
+
+<%= turbo_stream.replace "onboarding_progress_#{@onboarding.id}" do %>
+  <div id="onboarding_progress_<%= @onboarding.id %>">
+    <div class="flex justify-between text-sm text-muted-soft dark:text-white/50 mb-1">
+      <span>Progression globale</span>
+      <span class="font-medium"><%= progress %>%</span>
+    </div>
+    <div class="w-full bg-bg-soft dark:bg-surface/10 rounded-full h-3">
+      <div class="<%= risk ? 'bg-red-500' : 'bg-primary' %> h-3 rounded-full transition-all duration-300"
+           style="width: <%= progress %>%"></div>
+    </div>
+  </div>
+<% end %>

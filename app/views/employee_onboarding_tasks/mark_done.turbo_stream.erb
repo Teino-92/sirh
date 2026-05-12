@@ -1,0 +1,14 @@
+<%
+  type_icons = {
+    'manual'        => '✓',
+    'objective_30'  => '🎯',
+    'objective_60'  => '🎯',
+    'objective_90'  => '🎯',
+    'training'      => '📚',
+    'one_on_one'    => '💬'
+  }
+%>
+
+<%= turbo_stream.replace "onboarding_task_emp_#{@task.id}" do %>
+  <%= render 'employee_onboardings/task_row', task: @task, onboarding: @onboarding, type_icons: type_icons %>
+<% end %>
