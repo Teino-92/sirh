@@ -7,18 +7,30 @@ const DATA = [
   ["Petit S.",  "#N/A",    "Q1-24", "2 450 €", "=VLOOKUP"],
 ]
 
+const LOOP_INTERVAL = 9000
+
 export default class extends Controller {
   connect() {
-    this.element.addEventListener("mouseenter", () => this.flood())
-    this.element.addEventListener("mouseleave", () => this.clear())
-    this._cells = this.element.querySelectorAll(".problem-spreadsheet-cell .cell-value")
+    this._cells  = this.element.querySelectorAll(".problem-spreadsheet-cell .cell-value")
     this._timers = []
+
+    if (window.matchMedia("(pointer: coarse)").matches) {
+      this._startLoop()
+    } else {
+      this.element.addEventListener("mouseenter", () => this.flood())
+      this.element.addEventListener("mouseleave", () => this.clear())
+    }
+  }
+
+  disconnect() {
+    clearInterval(this._loop)
+    this._timers.forEach(t => clearTimeout(t))
   }
 
   flood() {
     this._cells.forEach((cell, i) => {
-      const row = Math.floor(i / 5)
-      const col = i % 5
+      const row   = Math.floor(i / 5)
+      const col   = i % 5
       const delay = (row * 5 + col) * 60
       const t = setTimeout(() => {
         cell.textContent = DATA[row]?.[col] ?? ""
@@ -38,5 +50,14 @@ export default class extends Controller {
       cell.textContent = ""
       cell.classList.remove("text-gray-800", "text-red-500")
     })
+  }
+
+  _startLoop() {
+    const cycle = () => {
+      this.flood()
+      setTimeout(() => this.clear(), 3500)
+    }
+    cycle()
+    this._loop = setInterval(cycle, LOOP_INTERVAL)
   }
 }
