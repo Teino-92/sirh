@@ -6,11 +6,14 @@
       <p class="mt-6 text-muted-soft text-lg">Vous n'êtes pas seul. Et c'est précisément le problème.</p>
     </div>
 
-    <div class="mt-14 grid sm:grid-cols-3 gap-6 text-left">
+    <div class="mt-14 -mx-8 px-8 flex gap-5 overflow-x-auto scroll-smooth snap-x snap-mandatory pb-4
+                sm:grid sm:grid-cols-3 sm:gap-6 sm:overflow-visible sm:snap-none sm:pb-0
+                [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]
+                text-left">
 
       <%# Card Tableur %>
       <div data-controller="reveal problem-spreadsheet"
-           class="group p-6 rounded-2xl border border-border-soft bg-white/70 backdrop-blur-sm overflow-hidden cursor-default">
+           class="group flex-none w-[80vw] sm:w-auto snap-center p-6 rounded-2xl border border-border-soft bg-white/70 backdrop-blur-sm overflow-hidden cursor-default">
         <div class="relative h-24 mb-4 overflow-hidden rounded-lg border border-border-soft bg-white/80">
           <%# Grille tableur miniature %>
           <div class="problem-spreadsheet-grid absolute inset-0 grid" style="grid-template-columns: 28px repeat(5, 1fr); grid-template-rows: 18px repeat(4, 1fr); font-size: 7px; line-height: 1;">
@@ -36,7 +39,7 @@
 
       <%# Card Slack %>
       <div data-controller="reveal problem-slack"
-           class="relative group p-6 rounded-2xl border border-border-soft bg-white/70 backdrop-blur-sm cursor-default">
+           class="relative group flex-none w-[80vw] sm:w-auto snap-center p-6 rounded-2xl border border-border-soft bg-white/70 backdrop-blur-sm cursor-default">
 
         <%# Bulle de notif — sort hors de la card en haut à droite %>
         <div data-problem-slack-target="bubble"
@@ -73,7 +76,7 @@
 
       <%# Card Post-it %>
       <div data-controller="reveal problem-postit"
-           class="group p-6 rounded-2xl border border-border-soft bg-white/70 backdrop-blur-sm overflow-hidden cursor-default">
+           class="group flex-none w-[80vw] sm:w-auto snap-center p-6 rounded-2xl border border-border-soft bg-white/70 backdrop-blur-sm overflow-hidden cursor-default">
         <div class="relative h-24 mb-4">
           <%# Post-its empilés %>
           <%# positions initiales (empilées au centre) et finales (éparpillées) définies en data-%>
@@ -108,6 +111,15 @@
         <p class="mt-2 text-muted-soft text-sm">L'historique des 1:1 ? Dans votre tête, au mieux.</p>
       </div>
 
+      <%# Spacer right — scroll only %>
+      <div class="flex-none w-2 sm:hidden" aria-hidden="true"></div>
+    </div>
+
+    <%# Dots indicator — mobile only %>
+    <div class="mt-4 flex justify-center gap-2 sm:hidden" data-controller="scroll-dots" data-scroll-dots-count-value="3">
+      <span class="w-2 h-2 rounded-full bg-primary transition-all duration-300" data-scroll-dots-target="dot"></span>
+      <span class="w-2 h-2 rounded-full bg-border-soft transition-all duration-300" data-scroll-dots-target="dot"></span>
+      <span class="w-2 h-2 rounded-full bg-border-soft transition-all duration-300" data-scroll-dots-target="dot"></span>
     </div>
   </div>
 </section>
