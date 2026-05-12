@@ -1,28 +1,28 @@
 <div class="max-w-3xl mx-auto">
-  <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-    <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-6">Modifier mon profil</h1>
+  <div class="bg-surface dark:bg-[#1C1B2E] rounded-lg shadow p-6">
+    <h1 class="text-2xl font-serif text-text-deep dark:text-white mb-6">Modifier mon profil</h1>
 
     <%= form_with model: @employee, url: profile_path, method: :patch, local: true, class: "space-y-6" do |f| %>
       <!-- Avatar -->
       <div>
-        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Photo de profil</label>
+        <label class="block text-sm font-medium text-text-deep dark:text-white/70 mb-2">Photo de profil</label>
         <div class="flex items-center gap-6">
           <div class="flex-shrink-0">
             <% if @employee.avatar.attached? %>
               <%= image_tag @employee.avatar, class: "w-24 h-24 rounded-full object-cover" %>
             <% else %>
-              <div class="w-24 h-24 rounded-full bg-indigo-100 dark:bg-indigo-800 flex items-center justify-center">
-                <span class="text-2xl font-bold text-indigo-600 dark:text-indigo-300"><%= @employee.first_name[0] %><%= @employee.last_name[0] %></span>
+              <div class="w-24 h-24 rounded-full bg-primary dark:bg-primary flex items-center justify-center">
+                <span class="text-2xl font-bold text-primary dark:text-primary"><%= @employee.first_name[0] %><%= @employee.last_name[0] %></span>
               </div>
             <% end %>
           </div>
           <div class="flex-1">
             <%= f.file_field :avatar,
                 accept: "image/*",
-                class: "block w-full text-sm text-gray-500 dark:text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 dark:bg-indigo-900 file:text-indigo-700 dark:text-indigo-300 hover:file:bg-indigo-100 dark:bg-indigo-800 cursor-pointer" %>
-            <p class="text-xs text-gray-500 dark:text-gray-400 mt-2">JPG, PNG ou GIF. Max 5MB.</p>
+                class: "block w-full text-sm text-muted-soft dark:text-white/50 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-primary dark:bg-primary/20 file:text-primary dark:text-primary hover:file:bg-primary dark:bg-primary cursor-pointer" %>
+            <p class="text-xs text-muted-soft dark:text-white/50 mt-2">JPG, PNG ou GIF. Max 5MB.</p>
             <% if @employee.avatar.attached? %>
-              <p class="text-xs text-gray-600 dark:text-gray-400 mt-1">Photo actuelle: <%= @employee.avatar.filename %></p>
+              <p class="text-xs text-muted-soft dark:text-white/50 mt-1">Photo actuelle: <%= @employee.avatar.filename %></p>
             <% end %>
           </div>
         </div>
@@ -30,38 +30,38 @@
 
       <!-- Téléphone -->
       <div>
-        <%= f.label :phone, "Téléphone", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" %>
+        <%= f.label :phone, "Téléphone", class: "block text-sm font-medium text-text-deep dark:text-white/70 mb-2" %>
         <%= f.telephone_field :phone,
             placeholder: "+33 6 12 34 56 78",
-            class: "block w-full rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" %>
+            class: "block w-full rounded-lg border-border-soft dark:border-white/15 bg-surface dark:bg-surface/10 text-text-deep dark:text-white shadow-sm focus:border-primary focus:ring-primary" %>
       </div>
 
       <!-- Adresse -->
       <div>
-        <%= f.label :address, "Adresse", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" %>
+        <%= f.label :address, "Adresse", class: "block text-sm font-medium text-text-deep dark:text-white/70 mb-2" %>
         <%= f.text_area :address,
             rows: 4,
             placeholder: "Numéro et rue\nCode postal Ville\nPays",
-            class: "block w-full rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" %>
+            class: "block w-full rounded-lg border-border-soft dark:border-white/15 bg-surface dark:bg-surface/10 text-text-deep dark:text-white shadow-sm focus:border-primary focus:ring-primary" %>
       </div>
 
       <!-- Boutons -->
-      <div class="flex items-center justify-end gap-3 pt-4 border-t border-gray-200 dark:border-gray-700">
-        <%= link_to profile_path, class: "px-4 py-2 text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:text-gray-100 font-medium" do %>
+      <div class="flex items-center justify-end gap-3 pt-4 border-t border-border-soft dark:border-white/10">
+        <%= link_to profile_path, class: "px-4 py-2 text-text-deep dark:text-white/70 hover:text-text-deep dark:text-white font-medium" do %>
           Annuler
         <% end %>
-        <%= f.submit "Enregistrer", class: "px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 font-medium cursor-pointer" %>
+        <%= f.submit "Enregistrer", class: "px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 font-medium cursor-pointer" %>
       </div>
     <% end %>
   </div>
 
   <!-- Informations en lecture seule -->
-  <div class="bg-blue-50 dark:bg-blue-900 border border-blue-200 dark:border-blue-700 rounded-lg p-4 mt-6">
+  <div class="bg-primary/10 dark:bg-primary/10 border border-blue-200 dark:border-blue-700 rounded-lg p-4 mt-6">
     <div class="flex">
-      <svg class="w-5 h-5 text-blue-600 dark:text-blue-400 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+      <svg class="w-5 h-5 text-primary dark:text-primary mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
         <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
       </svg>
-      <div class="text-sm text-blue-800 dark:text-blue-200">
+      <div class="text-sm text-primary dark:text-primary">
         <p class="font-medium mb-1">Informations professionnelles</p>
         <p>Pour modifier votre email, contrat, département ou autres informations professionnelles, veuillez contacter les ressources humaines.</p>
       </div>

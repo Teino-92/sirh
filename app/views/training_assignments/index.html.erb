@@ -7,10 +7,10 @@
     'mentoring'     => 'Mentorat'
   }
   status_classes = {
-    'assigned'    => 'bg-blue-100 dark:bg-blue-900/40 text-blue-800 dark:text-blue-300 border-blue-200 dark:border-blue-700',
-    'in_progress' => 'bg-indigo-100 dark:bg-indigo-900/40 text-indigo-800 dark:text-indigo-300 border-indigo-200 dark:border-indigo-700',
+    'assigned'    => 'bg-primary/10 dark:bg-primary/10/40 text-primary dark:text-primary border-blue-200 dark:border-blue-700',
+    'in_progress' => 'bg-primary dark:bg-primary/20/40 text-primary dark:text-primary border-primary dark:border-primary',
     'completed'   => 'bg-green-100 dark:bg-green-900/40 text-green-800 dark:text-green-300 border-green-200 dark:border-green-700',
-    'cancelled'   => 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 border-gray-200 dark:border-gray-600'
+    'cancelled'   => 'bg-bg-soft dark:bg-surface/10 text-muted-soft dark:text-white/50 border-border-soft dark:border-white/15'
   }
   status_labels = {
     'assigned'    => 'Assignée',
@@ -22,33 +22,33 @@
 
 <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
   <div class="mb-6">
-    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100">Mes formations</h1>
-    <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">Formations assignées par votre manager</p>
+    <h1 class="text-2xl sm:text-3xl font-serif text-text-deep dark:text-white">Mes formations</h1>
+    <p class="mt-1 text-sm text-muted-soft dark:text-white/50">Formations assignées par votre manager</p>
   </div>
 
   <!-- Filtres statut -->
   <div class="flex gap-2 mb-6 overflow-x-auto pb-1">
     <%= link_to 'Toutes', training_assignments_path,
-          class: "inline-flex items-center py-1.5 px-4 rounded-md text-sm font-medium transition-all whitespace-nowrap #{params[:status].blank? ? 'bg-indigo-600 text-white shadow-sm' : 'bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700'}" %>
+          class: "inline-flex items-center py-1.5 px-4 rounded-md text-sm font-medium transition-all whitespace-nowrap #{params[:status].blank? ? 'bg-primary text-white shadow-sm' : 'bg-surface dark:bg-[#1C1B2E] text-muted-soft dark:text-white/70 border border-border-soft dark:border-white/15 hover:bg-bg-soft dark:hover:bg-gray-700'}" %>
     <%= link_to 'En cours', training_assignments_path(status: :in_progress),
-          class: "inline-flex items-center py-1.5 px-4 rounded-md text-sm font-medium transition-all whitespace-nowrap #{params[:status] == 'in_progress' ? 'bg-indigo-600 text-white shadow-sm' : 'bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700'}" %>
+          class: "inline-flex items-center py-1.5 px-4 rounded-md text-sm font-medium transition-all whitespace-nowrap #{params[:status] == 'in_progress' ? 'bg-primary text-white shadow-sm' : 'bg-surface dark:bg-[#1C1B2E] text-muted-soft dark:text-white/70 border border-border-soft dark:border-white/15 hover:bg-bg-soft dark:hover:bg-gray-700'}" %>
     <%= link_to 'Assignées', training_assignments_path(status: :assigned),
-          class: "inline-flex items-center py-1.5 px-4 rounded-md text-sm font-medium transition-all whitespace-nowrap #{params[:status] == 'assigned' ? 'bg-indigo-600 text-white shadow-sm' : 'bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700'}" %>
+          class: "inline-flex items-center py-1.5 px-4 rounded-md text-sm font-medium transition-all whitespace-nowrap #{params[:status] == 'assigned' ? 'bg-primary text-white shadow-sm' : 'bg-surface dark:bg-[#1C1B2E] text-muted-soft dark:text-white/70 border border-border-soft dark:border-white/15 hover:bg-bg-soft dark:hover:bg-gray-700'}" %>
     <%= link_to 'Terminées', training_assignments_path(status: :completed),
-          class: "inline-flex items-center py-1.5 px-4 rounded-md text-sm font-medium transition-all whitespace-nowrap #{params[:status] == 'completed' ? 'bg-indigo-600 text-white shadow-sm' : 'bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700'}" %>
+          class: "inline-flex items-center py-1.5 px-4 rounded-md text-sm font-medium transition-all whitespace-nowrap #{params[:status] == 'completed' ? 'bg-primary text-white shadow-sm' : 'bg-surface dark:bg-[#1C1B2E] text-muted-soft dark:text-white/70 border border-border-soft dark:border-white/15 hover:bg-bg-soft dark:hover:bg-gray-700'}" %>
   </div>
 
   <div class="space-y-4">
     <% @assignments.each do |assignment| %>
-      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-5">
+      <div class="bg-surface dark:bg-[#1C1B2E] rounded-lg shadow-sm border border-border-soft dark:border-white/10 p-5">
         <div class="flex justify-between items-start gap-4">
           <div class="flex-1 min-w-0">
-            <h3 class="font-semibold text-gray-900 dark:text-gray-100 text-base">
+            <h3 class="font-semibold text-text-deep dark:text-white text-base">
               <%= link_to assignment.training.title, training_assignment_path(assignment),
-                    class: 'hover:text-indigo-600 dark:hover:text-indigo-400' %>
+                    class: 'hover:text-primary dark:hover:text-primary' %>
             </h3>
-            <div class="flex flex-wrap items-center gap-2 mt-1.5 text-sm text-gray-500 dark:text-gray-400">
-              <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-indigo-100 dark:bg-indigo-900/40 text-indigo-800 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-700">
+            <div class="flex flex-wrap items-center gap-2 mt-1.5 text-sm text-muted-soft dark:text-white/50">
+              <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-primary dark:bg-primary/20/40 text-primary dark:text-primary border border-primary dark:border-primary">
                 <%= type_labels[assignment.training.training_type] || assignment.training.training_type.humanize %>
               </span>
               <span>Assignée par <%= assignment.assigned_by.full_name %></span>
@@ -61,11 +61,11 @@
             </div>
           </div>
           <div class="flex items-center gap-3 flex-shrink-0">
-            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border <%= status_classes[assignment.status] || 'bg-gray-100 text-gray-600' %>">
+            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border <%= status_classes[assignment.status] || 'bg-bg-soft text-muted-soft' %>">
               <%= status_labels[assignment.status] || assignment.status.humanize %>
             </span>
             <%= link_to 'Voir', training_assignment_path(assignment),
-                  class: 'text-sm text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300 font-medium' %>
+                  class: 'text-sm text-primary dark:text-primary/80 hover:text-primary dark:hover:text-primary font-medium' %>
           </div>
         </div>
       </div>
@@ -73,10 +73,10 @@
 
     <% if @assignments.empty? %>
       <div class="text-center py-12">
-        <svg class="mx-auto h-12 w-12 text-gray-400 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg class="mx-auto h-12 w-12 text-muted-soft dark:text-muted-soft" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
         </svg>
-        <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">Aucune formation assignée pour le moment.</p>
+        <p class="mt-2 text-sm text-muted-soft dark:text-white/50">Aucune formation assignée pour le moment.</p>
       </div>
     <% end %>
   </div>

@@ -1,16 +1,16 @@
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
   <!-- Header -->
   <div class="mb-6">
-    <div class="flex items-center text-gray-600 dark:text-gray-400 mb-4">
-      <%= link_to manager_team_schedules_path, class: "text-indigo-600 hover:text-indigo-900" do %>
+    <div class="flex items-center text-muted-soft dark:text-white/50 mb-4">
+      <%= link_to manager_team_schedules_path, class: "text-primary hover:text-primary" do %>
         ← Retour à l'équipe
       <% end %>
     </div>
 
     <div class="flex items-center justify-between">
       <div>
-        <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100">Pointages de <%= @team_member.full_name %></h1>
-        <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">Validation des heures de travail</p>
+        <h1 class="text-2xl sm:text-3xl font-serif text-text-deep dark:text-white">Pointages de <%= @team_member.full_name %></h1>
+        <p class="text-sm text-muted-soft dark:text-white/50 mt-1">Validation des heures de travail</p>
       </div>
     </div>
   </div>
@@ -37,28 +37,28 @@
   <% end %>
 
   <!-- Time Entries Table -->
-  <div class="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden">
-    <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
-      <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100">Historique des pointages</h2>
+  <div class="bg-surface dark:bg-[#1C1B2E] rounded-lg shadow overflow-hidden">
+    <div class="px-6 py-4 border-b border-border-soft dark:border-white/10">
+      <h2 class="text-lg font-semibold text-text-deep dark:text-white">Historique des pointages</h2>
     </div>
 
     <div class="overflow-x-auto">
       <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-        <thead class="bg-gray-50 dark:bg-gray-900">
+        <thead class="bg-bg-soft dark:bg-[#13121F]">
           <tr>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Date</th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Entrée</th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Sortie</th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Durée</th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Statut</th>
-            <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Actions</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-muted-soft dark:text-white/50 uppercase tracking-wider">Date</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-muted-soft dark:text-white/50 uppercase tracking-wider">Entrée</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-muted-soft dark:text-white/50 uppercase tracking-wider">Sortie</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-muted-soft dark:text-white/50 uppercase tracking-wider">Durée</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-muted-soft dark:text-white/50 uppercase tracking-wider">Statut</th>
+            <th class="px-6 py-3 text-right text-xs font-medium text-muted-soft dark:text-white/50 uppercase tracking-wider">Actions</th>
           </tr>
         </thead>
-        <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+        <tbody class="bg-surface dark:bg-[#1C1B2E] divide-y divide-gray-200 dark:divide-gray-700">
           <% @time_entries.group_by { |te| te.worked_date.beginning_of_week }.each do |week_start, week_entries| %>
             <!-- Week Separator -->
-            <tr class="bg-gray-50 dark:bg-gray-900">
-              <td colspan="6" class="px-6 py-2 text-sm font-semibold text-gray-700 dark:text-gray-300">
+            <tr class="bg-bg-soft dark:bg-[#13121F]">
+              <td colspan="6" class="px-6 py-2 text-sm font-semibold text-text-deep dark:text-white/70">
                 Semaine du <%= l(week_start, format: :short) %>
                 <% if @complementary_hours_by_week
                      hc = @complementary_hours_by_week[week_start]
@@ -72,21 +72,21 @@
             </tr>
 
             <% week_entries.each do |entry| %>
-              <tr class="<%= 'bg-yellow-50 dark:bg-yellow-900' unless entry.validated? %>">
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">
+              <tr class="<%= 'bg-warning/10 dark:bg-warning/10' unless entry.validated? %>">
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-text-deep dark:text-white">
                   <%= l(entry.worked_date, format: :long) %>
                 </td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-text-deep dark:text-white">
                   <%= l(entry.clock_in, format: :short) %>
                 </td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-text-deep dark:text-white">
                   <% if entry.clock_out %>
                     <%= l(entry.clock_out, format: :short) %>
                   <% else %>
                     <span class="text-green-600 font-medium">En cours...</span>
                   <% end %>
                 </td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-900 dark:text-gray-100">
+                <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-text-deep dark:text-white">
                   <%= entry.hours_worked.round(2) %>h
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
@@ -94,7 +94,7 @@
                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 dark:bg-green-800 text-green-800 dark:text-green-200">
                       ✓ Validé
                     </span>
-                    <div class="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                    <div class="text-xs text-muted-soft dark:text-white/50 mt-1">
                       par <%= entry.validated_by.full_name %><br>
                       le <%= l(entry.validated_at, format: :short) %>
                     </div>
@@ -102,17 +102,17 @@
                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 dark:bg-red-800 text-red-800 dark:text-red-200">
                       ✗ Refusé
                     </span>
-                    <div class="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                    <div class="text-xs text-muted-soft dark:text-white/50 mt-1">
                       par <%= entry.rejected_by.full_name %><br>
                       le <%= l(entry.rejected_at, format: :short) %><br>
                       <span class="text-red-600 font-medium">Raison: <%= entry.rejection_reason %></span>
                     </div>
                   <% elsif entry.completed? %>
-                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 dark:bg-yellow-800 text-yellow-800 dark:text-yellow-200">
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-warning/10 dark:bg-warning/10 text-warning dark:text-warning">
                       En attente
                     </span>
                   <% else %>
-                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 dark:bg-blue-800 text-blue-800 dark:text-blue-200">
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary/10 dark:bg-primary/10 text-primary dark:text-primary">
                       En cours
                     </span>
                   <% end %>
@@ -141,10 +141,10 @@
 
     <% if @time_entries.empty? %>
       <div class="p-12 text-center">
-        <svg class="mx-auto h-12 w-12 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg class="mx-auto h-12 w-12 text-muted-soft dark:text-white/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
         </svg>
-        <p class="mt-4 text-gray-500 dark:text-gray-400">Aucun pointage trouvé</p>
+        <p class="mt-4 text-muted-soft dark:text-white/50">Aucun pointage trouvé</p>
       </div>
     <% end %>
   </div>
@@ -152,12 +152,12 @@
 
 <!-- Reject Modal -->
 <div id="rejectModal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 1000; backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); background-color: rgba(0, 0, 0, 0.3); align-items: center; justify-content: center; padding: 1rem;">
-  <div class="bg-white dark:bg-gray-800 rounded-lg shadow-2xl" style="max-width: 32rem; width: 100%; max-height: 90vh; overflow-y: auto;">
+  <div class="bg-surface dark:bg-[#1C1B2E] rounded-lg shadow-2xl" style="max-width: 32rem; width: 100%; max-height: 90vh; overflow-y: auto;">
       <form action="#" method="post" id="rejectForm">
         <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
 
         <!-- Modal Header -->
-        <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700 bg-gradient-to-r from-red-50 to-orange-50 dark:from-red-900 dark:to-orange-900">
+        <div class="px-6 py-4 border-b border-border-soft dark:border-white/10 bg-gradient-to-r from-red-50 to-orange-50 dark:from-red-900 dark:to-orange-900">
           <div class="flex items-center justify-between">
             <div class="flex items-center gap-3">
               <div class="h-10 w-10 rounded-full bg-red-100 dark:bg-red-800 flex items-center justify-center">
@@ -166,11 +166,11 @@
                 </svg>
               </div>
               <div>
-                <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100">Refuser le pointage</h3>
-                <p class="text-sm text-gray-600 dark:text-gray-400" id="modalDate">Pointage du ...</p>
+                <h3 class="text-lg font-semibold text-text-deep dark:text-white">Refuser le pointage</h3>
+                <p class="text-sm text-muted-soft dark:text-white/50" id="modalDate">Pointage du ...</p>
               </div>
             </div>
-            <button type="button" onclick="closeRejectModal()" class="text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:text-gray-400 transition-colors">
+            <button type="button" onclick="closeRejectModal()" class="text-muted-soft dark:text-white/40 hover:text-muted-soft dark:text-white/50 transition-colors">
               <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
               </svg>
@@ -181,20 +181,20 @@
         <!-- Modal Body -->
         <div class="px-6 py-6">
           <div class="mb-1">
-            <label for="rejection_reason" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Raison du refus *</label>
+            <label for="rejection_reason" class="block text-sm font-semibold text-text-deep dark:text-white/70 mb-2">Raison du refus *</label>
             <textarea name="rejection_reason" id="rejection_reason" required rows="5"
                       placeholder="Ex: Heures incohérentes avec le planning prévu, pause non déduite, temps de travail trop élevé..."
-                      class="shadow-sm focus:ring-red-500 focus:border-red-500 block w-full text-sm border-gray-300 dark:border-gray-600 rounded-lg resize-none"></textarea>
+                      class="shadow-sm focus:ring-red-500 focus:border-red-500 block w-full text-sm border-border-soft dark:border-white/15 rounded-lg resize-none"></textarea>
           </div>
-          <p class="text-xs text-gray-500 dark:text-gray-400 mt-2">
+          <p class="text-xs text-muted-soft dark:text-white/50 mt-2">
             💡 L'employé recevra une notification avec cette raison
           </p>
         </div>
 
         <!-- Modal Footer -->
-        <div class="px-6 py-4 bg-gray-50 dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 rounded-b-2xl flex gap-3 justify-end">
+        <div class="px-6 py-4 bg-bg-soft dark:bg-[#13121F] border-t border-border-soft dark:border-white/10 rounded-b-2xl flex gap-3 justify-end">
           <button type="button" onclick="closeRejectModal()"
-                  class="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:bg-gray-900 transition-colors">
+                  class="px-4 py-2 text-sm font-medium text-text-deep dark:text-white/70 bg-surface dark:bg-[#1C1B2E] border border-border-soft dark:border-white/15 rounded-lg hover:bg-bg-soft dark:bg-[#13121F] transition-colors">
             Annuler
           </button>
           <button type="submit"

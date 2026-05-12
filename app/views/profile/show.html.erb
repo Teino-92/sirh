@@ -1,6 +1,6 @@
 <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
   <!-- Header compact avec avatar -->
-  <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 mb-6 overflow-hidden">
+  <div class="bg-surface dark:bg-[#1C1B2E] rounded-lg shadow-sm border border-border-soft dark:border-white/10 mb-6 overflow-hidden">
     <div class="bg-gradient-to-r from-indigo-500 to-purple-600 dark:from-indigo-700 dark:to-purple-800 px-6 py-4">
       <div class="flex flex-col sm:flex-row items-center sm:items-start gap-4">
         <!-- Avatar -->
@@ -8,17 +8,17 @@
           <% if @employee.avatar.attached? %>
             <%= image_tag @employee.avatar, class: "w-20 h-20 rounded-full object-cover border-2 border-white shadow-md" %>
           <% else %>
-            <div class="w-20 h-20 rounded-full bg-white dark:bg-gray-800 flex items-center justify-center border-2 border-white shadow-md">
-              <span class="text-2xl font-bold text-indigo-600"><%= @employee.first_name[0] %><%= @employee.last_name[0] %></span>
+            <div class="w-20 h-20 rounded-full bg-surface dark:bg-[#1C1B2E] flex items-center justify-center border-2 border-white shadow-md">
+              <span class="text-2xl font-bold text-primary"><%= @employee.first_name[0] %><%= @employee.last_name[0] %></span>
             </div>
           <% end %>
         </div>
 
         <!-- Informations principales -->
         <div class="flex-1 text-center sm:text-left">
-          <h1 class="text-2xl font-bold text-white mb-1"><%= @employee.full_name %></h1>
-          <p class="text-indigo-100 mb-1"><%= @employee.role.humanize %></p>
-          <div class="flex flex-wrap items-center justify-center sm:justify-start gap-3 text-sm text-indigo-200">
+          <h1 class="text-2xl font-serif text-white mb-1"><%= @employee.full_name %></h1>
+          <p class="text-primary mb-1"><%= @employee.role.humanize %></p>
+          <div class="flex flex-wrap items-center justify-center sm:justify-start gap-3 text-sm text-primary">
             <span><%= @employee.organization.name %></span>
             <% if @employee.department.present? %>
               <span>•</span>
@@ -29,7 +29,7 @@
 
         <!-- Bouton modifier -->
         <div class="flex-shrink-0">
-          <%= link_to edit_profile_path, class: "inline-flex items-center px-4 py-2 bg-white dark:bg-gray-800 text-indigo-600 rounded-lg hover:bg-indigo-50 dark:bg-indigo-900 transition font-medium text-sm shadow-sm" do %>
+          <%= link_to edit_profile_path, class: "inline-flex items-center px-4 py-2 bg-surface dark:bg-[#1C1B2E] text-primary rounded-lg hover:bg-primary dark:bg-primary/20 transition font-medium text-sm shadow-sm" do %>
             <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
             </svg>
@@ -43,64 +43,64 @@
   <!-- Grille d'informations -->
   <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
     <!-- Informations de contact -->
-    <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-      <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4 flex items-center">
-        <svg class="w-5 h-5 mr-2 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <div class="bg-surface dark:bg-[#1C1B2E] rounded-lg shadow p-6">
+      <h2 class="text-xl font-semibold text-text-deep dark:text-white mb-4 flex items-center">
+        <svg class="w-5 h-5 mr-2 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
         </svg>
         Contact
       </h2>
       <div class="space-y-3">
         <div class="flex items-start">
-          <svg class="w-5 h-5 text-gray-400 dark:text-gray-500 mt-0.5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg class="w-5 h-5 text-muted-soft dark:text-white/40 mt-0.5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
           </svg>
           <div>
-            <p class="text-sm text-gray-500 dark:text-gray-400">Email</p>
-            <p class="text-gray-900 dark:text-gray-100"><%= @employee.email %></p>
+            <p class="text-sm text-muted-soft dark:text-white/50">Email</p>
+            <p class="text-text-deep dark:text-white"><%= @employee.email %></p>
           </div>
         </div>
         <% if @employee.phone.present? %>
           <div class="flex items-start">
-            <svg class="w-5 h-5 text-gray-400 dark:text-gray-500 mt-0.5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg class="w-5 h-5 text-muted-soft dark:text-white/40 mt-0.5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
             </svg>
             <div>
-              <p class="text-sm text-gray-500 dark:text-gray-400">Téléphone</p>
-              <p class="text-gray-900 dark:text-gray-100"><%= @employee.phone %></p>
+              <p class="text-sm text-muted-soft dark:text-white/50">Téléphone</p>
+              <p class="text-text-deep dark:text-white"><%= @employee.phone %></p>
             </div>
           </div>
         <% else %>
           <div class="flex items-start">
-            <svg class="w-5 h-5 text-gray-400 dark:text-gray-500 mt-0.5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg class="w-5 h-5 text-muted-soft dark:text-white/40 mt-0.5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
             </svg>
             <div>
-              <p class="text-sm text-gray-500 dark:text-gray-400">Téléphone</p>
-              <p class="text-gray-400 dark:text-gray-500 italic">Non renseigné</p>
+              <p class="text-sm text-muted-soft dark:text-white/50">Téléphone</p>
+              <p class="text-muted-soft dark:text-white/40 italic">Non renseigné</p>
             </div>
           </div>
         <% end %>
         <% if @employee.address.present? %>
           <div class="flex items-start">
-            <svg class="w-5 h-5 text-gray-400 dark:text-gray-500 mt-0.5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg class="w-5 h-5 text-muted-soft dark:text-white/40 mt-0.5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
             </svg>
             <div>
-              <p class="text-sm text-gray-500 dark:text-gray-400">Adresse</p>
-              <p class="text-gray-900 dark:text-gray-100 whitespace-pre-line"><%= @employee.address %></p>
+              <p class="text-sm text-muted-soft dark:text-white/50">Adresse</p>
+              <p class="text-text-deep dark:text-white whitespace-pre-line"><%= @employee.address %></p>
             </div>
           </div>
         <% else %>
           <div class="flex items-start">
-            <svg class="w-5 h-5 text-gray-400 dark:text-gray-500 mt-0.5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg class="w-5 h-5 text-muted-soft dark:text-white/40 mt-0.5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
             </svg>
             <div>
-              <p class="text-sm text-gray-500 dark:text-gray-400">Adresse</p>
-              <p class="text-gray-400 dark:text-gray-500 italic">Non renseignée</p>
+              <p class="text-sm text-muted-soft dark:text-white/50">Adresse</p>
+              <p class="text-muted-soft dark:text-white/40 italic">Non renseignée</p>
             </div>
           </div>
         <% end %>
@@ -108,36 +108,36 @@
     </div>
 
     <!-- Informations professionnelles -->
-    <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-      <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4 flex items-center">
-        <svg class="w-5 h-5 mr-2 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <div class="bg-surface dark:bg-[#1C1B2E] rounded-lg shadow p-6">
+      <h2 class="text-xl font-semibold text-text-deep dark:text-white mb-4 flex items-center">
+        <svg class="w-5 h-5 mr-2 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
         </svg>
         Informations professionnelles
       </h2>
       <div class="space-y-4">
         <div>
-          <p class="text-sm text-gray-500 dark:text-gray-400">Type de contrat</p>
-          <p class="text-gray-900 dark:text-gray-100 font-medium"><%= @employee.contract_type %></p>
+          <p class="text-sm text-muted-soft dark:text-white/50">Type de contrat</p>
+          <p class="text-text-deep dark:text-white font-medium"><%= @employee.contract_type %></p>
         </div>
         <div>
-          <p class="text-sm text-gray-500 dark:text-gray-400">Date d'arrivée</p>
-          <p class="text-gray-900 dark:text-gray-100 font-medium"><%= l(@employee.start_date, format: :long) %></p>
-          <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
+          <p class="text-sm text-muted-soft dark:text-white/50">Date d'arrivée</p>
+          <p class="text-text-deep dark:text-white font-medium"><%= l(@employee.start_date, format: :long) %></p>
+          <p class="text-sm text-muted-soft dark:text-white/50 mt-1">
             <%= distance_of_time_in_words(@employee.start_date, Date.current) %>
             dans l'entreprise
           </p>
         </div>
         <% if @employee.manager.present? %>
           <div>
-            <p class="text-sm text-gray-500 dark:text-gray-400">Manager</p>
-            <p class="text-gray-900 dark:text-gray-100 font-medium"><%= @employee.manager.full_name %></p>
+            <p class="text-sm text-muted-soft dark:text-white/50">Manager</p>
+            <p class="text-text-deep dark:text-white font-medium"><%= @employee.manager.full_name %></p>
           </div>
         <% end %>
         <% if @employee.direct_reports.any? %>
           <div>
-            <p class="text-sm text-gray-500 dark:text-gray-400">Équipe</p>
-            <p class="text-gray-900 dark:text-gray-100 font-medium"><%= @employee.direct_reports.count %> collaborateur(s)</p>
+            <p class="text-sm text-muted-soft dark:text-white/50">Équipe</p>
+            <p class="text-text-deep dark:text-white font-medium"><%= @employee.direct_reports.count %> collaborateur(s)</p>
           </div>
         <% end %>
       </div>
@@ -145,34 +145,34 @@
 
     <!-- Rémunération — confidentielle, visible uniquement par l'employé lui-même -->
     <% if policy(@employee).see_salary? && @employee.gross_salary_cents > 0 %>
-      <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 lg:col-span-2">
-        <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4 flex items-center">
-          <svg class="w-5 h-5 mr-2 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <div class="bg-surface dark:bg-[#1C1B2E] rounded-lg shadow p-6 lg:col-span-2">
+        <h2 class="text-xl font-semibold text-text-deep dark:text-white mb-4 flex items-center">
+          <svg class="w-5 h-5 mr-2 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
           Ma rémunération
         </h2>
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <div class="bg-indigo-50 dark:bg-indigo-900 rounded-lg p-4">
-            <p class="text-xs text-indigo-600 dark:text-indigo-300 font-medium uppercase tracking-wide">Salaire brut mensuel</p>
-            <p class="text-2xl font-bold text-indigo-900 dark:text-white mt-1">
+          <div class="bg-primary dark:bg-primary/20 rounded-lg p-4">
+            <p class="text-xs text-primary dark:text-primary font-medium uppercase tracking-wide">Salaire brut mensuel</p>
+            <p class="text-2xl font-bold text-primary dark:text-white mt-1">
               <%= number_to_currency(@employee.gross_salary, unit: '€', format: '%n %u', delimiter: ' ', precision: 0) %>
             </p>
           </div>
           <% if @employee.variable_pay_cents > 0 %>
-            <div class="bg-purple-50 dark:bg-purple-900 rounded-lg p-4">
-              <p class="text-xs text-purple-600 dark:text-purple-300 font-medium uppercase tracking-wide">Part variable mensuelle</p>
-              <p class="text-2xl font-bold text-purple-900 dark:text-white mt-1">
+            <div class="bg-primary/10 dark:bg-primary/10 rounded-lg p-4">
+              <p class="text-xs text-primary dark:text-primary font-medium uppercase tracking-wide">Part variable mensuelle</p>
+              <p class="text-2xl font-bold text-primary dark:text-white mt-1">
                 <%= number_to_currency(@employee.variable_pay, unit: '€', format: '%n %u', delimiter: ' ', precision: 0) %>
               </p>
             </div>
           <% end %>
-          <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4">
-            <p class="text-xs text-gray-500 dark:text-gray-400 font-medium uppercase tracking-wide">Rémunération totale brute</p>
-            <p class="text-2xl font-bold text-gray-900 dark:text-white mt-1">
+          <div class="bg-bg-soft dark:bg-surface/10 rounded-lg p-4">
+            <p class="text-xs text-muted-soft dark:text-white/50 font-medium uppercase tracking-wide">Rémunération totale brute</p>
+            <p class="text-2xl font-bold text-text-deep dark:text-white mt-1">
               <%= number_to_currency(@employee.gross_salary + @employee.variable_pay, unit: '€', format: '%n %u', delimiter: ' ', precision: 0) %>
             </p>
-            <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">brut mensuel</p>
+            <p class="text-xs text-muted-soft dark:text-white/50 mt-1">brut mensuel</p>
           </div>
         </div>
       </div>
@@ -180,21 +180,21 @@
 
     <!-- Soldes de congés — SIRH uniquement -->
     <% if sirh_plan? %>
-    <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 lg:col-span-2">
-      <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4 flex items-center">
-        <svg class="w-5 h-5 mr-2 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <div class="bg-surface dark:bg-[#1C1B2E] rounded-lg shadow p-6 lg:col-span-2">
+      <h2 class="text-xl font-semibold text-text-deep dark:text-white mb-4 flex items-center">
+        <svg class="w-5 h-5 mr-2 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
         </svg>
         Soldes de congés
       </h2>
       <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <% @employee.leave_balances.each do |balance| %>
-          <div class="bg-gradient-to-br from-indigo-50 to-purple-50 dark:from-indigo-900 dark:to-purple-900 rounded-lg p-4 border-2 border-indigo-200 dark:border-indigo-600">
-            <p class="text-sm text-indigo-700 dark:text-indigo-200 mb-1"><%= balance.leave_type %></p>
-            <p class="text-3xl font-bold text-indigo-900 dark:text-white"><%= balance.balance.to_i %></p>
-            <p class="text-xs text-indigo-600 dark:text-indigo-300 mt-1">jours disponibles</p>
+          <div class="bg-gradient-to-br from-indigo-50 to-purple-50 dark:from-indigo-900 dark:to-purple-900 rounded-lg p-4 border-2 border-primary dark:border-primary">
+            <p class="text-sm text-primary dark:text-primary mb-1"><%= balance.leave_type %></p>
+            <p class="text-3xl font-bold text-primary dark:text-white"><%= balance.balance.to_i %></p>
+            <p class="text-xs text-primary dark:text-primary mt-1">jours disponibles</p>
             <% if balance.expires_at.present? %>
-              <p class="text-xs text-indigo-500 dark:text-indigo-400 mt-2">Expire le <%= l(balance.expires_at, format: :short) %></p>
+              <p class="text-xs text-primary dark:text-primary/80 mt-2">Expire le <%= l(balance.expires_at, format: :short) %></p>
             <% end %>
           </div>
         <% end %>

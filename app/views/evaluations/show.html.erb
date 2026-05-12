@@ -1,10 +1,10 @@
 <%
   status_classes = {
-    'draft'                   => 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 border-gray-200 dark:border-gray-600',
-    'employee_review_pending' => 'bg-yellow-100 dark:bg-yellow-900/40 text-yellow-800 dark:text-yellow-300 border-yellow-200 dark:border-yellow-700',
+    'draft'                   => 'bg-bg-soft dark:bg-surface/10 text-muted-soft dark:text-white/50 border-border-soft dark:border-white/15',
+    'employee_review_pending' => 'bg-warning/10 dark:bg-warning/10/40 text-warning dark:text-warning border-yellow-200 dark:border-yellow-700',
     'manager_review_pending'  => 'bg-orange-100 dark:bg-orange-900/40 text-orange-800 dark:text-orange-300 border-orange-200 dark:border-orange-700',
     'completed'               => 'bg-green-100 dark:bg-green-900/40 text-green-800 dark:text-green-300 border-green-200 dark:border-green-700',
-    'cancelled'               => 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 border-gray-200 dark:border-gray-600'
+    'cancelled'               => 'bg-bg-soft dark:bg-surface/10 text-muted-soft dark:text-white/50 border-border-soft dark:border-white/15'
   }
   status_labels = {
     'draft'                   => 'Brouillon',
@@ -18,20 +18,20 @@
 <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
   <div class="mb-4">
     <%= link_to '← Mes évaluations', evaluations_path,
-          class: 'text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200' %>
+          class: 'text-sm text-muted-soft hover:text-text-deep dark:text-white/50 dark:hover:text-muted-soft' %>
   </div>
 
   <!-- Header -->
-  <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 mb-6">
+  <div class="bg-surface dark:bg-[#1C1B2E] rounded-lg shadow-sm border border-border-soft dark:border-white/10 p-6 mb-6">
     <div class="flex justify-between items-start flex-wrap gap-3">
       <div>
-        <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100">
+        <h1 class="text-2xl font-serif text-text-deep dark:text-white">
           Évaluation <%= @evaluation.period_start.year %>
           <% if @evaluation.period_start.year != @evaluation.period_end.year %>
             – <%= @evaluation.period_end.year %>
           <% end %>
         </h1>
-        <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">
+        <p class="text-sm text-muted-soft dark:text-white/50 mt-1">
           Période : <%= l(@evaluation.period_start, format: :long) %> – <%= l(@evaluation.period_end, format: :long) %>
           &bull; Manager : <%= @evaluation.manager.full_name %>
         </p>
@@ -40,7 +40,7 @@
             <%= status_labels[@evaluation.status] %>
           </span>
           <% if @evaluation.completed_at.present? %>
-            <span class="text-xs text-gray-500 dark:text-gray-400">
+            <span class="text-xs text-muted-soft dark:text-white/50">
               Complétée le <%= l(@evaluation.completed_at.to_date, format: :long) %>
             </span>
           <% end %>
@@ -55,27 +55,27 @@
 
   <!-- Auto-évaluation attendue -->
   <% if @evaluation.employee_review_pending? %>
-    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 mb-4">
-      <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Votre auto-évaluation</h2>
-      <p class="text-sm text-gray-600 dark:text-gray-400 mb-5">
+    <div class="bg-surface dark:bg-[#1C1B2E] rounded-lg shadow-sm border border-border-soft dark:border-white/10 p-6 mb-4">
+      <h2 class="text-lg font-semibold text-text-deep dark:text-white mb-4">Votre auto-évaluation</h2>
+      <p class="text-sm text-muted-soft dark:text-white/50 mb-5">
         Partagez votre bilan sur cette période : réalisations, difficultés rencontrées, axes d'amélioration.
       </p>
       <%= form_with url: submit_self_review_evaluation_path(@evaluation), method: :patch do |f| %>
         <div class="mb-4">
-          <%= label_tag :self_review, 'Mon auto-évaluation', class: 'block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1' %>
+          <%= label_tag :self_review, 'Mon auto-évaluation', class: 'block text-sm font-medium text-text-deep dark:text-white/70 mb-1' %>
           <%= text_area_tag :self_review, nil, rows: 6, name: 'self_review',
-                class: 'block w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm',
+                class: 'block w-full rounded-md border-border-soft dark:border-white/15 bg-surface dark:bg-surface/10 text-text-deep dark:text-white shadow-sm focus:border-primary focus:ring-primary text-sm',
                 placeholder: 'Décrivez vos accomplissements, ce qui s\'est bien passé, les difficultés et vos axes d\'amélioration…',
                 required: true %>
         </div>
         <%= f.submit 'Soumettre mon auto-évaluation',
-              class: 'inline-flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all cursor-pointer' %>
+              class: 'inline-flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-semibold text-white bg-primary hover:bg-primary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-all cursor-pointer' %>
       <% end %>
     </div>
 
   <!-- En attente de l'évaluation manager -->
   <% elsif @evaluation.manager_review_pending? %>
-    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 mb-4">
+    <div class="bg-surface dark:bg-[#1C1B2E] rounded-lg shadow-sm border border-border-soft dark:border-white/10 p-6 mb-4">
       <div class="flex items-start gap-4">
         <div class="flex-shrink-0 w-10 h-10 rounded-full bg-orange-100 dark:bg-orange-900/40 flex items-center justify-center">
           <svg class="w-5 h-5 text-orange-600 dark:text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -83,16 +83,16 @@
           </svg>
         </div>
         <div>
-          <h2 class="text-base font-semibold text-gray-900 dark:text-gray-100 mb-1">En attente de votre manager</h2>
-          <p class="text-sm text-gray-600 dark:text-gray-400">
+          <h2 class="text-base font-semibold text-text-deep dark:text-white mb-1">En attente de votre manager</h2>
+          <p class="text-sm text-muted-soft dark:text-white/50">
             <%= @evaluation.manager.full_name %> est en train de compléter votre évaluation.
           </p>
         </div>
       </div>
       <% if @evaluation.self_review.present? %>
-        <div class="mt-5 pt-5 border-t border-gray-100 dark:border-gray-700">
-          <h3 class="text-sm font-semibold text-gray-600 dark:text-gray-400 mb-2">Votre auto-évaluation soumise</h3>
-          <p class="text-gray-900 dark:text-gray-100 text-sm whitespace-pre-wrap"><%= @evaluation.self_review %></p>
+        <div class="mt-5 pt-5 border-t border-border-soft dark:border-white/10">
+          <h3 class="text-sm font-semibold text-muted-soft dark:text-white/50 mb-2">Votre auto-évaluation soumise</h3>
+          <p class="text-text-deep dark:text-white text-sm whitespace-pre-wrap"><%= @evaluation.self_review %></p>
         </div>
       <% end %>
     </div>
@@ -101,9 +101,9 @@
   <% elsif @evaluation.completed? %>
     <% criteria = @evaluation.criteria_scores %>
     <% if criteria.any? %>
-      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 mb-4">
+      <div class="bg-surface dark:bg-[#1C1B2E] rounded-lg shadow-sm border border-border-soft dark:border-white/10 p-6 mb-4">
         <div class="flex items-center justify-between mb-4">
-          <h2 class="text-sm font-semibold text-gray-700 dark:text-gray-300">Critères d'évaluation</h2>
+          <h2 class="text-sm font-semibold text-text-deep dark:text-white/70">Critères d'évaluation</h2>
           <% avg = @evaluation.average_score %>
           <% if avg %>
             <span class="text-sm font-semibold text-orange-600 dark:text-orange-400">Moyenne : <%= avg %>/5</span>
@@ -112,15 +112,15 @@
         <div class="space-y-3">
           <% criteria.each do |criterion| %>
             <div class="flex items-center gap-3">
-              <span class="flex-1 text-sm text-gray-700 dark:text-gray-300"><%= criterion["name"] %></span>
+              <span class="flex-1 text-sm text-text-deep dark:text-white/70"><%= criterion["name"] %></span>
               <div class="flex items-center gap-1">
                 <% (1..5).each do |i| %>
                   <div class="w-7 h-7 rounded-full border-2 flex items-center justify-center text-xs font-bold
-                    <%= i <= criterion["score"] ? 'bg-orange-500 border-orange-500 text-white' : 'border-gray-300 dark:border-gray-600 text-gray-400 dark:text-gray-500' %>">
+                    <%= i <= criterion["score"] ? 'bg-orange-500 border-orange-500 text-white' : 'border-border-soft dark:border-white/15 text-muted-soft dark:text-white/40' %>">
                     <%= i %>
                   </div>
                 <% end %>
-                <span class="ml-1 text-sm font-semibold text-gray-700 dark:text-gray-300 w-8 text-right"><%= criterion["score"] %>/5</span>
+                <span class="ml-1 text-sm font-semibold text-text-deep dark:text-white/70 w-8 text-right"><%= criterion["score"] %>/5</span>
               </div>
             </div>
           <% end %>
@@ -129,16 +129,16 @@
     <% end %>
 
     <% if @evaluation.self_review.present? %>
-      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 mb-4">
-        <h2 class="text-sm font-semibold text-gray-600 dark:text-gray-400 mb-2">Votre auto-évaluation</h2>
-        <p class="text-gray-900 dark:text-gray-100 text-sm whitespace-pre-wrap"><%= @evaluation.self_review %></p>
+      <div class="bg-surface dark:bg-[#1C1B2E] rounded-lg shadow-sm border border-border-soft dark:border-white/10 p-6 mb-4">
+        <h2 class="text-sm font-semibold text-muted-soft dark:text-white/50 mb-2">Votre auto-évaluation</h2>
+        <p class="text-text-deep dark:text-white text-sm whitespace-pre-wrap"><%= @evaluation.self_review %></p>
       </div>
     <% end %>
 
     <% if @evaluation.manager_review.present? %>
-      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 mb-4">
-        <h2 class="text-sm font-semibold text-gray-600 dark:text-gray-400 mb-2">Avis de votre manager</h2>
-        <p class="text-gray-900 dark:text-gray-100 text-sm whitespace-pre-wrap"><%= @evaluation.manager_review %></p>
+      <div class="bg-surface dark:bg-[#1C1B2E] rounded-lg shadow-sm border border-border-soft dark:border-white/10 p-6 mb-4">
+        <h2 class="text-sm font-semibold text-muted-soft dark:text-white/50 mb-2">Avis de votre manager</h2>
+        <p class="text-text-deep dark:text-white text-sm whitespace-pre-wrap"><%= @evaluation.manager_review %></p>
       </div>
     <% end %>
   <% end %>

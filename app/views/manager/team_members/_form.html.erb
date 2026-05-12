@@ -14,64 +14,64 @@
 
   <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
     <div>
-      <%= f.label :first_name, "Prénom", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" %>
+      <%= f.label :first_name, "Prénom", class: "block text-sm font-medium text-text-deep dark:text-white/70 mb-1" %>
       <%= f.text_field :first_name, required: true,
-            class: "w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" %>
+            class: "w-full rounded-md border border-border-soft dark:border-white/15 bg-surface dark:bg-surface/10 px-3 py-2 text-sm text-text-deep dark:text-white focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary" %>
     </div>
     <div>
-      <%= f.label :last_name, "Nom", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" %>
+      <%= f.label :last_name, "Nom", class: "block text-sm font-medium text-text-deep dark:text-white/70 mb-1" %>
       <%= f.text_field :last_name, required: true,
-            class: "w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" %>
+            class: "w-full rounded-md border border-border-soft dark:border-white/15 bg-surface dark:bg-surface/10 px-3 py-2 text-sm text-text-deep dark:text-white focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary" %>
     </div>
   </div>
 
   <div>
-    <%= f.label :email, "Email", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" %>
+    <%= f.label :email, "Email", class: "block text-sm font-medium text-text-deep dark:text-white/70 mb-1" %>
     <%= f.email_field :email, required: true,
-          class: "w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" %>
+          class: "w-full rounded-md border border-border-soft dark:border-white/15 bg-surface dark:bg-surface/10 px-3 py-2 text-sm text-text-deep dark:text-white focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary" %>
   </div>
 
   <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
     <div>
-      <%= f.label :job_title, "Poste", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" %>
+      <%= f.label :job_title, "Poste", class: "block text-sm font-medium text-text-deep dark:text-white/70 mb-1" %>
       <%= f.text_field :job_title,
-            class: "w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500",
+            class: "w-full rounded-md border border-border-soft dark:border-white/15 bg-surface dark:bg-surface/10 px-3 py-2 text-sm text-text-deep dark:text-white focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary",
             placeholder: "Ex: Développeur, Chef de projet..." %>
     </div>
     <div>
-      <%= f.label :department, "Département", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" %>
+      <%= f.label :department, "Département", class: "block text-sm font-medium text-text-deep dark:text-white/70 mb-1" %>
       <%= f.text_field :department,
-            class: "w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500",
+            class: "w-full rounded-md border border-border-soft dark:border-white/15 bg-surface dark:bg-surface/10 px-3 py-2 text-sm text-text-deep dark:text-white focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary",
             placeholder: "Ex: Tech, Marketing, Ops..." %>
     </div>
   </div>
 
   <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
     <div>
-      <%= f.label :contract_type, "Type de contrat", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" %>
+      <%= f.label :contract_type, "Type de contrat", class: "block text-sm font-medium text-text-deep dark:text-white/70 mb-1" %>
       <%= f.select :contract_type,
             options_for_select([['CDI', 'CDI'], ['CDD', 'CDD'], ['Stage', 'Stage'], ['Alternance', 'Alternance'], ['Intérim', 'Interim']], team_member.contract_type),
             {},
-            class: "w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" %>
+            class: "w-full rounded-md border border-border-soft dark:border-white/15 bg-surface dark:bg-surface/10 px-3 py-2 text-sm text-text-deep dark:text-white focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary" %>
     </div>
     <div>
-      <%= f.label :start_date, "Date d'entrée", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" %>
+      <%= f.label :start_date, "Date d'entrée", class: "block text-sm font-medium text-text-deep dark:text-white/70 mb-1" %>
       <%= f.date_field :start_date, required: true,
-            class: "w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" %>
+            class: "w-full rounded-md border border-border-soft dark:border-white/15 bg-surface dark:bg-surface/10 px-3 py-2 text-sm text-text-deep dark:text-white focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary" %>
     </div>
   </div>
 
   <div>
-    <%= f.label :end_date, "Fin de contrat (CDD uniquement)", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" %>
+    <%= f.label :end_date, "Fin de contrat (CDD uniquement)", class: "block text-sm font-medium text-text-deep dark:text-white/70 mb-1" %>
     <%= f.date_field :end_date,
-          class: "w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" %>
-    <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Obligatoire pour un CDD, laisser vide sinon.</p>
+          class: "w-full rounded-md border border-border-soft dark:border-white/15 bg-surface dark:bg-surface/10 px-3 py-2 text-sm text-text-deep dark:text-white focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary" %>
+    <p class="mt-1 text-xs text-muted-soft dark:text-white/50">Obligatoire pour un CDD, laisser vide sinon.</p>
   </div>
 
   <div class="flex items-center justify-end gap-3 pt-2">
     <%= link_to "Annuler", manager_team_schedules_path,
-          class: "px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors" %>
+          class: "px-4 py-2 text-sm font-medium text-text-deep dark:text-white/70 bg-surface dark:bg-surface/10 border border-border-soft dark:border-white/15 rounded-md hover:bg-bg-soft dark:hover:bg-gray-600 transition-colors" %>
     <%= f.submit nil,
-          class: "px-4 py-2 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 rounded-md shadow-sm transition-colors cursor-pointer" %>
+          class: "px-4 py-2 text-sm font-medium text-white bg-primary hover:bg-primary rounded-md shadow-sm transition-colors cursor-pointer" %>
   </div>
 <% end %>

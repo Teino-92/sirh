@@ -1,18 +1,18 @@
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
   <!-- Header -->
   <div class="mb-6">
-    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2">Mon horaire de travail</h1>
-    <p class="text-sm text-gray-600 dark:text-gray-400">Consultez votre planning et vos congés</p>
+    <h1 class="text-2xl sm:text-3xl font-bold text-text-deep dark:text-white mb-2">Mon horaire de travail</h1>
+    <p class="text-sm text-muted-soft dark:text-white/50">Consultez votre planning et vos congés</p>
   </div>
 
   <turbo-frame id="work-schedule-content">
 
   <!-- Month Navigation -->
-  <div class="bg-white dark:bg-gray-800 rounded-lg shadow mb-6 p-4">
+  <div class="bg-surface dark:bg-[#1C1B2E] rounded-lg shadow mb-6 p-4">
     <div class="flex items-center justify-between gap-2">
       <%= link_to work_schedule_path(current_employee.id, date: @current_date - 1.month,
             week: (@current_date - 1.month).beginning_of_month.beginning_of_week(:monday).iso8601),
-        class: "flex-shrink-0 inline-flex items-center px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600",
+        class: "flex-shrink-0 inline-flex items-center px-3 py-2 border border-border-soft dark:border-white/15 rounded-md text-sm font-medium text-text-deep dark:text-white/70 bg-surface dark:bg-surface/10 hover:bg-bg-soft dark:hover:bg-gray-600",
         data: { turbo_frame: "work-schedule-content" } do %>
         <svg class="w-5 h-5 sm:mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
@@ -20,13 +20,13 @@
         <span class="hidden sm:inline">Mois précédent</span>
       <% end %>
 
-      <h2 class="text-lg sm:text-xl font-bold text-gray-900 dark:text-gray-100 text-center flex-1">
+      <h2 class="text-lg sm:text-xl font-bold text-text-deep dark:text-white text-center flex-1">
         <%= l(@current_date, format: '%B %Y').capitalize %>
       </h2>
 
       <%= link_to work_schedule_path(current_employee.id, date: @current_date + 1.month,
             week: (@current_date + 1.month).beginning_of_month.beginning_of_week(:monday).iso8601),
-        class: "flex-shrink-0 inline-flex items-center px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600",
+        class: "flex-shrink-0 inline-flex items-center px-3 py-2 border border-border-soft dark:border-white/15 rounded-md text-sm font-medium text-text-deep dark:text-white/70 bg-surface dark:bg-surface/10 hover:bg-bg-soft dark:hover:bg-gray-600",
         data: { turbo_frame: "work-schedule-content" } do %>
         <span class="hidden sm:inline">Mois suivant</span>
         <svg class="w-5 h-5 sm:ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -38,7 +38,7 @@
     <div class="mt-4">
       <%= link_to work_schedule_path(current_employee.id, date: Date.current,
             week: Date.current.beginning_of_week(:monday).iso8601),
-        class: "text-sm text-indigo-600 hover:text-indigo-800 dark:text-indigo-200 font-medium",
+        class: "text-sm text-primary hover:text-primary dark:text-primary font-medium",
         data: { turbo_frame: "work-schedule-content" } do %>
         Aujourd'hui
       <% end %>
@@ -47,9 +47,9 @@
 
   <!-- Stats (hidden on mobile) -->
   <div class="hidden sm:grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
-    <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-lg shadow p-6">
-      <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Contrat</p>
-      <p class="text-2xl font-bold text-gray-900 dark:text-gray-100 mt-2"><%= @employee.contract_type %></p>
+    <div class="bg-surface dark:bg-[#1C1B2E] border border-border-soft dark:border-white/15 rounded-lg shadow p-6">
+      <p class="text-sm font-medium text-muted-soft dark:text-white/50">Contrat</p>
+      <p class="text-2xl font-bold text-text-deep dark:text-white mt-2"><%= @employee.contract_type %></p>
     </div>
 
     <div class="bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900 dark:to-purple-700 border-2 border-purple-300 dark:border-purple-500 rounded-lg shadow p-6">
@@ -81,17 +81,17 @@
           </h3>
           <div class="space-y-2">
             <% planned_weeks.each do |plan| %>
-              <div class="bg-white dark:bg-gray-800 rounded-lg p-3 border border-green-200 dark:border-green-700">
+              <div class="bg-surface dark:bg-[#1C1B2E] rounded-lg p-3 border border-green-200 dark:border-green-700">
                 <div class="flex items-center justify-between mb-1">
-                  <span class="font-semibold text-gray-900 dark:text-gray-100">
+                  <span class="font-semibold text-text-deep dark:text-white">
                     <%= l(plan.week_start_date, format: :short) %> - <%= l(plan.week_end_date, format: :short) %>
                   </span>
-                  <span class="text-sm text-gray-600 dark:text-gray-400">
+                  <span class="text-sm text-muted-soft dark:text-white/50">
                     <%= plan.total_weekly_hours.round(1) %>h
                   </span>
                 </div>
                 <% if plan.notes.present? %>
-                  <p class="text-sm text-gray-600 dark:text-gray-400 italic">Note: <%= plan.notes %></p>
+                  <p class="text-sm text-muted-soft dark:text-white/50 italic">Note: <%= plan.notes %></p>
                 <% end %>
               </div>
             <% end %>
@@ -113,24 +113,24 @@
   <% end %>
 
   <!-- Legend -->
-  <div class="bg-white dark:bg-gray-800 rounded-lg shadow mb-6 p-4">
-    <h3 class="text-sm font-semibold text-gray-900 dark:text-gray-100 mb-3">Légende</h3>
+  <div class="bg-surface dark:bg-[#1C1B2E] rounded-lg shadow mb-6 p-4">
+    <h3 class="text-sm font-semibold text-text-deep dark:text-white mb-3">Légende</h3>
     <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
       <div class="flex items-center">
-        <div class="w-4 h-4 bg-indigo-500 rounded mr-2"></div>
-        <span class="text-sm text-gray-700 dark:text-gray-300">Jour travaillé</span>
+        <div class="w-4 h-4 bg-primary rounded mr-2"></div>
+        <span class="text-sm text-text-deep dark:text-white/70">Jour travaillé</span>
       </div>
       <div class="flex items-center">
         <div class="w-4 h-4 bg-blue-500 rounded mr-2"></div>
-        <span class="text-sm text-gray-700 dark:text-gray-300">Congés</span>
+        <span class="text-sm text-text-deep dark:text-white/70">Congés</span>
       </div>
       <div class="flex items-center">
         <div class="w-4 h-4 bg-gray-300 rounded mr-2"></div>
-        <span class="text-sm text-gray-700 dark:text-gray-300">Non planifié</span>
+        <span class="text-sm text-text-deep dark:text-white/70">Non planifié</span>
       </div>
       <div class="flex items-center">
-        <div class="w-4 h-4 border-2 border-indigo-600 rounded mr-2"></div>
-        <span class="text-sm text-gray-700 dark:text-gray-300">Aujourd'hui</span>
+        <div class="w-4 h-4 border-2 border-primary rounded mr-2"></div>
+        <span class="text-sm text-text-deep dark:text-white/70">Aujourd'hui</span>
       </div>
     </div>
   </div>
@@ -140,22 +140,22 @@
     <%# Navigation semaine %>
     <div class="flex items-center justify-between mb-3">
       <%= link_to work_schedule_path(@employee.id, week: @mobile_prev_week.iso8601, date: @mobile_prev_week.iso8601),
-          class: "flex items-center justify-center min-h-[44px] min-w-[44px] rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-400",
+          class: "flex items-center justify-center min-h-[44px] min-w-[44px] rounded-lg border border-border-soft dark:border-white/10 bg-surface dark:bg-[#1C1B2E] text-muted-soft dark:text-white/50",
           data: { turbo_frame: "work-schedule-content" } do %>
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
         </svg>
       <% end %>
       <div class="text-center">
-        <p class="text-sm font-semibold text-gray-900 dark:text-gray-100">
+        <p class="text-sm font-semibold text-text-deep dark:text-white">
           <%= l(@mobile_week_start, format: "%-d %b") %> – <%= l(@mobile_week_end, format: "%-d %b %Y") %>
         </p>
         <% if @mobile_week_start == Date.current.beginning_of_week(:monday) %>
-          <p class="text-xs text-indigo-500">Cette semaine</p>
+          <p class="text-xs text-primary">Cette semaine</p>
         <% end %>
       </div>
       <%= link_to work_schedule_path(@employee.id, week: @mobile_next_week.iso8601, date: @mobile_next_week.iso8601),
-          class: "flex items-center justify-center min-h-[44px] min-w-[44px] rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-400",
+          class: "flex items-center justify-center min-h-[44px] min-w-[44px] rounded-lg border border-border-soft dark:border-white/10 bg-surface dark:bg-[#1C1B2E] text-muted-soft dark:text-white/50",
           data: { turbo_frame: "work-schedule-content" } do %>
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
@@ -164,7 +164,7 @@
     </div>
 
     <%# Liste des 7 jours %>
-    <div class="bg-white dark:bg-gray-800 rounded-xl shadow border border-gray-200 dark:border-gray-700 divide-y divide-gray-100 dark:divide-gray-700">
+    <div class="bg-surface dark:bg-[#1C1B2E] rounded-xl shadow border border-border-soft dark:border-white/10 divide-y divide-gray-100 dark:divide-gray-700">
       <% (0..6).each do |offset| %>
         <%
           day_date    = @mobile_week_start + offset.days
@@ -176,13 +176,13 @@
           time_entry  = @time_entries.find { |te| te.worked_date == day_date }
         %>
         <div class="flex items-center justify-between px-4 py-3
-                    <%= 'bg-indigo-50 dark:bg-indigo-900/20' if is_today %>">
+                    <%= 'bg-primary dark:bg-primary/20/20' if is_today %>">
           <div class="flex items-center gap-3">
             <div class="w-10 text-center flex-shrink-0">
-              <p class="text-xs font-semibold <%= is_today ? 'text-indigo-600 dark:text-indigo-400' : 'text-gray-500 dark:text-gray-400' %>">
+              <p class="text-xs font-semibold <%= is_today ? 'text-primary dark:text-primary/80' : 'text-muted-soft dark:text-white/50' %>">
                 <%= l(day_date, format: '%a') %>
               </p>
-              <p class="text-lg font-bold <%= is_today ? 'text-indigo-600 dark:text-indigo-400' : 'text-gray-900 dark:text-gray-100' %>">
+              <p class="text-lg font-bold <%= is_today ? 'text-primary dark:text-primary/80' : 'text-text-deep dark:text-white' %>">
                 <%= day_date.day %>
               </p>
             </div>
@@ -192,19 +192,19 @@
                   Congé — <%= LeaveBalance.leave_type_name(leave_on.leave_type) %>
                 </span>
               <% elsif is_work_day %>
-                <p class="text-sm font-semibold text-gray-900 dark:text-gray-100"><%= work_hours %></p>
+                <p class="text-sm font-semibold text-text-deep dark:text-white"><%= work_hours %></p>
                 <% if time_entry %>
                   <p class="text-xs text-green-600 dark:text-green-400">✓ <%= time_entry.hours_worked.round(1) %>h pointées</p>
                 <% end %>
               <% elsif @mobile_week_plan %>
-                <span class="text-sm text-gray-400 dark:text-gray-500">Repos</span>
+                <span class="text-sm text-muted-soft dark:text-white/40">Repos</span>
               <% else %>
-                <span class="text-sm text-gray-400 dark:text-gray-500">Non planifié</span>
+                <span class="text-sm text-muted-soft dark:text-white/40">Non planifié</span>
               <% end %>
             </div>
           </div>
           <% if is_today %>
-            <span class="text-[10px] font-bold px-2 py-1 bg-indigo-600 text-white rounded-full flex-shrink-0">Aujourd'hui</span>
+            <span class="text-[10px] font-bold px-2 py-1 bg-primary text-white rounded-full flex-shrink-0">Aujourd'hui</span>
           <% end %>
         </div>
       <% end %>
@@ -213,20 +213,20 @@
 
   <!-- Calendar -->
   <div class="hidden sm:block">
-  <div class="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden">
+  <div class="bg-surface dark:bg-[#1C1B2E] rounded-lg shadow overflow-hidden">
     <!-- Calendar Header -->
-    <div class="grid grid-cols-7 bg-gray-50 dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700">
+    <div class="grid grid-cols-7 bg-bg-soft dark:bg-[#13121F] border-b border-border-soft dark:border-white/10">
       <% %w[Lun Mar Mer Jeu Ven Sam Dim].each do |day_name| %>
         <div class="py-3 text-center">
-          <span class="text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300"><%= day_name %></span>
+          <span class="text-xs sm:text-sm font-semibold text-text-deep dark:text-white/70"><%= day_name %></span>
         </div>
       <% end %>
     </div>
 
     <!-- Calendar Body -->
-    <div class="bg-white dark:bg-gray-800">
+    <div class="bg-surface dark:bg-[#1C1B2E]">
       <% @calendar_weeks.each do |week| %>
-        <div class="grid grid-cols-7 border-b border-gray-200 dark:border-gray-700 last:border-b-0">
+        <div class="grid grid-cols-7 border-b border-border-soft dark:border-white/10 last:border-b-0">
           <% week.each do |day_info| %>
             <%
               date = day_info[:date]
@@ -249,23 +249,23 @@
               time_entry = @time_entries.find { |te| te.worked_date == date }
             %>
 
-            <div class="min-h-[80px] sm:min-h-[100px] border-r border-gray-200 dark:border-gray-700 last:border-r-0 p-2
-                        <%= 'bg-gray-50 dark:bg-gray-900' unless in_month %>
-                        <%= 'bg-indigo-50 dark:bg-indigo-900' if is_work_day && in_month && !leave_on_day %>
+            <div class="min-h-[80px] sm:min-h-[100px] border-r border-border-soft dark:border-white/10 last:border-r-0 p-2
+                        <%= 'bg-bg-soft dark:bg-[#13121F]' unless in_month %>
+                        <%= 'bg-primary dark:bg-primary/20' if is_work_day && in_month && !leave_on_day %>
                         <%= 'bg-blue-100 dark:bg-blue-800' if leave_on_day %>
-                        <%= 'bg-gray-100 dark:bg-gray-800' if in_month && !is_work_day && !leave_on_day && !weekly_plan %>
-                        <%= 'border-2 border-indigo-600' if is_today %>">
+                        <%= 'bg-bg-soft dark:bg-[#1C1B2E]' if in_month && !is_work_day && !leave_on_day && !weekly_plan %>
+                        <%= 'border-2 border-primary' if is_today %>">
 
               <!-- Date Number -->
               <div class="flex items-center justify-between mb-1">
                 <span class="text-sm font-semibold
-                            <%= in_month ? 'text-gray-900 dark:text-gray-100' : 'text-gray-400 dark:text-gray-500' %>
-                            <%= 'text-indigo-600' if is_today %>">
+                            <%= in_month ? 'text-text-deep dark:text-white' : 'text-muted-soft dark:text-white/40' %>
+                            <%= 'text-primary' if is_today %>">
                   <%= date.day %>
                 </span>
 
                 <% if is_today %>
-                  <span class="hidden sm:inline-block px-2 py-0.5 text-xs font-semibold bg-indigo-600 text-white rounded-full">
+                  <span class="hidden sm:inline-block px-2 py-0.5 text-xs font-semibold bg-primary text-white rounded-full">
                     Aujourd'hui
                   </span>
                 <% end %>
@@ -283,7 +283,7 @@
                 <% elsif is_work_day %>
                   <!-- Work Hours -->
                   <div class="mt-1">
-                    <p class="text-xs text-gray-600 dark:text-gray-400 font-medium">
+                    <p class="text-xs text-muted-soft dark:text-white/50 font-medium">
                       <%= work_hours %>
                     </p>
 
@@ -295,9 +295,9 @@
                     <% end %>
                   </div>
                 <% elsif weekly_plan %>
-                  <p class="text-xs text-gray-400 dark:text-gray-500 mt-1">Repos</p>
+                  <p class="text-xs text-muted-soft dark:text-white/40 mt-1">Repos</p>
                 <% else %>
-                  <p class="text-xs text-gray-400 dark:text-gray-500 mt-1">Non planifié</p>
+                  <p class="text-xs text-muted-soft dark:text-white/40 mt-1">Non planifié</p>
                 <% end %>
               <% end %>
             </div>
@@ -310,9 +310,9 @@
 
   <!-- Summary Stats -->
   <div class="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
-    <div class="bg-gradient-to-br from-indigo-50 to-indigo-100 dark:from-indigo-900 dark:to-indigo-700 border-2 border-indigo-300 dark:border-indigo-500 rounded-lg shadow-lg p-6">
-      <p class="text-sm font-medium text-indigo-800 dark:text-white opacity-90">Heures travaillées ce mois</p>
-      <p class="text-3xl font-bold text-indigo-900 dark:text-white mt-2">
+    <div class="bg-gradient-to-br from-indigo-50 to-indigo-100 dark:from-indigo-900 dark:to-indigo-700 border-2 border-primary dark:border-primary rounded-lg shadow-lg p-6">
+      <p class="text-sm font-medium text-primary dark:text-white opacity-90">Heures travaillées ce mois</p>
+      <p class="text-3xl font-bold text-primary dark:text-white mt-2">
         <%= @time_entries.sum(&:hours_worked).round(1) %>h
       </p>
     </div>

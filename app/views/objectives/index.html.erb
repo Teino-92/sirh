@@ -1,29 +1,29 @@
 <div class="max-w-4xl mx-auto px-4 py-6">
   <div class="flex justify-between items-center mb-6">
-    <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100">Mes objectifs</h1>
+    <h1 class="text-2xl font-serif text-text-deep dark:text-white">Mes objectifs</h1>
   </div>
 
   <div class="flex gap-2 mb-4 overflow-x-auto pb-2">
-    <%= link_to 'Tous', objectives_path, class: "px-3 py-1 rounded text-sm font-medium #{params[:status].blank? ? 'bg-indigo-600 text-white' : 'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-600'}" %>
-    <%= link_to 'En cours', objectives_path(status: :in_progress), class: "px-3 py-1 rounded text-sm font-medium #{params[:status] == 'in_progress' ? 'bg-indigo-600 text-white' : 'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-600'}" %>
-    <%= link_to 'Complétés', objectives_path(status: :completed), class: "px-3 py-1 rounded text-sm font-medium #{params[:status] == 'completed' ? 'bg-indigo-600 text-white' : 'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-600'}" %>
+    <%= link_to 'Tous', objectives_path, class: "px-3 py-1 rounded text-sm font-medium #{params[:status].blank? ? 'bg-primary text-white' : 'bg-surface dark:bg-surface/10 text-text-deep dark:text-white/70 border border-border-soft dark:border-white/15'}" %>
+    <%= link_to 'En cours', objectives_path(status: :in_progress), class: "px-3 py-1 rounded text-sm font-medium #{params[:status] == 'in_progress' ? 'bg-primary text-white' : 'bg-surface dark:bg-surface/10 text-text-deep dark:text-white/70 border border-border-soft dark:border-white/15'}" %>
+    <%= link_to 'Complétés', objectives_path(status: :completed), class: "px-3 py-1 rounded text-sm font-medium #{params[:status] == 'completed' ? 'bg-primary text-white' : 'bg-surface dark:bg-surface/10 text-text-deep dark:text-white/70 border border-border-soft dark:border-white/15'}" %>
   </div>
 
   <% if @objectives.any? %>
     <div class="space-y-4">
       <% @objectives.each do |objective| %>
-        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4">
+        <div class="bg-surface dark:bg-[#1C1B2E] rounded-lg shadow p-4">
           <div class="flex justify-between items-start">
             <div class="flex-1">
-              <h3 class="font-semibold text-lg text-gray-900 dark:text-gray-100">
-                <%= link_to objective.title, objective_path(objective), class: "hover:text-indigo-600" %>
+              <h3 class="font-semibold text-lg text-text-deep dark:text-white">
+                <%= link_to objective.title, objective_path(objective), class: "hover:text-primary" %>
               </h3>
-              <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">
+              <p class="text-sm text-muted-soft dark:text-white/50 mt-1">
                 Manager : <%= objective.manager.full_name %> &bull;
                 Échéance : <%= l(objective.deadline, format: :short) %>
               </p>
             </div>
-            <span class="ml-3 px-2 py-1 text-xs font-medium rounded bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300">
+            <span class="ml-3 px-2 py-1 text-xs font-medium rounded bg-bg-soft dark:bg-surface/10 text-text-deep dark:text-white/70">
               <%= objective.status.humanize %>
             </span>
           </div>
@@ -36,8 +36,8 @@
       <% end %>
     </div>
   <% else %>
-    <div class="text-center py-12 text-gray-500 dark:text-gray-400">
-      <svg class="mx-auto h-12 w-12 text-gray-300 dark:text-gray-600 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <div class="text-center py-12 text-muted-soft dark:text-white/50">
+      <svg class="mx-auto h-12 w-12 text-muted-soft dark:text-muted-soft mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
       </svg>
       <p class="text-lg font-medium">Aucun objectif</p>

@@ -5,11 +5,11 @@
   <!-- Header -->
   <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6">
     <div>
-      <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100">Entretiens 1:1</h1>
-      <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">Planifiez et gérez vos entretiens individuels</p>
+      <h1 class="text-2xl sm:text-3xl font-serif text-text-deep dark:text-white">Entretiens 1:1</h1>
+      <p class="text-sm text-muted-soft dark:text-white/50 mt-1">Planifiez et gérez vos entretiens individuels</p>
     </div>
     <%= link_to new_manager_one_on_one_path,
-        class: "mt-4 sm:mt-0 inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 transition-colors",
+        class: "mt-4 sm:mt-0 inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primary hover:bg-primary transition-colors",
         data: { "tour-step": "1", "tour-title": "Planifier un 1:1", "tour-description": "Créez un entretien individuel avec un membre de votre équipe." } do %>
       <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
@@ -23,14 +23,14 @@
        data-tour-step="2"
        data-tour-title="Prochains et passés"
        data-tour-description="Basculez entre vos entretiens à venir et vos entretiens passés avec leurs notes.">
-    <div class="border-b border-gray-200 dark:border-gray-700">
+    <div class="border-b border-border-soft dark:border-white/10">
       <nav class="-mb-px flex space-x-8" aria-label="Onglets">
         <%= link_to manager_one_on_ones_path(tab: 'upcoming'),
-          class: "whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm #{@tab == 'upcoming' ? 'border-indigo-500 text-indigo-600 dark:text-indigo-400' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:border-gray-300'}" do %>
+          class: "whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm #{@tab == 'upcoming' ? 'border-primary text-primary dark:text-primary/80' : 'border-transparent text-muted-soft dark:text-white/50 hover:text-text-deep dark:hover:text-muted-soft hover:border-border-soft'}" do %>
           Prochains
         <% end %>
         <%= link_to manager_one_on_ones_path(tab: 'past'),
-          class: "whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm #{@tab == 'past' ? 'border-indigo-500 text-indigo-600 dark:text-indigo-400' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:border-gray-300'}" do %>
+          class: "whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm #{@tab == 'past' ? 'border-primary text-primary dark:text-primary/80' : 'border-transparent text-muted-soft dark:text-white/50 hover:text-text-deep dark:hover:text-muted-soft hover:border-border-soft'}" do %>
           Passés
         <% end %>
       </nav>
@@ -41,14 +41,14 @@
   <div class="space-y-4">
     <% if @one_on_ones.any? %>
       <% @one_on_ones.each do |one_on_one| %>
-        <div class="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden border border-gray-200 dark:border-gray-700">
+        <div class="bg-surface dark:bg-[#1C1B2E] rounded-lg shadow overflow-hidden border border-border-soft dark:border-white/10">
           <div class="p-4 sm:p-6">
             <div class="flex items-start justify-between">
               <div class="flex-1 min-w-0">
-                <h3 class="text-base font-semibold text-gray-900 dark:text-gray-100 mb-1">
-                  <%= link_to "1:1 avec #{one_on_one.employee.full_name}", manager_one_on_one_path(one_on_one), class: "hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors" %>
+                <h3 class="text-base font-semibold text-text-deep dark:text-white mb-1">
+                  <%= link_to "1:1 avec #{one_on_one.employee.full_name}", manager_one_on_one_path(one_on_one), class: "hover:text-primary dark:hover:text-primary transition-colors" %>
                 </h3>
-                <div class="flex flex-wrap items-center gap-3 text-sm text-gray-600 dark:text-gray-400">
+                <div class="flex flex-wrap items-center gap-3 text-sm text-muted-soft dark:text-white/50">
                   <span class="flex items-center">
                     <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
@@ -56,22 +56,22 @@
                     <%= l(one_on_one.scheduled_at, format: :short) %>
                   </span>
                   <% if one_on_one.scheduled_at.future? %>
-                    <span class="text-xs text-indigo-600 dark:text-indigo-400">
+                    <span class="text-xs text-primary dark:text-primary/80">
                       dans <%= distance_of_time_in_words(Time.current, one_on_one.scheduled_at) %>
                     </span>
                   <% elsif @tab == 'past' %>
-                    <span class="text-xs text-gray-500 dark:text-gray-400">
+                    <span class="text-xs text-muted-soft dark:text-white/50">
                       il y a <%= distance_of_time_in_words(one_on_one.scheduled_at, Time.current) %>
                     </span>
                   <% end %>
                 </div>
                 <% if one_on_one.agenda.present? %>
-                  <p class="mt-2 text-sm text-gray-600 dark:text-gray-400 line-clamp-1">
+                  <p class="mt-2 text-sm text-muted-soft dark:text-white/50 line-clamp-1">
                     <span class="font-medium">Agenda :</span> <%= one_on_one.agenda %>
                   </p>
                 <% end %>
                 <% if @tab == 'past' && one_on_one.notes.present? %>
-                  <p class="mt-1 text-sm text-gray-500 dark:text-gray-400 line-clamp-2">
+                  <p class="mt-1 text-sm text-muted-soft dark:text-white/50 line-clamp-2">
                     <span class="font-medium">Notes :</span> <%= one_on_one.notes %>
                   </p>
                 <% end %>
@@ -79,10 +79,10 @@
               <div class="ml-4 flex-shrink-0 flex items-center gap-2">
                 <%
                   status_classes = case one_on_one.status
-                  when 'scheduled' then 'bg-blue-100 dark:bg-blue-800 text-blue-800 dark:text-blue-200'
+                  when 'scheduled' then 'bg-primary/10 dark:bg-primary/10 text-primary dark:text-primary'
                   when 'completed' then 'bg-green-100 dark:bg-green-800 text-green-800 dark:text-green-200'
-                  when 'cancelled' then 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'
-                  else 'bg-yellow-100 dark:bg-yellow-800 text-yellow-800 dark:text-yellow-200'
+                  when 'cancelled' then 'bg-bg-soft dark:bg-surface/10 text-text-deep dark:text-white/70'
+                  else 'bg-warning/10 dark:bg-warning/10 text-warning dark:text-warning'
                   end
                   status_label = case one_on_one.status
                   when 'scheduled' then 'Planifié'
@@ -94,7 +94,7 @@
                 <span class="px-2 py-1 text-xs font-semibold rounded-full <%= status_classes %>">
                   <%= status_label %>
                 </span>
-                <%= link_to manager_one_on_one_path(one_on_one), class: "text-sm text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 font-medium" do %>
+                <%= link_to manager_one_on_one_path(one_on_one), class: "text-sm text-primary dark:text-primary/80 hover:text-primary font-medium" do %>
                   Voir
                 <% end %>
               </div>
@@ -104,22 +104,22 @@
       <% end %>
     <% else %>
       <!-- Empty State -->
-      <div class="bg-white dark:bg-gray-800 rounded-lg shadow text-center py-12 px-4">
-        <svg class="mx-auto h-12 w-12 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <div class="bg-surface dark:bg-[#1C1B2E] rounded-lg shadow text-center py-12 px-4">
+        <svg class="mx-auto h-12 w-12 text-muted-soft dark:text-white/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z" />
         </svg>
         <% if @tab == 'past' %>
-          <h3 class="mt-2 text-sm font-medium text-gray-900 dark:text-gray-100">Aucun entretien passé</h3>
-          <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+          <h3 class="mt-2 text-sm font-medium text-text-deep dark:text-white">Aucun entretien passé</h3>
+          <p class="mt-1 text-sm text-muted-soft dark:text-white/50">
             Vos entretiens passés apparaîtront ici.
           </p>
         <% else %>
-          <h3 class="mt-2 text-sm font-medium text-gray-900 dark:text-gray-100">Aucun entretien planifié</h3>
-          <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+          <h3 class="mt-2 text-sm font-medium text-text-deep dark:text-white">Aucun entretien planifié</h3>
+          <p class="mt-1 text-sm text-muted-soft dark:text-white/50">
             Planifiez votre premier entretien individuel.
           </p>
           <div class="mt-6">
-            <%= link_to new_manager_one_on_one_path, class: "inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700" do %>
+            <%= link_to new_manager_one_on_one_path, class: "inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primary hover:bg-primary" do %>
               <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
               </svg>

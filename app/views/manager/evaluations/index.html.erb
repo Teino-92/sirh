@@ -2,10 +2,10 @@
   <!-- Header -->
   <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6">
     <div>
-      <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100">Évaluations équipe</h1>
-      <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">Gérez les évaluations de performance de votre équipe</p>
+      <h1 class="text-2xl sm:text-3xl font-serif text-text-deep dark:text-white">Évaluations équipe</h1>
+      <p class="text-sm text-muted-soft dark:text-white/50 mt-1">Gérez les évaluations de performance de votre équipe</p>
     </div>
-    <%= link_to new_manager_evaluation_path, class: "mt-4 sm:mt-0 inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 transition-colors" do %>
+    <%= link_to new_manager_evaluation_path, class: "mt-4 sm:mt-0 inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primary hover:bg-primary transition-colors" do %>
       <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
       </svg>
@@ -15,22 +15,22 @@
 
   <!-- Status Filter Tabs -->
   <div class="mb-6">
-    <div class="border-b border-gray-200 dark:border-gray-700">
+    <div class="border-b border-border-soft dark:border-white/10">
       <nav class="-mb-px flex space-x-6 overflow-x-auto" aria-label="Filtres">
         <%= link_to manager_evaluations_path,
-          class: "whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm #{params[:status].blank? ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:border-gray-300'}" do %>
+          class: "whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm #{params[:status].blank? ? 'border-primary text-primary' : 'border-transparent text-muted-soft dark:text-white/50 hover:text-text-deep dark:hover:text-muted-soft hover:border-border-soft'}" do %>
           Toutes
         <% end %>
         <%= link_to manager_evaluations_path(status: :employee_review_pending),
-          class: "whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm #{params[:status] == 'employee_review_pending' ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:border-gray-300'}" do %>
+          class: "whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm #{params[:status] == 'employee_review_pending' ? 'border-primary text-primary' : 'border-transparent text-muted-soft dark:text-white/50 hover:text-text-deep dark:hover:text-muted-soft hover:border-border-soft'}" do %>
           Auto-éval. en cours
         <% end %>
         <%= link_to manager_evaluations_path(status: :manager_review_pending),
-          class: "whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm #{params[:status] == 'manager_review_pending' ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:border-gray-300'}" do %>
+          class: "whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm #{params[:status] == 'manager_review_pending' ? 'border-primary text-primary' : 'border-transparent text-muted-soft dark:text-white/50 hover:text-text-deep dark:hover:text-muted-soft hover:border-border-soft'}" do %>
           À compléter
         <% end %>
         <%= link_to manager_evaluations_path(status: :completed),
-          class: "whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm #{params[:status] == 'completed' ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:border-gray-300'}" do %>
+          class: "whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm #{params[:status] == 'completed' ? 'border-primary text-primary' : 'border-transparent text-muted-soft dark:text-white/50 hover:text-text-deep dark:hover:text-muted-soft hover:border-border-soft'}" do %>
           Complétées
         <% end %>
       </nav>
@@ -41,14 +41,14 @@
   <div class="space-y-4">
     <% if @evaluations.any? %>
       <% @evaluations.each do |evaluation| %>
-        <div class="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden border border-gray-200 dark:border-gray-700">
+        <div class="bg-surface dark:bg-[#1C1B2E] rounded-lg shadow overflow-hidden border border-border-soft dark:border-white/10">
           <div class="p-4 sm:p-6">
             <div class="flex items-start justify-between">
               <div class="flex-1 min-w-0">
-                <h3 class="text-base font-semibold text-gray-900 dark:text-gray-100 mb-1">
-                  <%= link_to evaluation.employee.full_name, manager_evaluation_path(evaluation), class: "hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors" %>
+                <h3 class="text-base font-semibold text-text-deep dark:text-white mb-1">
+                  <%= link_to evaluation.employee.full_name, manager_evaluation_path(evaluation), class: "hover:text-primary dark:hover:text-primary transition-colors" %>
                 </h3>
-                <div class="flex flex-wrap items-center gap-3 text-sm text-gray-600 dark:text-gray-400">
+                <div class="flex flex-wrap items-center gap-3 text-sm text-muted-soft dark:text-white/50">
                   <span class="flex items-center">
                     <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
@@ -68,10 +68,10 @@
               <div class="ml-4 flex-shrink-0 flex items-center gap-2">
                 <%
                   status_classes = case evaluation.status
-                  when 'employee_review_pending' then 'bg-yellow-100 dark:bg-yellow-800 text-yellow-800 dark:text-yellow-200'
+                  when 'employee_review_pending' then 'bg-warning/10 dark:bg-warning/10 text-warning dark:text-warning'
                   when 'manager_review_pending' then 'bg-orange-100 dark:bg-orange-800 text-orange-800 dark:text-orange-200'
                   when 'completed' then 'bg-green-100 dark:bg-green-800 text-green-800 dark:text-green-200'
-                  else 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'
+                  else 'bg-bg-soft dark:bg-surface/10 text-text-deep dark:text-white/70'
                   end
                   status_label = case evaluation.status
                   when 'employee_review_pending' then 'Auto-éval.'
@@ -83,7 +83,7 @@
                 <span class="px-2 py-1 text-xs font-semibold rounded-full <%= status_classes %>">
                   <%= status_label %>
                 </span>
-                <%= link_to manager_evaluation_path(evaluation), class: "text-sm text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 font-medium" do %>
+                <%= link_to manager_evaluation_path(evaluation), class: "text-sm text-primary dark:text-primary/80 hover:text-primary font-medium" do %>
                   Voir
                 <% end %>
               </div>
@@ -93,16 +93,16 @@
       <% end %>
     <% else %>
       <!-- Empty State -->
-      <div class="bg-white dark:bg-gray-800 rounded-lg shadow text-center py-12 px-4">
-        <svg class="mx-auto h-12 w-12 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <div class="bg-surface dark:bg-[#1C1B2E] rounded-lg shadow text-center py-12 px-4">
+        <svg class="mx-auto h-12 w-12 text-muted-soft dark:text-white/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
         </svg>
-        <h3 class="mt-2 text-sm font-medium text-gray-900 dark:text-gray-100">Aucune évaluation</h3>
-        <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+        <h3 class="mt-2 text-sm font-medium text-text-deep dark:text-white">Aucune évaluation</h3>
+        <p class="mt-1 text-sm text-muted-soft dark:text-white/50">
           Commencez par créer une évaluation pour votre équipe.
         </p>
         <div class="mt-6">
-          <%= link_to new_manager_evaluation_path, class: "inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700" do %>
+          <%= link_to new_manager_evaluation_path, class: "inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primary hover:bg-primary" do %>
             <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
             </svg>

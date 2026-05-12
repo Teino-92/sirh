@@ -1,16 +1,16 @@
 <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
   <div class="mb-4">
     <%= link_to '← Formations équipe', manager_trainings_path,
-          class: 'text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200' %>
+          class: 'text-sm text-muted-soft hover:text-text-deep dark:text-white/50 dark:hover:text-muted-soft' %>
   </div>
 
   <!-- Header card -->
-  <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 mb-6">
+  <div class="bg-surface dark:bg-[#1C1B2E] rounded-lg shadow-sm border border-border-soft dark:border-white/10 p-6 mb-6">
     <div class="flex justify-between items-start">
       <div class="flex-1">
-        <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100"><%= @training.title %></h1>
-        <div class="flex flex-wrap gap-3 mt-2 text-sm text-gray-600 dark:text-gray-400">
-          <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 dark:bg-indigo-900/40 text-indigo-800 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-700">
+        <h1 class="text-2xl font-serif text-text-deep dark:text-white"><%= @training.title %></h1>
+        <div class="flex flex-wrap gap-3 mt-2 text-sm text-muted-soft dark:text-white/50">
+          <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary dark:bg-primary/20/40 text-primary dark:text-primary border border-primary dark:border-primary">
             <%= {
               'internal' => 'Interne',
               'external' => 'Externe',
@@ -20,32 +20,32 @@
             }[@training.training_type] || @training.training_type.humanize %>
           </span>
           <% if @training.provider.present? %>
-            <span><strong class="text-gray-700 dark:text-gray-300">Organisme :</strong> <%= @training.provider %></span>
+            <span><strong class="text-text-deep dark:text-white/70">Organisme :</strong> <%= @training.provider %></span>
           <% end %>
           <% if @training.duration_estimate.present? %>
-            <span><strong class="text-gray-700 dark:text-gray-300">Durée :</strong> <%= @training.duration_estimate %>h</span>
+            <span><strong class="text-text-deep dark:text-white/70">Durée :</strong> <%= @training.duration_estimate %>h</span>
           <% end %>
           <% if @training.external_url.present? %>
             <%= link_to 'Lien externe', @training.external_url,
                   target: '_blank', rel: 'noopener',
-                  class: 'text-indigo-600 dark:text-indigo-400 hover:underline' %>
+                  class: 'text-primary dark:text-primary/80 hover:underline' %>
           <% end %>
         </div>
         <% if @training.description.present? %>
-          <p class="mt-4 text-gray-700 dark:text-gray-300"><%= @training.description %></p>
+          <p class="mt-4 text-text-deep dark:text-white/70"><%= @training.description %></p>
         <% end %>
       </div>
       <div class="flex gap-2 ml-4">
         <% if @training.archived? %>
           <%= button_to 'Restaurer', unarchive_manager_training_path(@training),
                 method: :patch,
-                class: 'inline-flex items-center py-1.5 px-3 border border-gray-300 dark:border-gray-600 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 transition-all cursor-pointer' %>
+                class: 'inline-flex items-center py-1.5 px-3 border border-border-soft dark:border-white/15 rounded-md text-sm font-medium text-text-deep dark:text-white/70 bg-surface dark:bg-surface/10 hover:bg-bg-soft dark:hover:bg-gray-600 transition-all cursor-pointer' %>
         <% else %>
           <%= link_to 'Modifier', edit_manager_training_path(@training),
-                class: 'inline-flex items-center py-1.5 px-3 border border-gray-300 dark:border-gray-600 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 transition-all' %>
+                class: 'inline-flex items-center py-1.5 px-3 border border-border-soft dark:border-white/15 rounded-md text-sm font-medium text-text-deep dark:text-white/70 bg-surface dark:bg-surface/10 hover:bg-bg-soft dark:hover:bg-gray-600 transition-all' %>
           <%= button_to 'Archiver', archive_manager_training_path(@training),
                 method: :patch,
-                class: 'inline-flex items-center py-1.5 px-3 border border-transparent rounded-md text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-400 bg-transparent transition-all cursor-pointer',
+                class: 'inline-flex items-center py-1.5 px-3 border border-transparent rounded-md text-sm font-medium text-muted-soft dark:text-white/50 hover:text-red-600 dark:hover:text-red-400 bg-transparent transition-all cursor-pointer',
                 data: { confirm: 'Archiver cette formation ?' } %>
         <% end %>
       </div>
@@ -53,30 +53,30 @@
   </div>
 
   <!-- Assignments -->
-  <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-    <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">
+  <div class="bg-surface dark:bg-[#1C1B2E] rounded-lg shadow-sm border border-border-soft dark:border-white/10 p-6">
+    <h2 class="text-lg font-semibold text-text-deep dark:text-white mb-4">
       Assignations (<%= @assignments.count %>)
     </h2>
 
     <% if @assignments.any? %>
       <div class="space-y-3">
         <% @assignments.each do |assignment| %>
-          <div class="flex justify-between items-center py-2 border-b border-gray-100 dark:border-gray-700 last:border-0">
+          <div class="flex justify-between items-center py-2 border-b border-border-soft dark:border-white/10 last:border-0">
             <div>
-              <span class="font-medium text-gray-900 dark:text-gray-100"><%= assignment.employee.full_name %></span>
-              <span class="text-sm text-gray-500 dark:text-gray-400 ml-2">
+              <span class="font-medium text-text-deep dark:text-white"><%= assignment.employee.full_name %></span>
+              <span class="text-sm text-muted-soft dark:text-white/50 ml-2">
                 Assigné le <%= l(assignment.assigned_at.to_date, format: :short) %>
               </span>
               <% if assignment.deadline.present? %>
-                <span class="text-sm text-gray-500 dark:text-gray-400"> &bull; Échéance <%= l(assignment.deadline, format: :short) %></span>
+                <span class="text-sm text-muted-soft dark:text-white/50"> &bull; Échéance <%= l(assignment.deadline, format: :short) %></span>
               <% end %>
             </div>
             <%
               status_classes = {
-                'pending'    => 'bg-yellow-100 dark:bg-yellow-900/40 text-yellow-800 dark:text-yellow-300 border-yellow-200 dark:border-yellow-700',
-                'in_progress'=> 'bg-blue-100 dark:bg-blue-900/40 text-blue-800 dark:text-blue-300 border-blue-200 dark:border-blue-700',
+                'pending'    => 'bg-warning/10 dark:bg-warning/10/40 text-warning dark:text-warning border-yellow-200 dark:border-yellow-700',
+                'in_progress'=> 'bg-primary/10 dark:bg-primary/10/40 text-primary dark:text-primary border-blue-200 dark:border-blue-700',
                 'completed'  => 'bg-green-100 dark:bg-green-900/40 text-green-800 dark:text-green-300 border-green-200 dark:border-green-700',
-                'cancelled'  => 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 border-gray-200 dark:border-gray-600'
+                'cancelled'  => 'bg-bg-soft dark:bg-surface/10 text-muted-soft dark:text-white/50 border-border-soft dark:border-white/15'
               }
               status_labels = {
                 'pending'    => 'En attente',
@@ -85,14 +85,14 @@
                 'cancelled'  => 'Annulé'
               }
             %>
-            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium border <%= status_classes[assignment.status] || 'bg-gray-100 text-gray-600' %>">
+            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium border <%= status_classes[assignment.status] || 'bg-bg-soft text-muted-soft' %>">
               <%= status_labels[assignment.status] || assignment.status.humanize %>
             </span>
           </div>
         <% end %>
       </div>
     <% else %>
-      <p class="text-gray-500 dark:text-gray-400 text-sm">Aucune assignation pour cette formation.</p>
+      <p class="text-muted-soft dark:text-white/50 text-sm">Aucune assignation pour cette formation.</p>
     <% end %>
   </div>
 </div>

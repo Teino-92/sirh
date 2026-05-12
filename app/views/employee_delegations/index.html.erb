@@ -4,12 +4,12 @@
 
   <div class="flex items-center justify-between mb-6">
     <div>
-      <h1 class="text-xl font-bold text-gray-900 dark:text-gray-100">Mes délégations</h1>
-      <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Déléguer votre rôle d'approbation à un collègue pendant votre absence.</p>
+      <h1 class="text-xl font-bold text-text-deep dark:text-white">Mes délégations</h1>
+      <p class="mt-1 text-sm text-muted-soft dark:text-white/50">Déléguer votre rôle d'approbation à un collègue pendant votre absence.</p>
     </div>
     <% if policy(EmployeeDelegation).create? %>
       <%= link_to new_employee_delegation_path,
-          class: "inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg" do %>
+          class: "inline-flex items-center gap-2 px-4 py-2 bg-primary hover:bg-primary text-white text-sm font-medium rounded-lg" do %>
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
         </svg>
@@ -20,8 +20,8 @@
 
   <%# Délégations reçues actives %>
   <% if @as_delegatee.any? %>
-    <div class="bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-200 dark:border-indigo-700 rounded-lg p-4 mb-6">
-      <h2 class="text-sm font-semibold text-indigo-800 dark:text-indigo-300 mb-3 flex items-center gap-2">
+    <div class="bg-primary dark:bg-primary/20/20 border border-primary dark:border-primary rounded-lg p-4 mb-6">
+      <h2 class="text-sm font-semibold text-primary dark:text-primary mb-3 flex items-center gap-2">
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
         </svg>
@@ -29,13 +29,13 @@
       </h2>
       <div class="space-y-2">
         <% @as_delegatee.each do |d| %>
-          <div class="flex items-center justify-between bg-white dark:bg-gray-800 rounded px-3 py-2 text-sm">
+          <div class="flex items-center justify-between bg-surface dark:bg-[#1C1B2E] rounded px-3 py-2 text-sm">
             <div class="flex items-center gap-2">
-              <span class="font-medium text-gray-900 dark:text-gray-100"><%= d.delegator.full_name %></span>
-              <span class="text-gray-400">·</span>
-              <span class="text-indigo-600 dark:text-indigo-400 font-medium"><%= d.role.humanize %></span>
+              <span class="font-medium text-text-deep dark:text-white"><%= d.delegator.full_name %></span>
+              <span class="text-muted-soft">·</span>
+              <span class="text-primary dark:text-primary/80 font-medium"><%= d.role.humanize %></span>
             </div>
-            <span class="text-xs text-gray-500 dark:text-gray-400">jusqu'au <%= l(d.ends_at.to_date, format: :long) %></span>
+            <span class="text-xs text-muted-soft dark:text-white/50">jusqu'au <%= l(d.ends_at.to_date, format: :long) %></span>
           </div>
         <% end %>
       </div>
@@ -43,17 +43,17 @@
   <% end %>
 
   <%# Délégations émises %>
-  <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
-    <div class="px-4 py-3 border-b border-gray-200 dark:border-gray-700">
-      <h2 class="text-sm font-semibold text-gray-700 dark:text-gray-300">Délégations émises</h2>
+  <div class="bg-surface dark:bg-[#1C1B2E] rounded-lg shadow-sm border border-border-soft dark:border-white/10">
+    <div class="px-4 py-3 border-b border-border-soft dark:border-white/10">
+      <h2 class="text-sm font-semibold text-text-deep dark:text-white/70">Délégations émises</h2>
     </div>
 
     <% if @as_delegator.empty? %>
       <div class="px-4 py-10 text-center">
-        <svg class="mx-auto w-10 h-10 text-gray-300 dark:text-gray-600 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg class="mx-auto w-10 h-10 text-muted-soft dark:text-muted-soft mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/>
         </svg>
-        <p class="text-sm text-gray-400 dark:text-gray-500 italic">Aucune délégation créée</p>
+        <p class="text-sm text-muted-soft dark:text-white/40 italic">Aucune délégation créée</p>
       </div>
     <% else %>
       <ul class="divide-y divide-gray-100 dark:divide-gray-700">
@@ -62,21 +62,21 @@
           <li class="flex items-center justify-between px-4 py-3 gap-4">
             <div class="flex-1 min-w-0">
               <div class="flex items-center gap-2 flex-wrap">
-                <span class="font-medium text-sm text-gray-900 dark:text-gray-100"><%= d.delegatee.full_name %></span>
-                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-300">
+                <span class="font-medium text-sm text-text-deep dark:text-white"><%= d.delegatee.full_name %></span>
+                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-primary text-primary dark:bg-primary/20/30 dark:text-primary">
                   <%= d.role.humanize %>
                 </span>
                 <% if active %>
                   <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300">En cours</span>
                 <% elsif d.ends_at < Time.current %>
-                  <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-500 dark:bg-gray-700 dark:text-gray-400">Expirée</span>
+                  <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-bg-soft text-muted-soft dark:bg-surface/10 dark:text-white/50">Expirée</span>
                 <% elsif !d.active? %>
                   <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400">Révoquée</span>
                 <% else %>
                   <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-300">À venir</span>
                 <% end %>
               </div>
-              <p class="mt-0.5 text-xs text-gray-500 dark:text-gray-400">
+              <p class="mt-0.5 text-xs text-muted-soft dark:text-white/50">
                 Du <%= l(d.starts_at.to_date, format: :long) %> au <%= l(d.ends_at.to_date, format: :long) %>
                 <% if d.reason.present? %> · <%= d.reason %><% end %>
               </p>

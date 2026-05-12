@@ -3,27 +3,27 @@
   <!-- Header -->
   <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 gap-3">
     <div>
-      <div class="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400 mb-1">
-        <%= link_to "Mon équipe", manager_team_schedules_path, class: "hover:text-indigo-600 dark:hover:text-indigo-400" %>
+      <div class="flex items-center gap-2 text-sm text-muted-soft dark:text-white/50 mb-1">
+        <%= link_to "Mon équipe", manager_team_schedules_path, class: "hover:text-primary dark:hover:text-primary" %>
         <span>›</span>
         <span>Planning</span>
       </div>
-      <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100">Planning de l'équipe</h1>
+      <h1 class="text-2xl sm:text-3xl font-serif text-text-deep dark:text-white">Planning de l'équipe</h1>
     </div>
 
     <!-- Month navigation -->
     <div class="flex items-center gap-2">
       <%= link_to manager_team_schedules_planning_path(month: @prev_month.iso8601),
-          class: "flex items-center justify-center min-h-[44px] min-w-[44px] rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors" do %>
+          class: "flex items-center justify-center min-h-[44px] min-w-[44px] rounded-lg border border-border-soft dark:border-white/10 bg-surface dark:bg-[#1C1B2E] text-muted-soft dark:text-white/50 hover:bg-bg-soft dark:hover:bg-gray-700 transition-colors" do %>
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
         </svg>
       <% end %>
-      <span class="px-4 py-2 text-sm font-semibold text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg min-w-[140px] text-center">
+      <span class="px-4 py-2 text-sm font-semibold text-text-deep dark:text-white bg-surface dark:bg-[#1C1B2E] border border-border-soft dark:border-white/10 rounded-lg min-w-[140px] text-center">
         <%= l(@current_month, format: "%B %Y").capitalize %>
       </span>
       <%= link_to manager_team_schedules_planning_path(month: @next_month.iso8601),
-          class: "flex items-center justify-center min-h-[44px] min-w-[44px] rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors" do %>
+          class: "flex items-center justify-center min-h-[44px] min-w-[44px] rounded-lg border border-border-soft dark:border-white/10 bg-surface dark:bg-[#1C1B2E] text-muted-soft dark:text-white/50 hover:bg-bg-soft dark:hover:bg-gray-700 transition-colors" do %>
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
         </svg>
@@ -32,25 +32,25 @@
   </div>
 
   <% if @team_members.empty? %>
-    <div class="bg-white dark:bg-gray-800 rounded-lg shadow text-center py-12 px-4">
-      <p class="text-gray-500 dark:text-gray-400">Aucun membre dans votre équipe.</p>
-      <%= link_to "Ajouter un membre", new_manager_team_member_path, class: "mt-4 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700" %>
+    <div class="bg-surface dark:bg-[#1C1B2E] rounded-lg shadow text-center py-12 px-4">
+      <p class="text-muted-soft dark:text-white/50">Aucun membre dans votre équipe.</p>
+      <%= link_to "Ajouter un membre", new_manager_team_member_path, class: "mt-4 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-primary hover:bg-primary" %>
     </div>
   <% else %>
 
     <%# ── DESKTOP : Grille mensuelle ─────────────────────────────────────── %>
-    <div class="hidden sm:block bg-white dark:bg-gray-800 rounded-xl shadow border border-gray-200 dark:border-gray-700 overflow-x-auto">
+    <div class="hidden sm:block bg-surface dark:bg-[#1C1B2E] rounded-xl shadow border border-border-soft dark:border-white/10 overflow-x-auto">
       <table class="w-full min-w-[640px] border-collapse">
         <thead>
-          <tr class="border-b border-gray-200 dark:border-gray-700">
-            <th class="w-44 px-4 py-3 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider bg-gray-50 dark:bg-gray-900/50 sticky left-0 z-10">
+          <tr class="border-b border-border-soft dark:border-white/10">
+            <th class="w-44 px-4 py-3 text-left text-xs font-semibold text-muted-soft dark:text-white/50 uppercase tracking-wider bg-bg-soft dark:bg-[#13121F]/50 sticky left-0 z-10">
               Employé
             </th>
             <% @weeks.each do |week| %>
               <% is_current = week == Date.current.beginning_of_week(:monday) %>
-              <th class="px-3 py-3 text-center text-xs font-semibold <%= is_current ? 'text-indigo-600 dark:text-indigo-400' : 'text-gray-500 dark:text-gray-400' %> uppercase tracking-wider">
+              <th class="px-3 py-3 text-center text-xs font-semibold <%= is_current ? 'text-primary dark:text-primary/80' : 'text-muted-soft dark:text-white/50' %> uppercase tracking-wider">
                 <div class="<%= is_current ? 'font-bold' : '' %>">Sem.</div>
-                <div class="text-[10px] font-normal normal-case text-gray-400 dark:text-gray-500">
+                <div class="text-[10px] font-normal normal-case text-muted-soft dark:text-white/40">
                   <%= l(week, format: "%-d/%-m") %> – <%= l(week + 4.days, format: "%-d/%-m") %>
                 </div>
               </th>
@@ -59,16 +59,16 @@
         </thead>
         <tbody class="divide-y divide-gray-100 dark:divide-gray-700">
           <% @team_members.each do |member| %>
-            <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/30 transition-colors">
+            <tr class="hover:bg-bg-soft dark:hover:bg-gray-700/30 transition-colors">
               <!-- Member name -->
-              <td class="px-4 py-3 bg-white dark:bg-gray-800 sticky left-0 z-10 border-r border-gray-100 dark:border-gray-700">
+              <td class="px-4 py-3 bg-surface dark:bg-[#1C1B2E] sticky left-0 z-10 border-r border-border-soft dark:border-white/10">
                 <div class="flex items-center gap-2 min-w-0">
-                  <div class="h-8 w-8 rounded-full bg-indigo-100 dark:bg-indigo-800 flex items-center justify-center flex-shrink-0">
-                    <span class="text-indigo-700 dark:text-indigo-300 font-bold text-xs">
+                  <div class="h-8 w-8 rounded-full bg-primary dark:bg-primary flex items-center justify-center flex-shrink-0">
+                    <span class="text-primary dark:text-primary font-bold text-xs">
                       <%= member.first_name[0] %><%= member.last_name[0] %>
                     </span>
                   </div>
-                  <span class="text-sm font-medium text-gray-900 dark:text-gray-100 truncate"><%= member.full_name %></span>
+                  <span class="text-sm font-medium text-text-deep dark:text-white truncate"><%= member.full_name %></span>
                 </div>
               </td>
 
@@ -92,7 +92,7 @@
                   <% else %>
                     <%# No plan - link to create %>
                     <%= link_to new_manager_team_member_weekly_schedule_plan_path(member, week_start: week.iso8601),
-                        class: "inline-flex items-center justify-center w-full px-2 py-1.5 rounded-md border-2 border-dashed border-gray-200 dark:border-gray-600 text-gray-400 dark:text-gray-500 hover:border-indigo-300 dark:hover:border-indigo-600 hover:text-indigo-500 dark:hover:text-indigo-400 transition-colors" do %>
+                        class: "inline-flex items-center justify-center w-full px-2 py-1.5 rounded-md border-2 border-dashed border-border-soft dark:border-white/15 text-muted-soft dark:text-white/40 hover:border-primary dark:hover:border-primary hover:text-primary dark:hover:text-primary transition-colors" do %>
                       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
                       </svg>
@@ -108,7 +108,7 @@
 
     <%# ── LÉGENDE ───────────────────────────────────────────────────────── %>
     <div class="hidden sm:flex items-center gap-3 mt-3 flex-wrap">
-      <span class="text-xs text-gray-400 dark:text-gray-500">Légende :</span>
+      <span class="text-xs text-muted-soft dark:text-white/40">Légende :</span>
       <% @schedule_templates.each do |key, tpl| %>
         <span class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium <%= schedule_badge_classes(tpl[:color]) %>">
           <%= tpl[:name] %>
@@ -128,26 +128,26 @@
       %>
 
       <% @team_members.each do |member| %>
-        <div class="bg-white dark:bg-gray-800 rounded-xl shadow border border-gray-200 dark:border-gray-700 overflow-hidden"
+        <div class="bg-surface dark:bg-[#1C1B2E] rounded-xl shadow border border-border-soft dark:border-white/10 overflow-hidden"
              data-controller="schedule-expand">
           <!-- Member header (tap to expand) -->
           <button type="button"
                   data-action="click->schedule-expand#toggle"
                   class="w-full flex items-center justify-between px-4 py-3 text-left min-h-[56px]">
             <div class="flex items-center gap-3 min-w-0">
-              <div class="h-9 w-9 rounded-full bg-indigo-100 dark:bg-indigo-800 flex items-center justify-center flex-shrink-0">
-                <span class="text-indigo-700 dark:text-indigo-300 font-bold text-sm">
+              <div class="h-9 w-9 rounded-full bg-primary dark:bg-primary flex items-center justify-center flex-shrink-0">
+                <span class="text-primary dark:text-primary font-bold text-sm">
                   <%= member.first_name[0] %><%= member.last_name[0] %>
                 </span>
               </div>
               <div class="min-w-0">
-                <p class="text-sm font-semibold text-gray-900 dark:text-gray-100 truncate"><%= member.full_name %></p>
+                <p class="text-sm font-semibold text-text-deep dark:text-white truncate"><%= member.full_name %></p>
                 <%
                   current_week_plan = @plans_by_key[[member.id, today.beginning_of_week(:monday)]]
                   current_tpl_key = current_week_plan ? detect_template_key(current_week_plan.schedule_pattern, @schedule_templates) : nil
                   current_tpl = current_tpl_key ? @schedule_templates[current_tpl_key] : nil
                 %>
-                <p class="text-xs text-gray-500 dark:text-gray-400">
+                <p class="text-xs text-muted-soft dark:text-white/50">
                   <% if current_week_plan && current_tpl %>
                     Cette semaine : <%= current_tpl[:name] %>
                   <% elsif current_week_plan %>
@@ -158,19 +158,19 @@
                 </p>
               </div>
             </div>
-            <svg class="w-5 h-5 text-gray-400 transition-transform flex-shrink-0" data-schedule-expand-target="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg class="w-5 h-5 text-muted-soft transition-transform flex-shrink-0" data-schedule-expand-target="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
             </svg>
           </button>
 
           <!-- Expandable day pills -->
-          <div class="hidden border-t border-gray-100 dark:border-gray-700 px-4 py-3 space-y-2" data-schedule-expand-target="content">
+          <div class="hidden border-t border-border-soft dark:border-white/10 px-4 py-3 space-y-2" data-schedule-expand-target="content">
             <% mobile_weeks.each do |week| %>
               <% plan = @plans_by_key[[member.id, week]] %>
               <% tpl_key = plan ? detect_template_key(plan.schedule_pattern, @schedule_templates) : nil %>
               <% tpl = tpl_key ? @schedule_templates[tpl_key] : nil %>
               <div class="flex items-center justify-between gap-2">
-                <span class="text-xs text-gray-500 dark:text-gray-400 w-28 flex-shrink-0">
+                <span class="text-xs text-muted-soft dark:text-white/50 w-28 flex-shrink-0">
                   <%= l(week, format: "%-d/%-m") %> – <%= l(week + 4.days, format: "%-d/%-m") %>
                 </span>
                 <% if plan && tpl %>
@@ -185,7 +185,7 @@
                   <% end %>
                 <% else %>
                   <%= link_to new_manager_team_member_weekly_schedule_plan_path(member, week_start: week.iso8601),
-                      class: "flex-1 text-center text-xs font-medium py-2 rounded-full border-2 border-dashed border-gray-200 dark:border-gray-600 text-gray-400 dark:text-gray-500" do %>
+                      class: "flex-1 text-center text-xs font-medium py-2 rounded-full border-2 border-dashed border-border-soft dark:border-white/15 text-muted-soft dark:text-white/40" do %>
                     + Planifier
                   <% end %>
                 <% end %>

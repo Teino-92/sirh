@@ -10,22 +10,22 @@
   <% end %>
 
   <div>
-    <%= f.label :employee_id, 'Collaborateur', class: 'block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1' %>
+    <%= f.label :employee_id, 'Collaborateur', class: 'block text-sm font-medium text-text-deep dark:text-white/70 mb-1' %>
     <%= f.select :employee_id,
           current_employee.direct_reports.order(:last_name, :first_name).map { |e| [e.full_name, e.id] },
           { prompt: 'Sélectionner un collaborateur' },
-          class: 'block w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 shadow-sm focus:border-orange-500 focus:ring-orange-500 text-sm', required: true %>
+          class: 'block w-full rounded-md border-border-soft dark:border-white/15 bg-surface dark:bg-surface/10 text-text-deep dark:text-white shadow-sm focus:border-orange-500 focus:ring-orange-500 text-sm', required: true %>
   </div>
 
   <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
     <div>
-      <%= f.label :period_start, 'Début de période', class: 'block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1' %>
-      <%= f.date_field :period_start, class: 'block w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 shadow-sm focus:border-orange-500 focus:ring-orange-500 text-sm', required: true %>
+      <%= f.label :period_start, 'Début de période', class: 'block text-sm font-medium text-text-deep dark:text-white/70 mb-1' %>
+      <%= f.date_field :period_start, class: 'block w-full rounded-md border-border-soft dark:border-white/15 bg-surface dark:bg-surface/10 text-text-deep dark:text-white shadow-sm focus:border-orange-500 focus:ring-orange-500 text-sm', required: true %>
     </div>
 
     <div>
-      <%= f.label :period_end, 'Fin de période', class: 'block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1' %>
-      <%= f.date_field :period_end, class: 'block w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 shadow-sm focus:border-orange-500 focus:ring-orange-500 text-sm', required: true %>
+      <%= f.label :period_end, 'Fin de période', class: 'block text-sm font-medium text-text-deep dark:text-white/70 mb-1' %>
+      <%= f.date_field :period_end, class: 'block w-full rounded-md border-border-soft dark:border-white/15 bg-surface dark:bg-surface/10 text-text-deep dark:text-white shadow-sm focus:border-orange-500 focus:ring-orange-500 text-sm', required: true %>
     </div>
   </div>
 
@@ -33,6 +33,6 @@
     <%= f.submit evaluation.persisted? ? 'Enregistrer' : 'Créer l\'évaluation',
           class: 'inline-flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-semibold text-white bg-orange-600 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 transition-all cursor-pointer' %>
     <%= link_to 'Annuler', manager_evaluations_path,
-          class: 'inline-flex justify-center py-2 px-4 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 transition-all' %>
+          class: 'inline-flex justify-center py-2 px-4 border border-border-soft dark:border-white/15 rounded-md shadow-sm text-sm font-medium text-text-deep dark:text-white/70 bg-surface dark:bg-surface/10 hover:bg-bg-soft dark:hover:bg-gray-600 transition-all' %>
   </div>
 <% end %>

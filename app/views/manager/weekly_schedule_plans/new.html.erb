@@ -1,22 +1,22 @@
 <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
   <!-- Header -->
   <div class="mb-6">
-    <div class="flex items-center text-gray-600 dark:text-gray-400 mb-4">
-      <%= link_to manager_team_member_weekly_schedule_plans_path(@team_member), class: "text-indigo-600 hover:text-indigo-900" do %>
+    <div class="flex items-center text-muted-soft dark:text-white/50 mb-4">
+      <%= link_to manager_team_member_weekly_schedule_plans_path(@team_member), class: "text-primary hover:text-primary" do %>
         ← Retour aux plannings
       <% end %>
     </div>
 
-    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2">Planifier une semaine</h1>
-    <div class="flex items-center text-gray-600 dark:text-gray-400">
-      <div class="h-10 w-10 rounded-full bg-indigo-100 dark:bg-indigo-800 flex items-center justify-center mr-3">
-        <span class="text-indigo-700 dark:text-indigo-300 font-semibold">
+    <h1 class="text-2xl sm:text-3xl font-serif text-text-deep dark:text-white mb-2">Planifier une semaine</h1>
+    <div class="flex items-center text-muted-soft dark:text-white/50">
+      <div class="h-10 w-10 rounded-full bg-primary dark:bg-primary flex items-center justify-center mr-3">
+        <span class="text-primary dark:text-primary font-semibold">
           <%= @team_member.first_name[0] %><%= @team_member.last_name[0] %>
         </span>
       </div>
       <div>
-        <p class="font-semibold text-gray-900 dark:text-gray-100"><%= @team_member.full_name %></p>
-        <p class="text-sm text-gray-600 dark:text-gray-400"><%= @team_member.department || 'Équipe' %> • <%= @team_member.contract_type %></p>
+        <p class="font-semibold text-text-deep dark:text-white"><%= @team_member.full_name %></p>
+        <p class="text-sm text-muted-soft dark:text-white/50"><%= @team_member.department || 'Équipe' %> • <%= @team_member.contract_type %></p>
       </div>
     </div>
   </div>
@@ -47,45 +47,45 @@
   <%= form_with model: @weekly_plan, url: manager_team_member_weekly_schedule_plans_path(@team_member), local: true, class: "space-y-6" do |f| %>
 
     <!-- Week Selection -->
-    <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-      <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Semaine à planifier</h2>
+    <div class="bg-surface dark:bg-[#1C1B2E] rounded-lg shadow p-6">
+      <h2 class="text-lg font-semibold text-text-deep dark:text-white mb-4">Semaine à planifier</h2>
 
       <div>
-        <%= f.label :week_start_date, "Début de semaine (lundi)", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" %>
+        <%= f.label :week_start_date, "Début de semaine (lundi)", class: "block text-sm font-medium text-text-deep dark:text-white/70 mb-2" %>
         <%= f.date_field :week_start_date,
-          class: "block w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 px-4 py-2.5 text-sm font-medium shadow-sm focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none cursor-pointer",
+          class: "block w-full rounded-lg border border-border-soft dark:border-white/15 bg-surface dark:bg-surface/10 text-text-deep dark:text-white px-4 py-2.5 text-sm font-medium shadow-sm focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none cursor-pointer",
           required: true %>
-        <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Sélectionnez un lundi</p>
+        <p class="mt-1 text-xs text-muted-soft dark:text-white/50">Sélectionnez un lundi</p>
       </div>
     </div>
 
     <!-- Schedule Templates -->
-    <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-      <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Modèles d'horaires</h2>
-      <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">Choisissez un modèle pour pré-remplir l'horaire</p>
+    <div class="bg-surface dark:bg-[#1C1B2E] rounded-lg shadow p-6">
+      <h2 class="text-lg font-semibold text-text-deep dark:text-white mb-4">Modèles d'horaires</h2>
+      <p class="text-sm text-muted-soft dark:text-white/50 mb-4">Choisissez un modèle pour pré-remplir l'horaire</p>
 
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-3" id="schedule-templates">
         <% @schedule_templates.each do |key, template| %>
           <button type="button"
-                  class="template-btn text-left p-4 border-2 border-gray-200 dark:border-gray-700 rounded-lg hover:border-indigo-500 hover:bg-indigo-50 dark:bg-indigo-900 transition-colors"
+                  class="template-btn text-left p-4 border-2 border-border-soft dark:border-white/10 rounded-lg hover:border-primary hover:bg-primary dark:bg-primary/20 transition-colors"
                   data-template="<%= key %>"
                   data-pattern="<%= template[:pattern].to_json %>">
-            <div class="font-semibold text-gray-900 dark:text-gray-100"><%= template[:name] %></div>
-            <div class="text-sm text-gray-600 dark:text-gray-400 mt-1"><%= template[:weekly_hours] %>h par semaine</div>
+            <div class="font-semibold text-text-deep dark:text-white"><%= template[:name] %></div>
+            <div class="text-sm text-muted-soft dark:text-white/50 mt-1"><%= template[:weekly_hours] %>h par semaine</div>
           </button>
         <% end %>
       </div>
     </div>
 
     <!-- Daily Schedule Pattern -->
-    <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-      <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Horaire quotidien</h2>
-      <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">Définissez les horaires pour chaque jour de la semaine</p>
+    <div class="bg-surface dark:bg-[#1C1B2E] rounded-lg shadow p-6">
+      <h2 class="text-lg font-semibold text-text-deep dark:text-white mb-4">Horaire quotidien</h2>
+      <p class="text-sm text-muted-soft dark:text-white/50 mb-4">Définissez les horaires pour chaque jour de la semaine</p>
 
       <div class="space-y-3" id="schedule-pattern">
         <% %w[monday tuesday wednesday thursday friday saturday sunday].each do |day| %>
           <div class="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
-            <label class="text-sm font-medium text-gray-700 dark:text-gray-300 w-32">
+            <label class="text-sm font-medium text-text-deep dark:text-white/70 w-32">
               <%= l(Date.current.beginning_of_week + %w[monday tuesday wednesday thursday friday saturday sunday].index(day).days, format: '%A') %>
             </label>
 
@@ -94,13 +94,13 @@
                      name="weekly_schedule_plan[schedule_pattern][<%= day %>]"
                      id="schedule_pattern_<%= day %>"
                      value="<%= @weekly_plan.schedule_pattern&.dig(day) %>"
-                     class="flex-1 rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm day-schedule"
+                     class="flex-1 rounded-md border-border-soft dark:border-white/15 bg-surface dark:bg-surface/10 text-text-deep dark:text-white placeholder-gray-400 dark:placeholder-gray-500 shadow-sm focus:border-primary focus:ring-primary sm:text-sm day-schedule"
                      placeholder="09:00-17:00 ou 'off'"
                      pattern="^(\d{2}:\d{2}-\d{2}:\d{2}|off)$"
                      title="Format: HH:MM-HH:MM ou 'off'">
 
               <button type="button"
-                      class="set-off-btn px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-md text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
+                      class="set-off-btn px-3 py-2 text-sm border border-border-soft dark:border-white/15 rounded-md text-text-deep dark:text-white/70 bg-surface dark:bg-surface/10 hover:bg-bg-soft dark:hover:bg-gray-600"
                       data-day="<%= day %>">
                 Repos
               </button>
@@ -109,16 +109,16 @@
         <% end %>
       </div>
 
-      <div class="mt-4 bg-blue-50 dark:bg-blue-900 border border-blue-200 dark:border-blue-700 rounded-lg p-4">
+      <div class="mt-4 bg-primary/10 dark:bg-primary/10 border border-blue-200 dark:border-blue-700 rounded-lg p-4">
         <div class="flex">
-          <svg class="h-5 w-5 text-blue-400 mr-2" fill="currentColor" viewBox="0 0 20 20">
+          <svg class="h-5 w-5 text-primary mr-2" fill="currentColor" viewBox="0 0 20 20">
             <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/>
           </svg>
-          <div class="text-sm text-blue-700 dark:text-blue-300">
+          <div class="text-sm text-primary dark:text-primary">
             <p class="font-medium">Format des horaires :</p>
             <ul class="mt-1 list-disc list-inside">
-              <li>Heures de travail : <code class="bg-blue-100 dark:bg-blue-800 px-1 rounded">09:00-17:00</code></li>
-              <li>Jour de repos : <code class="bg-blue-100 dark:bg-blue-800 px-1 rounded">off</code></li>
+              <li>Heures de travail : <code class="bg-primary/10 dark:bg-primary/10 px-1 rounded">09:00-17:00</code></li>
+              <li>Jour de repos : <code class="bg-primary/10 dark:bg-primary/10 px-1 rounded">off</code></li>
             </ul>
           </div>
         </div>
@@ -126,13 +126,13 @@
     </div>
 
     <!-- Notes -->
-    <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-      <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Notes (optionnel)</h2>
+    <div class="bg-surface dark:bg-[#1C1B2E] rounded-lg shadow p-6">
+      <h2 class="text-lg font-semibold text-text-deep dark:text-white mb-4">Notes (optionnel)</h2>
 
       <div>
         <%= f.text_area :notes,
           rows: 3,
-          class: "block w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm",
+          class: "block w-full rounded-md border-border-soft dark:border-white/15 bg-surface dark:bg-surface/10 text-text-deep dark:text-white placeholder-gray-400 dark:placeholder-gray-500 shadow-sm focus:border-primary focus:ring-primary sm:text-sm",
           placeholder: "Informations complémentaires sur cette semaine..." %>
       </div>
     </div>
@@ -140,10 +140,10 @@
     <!-- Actions -->
     <div class="flex flex-col sm:flex-row gap-3 pt-4">
       <%= f.submit "Créer le planning",
-        class: "inline-flex justify-center items-center px-6 py-3 border border-transparent shadow-sm text-base font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" %>
+        class: "inline-flex justify-center items-center px-6 py-3 border border-transparent shadow-sm text-base font-medium rounded-md text-white bg-primary hover:bg-primary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary" %>
 
       <%= link_to "Annuler", manager_team_member_weekly_schedule_plans_path(@team_member),
-        class: "inline-flex justify-center items-center px-6 py-3 border border-gray-300 dark:border-gray-600 shadow-sm text-base font-medium rounded-md text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" %>
+        class: "inline-flex justify-center items-center px-6 py-3 border border-border-soft dark:border-white/15 shadow-sm text-base font-medium rounded-md text-text-deep dark:text-white/70 bg-surface dark:bg-surface/10 hover:bg-bg-soft dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary" %>
     </div>
   <% end %>
 </div>
@@ -162,11 +162,11 @@
 
         // Highlight selected template
         container.querySelectorAll('.template-btn').forEach(b => {
-          b.classList.remove('border-indigo-500', 'bg-indigo-50', 'dark:bg-indigo-900');
-          b.classList.add('border-gray-200', 'dark:border-gray-700');
+          b.classList.remove('border-primary', 'bg-primary', 'dark:bg-primary/20');
+          b.classList.add('border-border-soft', 'dark:border-white/10');
         });
-        this.classList.add('border-indigo-500', 'bg-indigo-50');
-        this.classList.remove('border-gray-200', 'dark:border-gray-700');
+        this.classList.add('border-primary', 'bg-primary');
+        this.classList.remove('border-border-soft', 'dark:border-white/10');
 
         // Set daily schedule pattern
         const allDays = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];

@@ -7,10 +7,10 @@
     'mentoring'     => 'Mentorat'
   }
   status_classes = {
-    'assigned'    => 'bg-blue-100 dark:bg-blue-900/40 text-blue-800 dark:text-blue-300 border-blue-200 dark:border-blue-700',
-    'in_progress' => 'bg-indigo-100 dark:bg-indigo-900/40 text-indigo-800 dark:text-indigo-300 border-indigo-200 dark:border-indigo-700',
+    'assigned'    => 'bg-primary/10 dark:bg-primary/10/40 text-primary dark:text-primary border-blue-200 dark:border-blue-700',
+    'in_progress' => 'bg-primary dark:bg-primary/20/40 text-primary dark:text-primary border-primary dark:border-primary',
     'completed'   => 'bg-green-100 dark:bg-green-900/40 text-green-800 dark:text-green-300 border-green-200 dark:border-green-700',
-    'cancelled'   => 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 border-gray-200 dark:border-gray-600'
+    'cancelled'   => 'bg-bg-soft dark:bg-surface/10 text-muted-soft dark:text-white/50 border-border-soft dark:border-white/15'
   }
   status_labels = {
     'assigned'    => 'Assignée',
@@ -23,43 +23,43 @@
 <div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
   <div class="mb-4">
     <%= link_to '← Mes formations', training_assignments_path,
-          class: 'text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200' %>
+          class: 'text-sm text-muted-soft hover:text-text-deep dark:text-white/50 dark:hover:text-muted-soft' %>
   </div>
 
   <!-- Header -->
-  <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 mb-4">
+  <div class="bg-surface dark:bg-[#1C1B2E] rounded-lg shadow-sm border border-border-soft dark:border-white/10 p-6 mb-4">
     <div class="flex justify-between items-start gap-4 mb-4">
-      <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100"><%= @assignment.training.title %></h1>
-      <span class="inline-flex items-center flex-shrink-0 px-2.5 py-0.5 rounded-full text-xs font-medium border <%= status_classes[@assignment.status] || 'bg-gray-100 text-gray-600' %>">
+      <h1 class="text-2xl font-serif text-text-deep dark:text-white"><%= @assignment.training.title %></h1>
+      <span class="inline-flex items-center flex-shrink-0 px-2.5 py-0.5 rounded-full text-xs font-medium border <%= status_classes[@assignment.status] || 'bg-bg-soft text-muted-soft' %>">
         <%= status_labels[@assignment.status] || @assignment.status.humanize %>
       </span>
     </div>
 
     <div class="flex flex-wrap gap-2 mb-4">
-      <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-indigo-100 dark:bg-indigo-900/40 text-indigo-800 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-700">
+      <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-primary dark:bg-primary/20/40 text-primary dark:text-primary border border-primary dark:border-primary">
         <%= type_labels[@assignment.training.training_type] || @assignment.training.training_type.humanize %>
       </span>
       <% if @assignment.training.provider.present? %>
-        <span class="text-sm text-gray-600 dark:text-gray-400"><strong class="text-gray-700 dark:text-gray-300">Organisme :</strong> <%= @assignment.training.provider %></span>
+        <span class="text-sm text-muted-soft dark:text-white/50"><strong class="text-text-deep dark:text-white/70">Organisme :</strong> <%= @assignment.training.provider %></span>
       <% end %>
       <% if @assignment.training.duration_estimate.present? %>
-        <span class="text-sm text-gray-600 dark:text-gray-400"><strong class="text-gray-700 dark:text-gray-300">Durée :</strong> <%= @assignment.training.duration_estimate %>h</span>
+        <span class="text-sm text-muted-soft dark:text-white/50"><strong class="text-text-deep dark:text-white/70">Durée :</strong> <%= @assignment.training.duration_estimate %>h</span>
       <% end %>
     </div>
 
-    <dl class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm pt-4 border-t border-gray-100 dark:border-gray-700">
+    <dl class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm pt-4 border-t border-border-soft dark:border-white/10">
       <div>
-        <dt class="text-xs font-medium text-gray-500 dark:text-gray-400 mb-0.5">Assignée par</dt>
-        <dd class="text-gray-900 dark:text-gray-100"><%= @assignment.assigned_by.full_name %></dd>
+        <dt class="text-xs font-medium text-muted-soft dark:text-white/50 mb-0.5">Assignée par</dt>
+        <dd class="text-text-deep dark:text-white"><%= @assignment.assigned_by.full_name %></dd>
       </div>
       <div>
-        <dt class="text-xs font-medium text-gray-500 dark:text-gray-400 mb-0.5">Date d'assignation</dt>
-        <dd class="text-gray-900 dark:text-gray-100"><%= l(@assignment.assigned_at.to_date, format: :long) %></dd>
+        <dt class="text-xs font-medium text-muted-soft dark:text-white/50 mb-0.5">Date d'assignation</dt>
+        <dd class="text-text-deep dark:text-white"><%= l(@assignment.assigned_at.to_date, format: :long) %></dd>
       </div>
       <% if @assignment.deadline.present? %>
         <div>
-          <dt class="text-xs font-medium text-gray-500 dark:text-gray-400 mb-0.5">Échéance</dt>
-          <dd class="<%= @assignment.overdue? ? 'text-red-600 dark:text-red-400 font-semibold' : 'text-gray-900 dark:text-gray-100' %>">
+          <dt class="text-xs font-medium text-muted-soft dark:text-white/50 mb-0.5">Échéance</dt>
+          <dd class="<%= @assignment.overdue? ? 'text-red-600 dark:text-red-400 font-semibold' : 'text-text-deep dark:text-white' %>">
             <%= l(@assignment.deadline, format: :long) %>
             <% if @assignment.overdue? %> · En retard<% end %>
           </dd>
@@ -67,34 +67,34 @@
       <% end %>
       <% if @assignment.completed_at.present? %>
         <div>
-          <dt class="text-xs font-medium text-gray-500 dark:text-gray-400 mb-0.5">Terminée le</dt>
-          <dd class="text-gray-900 dark:text-gray-100"><%= l(@assignment.completed_at.to_date, format: :long) %></dd>
+          <dt class="text-xs font-medium text-muted-soft dark:text-white/50 mb-0.5">Terminée le</dt>
+          <dd class="text-text-deep dark:text-white"><%= l(@assignment.completed_at.to_date, format: :long) %></dd>
         </div>
       <% end %>
     </dl>
 
     <% if @assignment.completion_notes.present? %>
-      <div class="mt-4 pt-4 border-t border-gray-100 dark:border-gray-700">
-        <dt class="text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Notes de complétion</dt>
-        <p class="text-sm text-gray-700 dark:text-gray-300"><%= @assignment.completion_notes %></p>
+      <div class="mt-4 pt-4 border-t border-border-soft dark:border-white/10">
+        <dt class="text-xs font-medium text-muted-soft dark:text-white/50 mb-1">Notes de complétion</dt>
+        <p class="text-sm text-text-deep dark:text-white/70"><%= @assignment.completion_notes %></p>
       </div>
     <% end %>
   </div>
 
   <!-- Description -->
   <% if @assignment.training.description.present? %>
-    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 mb-4">
-      <h2 class="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Description</h2>
-      <p class="text-sm text-gray-700 dark:text-gray-300"><%= @assignment.training.description %></p>
+    <div class="bg-surface dark:bg-[#1C1B2E] rounded-lg shadow-sm border border-border-soft dark:border-white/10 p-6 mb-4">
+      <h2 class="text-sm font-semibold text-text-deep dark:text-white/70 mb-2">Description</h2>
+      <p class="text-sm text-text-deep dark:text-white/70"><%= @assignment.training.description %></p>
     </div>
   <% end %>
 
   <!-- Lien externe -->
   <% if @assignment.training.external_url.present? %>
-    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4 mb-4">
+    <div class="bg-surface dark:bg-[#1C1B2E] rounded-lg shadow-sm border border-border-soft dark:border-white/10 p-4 mb-4">
       <%= link_to @assignment.training.external_url,
             target: '_blank', rel: 'noopener',
-            class: 'inline-flex items-center gap-2 text-sm font-medium text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300' do %>
+            class: 'inline-flex items-center gap-2 text-sm font-medium text-primary dark:text-primary/80 hover:text-primary dark:hover:text-primary' do %>
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
         </svg>
@@ -105,19 +105,19 @@
 
   <!-- Marquer comme terminée -->
   <% if @assignment.active? && policy(@assignment).complete? %>
-    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-      <h2 class="text-base font-semibold text-gray-900 dark:text-gray-100 mb-4">Marquer comme terminée</h2>
+    <div class="bg-surface dark:bg-[#1C1B2E] rounded-lg shadow-sm border border-border-soft dark:border-white/10 p-6">
+      <h2 class="text-base font-semibold text-text-deep dark:text-white mb-4">Marquer comme terminée</h2>
       <%= form_with url: complete_training_assignment_path(@assignment), method: :patch, class: 'space-y-4' do |f| %>
         <div>
-          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-            Notes de complétion <span class="font-normal text-gray-500 dark:text-gray-400">(optionnel)</span>
+          <label class="block text-sm font-medium text-text-deep dark:text-white/70 mb-1">
+            Notes de complétion <span class="font-normal text-muted-soft dark:text-white/50">(optionnel)</span>
           </label>
           <%= f.text_area :completion_notes, rows: 3,
-                class: 'block w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm',
+                class: 'block w-full rounded-md border-border-soft dark:border-white/15 bg-surface dark:bg-surface/10 text-text-deep dark:text-white shadow-sm focus:border-primary focus:ring-primary text-sm',
                 placeholder: 'Ajoutez des notes sur la complétion de cette formation…' %>
         </div>
         <%= f.submit 'Marquer comme terminée',
-              class: 'inline-flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all cursor-pointer' %>
+              class: 'inline-flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-semibold text-white bg-primary hover:bg-primary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-all cursor-pointer' %>
       <% end %>
     </div>
   <% end %>
