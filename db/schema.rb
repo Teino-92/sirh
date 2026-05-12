@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2026_05_12_100246) do
+ActiveRecord::Schema[7.1].define(version: 2026_05_12_121538) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -398,9 +398,11 @@ ActiveRecord::Schema[7.1].define(version: 2026_05_12_100246) do
     t.jsonb "metadata", default: {}, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.datetime "validated_at"
+    t.bigint "validated_by_id"
     t.index ["assigned_to_id", "due_date"], name: "idx_onboarding_tasks_assignee_due"
     t.index ["employee_onboarding_id", "status"], name: "idx_onboarding_tasks_onboarding_status"
-    t.index ["organization_id", "due_date"], name: "idx_onboarding_tasks_org_pending_due", where: "((status)::text = 'pending'::text)"
+    t.index ["organization_id", "due_date"], name: "idx_onboarding_tasks_org_active_due", where: "((status)::text = ANY ((ARRAY['pending'::character varying, 'done'::character varying])::text[]))"
     t.index ["organization_id"], name: "index_onboarding_tasks_on_organization_id"
   end
 
@@ -846,6 +848,7 @@ ActiveRecord::Schema[7.1].define(version: 2026_05_12_100246) do
   add_foreign_key "onboarding_tasks", "employee_onboardings"
   add_foreign_key "onboarding_tasks", "employees", column: "assigned_to_id"
   add_foreign_key "onboarding_tasks", "employees", column: "completed_by_id"
+  add_foreign_key "onboarding_tasks", "employees", column: "validated_by_id"
   add_foreign_key "onboarding_tasks", "organizations"
   add_foreign_key "onboarding_template_tasks", "onboarding_templates"
   add_foreign_key "onboarding_template_tasks", "organizations"

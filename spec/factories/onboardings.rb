@@ -103,6 +103,17 @@ FactoryBot.define do
       completed_at { Time.current }
     end
 
+    trait :done do
+      status           { 'done' }
+      assigned_to_role { 'employee' }
+      completed_at     { 1.day.ago }
+      completed_by     { association(:employee, organization: organization) }
+    end
+
+    trait :employee_task do
+      assigned_to_role { 'employee' }
+    end
+
     trait :overdue do
       due_date { 7.days.ago.to_date }
     end

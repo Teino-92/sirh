@@ -7,12 +7,16 @@ class OnboardingTask < ApplicationRecord
 
   belongs_to :assigned_to,  class_name: 'Employee', optional: true, foreign_key: :assigned_to_id
   belongs_to :completed_by, class_name: 'Employee', optional: true, foreign_key: :completed_by_id
+  belongs_to :validated_by, class_name: 'Employee', optional: true, foreign_key: :validated_by_id
 
-  TASK_TYPES    = OnboardingTemplateTask::TASK_TYPES
+  class InvalidTransitionError < StandardError; end
+
+  TASK_TYPES     = OnboardingTemplateTask::TASK_TYPES
   ASSIGNED_ROLES = OnboardingTemplateTask::ASSIGNED_ROLES
 
   enum status: {
     pending:   'pending',
+    done:      'done',
     completed: 'completed',
     overdue:   'overdue'
   }
@@ -22,9 +26,24 @@ class OnboardingTask < ApplicationRecord
   validates :assigned_to_role, inclusion: { in: ASSIGNED_ROLES }
   validates :task_type,        inclusion: { in: TASK_TYPES }
 
-  scope :pending,   -> { where(status: 'pending') }
-  scope :completed, -> { where(status: 'completed') }
-  scope :overdue,   -> { where(status: 'pending').where('due_date < ?', Date.current) }
+  scope :pending,             -> { where(status: 'pending') }
+  scope :done,                -> { where(status: 'done') }
+  scope :completed,           -> { where(status: 'completed') }
+  scope :overdue,             -> { where(status: 'pending').where('due_date < ?', Date.current) }
+  scope :awaiting_validation, -> { where(status: 'done') }
+
+  def mark_done!(employee)
+    raise InvalidTransitionError, "seules les tâches assigned_to_role 'employee' peuvent être marquées faites" unless assigned_to_role == 'employee'
+    raise InvalidTransitionError, "déjà complétée" if completed?
+
+    update!(status: :done, completed_at: Time.current, completed_by: employee)
+  end
+
+  def validate!(manager)
+    raise InvalidTransitionError, "la tâche doit être done avant validation" unless done?
+
+    update!(status: :completed, validated_at: Time.current, validated_by: manager)
+  end
 
   def complete!(completed_by:)
     return if completed?
