@@ -67,4 +67,26 @@ RSpec.describe OnboardingTask, type: :model do
       end
     end
   end
+
+  describe '#complete!' do
+    it 'transitions pending → completed directly (manager/hr path)' do
+      ActsAsTenant.with_tenant(org) do
+        task.save!
+        task.complete!(completed_by: manager)
+        expect(task.reload.status).to eq('completed')
+        expect(task.completed_by_id).to eq(manager.id)
+        expect(task.completed_at).to be_present
+      end
+    end
+
+    it 'is idempotent — does nothing if already completed' do
+      ActsAsTenant.with_tenant(org) do
+        task.save!
+        task.update_columns(status: 'completed', completed_at: 1.hour.ago)
+        original_completed_at = task.completed_at
+        task.complete!(completed_by: manager)
+        expect(task.reload.completed_at.to_i).to eq(original_completed_at.to_i)
+      end
+    end
+  end
 end

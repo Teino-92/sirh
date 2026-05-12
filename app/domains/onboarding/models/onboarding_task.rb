@@ -36,13 +36,17 @@ class OnboardingTask < ApplicationRecord
     raise InvalidTransitionError, "seules les tâches assigned_to_role 'employee' peuvent être marquées faites" unless assigned_to_role == 'employee'
     raise InvalidTransitionError, "déjà complétée" if completed?
 
-    update!(status: :done, completed_at: Time.current, completed_by: employee)
+    transaction do
+      update!(status: :done, completed_at: Time.current, completed_by: employee)
+    end
   end
 
   def validate!(manager)
     raise InvalidTransitionError, "la tâche doit être done avant validation" unless done?
 
-    update!(status: :completed, validated_at: Time.current, validated_by: manager)
+    transaction do
+      update!(status: :completed, validated_at: Time.current, validated_by: manager)
+    end
   end
 
   def complete!(completed_by:)
