@@ -1,33 +1,33 @@
 <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
   <div class="mb-4">
     <%= link_to '← Objectifs équipe', manager_objectives_path,
-          class: 'text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200' %>
+          class: 'text-sm text-muted-soft hover:text-text-deep dark:text-white/50 dark:hover:text-muted-soft' %>
   </div>
 
-  <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 mb-6">
+  <div class="bg-surface dark:bg-[#1C1B2E] rounded-lg shadow-sm border border-border-soft dark:border-white/10 p-6 mb-6">
     <div class="flex justify-between items-start">
       <div class="flex-1">
-        <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100"><%= @objective.title %></h1>
+        <h1 class="text-2xl font-serif text-text-deep dark:text-white"><%= @objective.title %></h1>
         <div class="flex gap-2 mt-2 flex-wrap">
           <%
             priority_classes = {
-              'low'    => 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 border-gray-200 dark:border-gray-600',
-              'medium' => 'bg-yellow-100 dark:bg-yellow-900/40 text-yellow-800 dark:text-yellow-300 border-yellow-200 dark:border-yellow-700',
+              'low'    => 'bg-bg-soft dark:bg-surface/10 text-muted-soft dark:text-white/50 border-border-soft dark:border-white/15',
+              'medium' => 'bg-warning/10 dark:bg-warning/10/40 text-warning dark:text-warning border-yellow-200 dark:border-yellow-700',
               'high'   => 'bg-red-100 dark:bg-red-900/40 text-red-800 dark:text-red-300 border-red-200 dark:border-red-700'
             }
             priority_labels = { 'low' => 'Faible', 'medium' => 'Moyenne', 'high' => 'Haute' }
             status_classes = {
-              'pending'    => 'bg-yellow-100 dark:bg-yellow-900/40 text-yellow-800 dark:text-yellow-300 border-yellow-200 dark:border-yellow-700',
-              'in_progress'=> 'bg-blue-100 dark:bg-blue-900/40 text-blue-800 dark:text-blue-300 border-blue-200 dark:border-blue-700',
+              'pending'    => 'bg-warning/10 dark:bg-warning/10/40 text-warning dark:text-warning border-yellow-200 dark:border-yellow-700',
+              'in_progress'=> 'bg-primary/10 dark:bg-primary/10/40 text-primary dark:text-primary border-blue-200 dark:border-blue-700',
               'completed'  => 'bg-green-100 dark:bg-green-900/40 text-green-800 dark:text-green-300 border-green-200 dark:border-green-700',
-              'cancelled'  => 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 border-gray-200 dark:border-gray-600'
+              'cancelled'  => 'bg-bg-soft dark:bg-surface/10 text-muted-soft dark:text-white/50 border-border-soft dark:border-white/15'
             }
             status_labels = { 'pending' => 'En attente', 'in_progress' => 'En cours', 'completed' => 'Complété', 'cancelled' => 'Annulé' }
           %>
-          <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium border <%= priority_classes[@objective.priority] || 'bg-gray-100 text-gray-600' %>">
+          <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium border <%= priority_classes[@objective.priority] || 'bg-bg-soft text-muted-soft' %>">
             <%= priority_labels[@objective.priority] || @objective.priority.humanize %>
           </span>
-          <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium border <%= status_classes[@objective.status] || 'bg-gray-100 text-gray-600' %>">
+          <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium border <%= status_classes[@objective.status] || 'bg-bg-soft text-muted-soft' %>">
             <%= status_labels[@objective.status] || @objective.status.humanize %>
           </span>
           <% if @objective.overdue? %>
@@ -40,10 +40,10 @@
       <div class="flex gap-2 ml-4">
         <% unless @objective.completed? || @objective.cancelled? %>
           <%= link_to 'Modifier', edit_manager_objective_path(@objective),
-                class: 'inline-flex items-center py-1.5 px-3 border border-gray-300 dark:border-gray-600 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 transition-all' %>
+                class: 'inline-flex items-center py-1.5 px-3 border border-border-soft dark:border-white/15 rounded-md text-sm font-medium text-text-deep dark:text-white/70 bg-surface dark:bg-surface/10 hover:bg-bg-soft dark:hover:bg-gray-600 transition-all' %>
           <%= button_to 'Marquer complété', complete_manager_objective_path(@objective),
                 method: :patch,
-                class: 'inline-flex items-center py-1.5 px-3 border border-transparent rounded-md text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 transition-all cursor-pointer',
+                class: 'inline-flex items-center py-1.5 px-3 border border-transparent rounded-md text-sm font-semibold text-white bg-primary/10 hover:bg-primary/10 transition-all cursor-pointer',
                 data: { confirm: 'Marquer cet objectif comme complété ?' } %>
         <% end %>
         <%= button_to 'Supprimer', manager_objective_path(@objective),
@@ -54,26 +54,71 @@
     </div>
 
     <% if @objective.description.present? %>
-      <p class="mt-4 text-gray-700 dark:text-gray-300"><%= @objective.description %></p>
+      <p class="mt-4 text-text-deep dark:text-white/70"><%= @objective.description %></p>
     <% end %>
 
     <dl class="grid grid-cols-2 gap-4 mt-6 text-sm">
       <div>
-        <dt class="font-medium text-gray-600 dark:text-gray-400">Collaborateur</dt>
-        <dd class="text-gray-900 dark:text-gray-100 mt-1"><%= @objective.owner.full_name %></dd>
+        <dt class="font-medium text-muted-soft dark:text-white/50">Collaborateur</dt>
+        <dd class="text-text-deep dark:text-white mt-1"><%= @objective.owner.full_name %></dd>
       </div>
       <div>
-        <dt class="font-medium text-gray-600 dark:text-gray-400">Échéance</dt>
-        <dd class="mt-1 <%= @objective.overdue? ? 'text-red-600 dark:text-red-400 font-medium' : 'text-gray-900 dark:text-gray-100' %>">
+        <dt class="font-medium text-muted-soft dark:text-white/50">Échéance</dt>
+        <dd class="mt-1 <%= @objective.overdue? ? 'text-red-600 dark:text-red-400 font-medium' : 'text-text-deep dark:text-white' %>">
           <%= l(@objective.deadline, format: :long) %>
         </dd>
       </div>
       <% if @objective.completed_at.present? %>
         <div>
-          <dt class="font-medium text-gray-600 dark:text-gray-400">Complété le</dt>
-          <dd class="text-gray-900 dark:text-gray-100 mt-1"><%= l(@objective.completed_at.to_date, format: :long) %></dd>
+          <dt class="font-medium text-muted-soft dark:text-white/50">Complété le</dt>
+          <dd class="text-text-deep dark:text-white mt-1"><%= l(@objective.completed_at.to_date, format: :long) %></dd>
         </div>
       <% end %>
     </dl>
+
+    <%# Progression tâches — rechargée depuis la DB %>
+    <% @objective.objective_tasks.reload %>
+    <%= render 'manager/objectives/progress', objective: @objective %>
+  </div>
+
+  <%# Section tâches %>
+  <div class="bg-surface dark:bg-[#1C1B2E] rounded-lg shadow-sm border border-border-soft dark:border-white/10 p-6 mt-6">
+    <div class="flex items-center justify-between mb-4">
+      <h2 class="text-base font-semibold text-text-deep dark:text-white">
+        Tâches
+        <% task_count = @objective.objective_tasks.count %>
+        <% if task_count > 0 %>
+          <span class="ml-1.5 text-xs font-normal text-muted-soft dark:text-white/40">
+            <%= @objective.objective_tasks.select(&:validated?).count %>/<%= task_count %> validées
+          </span>
+        <% end %>
+      </h2>
+      <button type="button"
+              onclick="document.getElementById('new_task_form_<%= @objective.id %>').classList.toggle('hidden')"
+              class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-primary hover:text-primary/80 border border-primary/30 hover:border-primary/60 rounded-lg transition-colors">
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+        </svg>
+        Ajouter une tâche
+      </button>
+    </div>
+
+    <div id="new_task_form_<%= @objective.id %>" class="hidden mb-4">
+      <%= render 'manager/objective_tasks/form',
+            objective: @objective,
+            task: ObjectiveTask.new %>
+    </div>
+
+    <div id="objective_tasks_list_<%= @objective.id %>" class="space-y-2">
+      <% if @objective.objective_tasks.any? %>
+        <% @objective.objective_tasks.each do |task| %>
+          <%= render 'manager/objective_tasks/task', task: task, objective: @objective %>
+        <% end %>
+      <% else %>
+        <p class="text-sm text-muted-soft dark:text-white/40 text-center py-6 italic">
+          Aucune tâche — ajoutez-en pour suivre la progression.
+        </p>
+      <% end %>
+    </div>
   </div>
 </div>

@@ -1,0 +1,9 @@
+<%= turbo_stream.append "objective_tasks_list_#{@objective.id}" do %>
+  <%= render 'manager/objective_tasks/task', task: @task, objective: @objective %>
+<% end %>
+<%= turbo_stream.replace "objective_task_form_#{@objective.id}" do %>
+  <%= render 'manager/objective_tasks/form', objective: @objective, task: ObjectiveTask.new %>
+<% end %>
+<%= turbo_stream.replace "objective_progress_#{@objective.id}" do %>
+  <%= render 'manager/objectives/progress', objective: @objective %>
+<% end %>

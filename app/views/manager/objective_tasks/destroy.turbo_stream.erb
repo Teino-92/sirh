@@ -1,0 +1,4 @@
+<%= turbo_stream.remove "objective_task_#{@task.id}" %>
+<%= turbo_stream.replace "objective_progress_#{@objective.id}" do %>
+  <%= render 'manager/objectives/progress', objective: @objective %>
+<% end %>

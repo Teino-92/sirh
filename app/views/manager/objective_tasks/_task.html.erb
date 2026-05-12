@@ -1,0 +1,76 @@
+<%# locals: (task:, objective:) %>
+<div id="objective_task_<%= task.id %>"
+     class="flex items-start justify-between gap-3 p-3 rounded-lg bg-bg-soft dark:bg-white/5 border border-border-soft dark:border-white/10">
+  <div class="flex items-start gap-3 min-w-0 flex-1">
+    <div class="flex-shrink-0 mt-0.5">
+      <% if task.validated? %>
+        <div class="h-5 w-5 rounded-full bg-success/20 flex items-center justify-center">
+          <svg class="w-3 h-3 text-success" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
+          </svg>
+        </div>
+      <% elsif task.done? %>
+        <div class="h-5 w-5 rounded-full bg-warning/20 flex items-center justify-center">
+          <svg class="w-3 h-3 text-warning" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+        </div>
+      <% else %>
+        <div class="h-5 w-5 rounded-full border-2 border-border-soft dark:border-white/20"></div>
+      <% end %>
+    </div>
+
+    <div class="min-w-0 flex-1">
+      <p class="text-sm font-medium text-text-deep dark:text-white <%= 'line-through opacity-60' if task.validated? %>">
+        <%= task.title %>
+      </p>
+      <% if task.description.present? %>
+        <p class="text-xs text-muted-soft dark:text-white/40 mt-0.5 truncate"><%= task.description %></p>
+      <% end %>
+      <div class="flex items-center gap-3 mt-1 flex-wrap">
+        <span class="text-xs text-muted-soft dark:text-white/40">
+          <%= task.assigned_to.full_name %>
+        </span>
+        <% if task.deadline.present? %>
+          <span class="text-xs <%= task.deadline < Date.current && !task.validated? ? 'text-red-500' : 'text-muted-soft dark:text-white/40' %>">
+            <%= l(task.deadline, format: :short) %>
+          </span>
+        <% end %>
+        <% if task.done? %>
+          <span class="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium bg-warning/10 text-warning">
+            À valider
+          </span>
+        <% end %>
+        <% if task.validated? %>
+          <span class="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium bg-success/10 text-success">
+            Validé
+          </span>
+        <% end %>
+      </div>
+    </div>
+  </div>
+
+  <div class="flex items-center gap-1 flex-shrink-0">
+    <% if task.done? %>
+      <%= button_to validate_task_manager_objective_objective_task_path(objective, task),
+            method: :patch,
+            class: "inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-medium text-white bg-success hover:bg-success/90 transition-colors border-0 cursor-pointer",
+            data: { turbo_stream: true } do %>
+        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
+        </svg>
+        Valider
+      <% end %>
+    <% end %>
+    <% unless task.validated? %>
+      <%= button_to manager_objective_objective_task_path(objective, task),
+            method: :delete,
+            class: "p-1 rounded text-muted-soft hover:text-red-500 dark:text-white/30 dark:hover:text-red-400 transition-colors border-0 bg-transparent cursor-pointer",
+            data: { turbo_confirm: 'Supprimer cette tâche ?', turbo_stream: true } do %>
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+        </svg>
+      <% end %>
+    <% end %>
+  </div>
+</div>
