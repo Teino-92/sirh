@@ -76,7 +76,13 @@ Rails.application.routes.draw do
 
   resources :leave_balances, only: [:index]
   resources :work_schedules, only: [:show, :edit, :update]
-  resources :objectives, only: [:index, :show]
+  resources :objectives, only: [:index, :show] do
+    resources :objective_tasks, only: [] do
+      member do
+        patch :complete
+      end
+    end
+  end
   resources :one_on_ones, only: [:index, :show]
   resources :evaluations, only: [:index, :show] do
     member do
@@ -120,6 +126,11 @@ Rails.application.routes.draw do
     resources :objectives do
       member do
         patch :complete
+      end
+      resources :objective_tasks, only: [:create, :destroy] do
+        member do
+          patch :validate_task
+        end
       end
     end
     resources :one_on_ones do
