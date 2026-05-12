@@ -15,6 +15,7 @@ class Objective < ApplicationRecord
   has_many :evaluations, through: :evaluation_objectives
   has_many :one_on_one_objectives, dependent: :nullify
   has_many :one_on_ones, through: :one_on_one_objectives
+  has_many :objective_tasks, dependent: :destroy
 
   # Enums
   enum status: {
@@ -64,6 +65,17 @@ class Objective < ApplicationRecord
   def complete!
     return if completed?
     update!(status: :completed, completed_at: Time.current)
+  end
+
+  def progress_percentage
+    return nil if objective_tasks.empty?
+    validated = objective_tasks.select(&:validated?).count
+    total = objective_tasks.count
+    (validated.to_f / total * 100).round
+  end
+
+  def tasks?
+    objective_tasks.loaded? ? objective_tasks.any? : objective_tasks.exists?
   end
 
   private
