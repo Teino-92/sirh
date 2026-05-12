@@ -4,6 +4,11 @@ class TrialRegistrationsController < ApplicationController
   skip_before_action :authenticate_employee!, raise: false
   layout 'marketing'
 
+  def new
+    @form_values = {}
+    @errors = []
+  end
+
   def create
     result = TrialRegistrationService.new(trial_params).call
 

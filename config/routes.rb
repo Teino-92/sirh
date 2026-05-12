@@ -33,7 +33,7 @@ Rails.application.routes.draw do
   end
 
   # Trial registration (public)
-  resource :trial_registration, only: [:create]
+  resource :trial_registration, only: [:new, :create]
 
   # Product pages (public)
   get '/manager-os', to: redirect('/', status: 301), as: :manager_os
