@@ -9,14 +9,15 @@ class CheckoutService
 
   # Lookup keys Stripe — indépendants des price IDs, portables entre test et prod
   STRIPE_LOOKUP_KEYS = {
-    "manager_os"     => "managerOS_monthly",
-    "sirh_essential" => "sirh_essentiel_monthly",
-    "sirh_pro"       => "sirh_pro_monthly"
+    "manager_os"          => "managerOS_monthly",
+    "manager_os_yearly"   => "managerOS_yearly",
+    "sirh_essential"      => "sirh_essentiel_monthly",
+    "sirh_pro"            => "sirh_pro_monthly"
   }.freeze
 
-  def initialize(organization:, plan:, success_url:, cancel_url:)
+  def initialize(organization:, plan:, success_url:, cancel_url:, interval: "monthly")
     @org         = organization
-    @plan        = plan
+    @plan        = interval == "yearly" ? "#{plan}_yearly" : plan
     @success_url = success_url
     @cancel_url  = cancel_url
   end

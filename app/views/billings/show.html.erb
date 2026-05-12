@@ -135,14 +135,32 @@
 
     <div class="grid sm:grid-cols-3 gap-4">
       <!-- Manager OS -->
-      <div class="p-6 bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-700">
+      <div class="p-6 bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-700" data-controller="billing-interval">
         <h3 class="text-base font-bold text-gray-900 dark:text-white mb-1">Manager OS</h3>
-        <p class="text-xs text-gray-500 dark:text-gray-400 mb-4">Onboarding, 1:1, OKR, Formation</p>
-        <p class="text-3xl font-extrabold text-indigo-600 mb-1">19 €<span class="text-sm font-normal text-gray-500">/mois</span></p>
-        <p class="text-xs text-gray-400 mb-5">+2 €/employé au-delà de 10</p>
+        <p class="text-xs text-gray-500 dark:text-gray-400 mb-3">Onboarding, 1:1, OKR, Formation</p>
+
+        <%# Toggle mensuel / annuel %>
+        <div class="inline-flex rounded-lg border border-gray-200 dark:border-gray-700 text-xs mb-3 overflow-hidden">
+          <button type="button" data-billing-interval-target="monthly" data-action="click->billing-interval#setMonthly"
+                  class="px-3 py-1.5 font-medium bg-indigo-600 text-white transition-colors">Mensuel</button>
+          <button type="button" data-billing-interval-target="yearly" data-action="click->billing-interval#setYearly"
+                  class="px-3 py-1.5 font-medium text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">Annuel</button>
+        </div>
+
+        <div data-billing-interval-target="priceMonthly">
+          <p class="text-3xl font-extrabold text-indigo-600 mb-1">19 €<span class="text-sm font-normal text-gray-500">/mois</span></p>
+          <p class="text-xs text-gray-400 mb-4">+2 €/mois par membre supplémentaire</p>
+        </div>
+        <div data-billing-interval-target="priceYearly" class="hidden">
+          <p class="text-3xl font-extrabold text-indigo-600 mb-1">200 €<span class="text-sm font-normal text-gray-500">/an</span></p>
+          <p class="text-xs text-gray-400 mb-4">≈ 16,67 €/mois · économise 28 €</p>
+        </div>
+
         <% unless manager_readonly %>
-          <%= button_to "Choisir ce plan", create_checkout_billing_path, params: { plan: "manager_os" },
+          <%= button_to "Choisir ce plan", create_checkout_billing_path,
+              params: { plan: "manager_os", interval: "monthly" },
               method: :post,
+              data: { billing_interval_target: "form" },
               class: "w-full text-center py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold rounded-xl transition-colors" %>
         <% end %>
       </div>

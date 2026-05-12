@@ -15,12 +15,14 @@ class BillingsController < ApplicationController
 
   # POST /billing/checkout — crée une Stripe Checkout Session
   def create_checkout
-    plan = permitted_plan(params[:plan])
+    plan     = permitted_plan(params[:plan])
+    interval = permitted_interval(params[:interval])
     return redirect_to billing_path, alert: "Plan invalide." unless plan
 
     result = CheckoutService.new(
       organization: @org,
       plan:         plan,
+      interval:     interval,
       success_url:  success_billing_url(host: ENV.fetch("APP_HOST", "izi-rh.com"), protocol: "https"),
       cancel_url:   billing_url(host: ENV.fetch("APP_HOST", "izi-rh.com"), protocol: "https")
     ).call
@@ -123,5 +125,9 @@ class BillingsController < ApplicationController
   def permitted_plan(plan)
     allowed = %w[manager_os sirh_essential sirh_pro]
     allowed.include?(plan.to_s) ? plan.to_s : nil
+  end
+
+  def permitted_interval(interval)
+    %w[monthly yearly].include?(interval.to_s) ? interval.to_s : "monthly"
   end
 end
