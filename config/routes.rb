@@ -101,7 +101,13 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :employee_onboardings, only: [:show]
+  resources :employee_onboardings, only: [:show] do
+    resources :employee_onboarding_tasks, only: [] do
+      member do
+        patch :mark_done
+      end
+    end
+  end
 
   resources :trial_period_decisions, only: [] do
     member do
@@ -174,7 +180,11 @@ Rails.application.routes.draw do
 
     # Employee Onboarding
     resources :employee_onboardings do
-      resources :employee_onboarding_tasks,   only: [:update], shallow: true
+      resources :employee_onboarding_tasks,   only: [:update], shallow: true do
+        member do
+          patch :validate
+        end
+      end
       resources :employee_onboarding_reviews, only: [:new, :create], shallow: true
     end
 
