@@ -85,5 +85,70 @@ RSpec.describe ObjectiveTask, type: :model do
         expect(bad_task).not_to be_valid
       end
     end
+
+    it 'is invalid when assigned_to belongs to different org' do
+      # Force other_emp to be created before entering the tenant scope,
+      # because acts_as_tenant silently overrides organization_id inside with_tenant.
+      emp_from_other_org = other_emp
+      ActsAsTenant.with_tenant(org) do
+        bad_task = build(:objective_task, organization: org,
+                         objective: objective, assigned_to: emp_from_other_org)
+        expect(bad_task).not_to be_valid
+      end
+    end
+  end
+
+  describe 'Objective#progress_percentage' do
+    let(:objective_with_tasks) do
+      ActsAsTenant.with_tenant(org) do
+        obj = create(:objective, organization: org, manager: manager, owner: employee, created_by: manager)
+        obj
+      end
+    end
+
+    it 'returns nil when no tasks' do
+      ActsAsTenant.with_tenant(org) do
+        expect(objective_with_tasks.progress_percentage).to be_nil
+      end
+    end
+
+    it 'returns 0 when no tasks validated' do
+      ActsAsTenant.with_tenant(org) do
+        create(:objective_task, organization: org, objective: objective_with_tasks, assigned_to: employee)
+        create(:objective_task, :done, organization: org, objective: objective_with_tasks, assigned_to: employee)
+        objective_with_tasks.objective_tasks.reload
+        expect(objective_with_tasks.progress_percentage).to eq(0)
+      end
+    end
+
+    it 'returns 50 when half tasks validated' do
+      ActsAsTenant.with_tenant(org) do
+        create(:objective_task, organization: org, objective: objective_with_tasks, assigned_to: employee)
+        create(:objective_task, :validated, organization: org, objective: objective_with_tasks, assigned_to: employee)
+        objective_with_tasks.objective_tasks.reload
+        expect(objective_with_tasks.progress_percentage).to eq(50)
+      end
+    end
+
+    it 'returns 100 when all tasks validated' do
+      ActsAsTenant.with_tenant(org) do
+        create(:objective_task, :validated, organization: org, objective: objective_with_tasks, assigned_to: employee)
+        objective_with_tasks.objective_tasks.reload
+        expect(objective_with_tasks.progress_percentage).to eq(100)
+      end
+    end
+
+    it 'tasks? returns false when no tasks' do
+      ActsAsTenant.with_tenant(org) do
+        expect(objective_with_tasks.tasks?).to be false
+      end
+    end
+
+    it 'tasks? returns true when tasks exist' do
+      ActsAsTenant.with_tenant(org) do
+        create(:objective_task, organization: org, objective: objective_with_tasks, assigned_to: employee)
+        expect(objective_with_tasks.tasks?).to be true
+      end
+    end
   end
 end
